@@ -4,7 +4,9 @@ import {css} from "@benev/slate"
 export default css`
 
 .easel {
-	display: block;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	position: relative;
 	width: 100%;
 	height: 100%;
@@ -14,11 +16,12 @@ canvas {
 	width: 100%;
 	height: 100%;
 	background: #222;
+	outline: none;
 }
 
 .sidebar {
 	position: absolute;
-	width: 3em;
+	width: 10%;
 	height: 100%;
 
 	background: #333a;
