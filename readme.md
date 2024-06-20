@@ -3,3 +3,5 @@
 
 # ⚒ tinyforge
 
+*small game, big strategies*
+

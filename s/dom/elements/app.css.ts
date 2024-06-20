@@ -1,7 +1,7 @@
 
 import {css} from "@benev/slate"
 
-export const styles = css`
+export default css`
 
 :host {
 	display: block;
