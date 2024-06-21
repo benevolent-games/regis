@@ -3,8 +3,9 @@ import {html} from "@benev/slate"
 
 import {nexus} from "../nexus.js"
 import styles from "./map-editor.css.js"
-import {Editor, editing} from "../../game/editor.js"
+// import {Editor, editing} from "../../game/editor.js"
 import {Bestorage, EffectsPanelData, Stage, op_effect} from "@benev/toolbox"
+import { UiView } from "./ui.js"
 
 export const MapEditorView = nexus.shadow_view(use => () => {
 	use.styles(styles)
@@ -12,7 +13,7 @@ export const MapEditorView = nexus.shadow_view(use => () => {
 
 	const goods = use.op<{
 		stage: Stage,
-		editor: Editor,
+		// editor: Editor,
 	}>()
 
 	use.once(async() => {
@@ -36,8 +37,8 @@ export const MapEditorView = nexus.shadow_view(use => () => {
 					resolution: 100,
 				}),
 			})
-			const editor = await editing(stage)
-			return {stage, editor}
+			// const editor = await editing(stage)
+			return {stage}
 		})
 	})
 
@@ -45,8 +46,7 @@ export const MapEditorView = nexus.shadow_view(use => () => {
 		<div class="easel">
 			${op_effect.binary(goods.value, ({stage}) => html`
 				${stage.porthole.canvas}
-				<div class="sidebar alpha"></div>
-				<div class="sidebar bravo"></div>
+				${UiView([])}
 			`)}
 		</div>
 	`
