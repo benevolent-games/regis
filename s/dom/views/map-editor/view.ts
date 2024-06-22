@@ -4,7 +4,7 @@ import {html} from "@benev/slate"
 import styles from "./css.js"
 import {nexus} from "../../nexus.js"
 import {UiView} from "../ui/view.js"
-// import {Editor, editing} from "../../game/editor.js"
+import {EditorTact} from "../../../game/bindings.js"
 import {Bestorage, EffectsPanelData, Stage, op_effect} from "@benev/toolbox"
 
 export const MapEditorView = nexus.shadow_view(use => () => {
@@ -13,11 +13,13 @@ export const MapEditorView = nexus.shadow_view(use => () => {
 
 	const goods = use.op<{
 		stage: Stage,
+		tact: EditorTact,
 		// editor: Editor,
 	}>()
 
 	use.once(async() => {
 		await goods.load(async() => {
+
 			const stage = await Stage.create({
 				background: Stage.backgrounds.black(),
 				allow_webgpu: false,
@@ -37,8 +39,12 @@ export const MapEditorView = nexus.shadow_view(use => () => {
 					resolution: 100,
 				}),
 			})
+
+			const tact = new EditorTact()
+
 			// const editor = await editing(stage)
-			return {stage}
+
+			return {stage, tact}
 		})
 	})
 

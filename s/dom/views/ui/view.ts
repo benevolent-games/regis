@@ -5,6 +5,7 @@ import {RenderResult, html} from "@benev/slate"
 import styles from "./css.js"
 import {nexus} from "../../nexus.js"
 import {InputMethod, detectInputMethod} from "./utils/input-method.js"
+import boxSvg from "../../icons/tabler/box.svg.js"
 
 export const UiView = nexus.shadow_view(use => () => {
 	use.name("ui")
@@ -32,6 +33,19 @@ export const UiView = nexus.shadow_view(use => () => {
 				<div class=selection>selection</div>
 				<div class=resources>resources</div>
 			</div>
+		`
+	}
+
+	function actionbutton({label, key}: {
+			key?: string
+			label: string
+		}) {
+		return html`
+			<button class=actionbutton>
+				<span class=key>${key}</span>
+				<span class=icon>${boxSvg}</span>
+				<span class=label>${label}</span>
+			</button>
 		`
 	}
 
