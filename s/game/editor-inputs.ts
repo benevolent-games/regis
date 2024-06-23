@@ -1,93 +1,103 @@
 
-import {Tact} from "@benev/toolbox"
-import {signal} from "@benev/slate"
-import {bindings_helpers} from "@benev/toolbox/x/tact/parts/bindings_helpers.js"
+import {Action, Actions, modes} from "./inputs.js"
+import boxSvg from "../dom/icons/tabler/box.svg.js"
 
-type EditorMode = (
-	| "terrain"
-	| "advanced"
-)
+export const editorActionsList: Action[] = []
 
-export class EditorInputs {
-	#mode = signal<EditorMode>("terrain")
-
-	devices = {
-		keyboard: new Tact.devices.Keyboard(window),
-		mouseButtons: new Tact.devices.MouseButtons(window),
-		touchButtons: new Tact.devices.Virtual<
-			| "Touch1"
-			| "Touch2"
-			| "Touch3"
-			| "Touch4"
-			| "Touch5"
-			| "Touch6"
-			| "Touch7"
-			| "Touch9"
-			| "Touch10"
-			| "Touch11"
-			| "Touch12"
-		>(),
-	}
-
-	// TODO associate buttons with labels and icons
-	actions = (() => {
-
-	})()
-
-	tact = (() => {
-		const {mode, buttonGroup, buttons, b} = bindings_helpers
-
-		const common = buttonGroup({
-			panUp: buttons(b("KeyW")),
-			panDown: buttons(b("KeyS")),
-			panLeft: buttons(b("KeyA")),
-			panRight: buttons(b("KeyD")),
-			zoom: buttons(b("Space"), b("Touch6")),
-			select: buttons(b("Touch1")),
-		})
-
-		const tabulation = buttonGroup({
-			terrainMode: buttons(b("KeyZ"), b("Touch7")),
-			advancedMode: buttons(b("KeyX"), b("Touch8")),
-			mainMenu: buttons(b("KeyB"), b("Touch12"))
-		})
-
-		const tact = new Tact(window, {
-			common: mode({vectors: {}, buttons: common}),
-			tabulation: mode({vectors: {}, buttons: tabulation}),
-			terrain: mode({
-				vectors: {},
-				buttons: {
-					raise: buttons(b("KeyE"), b("Touch2")),
-					lower: buttons(b("KeyQ"), b("Touch3")),
-					level: buttons(b("KeyQ"), b("Touch4")),
-				},
-			}),
-			advanced: mode({
-				vectors: {},
-				buttons: {
-					corner: buttons(b("KeyE"), b("Touch2")),
-					ramp: buttons(b("KeyQ"), b("Touch3")),
-				},
-			}),
-		} satisfies Record<EditorMode, any> & Record<string, any>)
-
-		tact.devices.add(
-			this.devices.keyboard,
-			this.devices.mouseButtons,
-			this.devices.touchButtons,
-		)
-
-		const setMode = (mode: EditorMode) => () => {
-			tact.modes.assign("common", "tabulation", mode)
-			this.#mode.value = mode
-		}
-
-		tact.inputs.tabulation.buttons.terrainMode
-			.onPressed(setMode("terrain"))
-
-		tact.inputs.tabulation.buttons.advancedMode
-			.onPressed(setMode("advanced"))
-	})()
+function register<A extends Actions>(a: A) {
+	for (const action of Object.values(a))
+		editorActionsList.push(action)
+	return a
 }
+
+export const editorActions = modes({
+	common: register({
+		select: {
+			label: "Select",
+			buttons: ["Touch1"],
+			icon: boxSvg,
+		},
+
+		switch: {
+			label: "Switch",
+			buttons: ["Tab"],
+			icon: boxSvg,
+		},
+
+		zoom: {
+			label: "Zoom",
+			buttons: ["Space", "Touch6"],
+			icon: boxSvg,
+		},
+
+		panUp: {
+			label: "Pan Up",
+			buttons: ["KeyW"],
+			icon: boxSvg,
+		},
+
+		panDown: {
+			label: "Pan Down",
+			buttons: ["KeyS"],
+			icon: boxSvg,
+		},
+
+		panLeft: {
+			label: "Pan Left",
+			buttons: ["KeyA"],
+			icon: boxSvg,
+		},
+
+		panRight: {
+			label: "Pan Right",
+			buttons: ["KeyD"],
+			icon: boxSvg,
+		},
+	}),
+
+	terrain: register({
+		raise: {
+			label: "Raise",
+			buttons: ["KeyE"],
+			icon: boxSvg,
+		},
+
+		lower: {
+			label: "Lower",
+			buttons: ["KeyQ"],
+			icon: boxSvg,
+		},
+
+		level: {
+			label: "Level",
+			buttons: ["KeyR"],
+			icon: boxSvg,
+		},
+	}),
+
+	advanced: register({
+		corner: {
+			label: "Corner",
+			buttons: ["KeyE"],
+			icon: boxSvg,
+		},
+
+		ramp: {
+			label: "Ramp",
+			buttons: ["KeyQ"],
+			icon: boxSvg,
+		},
+	}),
+})
+
+export const editorModes = modes({
+	terrain: {
+		...editorActions.common,
+		...editorActions.terrain,
+	},
+	advanced: {
+		...editorActions.common,
+		...editorActions.advanced,
+	},
+})
 

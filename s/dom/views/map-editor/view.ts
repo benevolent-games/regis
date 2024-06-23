@@ -39,7 +39,7 @@ export const MapEditorView = nexus.shadow_view(use => () => {
 				}),
 			})
 
-			const editorCore = new EditorCore()
+			const editorCore = new EditorCore(window)
 
 			return {stage, editorCore}
 		})
