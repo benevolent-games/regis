@@ -31,6 +31,7 @@ export class EditorInputs {
 
 	// TODO associate buttons with labels and icons
 	actions = (() => {
+
 	})()
 
 	tact = (() => {
