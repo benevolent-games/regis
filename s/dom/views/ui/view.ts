@@ -56,23 +56,24 @@ export const UiView = nexus.shadow_view(use => () => {
 
 		case "touch": return plate(html`
 			<div class="sidebar alpha">
-				<button data-button="1">Q</button>
-				<button data-button="2">E</button>
-				<button data-button="3">Z</button>
-				<button data-button="4">X</button>
-				<button data-button="5">C</button>
+				<button data-button="1">1</button>
+				<button data-button="2">2</button>
+				<button data-button="3">3</button>
+				<button data-button="4">4</button>
+				<button data-button="5">5</button>
+				<button data-button="6">6</button>
 			</div>
 			<div class=midzone>
 				${groupsbar()}
 				${statusbar()}
 			</div>
 			<div class="sidebar bravo">
-				<button data-button="6">R</button>
-				<button data-button="7">F</button>
-				<button data-button="8">V</button>
-				<button data-button="9">T</button>
-				<button data-button="10">G</button>
-				<button data-button="11">B</button>
+				<button data-button="7">7</button>
+				<button data-button="8">8</button>
+				<button data-button="9">9</button>
+				<button data-button="10">10</button>
+				<button data-button="11">11</button>
+				<button data-button="12">12</button>
 			</div>
 		`)
 
@@ -80,6 +81,9 @@ export const UiView = nexus.shadow_view(use => () => {
 			${groupsbar()}
 			<div class=gridspace>
 				<div class=gridboard>
+					<div class=upper>
+						<button>Tab</button>
+					</div>
 					<div class=letterbox>
 						<div>
 							<button>Q</button>
@@ -102,6 +106,9 @@ export const UiView = nexus.shadow_view(use => () => {
 							<button>V</button>
 							<button>B</button>
 						</div>
+					</div>
+					<div class=lower>
+						<button>Space</button>
 					</div>
 				</div>
 			</div>

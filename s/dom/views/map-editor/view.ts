@@ -4,7 +4,7 @@ import {html} from "@benev/slate"
 import styles from "./css.js"
 import {nexus} from "../../nexus.js"
 import {UiView} from "../ui/view.js"
-import {EditorTact} from "../../../game/bindings.js"
+import {EditorCore} from "../../../game/editor.js"
 import {Bestorage, EffectsPanelData, Stage, op_effect} from "@benev/toolbox"
 
 export const MapEditorView = nexus.shadow_view(use => () => {
@@ -13,8 +13,7 @@ export const MapEditorView = nexus.shadow_view(use => () => {
 
 	const goods = use.op<{
 		stage: Stage,
-		tact: EditorTact,
-		// editor: Editor,
+		editorCore: EditorCore
 	}>()
 
 	use.once(async() => {
@@ -40,11 +39,9 @@ export const MapEditorView = nexus.shadow_view(use => () => {
 				}),
 			})
 
-			const tact = new EditorTact()
+			const editorCore = new EditorCore()
 
-			// const editor = await editing(stage)
-
-			return {stage, tact}
+			return {stage, editorCore}
 		})
 	})
 

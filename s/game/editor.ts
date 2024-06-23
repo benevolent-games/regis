@@ -1,7 +1,13 @@
 
-import {Level} from "./level.js"
-import {Stage, Vec2, Vec3, load_glb, scalar} from "@benev/toolbox"
-import {ArcRotateCamera, AssetContainer, Color3, DirectionalLight, HemisphericLight, Mesh, MeshBuilder, Scene, StandardMaterial, TransformNode, Vector3} from "@babylonjs/core"
+// import {Level} from "./level.js"
+// import {Stage, Vec2, Vec3, load_glb, scalar} from "@benev/toolbox"
+// import {ArcRotateCamera, AssetContainer, Color3, DirectionalLight, HemisphericLight, Mesh, MeshBuilder, Scene, StandardMaterial, TransformNode, Vector3} from "@babylonjs/core"
+
+import {EditorInputs} from "./editor-inputs.js"
+
+export class EditorCore {
+	inputs = new EditorInputs()
+}
 
 // export type Editor = Awaited<ReturnType<typeof editing>>
 
