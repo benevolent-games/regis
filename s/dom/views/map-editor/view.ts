@@ -40,6 +40,11 @@ export const MapEditorView = nexus.shadow_view(use => () => {
 			})
 
 			const editorCore = new EditorCore(window)
+			const {inputs, actions} = editorCore
+
+			inputs.on(actions.common.panUp, input => {
+				console.log("panUp", input)
+			})
 
 			return {stage, editorCore}
 		})
