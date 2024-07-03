@@ -1,6 +1,6 @@
 
 import {register_to_dom} from "@benev/slate"
-import {TinyforgeApp} from "./dom/elements/app/element.js"
+import {GameApp} from "./dom/elements/app/element.js"
 
-register_to_dom({TinyforgeApp})
+register_to_dom({GameApp})
 

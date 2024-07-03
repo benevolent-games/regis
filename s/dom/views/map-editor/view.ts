@@ -1,13 +1,13 @@
 
-import {html} from "@benev/slate"
+import {html, loading} from "@benev/slate"
 
 import styles from "./css.js"
 import {nexus} from "../../nexus.js"
 import {UiView} from "../ui/view.js"
 import {EditorCore} from "../../../game/editor.js"
-import {Bestorage, EffectsPanelData, Stage, op_effect} from "@benev/toolbox"
+import {Bestorage, EffectsPanelData, Stage} from "@benev/toolbox"
 
-export const MapEditorView = nexus.shadow_view(use => () => {
+export const MapEditorView = nexus.shadowView(use => () => {
 	use.styles(styles)
 	use.name("map-editor")
 
