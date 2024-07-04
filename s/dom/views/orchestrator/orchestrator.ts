@@ -1,13 +1,17 @@
 
-import {ExhibitFn, LoadingScreen} from "./types.js"
-import {nap, RenderResult, signals} from "@benev/slate"
+import {Exhibit, ExhibitFn, LoadingScreen} from "./types.js"
+import {nap, RenderResult, signal, Signal} from "@benev/slate"
 
 export class Orchestrator {
-	exhibit = signals.signal<RenderResult>(undefined)
-	loading = signals.signal<RenderResult>(undefined)
+	static makeExhibit = (exhibit: Exhibit) => exhibit
+	static makeExhibitLoader = (fn: ExhibitFn) => fn
 
-	constructor(homeExhibit: RenderResult = undefined) {
-		this.exhibit.value = homeExhibit
+	exhibit: Signal<Exhibit>
+	loading: Signal<RenderResult>
+
+	constructor(startingExhibit: Exhibit) {
+		this.exhibit = signal(startingExhibit)
+		this.loading = signal<RenderResult>(undefined)
 	}
 
 	get isLoading() {
@@ -34,14 +38,17 @@ export class Orchestrator {
 			this.loading.value = screen.render({active: true})
 
 			// load the exhibit, and also wait for animation to be done
-			const [exhibitResult] = await Promise.all([
+			const [exhibit] = await Promise.all([
 				exhibitFn(),
 				nap(screen.animTime),
 			])
 
+			// dispose the previous exhibit
+			this.exhibit.value.dispose()
+
 			// display the new exhibit,
 			// and disable active switch so loading it can animate the outro
-			this.exhibit.value = exhibitResult
+			this.exhibit.value = exhibit
 			this.loading.value = screen.render({active: false})
 
 			// after the outro anim is done, end the loading routine

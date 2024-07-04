@@ -5,18 +5,22 @@ import styles from "./css.js"
 import {nexus} from "../../nexus.js"
 import {OrchestratorView} from "../../views/orchestrator/view.js"
 import {Orchestrator} from "../../views/orchestrator/orchestrator.js"
+import { loadMapEditorPayload, MapEditorView } from "../../views/map-editor/view.js"
 
 export const GameApp = nexus.shadowComponent(use => {
 	use.styles(styles)
 
 	const {orchestrator} = use.once(() => {
-		const home = () => html`
-			<h1 @click=${() => exhibits.mainMenu()}>
-				intro
-			</h1>
-		`
+		const home = Orchestrator.makeExhibit({
+			dispose: () => {},
+			template: () => html`
+				<h1 @click=${() => exhibits.mainMenu()}>
+					intro
+				</h1>
+			`,
+		})
 
-		const orchestrator = new Orchestrator(home())
+		const orchestrator = new Orchestrator(home)
 
 		const loadingScreens = {
 			logoSplash: orchestrator.makeLoadingScreen({
@@ -28,11 +32,24 @@ export const GameApp = nexus.shadowComponent(use => {
 		const exhibits = {
 			intro: () => loadingScreens.logoSplash(async() => {
 				await nap(100)
-				return home()
+				return home
 			}),
 			mainMenu: () => loadingScreens.logoSplash(async() => {
 				await nap(100)
-				return html`<p>main menu</p>`
+				return {
+					dispose: () => {},
+					template: () => html`
+						<p>main menu</p>
+					`,
+				}
+			}),
+			mapEditor: () => loadingScreens.logoSplash(async() => {
+				await nap(100)
+				const payload = await loadMapEditorPayload()
+				return {
+					template: () => MapEditorView([payload]),
+					dispose: () => payload.dispose(),
+				}
 			}),
 		}
 

@@ -1,13 +1,12 @@
 
-
 import {RenderResult, html} from "@benev/slate"
 
 import styles from "./css.js"
 import {nexus} from "../../nexus.js"
-import {InputMethod, detectInputMethod} from "./utils/input-method.js"
 import boxSvg from "../../icons/tabler/box.svg.js"
+import {InputMethod, detectInputMethod} from "./utils/input-method.js"
 
-export const UiView = nexus.shadow_view(use => () => {
+export const UiView = nexus.shadowView(use => () => {
 	use.name("ui")
 	use.styles(styles)
 
