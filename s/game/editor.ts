@@ -68,10 +68,15 @@ export class EditorCore {
 			console.log("panUp", input)
 		})
 
-		this.dispose = ev(target, {
+		const stopInputs = ev(target, {
 			keyup: device.keyup,
 			keydown: device.keydown,
 		})
+
+		this.dispose = () => {
+			stopInputs()
+			payload.dispose()
+		}
 	}
 }
 
