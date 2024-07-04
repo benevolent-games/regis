@@ -10,42 +10,43 @@ import {loadMapEditorPayload, MapEditorView} from "../../views/map-editor/view.j
 
 export const GameApp = nexus.lightComponent(use => {
 
-	const {orchestrator} = use.once(() => {
+	const orchestrator = use.once(() => {
 		const intro = Orchestrator.makeExhibit({
 			dispose: () => {},
 			template: IntroPageView([{
-				gotoMainMenu: () => exhibits.mainMenu()
+				goMainMenu: () => goExhibit.mainMenu()
 			}]),
 		})
 
-		const orchestrator = new Orchestrator(intro)
+		const orchestrator = new Orchestrator({
+			animTime: 250,
+			startingExhibit: intro,
+		})
 
-		const loadingScreens = {
-			logoSplash: orchestrator.makeLoadingScreen({
-				animTime: 1000,
-				render: ({active}) => {
-					console.log({active})
-					return LogoSplashView([])
-				},
+		const loadscreens = {
+			logoSplash: Orchestrator.makeLoadingScreen({
+				render: ({}) => LogoSplashView([]),
 			}),
 		}
 
-		const exhibits = {
-			intro: () => loadingScreens.logoSplash(async() => intro),
+		const goExhibit = {
+			intro: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
+				return intro
+			}),
 
-			mainMenu: () => loadingScreens.logoSplash(async() => {
-				await nap(999)
+			mainMenu: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
+				await nap(1000)
 				return {
 					dispose: () => {},
 					template: MainMenuView([{
-						gotoIntro: () => exhibits.intro(),
-						gotoEditor: () => exhibits.mapEditor(),
+						goIntro: () => goExhibit.intro(),
+						goEditor: () => goExhibit.mapEditor(),
 					}]),
 				}
 			}),
 
-			mapEditor: () => loadingScreens.logoSplash(async() => {
-				await nap(999)
+			mapEditor: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
+				await nap(1000)
 				const payload = await loadMapEditorPayload()
 				return {
 					dispose: () => payload.dispose(),
@@ -54,7 +55,7 @@ export const GameApp = nexus.lightComponent(use => {
 			}),
 		}
 
-		return {exhibits, orchestrator}
+		return orchestrator
 	})
 
 	return Orchestrator.render(orchestrator)

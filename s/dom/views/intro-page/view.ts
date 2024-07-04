@@ -3,7 +3,7 @@ import {css, html} from "@benev/slate"
 import {nexus} from "../../nexus.js"
 
 type Options = {
-	gotoMainMenu: () => void
+	goMainMenu: () => void
 }
 
 const styles = css``
@@ -14,7 +14,7 @@ export const IntroPageView = nexus.shadowView(use => (o: Options) => {
 
 	return html`
 		<h1>intro page</h1>
-		<button @click=${o.gotoMainMenu}>play</button>
+		<button @click=${o.goMainMenu}>play</button>
 	`
 })
 

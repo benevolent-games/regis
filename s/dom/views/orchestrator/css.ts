@@ -23,9 +23,9 @@ slot[name="loading"] {
 	pointer-events: none;
 
 	opacity: 0;
-	transition: opacity 200ms linear;
+	transition: opacity 250ms linear;
 
-	&[data-is-loading] {
+	&[data-active] {
 		pointer-events: all;
 		opacity: 1;
 	}

@@ -9,7 +9,11 @@ export type Exhibit = {
 export type ExhibitFn = () => Promise<Exhibit>
 
 export type LoadingScreen = {
-	animTime: number
 	render: ({}: {active: boolean}) => RenderResult
+}
+
+export type LoadingState = {
+	active: boolean
+	template: RenderResult
 }
 

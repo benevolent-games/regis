@@ -9,8 +9,11 @@ export const OrchestratorView = nexus.shadowView(use => (orchestrator: Orchestra
 	use.styles(styles)
 
 	return html`
-		<slot name=loading ?data-is-loading=${!!orchestrator.isLoading}>
-			${orchestrator.loading}
+		<slot
+			name=loading
+			?data-active=${orchestrator.loading.value.active}
+			style="transition-duration: ${orchestrator.animTime}ms;">
+				${orchestrator.loading.value.template}
 		</slot>
 
 		<slot>

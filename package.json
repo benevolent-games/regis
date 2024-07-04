@@ -17,7 +17,9 @@
 		"http": "http-server x",
 		"watch": "turtle watch --in=s,x --out=x --exclude=bin -v",
 		"start": "run-p http watch",
-		"devlinks": "rm -rf node_modules/@benev/toolbox && ln -s \"$(realpath ../toolbox)\" node_modules/@benev/toolbox",
+		"devlinks": "run-s devlink-toolbox devlink-slate",
+		"devlink-toolbox": "rm -rf node_modules/@benev/toolbox && ln -s \"$(realpath ../toolbox)\" node_modules/@benev/toolbox",
+		"devlink-slate": "rm -rf node_modules/@benev/slate && ln -s \"$(realpath ../slate)\" node_modules/@benev/slate",
 		"test": "exit 0",
 		"test-watch": "chokidar \"x/**/*.js\" -c \"clear && npm test\""
 	},
