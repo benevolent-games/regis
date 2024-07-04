@@ -3,10 +3,11 @@ import {nap} from "@benev/slate"
 import {Orchestrator} from "@benev/toolbox"
 
 import {nexus} from "../../nexus.js"
+import {EditorCore} from "../../../game/editor.js"
 import {MainMenuView} from "../../views/exhibits/main-menu.js"
 import {IntroPageView} from "../../views/exhibits/intro-page.js"
+import {MapEditorView} from "../../views/exhibits/map-editor.js"
 import {LogoSplashView} from "../../views/loading-screens/logo-splash.js"
-import {loadMapEditorPayload, MapEditorView} from "../../views/exhibits/map-editor.js"
 
 export const GameApp = nexus.lightComponent(use => {
 
@@ -47,7 +48,7 @@ export const GameApp = nexus.lightComponent(use => {
 
 			mapEditor: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
 				await nap(1000)
-				const payload = await loadMapEditorPayload()
+				const payload = await EditorCore.load()
 				return {
 					dispose: () => payload.dispose(),
 					template: MapEditorView([payload]),
