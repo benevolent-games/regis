@@ -3,10 +3,10 @@ import {nap} from "@benev/slate"
 import {Orchestrator} from "@benev/toolbox"
 
 import {nexus} from "../../nexus.js"
-import {MainMenuView} from "../../views/main-menu/view.js"
-import {IntroPageView} from "../../views/intro-page/view.js"
-import {LogoSplashView} from "../../views/logo-splash/view.js"
-import {loadMapEditorPayload, MapEditorView} from "../../views/map-editor/view.js"
+import {MainMenuView} from "../../views/exhibits/main-menu.js"
+import {IntroPageView} from "../../views/exhibits/intro-page.js"
+import {LogoSplashView} from "../../views/loading-screens/logo-splash.js"
+import {loadMapEditorPayload, MapEditorView} from "../../views/exhibits/map-editor.js"
 
 export const GameApp = nexus.lightComponent(use => {
 

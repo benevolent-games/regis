@@ -2,6 +2,15 @@
 import {css, html} from "@benev/slate"
 import {nexus} from "../../nexus.js"
 
+export const LogoSplashView = nexus.shadowView(use => () => {
+	use.name("logo-splash")
+	use.styles(styles)
+
+	return html`
+		<h1>...loading...</h1>
+	`
+})
+
 const styles = css`
 	:host {
 		display: flex;
@@ -16,13 +25,4 @@ const styles = css`
 		background: #334;
 	}
 `
-
-export const LogoSplashView = nexus.shadowView(use => () => {
-	use.name("logo-splash")
-	use.styles(styles)
-
-	return html`
-		<h1>...loading...</h1>
-	`
-})
 

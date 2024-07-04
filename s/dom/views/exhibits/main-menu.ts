@@ -2,13 +2,6 @@
 import {css, html} from "@benev/slate"
 import {nexus} from "../../nexus.js"
 
-type Options = {
-	goIntro: () => void
-	goEditor: () => void
-}
-
-const styles = css``
-
 export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 	use.name("main-menu")
 	use.styles(styles)
@@ -19,4 +12,11 @@ export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 		<button @click=${o.goEditor}>map editor</button>
 	`
 })
+
+type Options = {
+	goIntro: () => void
+	goEditor: () => void
+}
+
+const styles = css``
 
