@@ -20,7 +20,7 @@ export default template(async basic => {
 				scripts: [{
 					module: "index.bundle.js",
 					bundle: "index.bundle.min.js",
-					hash: true,
+					hash: false,
 				}],
 			})}
 		`,
