@@ -13,7 +13,7 @@ html, body {
 	font-family: sans-serif;
 }
 
-tinyforge-app {
+game-app {
 	position: absolute;
 	inset: 0;
 	margin: auto;

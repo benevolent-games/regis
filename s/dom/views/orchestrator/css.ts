@@ -10,7 +10,7 @@ export const styles = css`
 	height: 100%;
 }
 
-.loading, .exhibit {
+slot {
 	display: block;
 	position: absolute;
 	inset: 0;
@@ -18,8 +18,17 @@ export const styles = css`
 	height: 100%;
 }
 
-.loading {
+slot[name="loading"] {
 	z-index: 1;
+	pointer-events: none;
+
+	opacity: 0;
+	transition: opacity 200ms linear;
+
+	&[data-is-loading] {
+		pointer-events: all;
+		opacity: 1;
+	}
 }
 
 `

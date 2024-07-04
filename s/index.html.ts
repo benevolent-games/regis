@@ -25,7 +25,7 @@ export default template(async basic => {
 			})}
 		`,
 		body: html`
-			<tinyforge-app></tinyforge-app>
+			<game-app></game-app>
 		`,
 	})
 })
