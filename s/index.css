@@ -23,5 +23,10 @@ game-app {
 	&[restrict-aspect-ratio] {
 		aspect-ratio: 16 / 9;
 	}
+
+	.loading, .exhibit {
+		position: absolute;
+		inset: 0;
+	}
 }
 

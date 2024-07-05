@@ -4,15 +4,12 @@ import {RenderResult, html} from "@benev/slate"
 import styles from "./css.js"
 import {nexus} from "../../nexus.js"
 import boxSvg from "../../icons/tabler/box.svg.js"
-import {InputMethod, detectInputMethod} from "./utils/input-method.js"
 
 export const UiView = nexus.shadowView(use => () => {
 	use.name("ui")
 	use.styles(styles)
 
-	const inputMethod = use.signal<InputMethod>("none")
-
-	use.mount(detectInputMethod(inputMethod))
+	const {inputMethod} = use.context
 
 	function plate(content: RenderResult) {
 		return html`<div data-plate="${inputMethod}">${content}</div>`
@@ -50,7 +47,7 @@ export const UiView = nexus.shadowView(use => () => {
 
 	switch (inputMethod.value) {
 		case "none": return plate(html`
-			<p>click or tap anywhere to begin</p>
+			<p>click or tap anywhere to begin!</p>
 		`)
 
 		case "touch": return plate(html`

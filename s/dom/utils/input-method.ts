@@ -3,7 +3,7 @@ import {Signal, ev} from "@benev/slate"
 
 export type InputMethod = "none" | "touch" | "keys"
 
-export function detectInputMethod(inputMethod: Signal<InputMethod>) {
+export function detectInputMethod(target: EventTarget, inputMethod: Signal<InputMethod>) {
 	return () => {
 
 		function set(m: InputMethod) {
@@ -11,7 +11,7 @@ export function detectInputMethod(inputMethod: Signal<InputMethod>) {
 				inputMethod.value = m
 		}
 
-		return ev(document, {
+		return ev(target, {
 			keydown: () => set("keys"),
 			pointerdown: (event: PointerEvent) => {
 				if (event.pointerType === "touch") set("touch")

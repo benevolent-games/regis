@@ -2,11 +2,16 @@
 import {Orchestrator} from "@benev/toolbox/x/ui/orchestrator/exports.js"
 
 import {nexus} from "../../nexus.js"
+import {detectInputMethod} from "../../utils/input-method.js"
 import {MainMenuView} from "../../views/exhibits/main-menu.js"
 import {IntroPageView} from "../../views/exhibits/intro-page.js"
 import {LogoSplashView} from "../../views/loading-screens/logo-splash.js"
 
 export const GameApp = nexus.lightComponent(use => {
+
+	use.mount(
+		detectInputMethod(document, use.context.inputMethod)
+	)
 
 	const orchestrator = use.once(() => {
 		const intro = Orchestrator.makeExhibit({
