@@ -17,7 +17,7 @@ export type EditorPayload = {
 }
 
 export class EditorCore {
-	static load = async(): Promise<EditorPayload> => {
+	static load = async(target: EventTarget) => {
 		const canvas = document.createElement("canvas")
 		const engine = await Iron.engine({
 			canvas,
@@ -45,7 +45,7 @@ export class EditorCore {
 			engine.dispose()
 		}
 
-		return {
+		const payload: EditorPayload = {
 			canvas,
 			scaler,
 			engine,
@@ -54,10 +54,11 @@ export class EditorCore {
 			rendering,
 			dispose,
 		}
+
+		return new this(target, payload)
 	}
 
 	dispose: () => void
-
 	inputs = new Inputs()
 	actions = editorActions
 

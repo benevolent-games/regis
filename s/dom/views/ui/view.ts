@@ -3,9 +3,10 @@ import {RenderResult, html} from "@benev/slate"
 
 import styles from "./css.js"
 import {nexus} from "../../nexus.js"
+import {EditorCore} from "../../../game/editor.js"
 import boxSvg from "../../icons/tabler/box.svg.js"
 
-export const UiView = nexus.shadowView(use => () => {
+export const UiView = nexus.shadowView(use => (editorCore: EditorCore) => {
 	use.name("ui")
 	use.styles(styles)
 
@@ -32,15 +33,12 @@ export const UiView = nexus.shadowView(use => () => {
 		`
 	}
 
-	function actionbutton({label, key}: {
-			key?: string
-			label: string
-		}) {
+	function actionbutton(key: string) {
 		return html`
 			<button class=actionbutton>
 				<span class=key>${key}</span>
 				<span class=icon>${boxSvg}</span>
-				<span class=label>${label}</span>
+				<span class=label>${editorCore.inputs}</span>
 			</button>
 		`
 	}

@@ -1,6 +1,6 @@
 
-import {Action, Actions, modes} from "./inputs.js"
 import boxSvg from "../dom/icons/tabler/box.svg.js"
+import {Action, Actions, modes} from "../tools/inputs/types.js"
 
 export const editorActionsList: Action[] = []
 

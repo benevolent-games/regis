@@ -1,10 +1,8 @@
 
-import {$} from "zx"
-import {template, html, easypage, startup_scripts_with_dev_mode} from "@benev/turtle"
+import {template, html, easypage, startup_scripts_with_dev_mode, git_commit_hash} from "@benev/turtle"
 
 export default template(async basic => {
 	const path = basic.path(import.meta.url)
-	const commitHash = (await $`git rev-parse HEAD`.quiet()).stdout.trim()
 
 	return easypage({
 		path,
@@ -14,7 +12,7 @@ export default template(async basic => {
 		head: html`
 			<link rel="icon" href="/assets/benevolent.svg"/>
 			<link rel="stylesheet" href="${path.version.root("index.css")}"/>
-			<meta data-commit-hash="${commitHash}"/>
+			<meta data-commit-hash="${await git_commit_hash()}"/>
 			${startup_scripts_with_dev_mode({
 				path,
 				scripts: [{

@@ -9,7 +9,7 @@ export const MapEditorView = nexus.shadowView(use => (p: EditorPayload) => {
 	use.styles(styles)
 	use.name("map-editor")
 
-	use.init(() => {
+	const editorCore = use.init(() => {
 		const core = new EditorCore(window, p)
 		return [core, () => core.dispose()]
 	})
@@ -17,7 +17,7 @@ export const MapEditorView = nexus.shadowView(use => (p: EditorPayload) => {
 	return html`
 		<div class=easel>
 			${p.canvas}
-			${UiView([])}
+			${UiView([editorCore])}
 		</div>
 	`
 })
