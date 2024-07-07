@@ -33,7 +33,7 @@
 	},
 	"devDependencies": {
 		"@benev/batch": "^0.0.0",
-		"@benev/turtle": "^0.6.0-4",
+		"@benev/turtle": "^0.6.0-5",
 		"chokidar": "^3.6.0",
 		"chokidar-cli": "^3.0.0",
 		"http-server": "^14.1.1",
