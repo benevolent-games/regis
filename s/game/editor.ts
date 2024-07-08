@@ -1,10 +1,7 @@
 
-import {ev} from "@benev/slate"
 import {Scene} from "@babylonjs/core/scene.js"
+import {makeEditorInputs} from "./editor-inputs.js"
 import {AnyEngine, CanvasScaler, Gameloop, Iron, Rendering} from "@benev/toolbox"
-
-import {Device, Inputs} from "./inputs.js"
-import {editorActions, editorActionsList} from "./editor-inputs.js"
 
 export type EditorPayload = {
 	canvas: HTMLCanvasElement
@@ -59,22 +56,19 @@ export class EditorCore {
 	}
 
 	dispose: () => void
-	inputs = new Inputs()
-	actions = editorActions
+	inputs = makeEditorInputs()
 
 	constructor(target: EventTarget, public readonly payload: EditorPayload) {
-		const device = new Device(this.inputs, editorActionsList)
+		const {inputs} = this
 
-		this.inputs.on(this.actions.common.panUp, input => {
+		const stop1 = inputs.on(inputs.catalog.common.panUp, input => {
 			console.log("panUp", input)
 		})
 
-		const stopInputs = ev(target, {
-			keyup: device.keyup,
-			keydown: device.keydown,
-		})
+		const stopInputs = inputs.listenForKeyboardEvents(target)
 
 		this.dispose = () => {
+			stop1()
 			stopInputs()
 			payload.dispose()
 		}

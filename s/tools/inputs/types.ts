@@ -3,22 +3,23 @@ import {SVGTemplateResult} from "@benev/slate"
 
 export type Action = {
 	label: string
-	buttons: string[]
+	codes: string[]
 	icon: null | SVGTemplateResult
 }
 
 export type Actions = Record<string, Action>
-export type Modes = Record<string, Actions>
+export type ActionModes = Record<string, Actions>
 
 export function actions<A extends Actions>(a: A) {
 	return a
 }
 
-export function modes<M extends Modes>(m: M) {
+export function actionModes<M extends ActionModes>(m: M) {
 	return m
 }
 
 export type Input = {
+	action: Action
 	down: boolean
 	repeat: boolean
 }

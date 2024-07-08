@@ -3,20 +3,15 @@ import {css, html} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
 import {UiView} from "../ui/view.js"
-import {EditorCore, EditorPayload} from "../../../game/editor.js"
+import {EditorCore} from "../../../game/editor.js"
 
-export const MapEditorView = nexus.shadowView(use => (p: EditorPayload) => {
+export const MapEditorView = nexus.shadowView(use => (editorCore: EditorCore) => {
 	use.styles(styles)
 	use.name("map-editor")
 
-	const editorCore = use.init(() => {
-		const core = new EditorCore(window, p)
-		return [core, () => core.dispose()]
-	})
-
 	return html`
 		<div class=easel>
-			${p.canvas}
+			${editorCore.payload.canvas}
 			${UiView([editorCore])}
 		</div>
 	`

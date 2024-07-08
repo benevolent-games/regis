@@ -50,10 +50,10 @@ export const GameApp = nexus.lightComponent(use => {
 			mapEditor: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
 				const {EditorCore} = await import("../../../game/editor.js")
 				const {MapEditorView} = await import("../../views/exhibits/map-editor.js")
-				const payload = await EditorCore.load()
+				const editorCore = await EditorCore.load(window)
 				return {
-					dispose: () => payload.dispose(),
-					template: MapEditorView([payload]),
+					dispose: () => editorCore.dispose(),
+					template: MapEditorView([editorCore]),
 				}
 			}),
 		}
