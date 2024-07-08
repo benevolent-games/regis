@@ -33,13 +33,22 @@ export const UiView = nexus.shadowView(use => (editorCore: EditorCore) => {
 		`
 	}
 
-	function actionbutton(key: string, code: string) {
-		const action = editorCore.inputs.find(code)
+	function actionbutton(name: string, code: string) {
+		const [action] = editorCore.inputs.find(code)
+		const isDown = editorCore.inputs.getCodeSignal(code).value.down
+
 		return html`
-			<button class=actionbutton>
-				<span class=key>${key}</span>
-				<span class=icon>${boxSvg}</span>
-				<span class=label>${editorCore.inputs}</span>
+			<button
+				data-name="${name}"
+				data-code="${code}"
+				?data-bound="${!!action}"
+				?data-down="${isDown}">
+
+				<span class=name>${name}</span>
+				${!!action ? html`
+					<span class=icon>${boxSvg}</span>
+					<span class=label>${action.label}</span>
+				` : null}
 			</button>
 		`
 	}
@@ -76,34 +85,30 @@ export const UiView = nexus.shadowView(use => (editorCore: EditorCore) => {
 			${groupsbar()}
 			<div class=gridspace>
 				<div class=gridboard>
-					<div class=upper>
-						<button>Tab</button>
+					<div>
+						${actionbutton("Tab", "Tab")}
+						${actionbutton("Q", "KeyQ")}
+						${actionbutton("W", "KeyW")}
+						${actionbutton("E", "KeyE")}
+						${actionbutton("R", "KeyR")}
+						${actionbutton("T", "KeyT")}
 					</div>
-					<div class=letterbox>
-						<div>
-							<button>Q</button>
-							<button>W</button>
-							<button>E</button>
-							<button>R</button>
-							<button>T</button>
-						</div>
-						<div>
-							<button>A</button>
-							<button>S</button>
-							<button>D</button>
-							<button>F</button>
-							<button>G</button>
-						</div>
-						<div>
-							<button>Z</button>
-							<button>X</button>
-							<button>C</button>
-							<button>V</button>
-							<button>B</button>
-						</div>
+					<div>
+						${actionbutton("A", "KeyA")}
+						${actionbutton("S", "KeyS")}
+						${actionbutton("D", "KeyD")}
+						${actionbutton("F", "KeyF")}
+						${actionbutton("G", "KeyG")}
 					</div>
-					<div class=lower>
-						<button>Space</button>
+					<div>
+						${actionbutton("Z", "KeyZ")}
+						${actionbutton("X", "KeyX")}
+						${actionbutton("C", "KeyC")}
+						${actionbutton("V", "KeyV")}
+						${actionbutton("B", "KeyB")}
+					</div>
+					<div>
+						${actionbutton("Space", "Space")}
 					</div>
 				</div>
 			</div>

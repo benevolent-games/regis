@@ -58,6 +58,9 @@ export const GameApp = nexus.lightComponent(use => {
 			}),
 		}
 
+		// TODO remove hack to skip menus
+		goExhibit.mapEditor()
+
 		return orchestrator
 	})
 
