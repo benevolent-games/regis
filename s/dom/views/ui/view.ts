@@ -3,8 +3,8 @@ import {RenderResult, html} from "@benev/slate"
 
 import styles from "./css.js"
 import {nexus} from "../../nexus.js"
-import {EditorCore} from "../../../game/editor.js"
 import boxSvg from "../../icons/tabler/box.svg.js"
+import {EditorCore} from "../../../game/editor/core.js"
 
 export const UiView = nexus.shadowView(use => (editorCore: EditorCore) => {
 	use.name("ui")

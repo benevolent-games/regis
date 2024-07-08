@@ -1,7 +1,7 @@
 
-import boxSvg from "../dom/icons/tabler/box.svg.js"
-import {actionModes} from "../tools/inputs/types.js"
-import {InputCenter} from "../tools/inputs/input-center.js"
+import boxSvg from "../../dom/icons/tabler/box.svg.js"
+import {actionModes} from "../../tools/inputs/types.js"
+import {InputCenter} from "../../tools/inputs/input-center.js"
 
 export function makeEditorInputs() {
 	const catalog = actionModes({

@@ -1,7 +1,8 @@
 
 import {Scene} from "@babylonjs/core/scene.js"
-import {makeEditorInputs} from "./editor-inputs.js"
 import {AnyEngine, CanvasScaler, Gameloop, Iron, Rendering} from "@benev/toolbox"
+
+import {makeEditorInputs} from "./inputs.js"
 
 export type EditorPayload = {
 	canvas: HTMLCanvasElement

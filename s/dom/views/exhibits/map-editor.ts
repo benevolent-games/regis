@@ -3,7 +3,7 @@ import {css, html} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
 import {UiView} from "../ui/view.js"
-import {EditorCore} from "../../../game/editor.js"
+import {EditorCore} from "../../../game/editor/core.js"
 
 export const MapEditorView = nexus.shadowView(use => (editorCore: EditorCore) => {
 	use.styles(styles)
