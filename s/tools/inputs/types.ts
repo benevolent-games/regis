@@ -7,10 +7,10 @@ export type Action = {
 	icon: null | SVGTemplateResult
 }
 
-export type Actions = Record<string, Action>
-export type ActionModes = Record<string, Actions>
+export type ActionGroup = Record<string, Action>
+export type ActionModes = Record<string, ActionGroup>
 
-export function actions<A extends Actions>(a: A) {
+export function actions<A extends ActionGroup>(a: A) {
 	return a
 }
 

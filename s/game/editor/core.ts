@@ -1,20 +1,11 @@
 
-import {Scene} from "@babylonjs/core/scene.js"
-import {AnyEngine, CanvasScaler, Gameloop, Iron, Rendering} from "@benev/toolbox"
+import {Iron} from "@benev/toolbox"
 
+import {EditorPayload} from "./types.js"
 import {makeEditorInputs} from "./inputs.js"
 
-export type EditorPayload = {
-	canvas: HTMLCanvasElement
-	scaler: CanvasScaler
-	engine: AnyEngine
-	scene: Scene
-	gameloop: Gameloop
-	rendering: Rendering
-	dispose: () => void
-}
-
 export class EditorCore {
+
 	static load = async(target: EventTarget) => {
 		const canvas = document.createElement("canvas")
 		const engine = await Iron.engine({
@@ -43,7 +34,7 @@ export class EditorCore {
 			engine.dispose()
 		}
 
-		const payload: EditorPayload = {
+		return new this(target, {
 			canvas,
 			scaler,
 			engine,
@@ -51,9 +42,7 @@ export class EditorCore {
 			gameloop,
 			rendering,
 			dispose,
-		}
-
-		return new this(target, payload)
+		})
 	}
 
 	dispose: () => void
@@ -62,7 +51,7 @@ export class EditorCore {
 	constructor(target: EventTarget, public readonly payload: EditorPayload) {
 		const {inputs} = this
 
-		const stop1 = inputs.on(inputs.catalog.common.panUp, input => {
+		const stop1 = inputs.on(inputs.actionCatalog.common.panUp, input => {
 			console.log("panUp", input)
 		})
 

@@ -95,6 +95,6 @@ export function makeEditorInputs() {
 		},
 	})
 
-	return new InputCenter(catalog, modes)
+	return new InputCenter(catalog, modes, "terrain")
 }
 

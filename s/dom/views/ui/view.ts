@@ -33,7 +33,8 @@ export const UiView = nexus.shadowView(use => (editorCore: EditorCore) => {
 		`
 	}
 
-	function actionbutton(key: string) {
+	function actionbutton(key: string, code: string) {
+		const action = editorCore.inputs.find(code)
 		return html`
 			<button class=actionbutton>
 				<span class=key>${key}</span>

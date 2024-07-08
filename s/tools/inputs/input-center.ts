@@ -1,28 +1,30 @@
 
-import {ev} from "@benev/slate"
-import {listActions} from "./utils/list-actions.js"
+import {ev, Signal, signal} from "@benev/slate"
 import {Action, Input, Listener, ActionModes} from "./types.js"
 
-export class InputCenter<
-		Catalog extends ActionModes,
-		Modes extends ActionModes,
-	> {
+export class InputCenter<AC extends ActionModes, A extends ActionModes> {
+	readonly mode: Signal<keyof A>
 
+	#actionSet = new Set<Action>()
 	#listeners = new Map<Action, Set<Listener>>()
 
-	/** flat list of all actions */
-	readonly actionList: Action[]
-
 	constructor(
-
-			/** full catalog of all actions laid into groups */
-			public readonly catalog: Catalog,
-
-			/** actions organized into modes, some actions may be in multiple modes */
-			public readonly modes: Modes,
-
+			public readonly actionCatalog: AC,
+			public readonly actionModes: A,
+			startMode: keyof A,
 		) {
-		this.actionList = listActions(catalog)
+
+		this.mode = signal(startMode)
+
+		for (const actionGroup of Object.values(actionModes)) {
+			for (const action of Object.values(actionGroup)) {
+				this.#actionSet.add(action)
+			}
+		}
+	}
+
+	get actions() {
+		return this.actionModes[this.mode.value]
 	}
 
 	/** listen for an action input */
@@ -45,22 +47,23 @@ export class InputCenter<
 	}
 
 	/** find an action by its code, eg, "KeyQ" or "Touch1" */
-	findAction(code: string) {
-		return this.actionList.filter(
-			action => action.codes.includes(code)
-		)
+	find(code: string) {
+		return Object.values(this.actions)
+			.filter(action => action.codes.includes(code))
 	}
 
 	/** listen to keyboard events to invoke action inputs */
 	listenForKeyboardEvents(target: EventTarget) {
 		return ev(target, {
+
 			keydown: (event: KeyboardEvent) => {
-				const actions = this.findAction(event.code)
+				const actions = this.find(event.code)
 				for (const action of actions)
 					this.invoke({action, down: true, repeat: event.repeat})
 			},
+
 			keyup: (event: KeyboardEvent) => {
-				const actions = this.findAction(event.code)
+				const actions = this.find(event.code)
 				for (const action of actions)
 					this.invoke({action, down: false, repeat: event.repeat})
 			},
