@@ -26,14 +26,14 @@
 	"dependencies": {
 		"@babylonjs/core": "^7.14.0",
 		"@babylonjs/loaders": "^7.14.0",
-		"@benev/slate": "^0.2.0-4",
+		"@benev/slate": "^0.2.0-5",
 		"@benev/toolbox": "^0.6.0-14",
 		"es-module-shims": "^1.10.0",
 		"zx": "^8.1.4"
 	},
 	"devDependencies": {
 		"@benev/batch": "^0.0.0",
-		"@benev/turtle": "^0.6.0-5",
+		"@benev/turtle": "^0.6.0-6",
 		"chokidar": "^3.6.0",
 		"chokidar-cli": "^3.0.0",
 		"http-server": "^14.1.1",
