@@ -1,11 +1,14 @@
 
-import {Orchestrator} from "@benev/toolbox/x/ui/orchestrator/exports.js"
+import {html, nap} from "@benev/slate"
+import {Orchestrator, orchestratorStyles, OrchestratorView} from "@benev/toolbox/x/ui/orchestrator/exports.js"
 
 import {nexus} from "../../nexus.js"
+import {freeplayFlow} from "../../../game/flows/freeplay.js"
 import {detectInputMethod} from "../../utils/input-method.js"
 import {MainMenuView} from "../../views/exhibits/main-menu.js"
 import {IntroPageView} from "../../views/exhibits/intro-page.js"
 import {LogoSplashView} from "../../views/loading-screens/logo-splash.js"
+import { GameplayView } from "../../views/exhibits/gameplay.js"
 
 export const GameApp = nexus.lightComponent(use => {
 
@@ -16,7 +19,7 @@ export const GameApp = nexus.lightComponent(use => {
 	const orchestrator = use.once(() => {
 		const intro = Orchestrator.makeExhibit({
 			dispose: () => {},
-			template: IntroPageView([{
+			template: () => IntroPageView([{
 				goMainMenu: () => goExhibit.mainMenu()
 			}]),
 		})
@@ -40,7 +43,7 @@ export const GameApp = nexus.lightComponent(use => {
 			mainMenu: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
 				return {
 					dispose: () => {},
-					template: MainMenuView([{
+					template: () => MainMenuView([{
 						goIntro: () => goExhibit.intro(),
 						goEditor: () => goExhibit.mapEditor(),
 					}]),
@@ -53,17 +56,29 @@ export const GameApp = nexus.lightComponent(use => {
 				const editorCore = await EditorCore.load(window)
 				return {
 					dispose: () => editorCore.dispose(),
-					template: MapEditorView([editorCore]),
+					template: () => MapEditorView([editorCore]),
+				}
+			}),
+
+			gameplay: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
+				const {freeplayFlow} = await import("../../../game/flows/freeplay.js")
+				const {world, dispose} = await freeplayFlow()
+				return {
+					dispose,
+					template: () => GameplayView([world]),
 				}
 			}),
 		}
 
 		// TODO remove hack to skip menus
-		goExhibit.mapEditor()
+		goExhibit.gameplay()
 
 		return orchestrator
 	})
 
-	return Orchestrator.render(orchestrator)
+	return html`
+		${OrchestratorView(orchestrator)}
+		<style>${orchestratorStyles}</style>
+	`
 })
 
