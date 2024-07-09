@@ -1,6 +1,6 @@
 
 import {Scene} from "@babylonjs/core"
-import {Iron, AnyEngine, CanvasScaler, Gameloop, Rendering} from "@benev/toolbox"
+import {Iron, AnyEngine, CanvasScaler, Gameloop, Rendering, loadGlb} from "@benev/toolbox"
 
 export class World {
 	static load = async() => {
@@ -52,5 +52,9 @@ export class World {
 		public readonly rendering: Rendering,
 		public readonly dispose: () => void,
 	) {}
+
+	async loadGlb(url: string) {
+		return await loadGlb(this.scene, url)
+	}
 }
 

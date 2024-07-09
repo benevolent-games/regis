@@ -1,10 +1,52 @@
 
+import {babyloid, make_envmap, Meshoid, Prop} from "@benev/toolbox"
+import {ArcRotateCamera, DirectionalLight, PBRMaterial, TransformNode, Vector3} from "@babylonjs/core"
+
 import {World} from "../world/world.js"
-import {ArcRotateCamera, DirectionalLight, HemisphericLight, MeshBuilder, PBRMaterial, StandardMaterial, Vector3} from "@babylonjs/core"
 
 export async function freeplayFlow() {
+
 	const world = await World.load()
 	const {scene} = world
+
+	const glb = await world.loadGlb("/assets/nightchess.glb")
+
+	const envmap = make_envmap(scene, "/assets/studiolights.env")
+	scene.environmentIntensity = 0.1
+
+	const {props, materials, meshes} = (() => {
+		const insta = glb.instantiateModelsToScene(n => n)
+		const props = new Map<string, Prop>()
+		const meshes = new Map<string, Meshoid>()
+		const materials = new Map<string, PBRMaterial>()
+
+		for (const material of glb.materials)
+			if (material instanceof PBRMaterial)
+				materials.set(material.name, material)
+
+		for (const root of insta.rootNodes) {
+			root
+				.getChildren(babyloid.is.meshoid, false)
+				.forEach(mesh => {
+					meshes.set(mesh.name, mesh)
+					if (!mesh.name.includes("_primitive"))
+						props.set(mesh.name, mesh)
+				})
+			root
+				.getChildren((n): n is TransformNode => n instanceof TransformNode, false)
+				.forEach(transform => props.set(transform.name, transform))
+		}
+
+		return {props, meshes, materials}
+	})()
+
+	console.log("props", [...props.values()].map(m => m.name))
+	console.log("meshes", [...meshes.values()].map(m => m.name))
+
+	// for (const mesh of meshes.values()) {
+	// 	console.log(mesh.name)
+	// 	mesh.isVisible = false
+	// }
 
 	const orbitcam = (() => {
 		const name = "name"
@@ -17,30 +59,13 @@ export async function freeplayFlow() {
 
 	world.rendering.setCamera(orbitcam)
 
-	const box = MeshBuilder.CreateBox("box", {
-		width: 2,
-		height: 1,
-		depth: 2,
-	}, scene)
-
-	const material = new StandardMaterial("mat", scene)
-	material.diffuseColor.set(.8, .8, .8)
-	box.material = material
-
 	const sun = new DirectionalLight(
 		"sun",
 		new Vector3(.123, -1, .234).normalize(),
 		scene,
 	)
 
-	const hemi = new HemisphericLight(
-		"hemi",
-		new Vector3(.25, -1, .15).normalize(),
-		scene,
-	)
-
-	sun.intensity = 2
-	hemi.intensity = 2
+	sun.intensity = .2
 
 	world.gameloop.on(() => {
 		orbitcam.alpha += 0.01
@@ -52,10 +77,11 @@ export async function freeplayFlow() {
 	return {
 		world,
 		orbitcam,
-		box,
 		sun,
-		hemi,
-		dispose: () => world.dispose(),
+		dispose: () => {
+			envmap.dispose()
+			world.dispose()
+		},
 	}
 }
 
