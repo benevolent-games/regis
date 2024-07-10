@@ -1,5 +1,6 @@
 
 import {molasses2d, scalar, Vec2} from "@benev/toolbox"
+import {PointerCaptor} from "../../tools/pointer-captor.js"
 import {ArcRotateCamera, Scene, Vector3} from "@babylonjs/core"
 
 const {degrees} = scalar.radians.from
@@ -64,9 +65,17 @@ export class Orbitcam {
 		)
 	}
 
+	#pointerCaptor = new PointerCaptor()
+
+	#cancel = () => {
+		this.#down = false
+		this.#pointerCaptor.release()
+	}
+
 	events = {
-		pointerdown: (_event: PointerEvent) => {
+		pointerdown: (event: PointerEvent) => {
 			this.#down = true
+			this.#pointerCaptor.capture(event)
 		},
 
 		pointermove: (event: PointerEvent) => {
@@ -79,17 +88,9 @@ export class Orbitcam {
 			}
 		},
 
-		pointerup: (_event: PointerEvent) => {
-			this.#down = false
-		},
-
-		blur: () => {
-			this.#down = false
-		},
-
-		pointerleave: () => {
-			this.#down = false
-		},
+		pointerleave: this.#cancel,
+		pointerup: this.#cancel,
+		blur: this.#cancel,
 	}
 }
 
