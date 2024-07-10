@@ -1,9 +1,13 @@
 
-import {make_envmap} from "@benev/toolbox"
-import {ArcRotateCamera, DirectionalLight, Vector3} from "@babylonjs/core"
+import {ev} from "@benev/slate"
+import {make_envmap, scalar} from "@benev/toolbox"
+import {DirectionalLight, Vector3} from "@babylonjs/core"
 
 import {World} from "../world/world.js"
 import {Stuff} from "../../tools/stuff.js"
+import {Orbitcam} from "../orbitcam/orbitcam.js"
+
+const {degrees} = scalar.radians.from
 
 export async function freeplayFlow() {
 
@@ -20,17 +24,18 @@ export async function freeplayFlow() {
 	console.log("meshes", [...stuff.meshes.values()].map(m => m.name))
 
 	stuff.instanceProp("pawn")
+	stuff.instanceProp("border8x8")
 
-	const orbitcam = (() => {
-		const name = "name"
-		const alpha = 0
-		const beta = Math.PI * (1 / 3)
-		const radius = 20
-		const target = new Vector3(0, 0, 0)
-		return new ArcRotateCamera(name, alpha, beta, radius, target, scene)
-	})()
-
-	world.rendering.setCamera(orbitcam)
+	const orbitcam = new Orbitcam({
+		scene,
+		sensitivity: 1 / 100,
+		smoothing: 5,
+		verticalRange: [degrees(0), degrees(70)],
+		verticalRadii: [30, 5],
+	})
+	world.rendering.setCamera(orbitcam.camera)
+	const unbindOrbitControls = ev(world.canvas, orbitcam.events)
+	const stopOrbitTick = world.gameloop.on(orbitcam.tick)
 
 	const sun = new DirectionalLight(
 		"sun",
@@ -39,12 +44,6 @@ export async function freeplayFlow() {
 	)
 
 	sun.intensity = .2
-
-	world.gameloop.on(() => {
-		orbitcam.alpha += 0.01
-		return () => {}
-	})
-
 	world.gameloop.start()
 
 	return {
@@ -54,6 +53,9 @@ export async function freeplayFlow() {
 		dispose: () => {
 			envmap.dispose()
 			world.dispose()
+			stopOrbitTick()
+			unbindOrbitControls()
+			orbitcam.dispose()
 		},
 	}
 }
