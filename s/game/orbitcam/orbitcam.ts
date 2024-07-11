@@ -1,5 +1,5 @@
 
-import {molasses2d, scalar, spline, Vec2} from "@benev/toolbox"
+import {molasses2d, molasses3d, scalar, spline, Vec2, Vec3} from "@benev/toolbox"
 import {ArcRotateCamera, Scene, Vector3} from "@babylonjs/core"
 
 import {PointerCaptor} from "../../tools/pointer-captor.js"
@@ -19,15 +19,19 @@ export class Orbitcam {
 	dispose: () => void
 
 	#down = false
+
 	#gimbal: Vec2 = [0, 0]
-	#smoothedGimbal: Vec2 = [0, 0]
+	#smoothedGimbal = this.#gimbal
+
+	pivot: Vec3 = [0, 1, 0]
+	#smoothedPivot = this.pivot
 
 	constructor(private options: Options) {
 		const name = "orbitcam"
 		const alpha = 0
 		const beta = 0
 		const radius = 20
-		const target = new Vector3(0, 1, 0)
+		const target = new Vector3(...this.#smoothedPivot)
 		this.camera = new ArcRotateCamera(name, alpha, beta, radius, target, options.scene)
 		this.dispose = () => this.camera.dispose()
 		this.gimbal = [0, degrees(45)]
@@ -47,20 +51,31 @@ export class Orbitcam {
 		]
 	}
 
-	tick = () => {
+	#applySmoothGimbal() {
 		this.#smoothedGimbal = molasses2d(
 			this.options.smoothing,
 			this.#smoothedGimbal,
 			this.#gimbal,
 		)
-		this.#setCameraToGimbal(this.#smoothedGimbal)
-	}
-
-	#setCameraToGimbal([x, y]: Vec2) {
+		const [x, y] = this.#smoothedGimbal
 		this.camera.alpha = x
 		this.camera.beta = y
 		const verticalProgress = scalar.remap(y, this.options.verticalRange)
 		this.camera.radius = spline.ez.linear(verticalProgress, this.options.zoomSpline)
+	}
+
+	#applySmoothPivot() {
+		this.#smoothedPivot = molasses3d(
+			this.options.smoothing,
+			this.#smoothedPivot,
+			this.pivot,
+		)
+		this.camera.target.set(...this.#smoothedPivot)
+	}
+
+	tick = () => {
+		this.#applySmoothGimbal()
+		this.#applySmoothPivot()
 	}
 
 	#pointerCaptor = new PointerCaptor()

@@ -72,12 +72,11 @@ export async function freeplayFlow() {
 	const stopOrbitTick = world.gameloop.on(orbitcam.tick)
 
 	selectacon.onSelected(selected => {
-		const position = board.localize(
+		orbitcam.pivot = board.localize(
 			selected
 				? selected.place
 				: Place.coords(0, 0)
 		)
-		orbitcam.camera.target.set(...position)
 	})
 	selectacon.select(new Place([3, 3]))
 
