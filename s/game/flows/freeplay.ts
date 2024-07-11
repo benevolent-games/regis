@@ -63,13 +63,10 @@ export async function freeplayFlow() {
 	const orbitcam = new Orbitcam({
 		scene,
 		smoothing: 10,
-		sensitivity: 5 / 1000,
+		orbitSensitivity: 5 / 1000,
 		verticalRange: [degrees(0), degrees(70)],
-		zoom: vertical => spline.linear(vertical, [
-			[0 / 10, 30],
-			[9 / 10, 20],
-			[10 / 10, 8],
-		]),
+		zoomRange: [3, 30],
+		zoomSensitivity: 1 / 10,
 	})
 	world.rendering.setCamera(orbitcam.camera)
 	const unbindOrbitControls = ev(world.canvas, orbitcam.events)

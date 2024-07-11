@@ -1,17 +1,19 @@
 
-import {molasses2d, molasses3d, scalar, spline, Vec2, Vec3} from "@benev/toolbox"
 import {ArcRotateCamera, Scene, Vector3} from "@babylonjs/core"
+import {molasses2d, molasses3d, scalar, Vec2, Vec3} from "@benev/toolbox"
 
 import {PointerCaptor} from "../../tools/pointer-captor.js"
+import { Smoothie } from "../../tools/smoothie.js"
 
 const {degrees} = scalar.radians.from
 
 type Options = {
 	scene: Scene
-	sensitivity: number
 	smoothing: number
 	verticalRange: Vec2
-	zoom: (vertical: number) => number
+	orbitSensitivity: number
+	zoomRange: Vec2
+	zoomSensitivity: number
 }
 
 export class Orbitcam {
@@ -26,11 +28,13 @@ export class Orbitcam {
 	pivot: Vec3 = [0, 1, 0]
 	#smoothedPivot = this.pivot
 
+	zoom = new Smoothie(10, 30)
+
 	constructor(private options: Options) {
 		const name = "orbitcam"
 		const alpha = 0
 		const beta = 0
-		const radius = 20
+		const radius = this.zoom.smoothed
 		const target = new Vector3(...this.#smoothedPivot)
 		this.camera = new ArcRotateCamera(name, alpha, beta, radius, target, options.scene)
 		this.dispose = () => this.camera.dispose()
@@ -51,9 +55,19 @@ export class Orbitcam {
 		]
 	}
 
-	get verticalProgress() {
+	get topdownness() {
 		const [,y] = this.#smoothedGimbal
-		return scalar.remap(y, this.options.verticalRange)
+		return scalar.inverse(
+			scalar.remap(y, this.options.verticalRange)
+		)
+	}
+
+	get zoomedoutness() {
+		return scalar.remap(this.zoom.smoothed, this.options.zoomRange)
+	}
+
+	#applyZoom() {
+		this.camera.radius = this.zoom.tick()
 	}
 
 	#applySmoothGimbal() {
@@ -65,7 +79,6 @@ export class Orbitcam {
 		const [x, y] = this.#smoothedGimbal
 		this.camera.alpha = x
 		this.camera.beta = y
-		this.camera.radius = this.options.zoom(this.verticalProgress)
 	}
 
 	#applySmoothPivot() {
@@ -75,17 +88,19 @@ export class Orbitcam {
 			this.pivot,
 		)
 		const zeroed: Vec3 = [0, 0, 0]
-		const {verticalProgress} = this
+		const centeredness = this.topdownness * this.zoomedoutness
+		console.log("z", this.zoomedoutness.toFixed(2))
 		this.camera.target.set(
-			scalar.map(verticalProgress, [zeroed[0], realpivot[0]]),
-			scalar.map(verticalProgress, [zeroed[1], realpivot[1]]),
-			scalar.map(verticalProgress, [zeroed[2], realpivot[2]]),
+			scalar.map(centeredness, [realpivot[0], zeroed[0]]),
+			scalar.map(centeredness, [realpivot[1], zeroed[1]]),
+			scalar.map(centeredness, [realpivot[2], zeroed[2]]),
 		)
 	}
 
 	tick = () => {
 		this.#applySmoothGimbal()
 		this.#applySmoothPivot()
+		this.#applyZoom()
 	}
 
 	#pointerCaptor = new PointerCaptor()
@@ -96,6 +111,11 @@ export class Orbitcam {
 	}
 
 	events = {
+		wheel: (event: WheelEvent) => {
+			this.zoom.target += event.deltaY * this.options.zoomSensitivity
+			this.zoom.target = scalar.clamp(this.zoom.target, ...this.options.zoomRange)
+		},
+
 		pointerdown: (event: PointerEvent) => {
 			if (event.button === 2) {
 				this.#down = true
@@ -107,8 +127,8 @@ export class Orbitcam {
 			if (this.#down) {
 				const [x, y] = this.gimbal
 				this.gimbal = [
-					x + (event.movementX * this.options.sensitivity),
-					y - (event.movementY * this.options.sensitivity),
+					x + (event.movementX * this.options.orbitSensitivity),
+					y - (event.movementY * this.options.orbitSensitivity),
 				]
 			}
 		},
