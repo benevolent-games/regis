@@ -14,11 +14,11 @@ export class World {
 				preserveDrawingBuffer: false,
 				powerPreference: "high-performance",
 			},
-			webgpu: {
-				antialias: true,
-				audioEngine: true,
-				powerPreference: "high-performance",
-			},
+			// webgpu: {
+			// 	antialias: true,
+			// 	audioEngine: true,
+			// 	powerPreference: "high-performance",
+			// },
 		})
 
 		const scaler = Iron.canvasScaler(canvas)
