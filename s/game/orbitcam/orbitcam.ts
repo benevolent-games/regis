@@ -51,6 +51,11 @@ export class Orbitcam {
 		]
 	}
 
+	get verticalProgress() {
+		const [,y] = this.#smoothedGimbal
+		return scalar.remap(y, this.options.verticalRange)
+	}
+
 	#applySmoothGimbal() {
 		this.#smoothedGimbal = molasses2d(
 			this.options.smoothing,
@@ -60,17 +65,25 @@ export class Orbitcam {
 		const [x, y] = this.#smoothedGimbal
 		this.camera.alpha = x
 		this.camera.beta = y
-		const verticalProgress = scalar.remap(y, this.options.verticalRange)
-		this.camera.radius = spline.ez.linear(verticalProgress, this.options.zoomSpline)
+		this.camera.radius = spline.ez.linear(
+			this.verticalProgress,
+			this.options.zoomSpline,
+		)
 	}
 
 	#applySmoothPivot() {
-		this.#smoothedPivot = molasses3d(
+		const realpivot = this.#smoothedPivot = molasses3d(
 			this.options.smoothing,
 			this.#smoothedPivot,
 			this.pivot,
 		)
-		this.camera.target.set(...this.#smoothedPivot)
+		const zeroed: Vec3 = [0, 0, 0]
+		const {verticalProgress} = this
+		this.camera.target.set(
+			scalar.map(verticalProgress, [zeroed[0], realpivot[0]]),
+			scalar.map(verticalProgress, [zeroed[1], realpivot[1]]),
+			scalar.map(verticalProgress, [zeroed[2], realpivot[2]]),
+		)
 	}
 
 	tick = () => {

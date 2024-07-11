@@ -1,6 +1,6 @@
 
 import {ev} from "@benev/slate"
-import {make_envmap, scalar} from "@benev/toolbox"
+import {make_envmap, scalar, vec3} from "@benev/toolbox"
 import {DirectionalLight, Vector3} from "@babylonjs/core"
 
 import {World} from "../world/world.js"
@@ -72,11 +72,12 @@ export async function freeplayFlow() {
 	const stopOrbitTick = world.gameloop.on(orbitcam.tick)
 
 	selectacon.onSelected(selected => {
-		orbitcam.pivot = board.localize(
+		const raised = 0
+		orbitcam.pivot = vec3.add(board.localize(
 			selected
 				? selected.place
-				: Place.coords(0, 0)
-		)
+				: Place.coords(0, 0),
+		), [0, raised, 0])
 	})
 	selectacon.select(new Place([3, 3]))
 
