@@ -1,7 +1,8 @@
 
-import {molasses2d, scalar, Vec2} from "@benev/toolbox"
-import {PointerCaptor} from "../../tools/pointer-captor.js"
+import {molasses2d, scalar, spline, Vec2} from "@benev/toolbox"
 import {ArcRotateCamera, Scene, Vector3} from "@babylonjs/core"
+
+import {PointerCaptor} from "../../tools/pointer-captor.js"
 
 const {degrees} = scalar.radians.from
 
@@ -10,7 +11,7 @@ type Options = {
 	sensitivity: number
 	smoothing: number
 	verticalRange: Vec2
-	verticalRadii: Vec2
+	zoomSpline: number[]
 }
 
 export class Orbitcam {
@@ -58,11 +59,8 @@ export class Orbitcam {
 	#setCameraToGimbal([x, y]: Vec2) {
 		this.camera.alpha = x
 		this.camera.beta = y
-		this.camera.radius = scalar.remap(
-			y,
-			this.options.verticalRange,
-			this.options.verticalRadii,
-		)
+		const verticalProgress = scalar.remap(y, this.options.verticalRange)
+		this.camera.radius = spline.ez.linear(verticalProgress, this.options.zoomSpline)
 	}
 
 	#pointerCaptor = new PointerCaptor()
