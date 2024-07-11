@@ -1,8 +1,16 @@
 
+import { pubsub } from "@benev/slate"
 import {loop2d, Vec2} from "@benev/toolbox"
 
 /** location coordinates for a spot on the chess board */
 export class Place {
+	static coords(file: number, rank: number) {
+		return new this([file, rank])
+	}
+
+	static at({rank, file}: {rank: number, file: number}) {
+		return new this([file, rank])
+	}
 
 	/** corresponds to worldZ */
 	rank = 0
@@ -80,6 +88,28 @@ export class Placements {
 			this.#map.delete(existing)
 		else
 			this.#map.set(unit, place)
+	}
+}
+
+type Selectoid = {
+	place: Place
+	tile: Tile
+	unit: Unit | undefined
+}
+
+export class Selectacon {
+	selected: Selectoid | undefined
+	onSelected = pubsub<[Selectoid | undefined]>()
+
+	constructor(private grid: Grid, private placements: Placements) {}
+
+	select(place: Place) {
+		const tile = this.grid.at(place)
+		const unit = this.placements.at(place)
+		const selected = {place, tile, unit}
+		this.selected = selected
+		this.onSelected.publish(selected)
+		return selected
 	}
 }
 

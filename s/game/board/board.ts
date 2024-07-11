@@ -2,10 +2,11 @@
 import {vec2, Vec3} from "@benev/toolbox"
 import {Constructor} from "@benev/slate"
 import {TransformNode} from "@babylonjs/core"
-import {Grid, Place, Placements, Tile, Unit} from "../concepts.js"
+import {Grid, Place, Placements, Selectacon, Tile, Unit} from "../concepts.js"
 
 type Options = {
 	grid: Grid
+	selectacon: Selectacon
 	placements: Placements
 	unitInstancers: Map<Constructor<Unit>, () => TransformNode>
 	blocks: {

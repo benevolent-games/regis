@@ -7,7 +7,7 @@ import {World} from "../world/world.js"
 import {Board} from "../board/board.js"
 import {Stuff} from "../../tools/stuff.js"
 import {Orbitcam} from "../orbitcam/orbitcam.js"
-import {Bishop, Grid, King, Knight, Pawn, Place, Placements, Queen, Rook} from "../concepts.js"
+import {Bishop, Grid, King, Knight, Pawn, Place, Placements, Queen, Rook, Selectacon} from "../concepts.js"
 
 const {degrees} = scalar.radians.from
 
@@ -28,8 +28,10 @@ export async function freeplayFlow() {
 	stuff.instanceProp("border8x8")
 	const grid = new Grid()
 	const placements = new Placements()
+	const selectacon = new Selectacon(grid, placements)
 	const board = new Board({
 		grid,
+		selectacon,
 		placements,
 		blocks: {
 			size: 2,
@@ -68,6 +70,16 @@ export async function freeplayFlow() {
 	world.rendering.setCamera(orbitcam.camera)
 	const unbindOrbitControls = ev(world.canvas, orbitcam.events)
 	const stopOrbitTick = world.gameloop.on(orbitcam.tick)
+
+	selectacon.onSelected(selected => {
+		const position = board.localize(
+			selected
+				? selected.place
+				: Place.coords(0, 0)
+		)
+		orbitcam.camera.target.set(...position)
+	})
+	selectacon.select(new Place([3, 3]))
 
 	const sun = new DirectionalLight(
 		"sun",
