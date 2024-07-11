@@ -87,8 +87,10 @@ export class Orbitcam {
 
 	events = {
 		pointerdown: (event: PointerEvent) => {
-			this.#down = true
-			this.#pointerCaptor.capture(event)
+			if (event.button === 2) {
+				this.#down = true
+				this.#pointerCaptor.capture(event)
+			}
 		},
 
 		pointermove: (event: PointerEvent) => {

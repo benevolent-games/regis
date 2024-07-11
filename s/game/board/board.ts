@@ -1,7 +1,7 @@
 
-import {vec2, Vec3} from "@benev/toolbox"
 import {Constructor} from "@benev/slate"
-import {TransformNode} from "@babylonjs/core"
+import {vec2, Vec3} from "@benev/toolbox"
+import {AbstractMesh, TransformNode} from "@babylonjs/core"
 import {Grid, Place, Placements, Selectacon, Tile, Unit} from "../concepts.js"
 
 type Options = {
@@ -18,6 +18,8 @@ type Options = {
 
 export class Board {
 	#instances: TransformNode[] = []
+	#blocks = new Map<AbstractMesh, Place>()
+
 	constructor(private options: Options) {}
 
 	/** convert a grid place to a 3d world position */
@@ -39,6 +41,8 @@ export class Board {
 			const worldY = level * blocks.height
 			instance.position.set(worldX, worldY, worldZ)
 			this.#instances.push(instance)
+			for (const mesh of instance.getChildMeshes())
+				this.#blocks.set(mesh, place)
 		}
 
 		if (tile.elevation >= 0)
@@ -60,12 +64,6 @@ export class Board {
 		this.#instances.push(instance)
 	}
 
-	dispose() {
-		for (const instance of this.#instances)
-			instance.dispose()
-		this.#instances = []
-	}
-
 	render() {
 		const {grid, placements} = this.options
 		this.dispose()
@@ -75,6 +73,21 @@ export class Board {
 
 		for (const {unit, place} of placements.loop())
 			this.#spawnUnit(unit, place)
+	}
+
+	isPickable(mesh: AbstractMesh) {
+		return this.#blocks.has(mesh)
+	}
+
+	pick(mesh: AbstractMesh) {
+		return this.#blocks.get(mesh)!
+	}
+
+	dispose() {
+		for (const instance of this.#instances)
+			instance.dispose()
+		this.#instances = []
+		this.#blocks.clear()
 	}
 }
 

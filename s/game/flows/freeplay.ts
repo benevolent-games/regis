@@ -80,6 +80,22 @@ export async function freeplayFlow() {
 	})
 	selectacon.select(new Place([3, 3]))
 
+	const unbindSelectyClicks = ev(world.canvas, {
+		pointerdown: (event: PointerEvent) => {
+			if (event.button === 0) {
+				const {pickedMesh} = scene.pick(
+					event.clientX,
+					event.clientY,
+					mesh => board.isPickable(mesh)
+				)
+				if (pickedMesh) {
+					const place = board.pick(pickedMesh)
+					selectacon.select(place)
+				}
+			}
+		}
+	})
+
 	const sun = new DirectionalLight(
 		"sun",
 		new Vector3(.123, -1, .234).normalize(),
@@ -96,6 +112,7 @@ export async function freeplayFlow() {
 		dispose: () => {
 			envmap.dispose()
 			world.dispose()
+			unbindSelectyClicks()
 			stopOrbitTick()
 			unbindOrbitControls()
 			orbitcam.dispose()
