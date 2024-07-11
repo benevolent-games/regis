@@ -11,7 +11,7 @@ type Options = {
 	sensitivity: number
 	smoothing: number
 	verticalRange: Vec2
-	zoomSpline: number[]
+	zoom: (vertical: number) => number
 }
 
 export class Orbitcam {
@@ -65,10 +65,7 @@ export class Orbitcam {
 		const [x, y] = this.#smoothedGimbal
 		this.camera.alpha = x
 		this.camera.beta = y
-		this.camera.radius = spline.ez.linear(
-			this.verticalProgress,
-			this.options.zoomSpline,
-		)
+		this.camera.radius = this.options.zoom(this.verticalProgress)
 	}
 
 	#applySmoothPivot() {

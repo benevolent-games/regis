@@ -1,6 +1,6 @@
 
 import {ev} from "@benev/slate"
-import {make_envmap, scalar, vec3} from "@benev/toolbox"
+import {make_envmap, scalar, spline, vec3} from "@benev/toolbox"
 import {DirectionalLight, Vector3} from "@babylonjs/core"
 
 import {World} from "../world/world.js"
@@ -62,10 +62,14 @@ export async function freeplayFlow() {
 
 	const orbitcam = new Orbitcam({
 		scene,
-		smoothing: 3,
+		smoothing: 10,
 		sensitivity: 5 / 1000,
-		zoomSpline: [30, 30, 20, 5],
-		verticalRange: [degrees(0), degrees(60)],
+		verticalRange: [degrees(0), degrees(70)],
+		zoom: vertical => spline.linear(vertical, [
+			[0 / 10, 30],
+			[9 / 10, 20],
+			[10 / 10, 8],
+		]),
 	})
 	world.rendering.setCamera(orbitcam.camera)
 	const unbindOrbitControls = ev(world.canvas, orbitcam.events)
