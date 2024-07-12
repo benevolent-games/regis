@@ -5,7 +5,7 @@ import {DirectionalLight, Vector3} from "@babylonjs/core"
 import {make_envmap, scalar, Vec3, vec3, Vec2} from "@benev/toolbox"
 
 import {World} from "../world/world.js"
-import {Board} from "../board/board.js"
+import {BlockInstancers, Board} from "../board/board.js"
 import * as maps from "../ascii/maps.js"
 import {Stuff} from "../../tools/stuff.js"
 import {Orbitcam} from "../orbitcam/orbitcam.js"
@@ -33,6 +33,12 @@ export async function freeplayFlow() {
 	const placements = new Placements()
 	const properSelectacon = new Selectacon(grid, placements)
 	const cameraSelectacon = new Selectacon(grid, placements)
+	const blockInstancers = (name: string): BlockInstancers => ({
+		normal: () => stuff.instanceProp(`${name}`),
+		vision: () => stuff.instanceProp(`${name}-vision`),
+		hover: () => stuff.instanceProp(`${name}-hover`),
+		selected: () => stuff.instanceProp(`${name}-selected`),
+	})
 	const board = new Board({
 		grid,
 		properSelectacon: properSelectacon,
@@ -40,11 +46,17 @@ export async function freeplayFlow() {
 		blocks: {
 			size: 2,
 			height: 1,
-			instancers: [
-				() => stuff.instanceProp("block1"),
-				() => stuff.instanceProp("block2"),
-				() => stuff.instanceProp("block3"),
-			],
+			instancers: {
+				box: {
+					levelOne: blockInstancers("block1"),
+					levelTwo: blockInstancers("block2"),
+					levelThree: blockInstancers("block3"),
+				},
+				ramp: {
+					levelTwo: blockInstancers("ramp2"),
+					levelThree: blockInstancers("ramp3"),
+				},
+			},
 		},
 		unitInstancers: (new Map()
 			.set(King, () => stuff.instanceProp("unit-king"))

@@ -1,8 +1,15 @@
 
 import {Constructor} from "@benev/slate"
 import {scalar, vec2, Vec3} from "@benev/toolbox"
-import {AbstractMesh, TransformNode} from "@babylonjs/core"
-import {Grid, Place, Placements, Selectacon, Tile, Unit} from "../concepts.js"
+import {AbstractMesh, Quaternion, TransformNode} from "@babylonjs/core"
+import {Grid, Place, Placements, Ramp, Selectacon, Tile, Unit} from "../concepts.js"
+
+export type BlockInstancers = {
+	normal: () => TransformNode
+	vision: () => TransformNode
+	hover: () => TransformNode
+	selected: () => TransformNode
+}
 
 type Options = {
 	grid: Grid
@@ -12,7 +19,17 @@ type Options = {
 	blocks: {
 		size: number
 		height: number
-		instancers: (() => TransformNode)[]
+		instancers: {
+			box: {
+				levelOne: BlockInstancers
+				levelTwo: BlockInstancers
+				levelThree: BlockInstancers
+			}
+			ramp: {
+				levelTwo: BlockInstancers
+				levelThree: BlockInstancers
+			}
+		}
 	}
 }
 
@@ -66,8 +83,8 @@ export class Board {
 
 	#spawnTile(tile: Tile, place: Place) {
 		const {blocks} = this.options
-		const spawnBlock = (level: number) => {
-			const instance = blocks.instancers[level - 1]()
+
+		const ingestInstance = (level: number, instance: TransformNode) => {
 			const [worldX,,worldZ] = this.localize(place)
 			const worldY = (level - 1) * blocks.height
 			instance.position.set(worldX, worldY, worldZ)
@@ -76,14 +93,46 @@ export class Board {
 				this.#blocks.set(mesh, place)
 		}
 
-		if (tile.elevation >= 1)
+		const spawnBlock = (level: number) => {
+			const instance = (
+				level === 1 ? blocks.instancers.box.levelOne.normal() :
+				level === 2 ? blocks.instancers.box.levelTwo.normal() :
+				blocks.instancers.box.levelThree.normal()
+			)
+			ingestInstance(level, instance)
+		}
+
+		const spawnRamp = (level: number) => {
+			const instance = level === 2
+				? blocks.instancers.ramp.levelTwo.normal()
+				: blocks.instancers.ramp.levelThree.normal()
+			const rotation = (
+				tile.ramp === "north" ? -90 :
+				tile.ramp === "east" ? -180 :
+				tile.ramp === "south" ? 90 :
+				0
+			)
+			instance.rotationQuaternion = Quaternion.RotationYawPitchRoll(
+				scalar.radians.from.degrees(rotation),
+				0,
+				0,
+			)
+			ingestInstance(level, instance)
+		}
+
+		// spawn blocks underneath
+		if (tile.elevation > 1)
 			spawnBlock(1)
-
-		if (tile.elevation >= 2)
+		if (tile.elevation > 2)
 			spawnBlock(2)
-
-		if (tile.elevation >= 3)
+		if (tile.elevation > 3)
 			spawnBlock(3)
+
+		// spawn block on top
+		if (tile.ramp)
+			spawnRamp(tile.elevation)
+		else
+			spawnBlock(tile.elevation)
 	}
 
 	#spawnUnit(unit: Unit, place: Place) {
