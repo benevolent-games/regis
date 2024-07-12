@@ -1,6 +1,6 @@
 
 import {pubsub} from "@benev/slate"
-import {loop2d, Vec2} from "@benev/toolbox"
+import {loop2d, scalar, Vec2} from "@benev/toolbox"
 
 /** location coordinates for a spot on the chess board */
 export class Place {
@@ -35,9 +35,16 @@ export class Place {
 	}
 }
 
+export type Elevation = 1 | 2 | 3
+export type Ramp = "north" | "east" | "south" | "west"
+
 /** information about a tile on the board */
 export class Tile {
-	elevation = 0
+	elevation: Elevation = 1
+	resource = false
+	obstacle = false
+	tower = false
+	ramp: Ramp | null = null
 }
 
 /** data structure to hold all tiles on the board */
@@ -45,7 +52,17 @@ export class Grid {
 	extent: Vec2 = [8, 8]
 	#array = [...loop2d(this.extent)].map(() => new Tile())
 
-	at({rank, file}: Place) {
+	#valid({rank, file}: Place) {
+		return (
+			scalar.within(file, 0, this.extent[0] - 1) &&
+			scalar.within(rank, 0, this.extent[1] - 1)
+		)
+	}
+
+	at(place: Place) {
+		const {rank, file} = place
+		if (!this.#valid(place))
+			throw new Error(`invalid ascii map, rank ${rank}x${file} is not on the grid`)
 		const index = (rank * this.extent[0]) + file
 		const tile = this.#array[index]
 		if (!tile) throw new Error(`tile not found`)
@@ -60,7 +77,12 @@ export class Grid {
 	}
 }
 
-export abstract class Unit {}
+export type Team = 1 | 2
+
+export abstract class Unit {
+	constructor(public team: Team = 1) {}
+}
+
 export class King extends Unit {}
 export class Queen extends Unit {}
 export class Bishop extends Unit {}

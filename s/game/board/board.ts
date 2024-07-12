@@ -28,7 +28,7 @@ export class Board {
 		const tile = grid.at(place)
 		const [offsetX, offsetZ] = vec2.divideBy(grid.extent, 2)
 		const worldX = (place.file - offsetX + 0.5) * blocks.size
-		const worldY = (tile.elevation * blocks.height) + 1
+		const worldY = tile.elevation * blocks.height
 		const worldZ = (place.rank - offsetZ + 0.5) * blocks.size
 		return [worldX, worldY, worldZ] as Vec3
 	}
@@ -67,23 +67,23 @@ export class Board {
 	#spawnTile(tile: Tile, place: Place) {
 		const {blocks} = this.options
 		const spawnBlock = (level: number) => {
-			const instance = blocks.instancers[level]()
+			const instance = blocks.instancers[level - 1]()
 			const [worldX,,worldZ] = this.localize(place)
-			const worldY = level * blocks.height
+			const worldY = (level - 1) * blocks.height
 			instance.position.set(worldX, worldY, worldZ)
 			this.#instances.push(instance)
 			for (const mesh of instance.getChildMeshes())
 				this.#blocks.set(mesh, place)
 		}
 
-		if (tile.elevation >= 0)
-			spawnBlock(0)
-
 		if (tile.elevation >= 1)
 			spawnBlock(1)
 
 		if (tile.elevation >= 2)
 			spawnBlock(2)
+
+		if (tile.elevation >= 3)
+			spawnBlock(3)
 	}
 
 	#spawnUnit(unit: Unit, place: Place) {

@@ -1,24 +1,25 @@
 
+import {vec2} from "@benev/toolbox"
 import {ev, Pipe} from "@benev/slate"
 import {DirectionalLight, Vector3} from "@babylonjs/core"
-import {make_envmap, scalar, Vec3, vec3, quat, Vec2} from "@benev/toolbox"
+import {make_envmap, scalar, Vec3, vec3, Vec2} from "@benev/toolbox"
 
 import {World} from "../world/world.js"
 import {Board} from "../board/board.js"
+import * as maps from "../ascii/maps.js"
 import {Stuff} from "../../tools/stuff.js"
 import {Orbitcam} from "../orbitcam/orbitcam.js"
 import {DragQueen} from "../../tools/drag-queen.js"
+import {parseAsciiMap} from "../ascii/parse-ascii-map.js"
 import {Bishop, Grid, King, Knight, Pawn, Place, Placements, Queen, Rook, Selectacon} from "../concepts.js"
-import { vec2 } from "@benev/toolbox"
 
 const {degrees} = scalar.radians.from
 
 export async function freeplayFlow() {
-
 	const world = await World.load()
 	const {scene} = world
 
-	const glb = await world.loadGlb("/assets/nightchess.glb")
+	const glb = await world.loadGlb("/assets/chess-05.glb")
 	const envmap = make_envmap(scene, "/assets/studiolights.env")
 	scene.environmentIntensity = 0.1
 
@@ -40,26 +41,26 @@ export async function freeplayFlow() {
 			size: 2,
 			height: 1,
 			instancers: [
-				() => stuff.instanceProp("grid-floor-bottom"),
-				() => stuff.instanceProp("grid-floor-middle"),
-				() => stuff.instanceProp("grid-floor-top"),
+				() => stuff.instanceProp("block1"),
+				() => stuff.instanceProp("block2"),
+				() => stuff.instanceProp("block3"),
 			],
 		},
 		unitInstancers: (new Map()
-			.set(King, () => stuff.instanceProp("pawn"))
-			.set(Queen, () => stuff.instanceProp("pawn"))
-			.set(Bishop, () => stuff.instanceProp("pawn"))
-			.set(Knight, () => stuff.instanceProp("pawn"))
-			.set(Rook, () => stuff.instanceProp("pawn"))
-			.set(Pawn, () => stuff.instanceProp("pawn"))
+			.set(King, () => stuff.instanceProp("unit-king"))
+			.set(Queen, () => stuff.instanceProp("unit-queen"))
+			.set(Bishop, () => stuff.instanceProp("unit-bishop"))
+			.set(Knight, () => stuff.instanceProp("unit-knight"))
+			.set(Rook, () => stuff.instanceProp("unit-rook"))
+			.set(Pawn, () => stuff.instanceProp("unit-pawn"))
 		),
 	})
 
-	grid.at(new Place([2, 2])).elevation = 1
-	grid.at(new Place([2, 3])).elevation = 1
-	grid.at(new Place([3, 2])).elevation = 1
-	grid.at(new Place([3, 3])).elevation = 2
-	placements.put(new Pawn(), new Place([3, 3]))
+	parseAsciiMap({
+		grid,
+		placements,
+		ascii: maps.terrorBridge,
+	})
 
 	board.render()
 
@@ -73,6 +74,7 @@ export async function freeplayFlow() {
 		orbitSensitivity: 5 / 1000,
 		verticalRange: [degrees(0), degrees(90)],
 	})
+	orbitcam.gimbal = [degrees(-90), degrees(45)]
 	world.rendering.setCamera(orbitcam.camera)
 	const disposeOrbit = (() => {
 		const unbindCanvas = ev(world.canvas, {wheel: orbitcam.wheel})
