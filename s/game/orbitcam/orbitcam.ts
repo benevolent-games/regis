@@ -14,13 +14,12 @@ type Options = {
 	orbitSensitivity: number
 	zoomRange: Vec2
 	zoomSensitivity: number
+	zoomAddsPivotHeight: number
 }
 
 export class Orbitcam {
 	readonly camera: ArcRotateCamera
 	dispose: () => void
-
-	#down = false
 
 	#gimbal: Vec2 = [0, 0]
 	#smoothedGimbal = this.#gimbal
@@ -36,6 +35,7 @@ export class Orbitcam {
 		const beta = 0
 		const radius = this.zoom.smoothed
 		const target = new Vector3(...this.#smoothedPivot)
+		this.zoom.smoothing = options.smoothing
 		this.camera = new ArcRotateCamera(name, alpha, beta, radius, target, options.scene)
 		this.dispose = () => this.camera.dispose()
 		this.gimbal = [0, degrees(45)]
@@ -66,11 +66,11 @@ export class Orbitcam {
 		return scalar.remap(this.zoom.smoothed, this.options.zoomRange)
 	}
 
-	#applyZoom() {
+	#updateZoom() {
 		this.camera.radius = this.zoom.tick()
 	}
 
-	#applySmoothGimbal() {
+	#updateGimbal() {
 		this.#smoothedGimbal = molasses2d(
 			this.options.smoothing,
 			this.#smoothedGimbal,
@@ -81,7 +81,7 @@ export class Orbitcam {
 		this.camera.beta = y
 	}
 
-	#applySmoothPivot() {
+	#updatePivot() {
 		const realpivot = this.#smoothedPivot = molasses3d(
 			this.options.smoothing,
 			this.#smoothedPivot,
@@ -89,53 +89,32 @@ export class Orbitcam {
 		)
 		const zeroed: Vec3 = [0, 0, 0]
 		const centeredness = this.topdownness * this.zoomedoutness
-		console.log("z", this.zoomedoutness.toFixed(2))
+		const closeupness = scalar.inverse(this.zoomedoutness)
+		const addedHeight = closeupness * this.options.zoomAddsPivotHeight
 		this.camera.target.set(
 			scalar.map(centeredness, [realpivot[0], zeroed[0]]),
-			scalar.map(centeredness, [realpivot[1], zeroed[1]]),
+			scalar.map(centeredness, [realpivot[1], zeroed[1]]) + addedHeight,
 			scalar.map(centeredness, [realpivot[2], zeroed[2]]),
 		)
 	}
 
 	tick = () => {
-		this.#applySmoothGimbal()
-		this.#applySmoothPivot()
-		this.#applyZoom()
+		this.#updateGimbal()
+		this.#updatePivot()
+		this.#updateZoom()
 	}
 
-	#pointerCaptor = new PointerCaptor()
-
-	#cancel = () => {
-		this.#down = false
-		this.#pointerCaptor.release()
+	wheel = (event: WheelEvent) => {
+		this.zoom.target += event.deltaY * this.options.zoomSensitivity
+		this.zoom.target = scalar.clamp(this.zoom.target, ...this.options.zoomRange)
 	}
 
-	events = {
-		wheel: (event: WheelEvent) => {
-			this.zoom.target += event.deltaY * this.options.zoomSensitivity
-			this.zoom.target = scalar.clamp(this.zoom.target, ...this.options.zoomRange)
-		},
-
-		pointerdown: (event: PointerEvent) => {
-			if (event.button === 2) {
-				this.#down = true
-				this.#pointerCaptor.capture(event)
-			}
-		},
-
-		pointermove: (event: PointerEvent) => {
-			if (this.#down) {
-				const [x, y] = this.gimbal
-				this.gimbal = [
-					x + (event.movementX * this.options.orbitSensitivity),
-					y - (event.movementY * this.options.orbitSensitivity),
-				]
-			}
-		},
-
-		pointerleave: this.#cancel,
-		pointerup: this.#cancel,
-		blur: this.#cancel,
+	drag = (event: PointerEvent) => {
+		const [x, y] = this.gimbal
+		this.gimbal = [
+			x + (event.movementX * this.options.orbitSensitivity),
+			y - (event.movementY * this.options.orbitSensitivity),
+		]
 	}
 }
 

@@ -1,12 +1,13 @@
 
 import {ev} from "@benev/slate"
-import {make_envmap, scalar, spline, vec3} from "@benev/toolbox"
+import {make_envmap, scalar} from "@benev/toolbox"
 import {DirectionalLight, Vector3} from "@babylonjs/core"
 
 import {World} from "../world/world.js"
 import {Board} from "../board/board.js"
 import {Stuff} from "../../tools/stuff.js"
 import {Orbitcam} from "../orbitcam/orbitcam.js"
+import {DragQueen} from "../../tools/drag-queen.js"
 import {Bishop, Grid, King, Knight, Pawn, Place, Placements, Queen, Rook, Selectacon} from "../concepts.js"
 
 const {degrees} = scalar.radians.from
@@ -28,10 +29,11 @@ export async function freeplayFlow() {
 	stuff.instanceProp("border8x8")
 	const grid = new Grid()
 	const placements = new Placements()
-	const selectacon = new Selectacon(grid, placements)
+	const properSelectacon = new Selectacon(grid, placements)
+	const cameraSelectacon = new Selectacon(grid, placements)
 	const board = new Board({
 		grid,
-		selectacon,
+		properSelectacon: properSelectacon,
 		placements,
 		blocks: {
 			size: 2,
@@ -62,41 +64,51 @@ export async function freeplayFlow() {
 
 	const orbitcam = new Orbitcam({
 		scene,
-		smoothing: 10,
+		smoothing: 7,
 		orbitSensitivity: 5 / 1000,
-		verticalRange: [degrees(0), degrees(70)],
+		verticalRange: [degrees(0), degrees(90)],
 		zoomRange: [3, 30],
 		zoomSensitivity: 1 / 10,
+		zoomAddsPivotHeight: 1,
 	})
 	world.rendering.setCamera(orbitcam.camera)
-	const unbindOrbitControls = ev(world.canvas, orbitcam.events)
-	const stopOrbitTick = world.gameloop.on(orbitcam.tick)
+	const disposeOrbit = (() => {
+		const unbindCanvas = ev(world.canvas, {wheel: orbitcam.wheel})
+		const stopTicking = world.gameloop.on(orbitcam.tick)
+		return () => {
+			unbindCanvas()
+			stopTicking()
+			orbitcam.dispose()
+		}
+	})()
 
-	selectacon.onSelected(selected => {
-		const raised = 0
-		orbitcam.pivot = vec3.add(board.localize(
+	cameraSelectacon.onSelected(selected => {
+		orbitcam.pivot = board.localize(
 			selected
 				? selected.place
 				: Place.coords(0, 0),
-		), [0, raised, 0])
+		)
 	})
-	selectacon.select(new Place([3, 3]))
+	cameraSelectacon.select(new Place([3, 3]))
 
-	const unbindSelectyClicks = ev(world.canvas, {
-		pointerdown: (event: PointerEvent) => {
-			if (event.button === 0) {
-				const {pickedMesh} = scene.pick(
-					event.clientX,
-					event.clientY,
-					mesh => board.isPickable(mesh)
-				)
-				if (pickedMesh) {
-					const place = board.pick(pickedMesh)
-					selectacon.select(place)
-				}
+	const dragQueen = new DragQueen({
+		predicate: event => event.button === 2,
+		onDrag: orbitcam.drag,
+		onClick: event => {
+			const {pickedMesh} = scene.pick(
+				event.clientX,
+				event.clientY,
+				mesh => board.isPickable(mesh),
+			)
+			if (pickedMesh) {
+				const place = board.pick(pickedMesh)
+				cameraSelectacon.select(place)
 			}
-		}
+		},
 	})
+
+	const stopDragQueen = ev(world.canvas, dragQueen.events)
+	const stopContextMenuPrevention = ev(document, {contextmenu: (e: Event) => e.preventDefault()})
 
 	const sun = new DirectionalLight(
 		"sun",
@@ -112,12 +124,11 @@ export async function freeplayFlow() {
 		orbitcam,
 		sun,
 		dispose: () => {
+			stopDragQueen()
+			stopContextMenuPrevention()
 			envmap.dispose()
 			world.dispose()
-			unbindSelectyClicks()
-			stopOrbitTick()
-			unbindOrbitControls()
-			orbitcam.dispose()
+			disposeOrbit()
 		},
 	}
 }

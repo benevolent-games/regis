@@ -6,7 +6,7 @@ import {Grid, Place, Placements, Selectacon, Tile, Unit} from "../concepts.js"
 
 type Options = {
 	grid: Grid
-	selectacon: Selectacon
+	properSelectacon: Selectacon
 	placements: Placements
 	unitInstancers: Map<Constructor<Unit>, () => TransformNode>
 	blocks: {
