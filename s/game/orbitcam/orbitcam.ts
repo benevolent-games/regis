@@ -1,5 +1,5 @@
 
-import {scalar, Vec2, Vec3} from "@benev/toolbox"
+import {scalar, Vec2, vec3, Vec3} from "@benev/toolbox"
 import {ArcRotateCamera, Scene, Vector3} from "@babylonjs/core"
 
 import {Smooth, SmoothVector} from "../../tools/smooth.js"
@@ -81,21 +81,19 @@ export class Orbitcam {
 	}
 
 	#updatePivot() {
-		const pivot = this.#pivot.tick()
+		let pivot = this.#pivot.tick()
+		const closeupness = scalar.inverse(this.zoomedoutness)
+		const addedHeight = closeupness * this.options.zoomAddsPivotHeight
 		if (this.options.straightenAtTop) {
 			const zeroed: Vec3 = [0, 0, 0]
 			const centeredness = this.topdownness * this.zoomedoutness
-			const closeupness = scalar.inverse(this.zoomedoutness)
-			const addedHeight = closeupness * this.options.zoomAddsPivotHeight
-			this.camera.target.set(
+			pivot = [
 				scalar.map(centeredness, [pivot[0], zeroed[0]]),
-				scalar.map(centeredness, [pivot[1], zeroed[1]]) + addedHeight,
+				scalar.map(centeredness, [pivot[1], zeroed[1]]),
 				scalar.map(centeredness, [pivot[2], zeroed[2]]),
-			)
+			]
 		}
-		else {
-			this.camera.target.set(...pivot)
-		}
+		this.camera.target.set(...vec3.add(pivot, [0, addedHeight, 0]))
 	}
 
 	tick = () => {

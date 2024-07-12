@@ -81,7 +81,7 @@ export async function freeplayFlow() {
 		smoothing: 7,
 		zoomRange: [3, 30],
 		straightenAtTop: false,
-		zoomAddsPivotHeight: 1,
+		zoomAddsPivotHeight: 1.5,
 		zoomSensitivity: 3 / 100,
 		orbitSensitivity: 5 / 1000,
 		verticalRange: [degrees(0), degrees(90)],
@@ -131,7 +131,7 @@ export async function freeplayFlow() {
 		onIndentedDrag: () => {},
 		onIndentedClick: () => {},
 		onAnyDrag: ({movementX, movementY}) => {
-			const panningSensitivity = 0.05
+			const panningSensitivity = 2 / 100
 			const movement = [movementX, movementY] as Vec2
 			orbitcam.pivot = (
 				Pipe.with(movement)
