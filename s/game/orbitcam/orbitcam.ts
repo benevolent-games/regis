@@ -14,6 +14,7 @@ type Options = {
 	zoomRange: Vec2
 	zoomSensitivity: number
 	zoomAddsPivotHeight: number
+	straightenAtTop: boolean
 }
 
 export class Orbitcam {
@@ -80,16 +81,21 @@ export class Orbitcam {
 	}
 
 	#updatePivot() {
-		const realpivot = this.#pivot.tick()
-		const zeroed: Vec3 = [0, 0, 0]
-		const centeredness = this.topdownness * this.zoomedoutness
-		const closeupness = scalar.inverse(this.zoomedoutness)
-		const addedHeight = closeupness * this.options.zoomAddsPivotHeight
-		this.camera.target.set(
-			scalar.map(centeredness, [realpivot[0], zeroed[0]]),
-			scalar.map(centeredness, [realpivot[1], zeroed[1]]) + addedHeight,
-			scalar.map(centeredness, [realpivot[2], zeroed[2]]),
-		)
+		const pivot = this.#pivot.tick()
+		if (this.options.straightenAtTop) {
+			const zeroed: Vec3 = [0, 0, 0]
+			const centeredness = this.topdownness * this.zoomedoutness
+			const closeupness = scalar.inverse(this.zoomedoutness)
+			const addedHeight = closeupness * this.options.zoomAddsPivotHeight
+			this.camera.target.set(
+				scalar.map(centeredness, [pivot[0], zeroed[0]]),
+				scalar.map(centeredness, [pivot[1], zeroed[1]]) + addedHeight,
+				scalar.map(centeredness, [pivot[2], zeroed[2]]),
+			)
+		}
+		else {
+			this.camera.target.set(...pivot)
+		}
 	}
 
 	tick = () => {

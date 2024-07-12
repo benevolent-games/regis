@@ -1,7 +1,7 @@
 
-import {ev} from "@benev/slate"
-import {make_envmap, scalar} from "@benev/toolbox"
+import {ev, Pipe} from "@benev/slate"
 import {DirectionalLight, Vector3} from "@babylonjs/core"
+import {make_envmap, scalar, Vec3, vec3, quat, Vec2} from "@benev/toolbox"
 
 import {World} from "../world/world.js"
 import {Board} from "../board/board.js"
@@ -9,6 +9,7 @@ import {Stuff} from "../../tools/stuff.js"
 import {Orbitcam} from "../orbitcam/orbitcam.js"
 import {DragQueen} from "../../tools/drag-queen.js"
 import {Bishop, Grid, King, Knight, Pawn, Place, Placements, Queen, Rook, Selectacon} from "../concepts.js"
+import { vec2 } from "@benev/toolbox"
 
 const {degrees} = scalar.radians.from
 
@@ -65,11 +66,12 @@ export async function freeplayFlow() {
 	const orbitcam = new Orbitcam({
 		scene,
 		smoothing: 7,
+		zoomRange: [3, 30],
+		straightenAtTop: false,
+		zoomAddsPivotHeight: 1,
+		zoomSensitivity: 3 / 100,
 		orbitSensitivity: 5 / 1000,
 		verticalRange: [degrees(0), degrees(90)],
-		zoomRange: [3, 30],
-		zoomSensitivity: 1 / 10,
-		zoomAddsPivotHeight: 1,
 	})
 	world.rendering.setCamera(orbitcam.camera)
 	const disposeOrbit = (() => {
@@ -91,8 +93,10 @@ export async function freeplayFlow() {
 	})
 	cameraSelectacon.select(new Place([3, 3]))
 
-	const dragQueen = new DragQueen({
+	const rightMouseDrags = new DragQueen({
 		predicate: event => event.button === 2,
+		onAnyDrag: () => {},
+		onAnyClick: () => {},
 		onIndentedDrag: orbitcam.drag,
 		onIndentedClick: event => {
 			const {pickedMesh} = scene.pick(
@@ -107,7 +111,28 @@ export async function freeplayFlow() {
 		},
 	})
 
-	const stopDragQueen = ev(world.canvas, dragQueen.events)
+	const middleMouseDrags = new DragQueen({
+		predicate: event => event.button === 1,
+		onAnyClick: () => {},
+		onIndentedDrag: () => {},
+		onIndentedClick: () => {},
+		onAnyDrag: ({movementX, movementY}) => {
+			const panningSensitivity = 0.05
+			const movement = [movementX, movementY] as Vec2
+			orbitcam.pivot = (
+				Pipe.with(movement)
+					.to(v => vec2.rotate(v, orbitcam.camera.alpha + scalar.radians.from.degrees(90)))
+					.to(v => vec2.multiplyBy(v, panningSensitivity))
+					.to(([x, z]) => [x, 0, z] as Vec3)
+					.to(v => vec3.add(orbitcam.pivot, v))
+					.to(v => board.clampPosition(v))
+					.done()
+			)
+		},
+	})
+
+	const stopRmb = ev(world.canvas, rightMouseDrags.events)
+	const stopMmb = ev(world.canvas, middleMouseDrags.events)
 	const stopContextMenuPrevention = ev(document, {contextmenu: (e: Event) => e.preventDefault()})
 
 	const sun = new DirectionalLight(
@@ -124,7 +149,8 @@ export async function freeplayFlow() {
 		orbitcam,
 		sun,
 		dispose: () => {
-			stopDragQueen()
+			stopRmb()
+			stopMmb()
 			stopContextMenuPrevention()
 			envmap.dispose()
 			world.dispose()

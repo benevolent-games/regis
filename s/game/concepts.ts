@@ -1,5 +1,5 @@
 
-import { pubsub } from "@benev/slate"
+import {pubsub} from "@benev/slate"
 import {loop2d, Vec2} from "@benev/toolbox"
 
 /** location coordinates for a spot on the chess board */

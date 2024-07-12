@@ -1,6 +1,6 @@
 
 import {Constructor} from "@benev/slate"
-import {vec2, Vec3} from "@benev/toolbox"
+import {scalar, vec2, Vec3} from "@benev/toolbox"
 import {AbstractMesh, TransformNode} from "@babylonjs/core"
 import {Grid, Place, Placements, Selectacon, Tile, Unit} from "../concepts.js"
 
@@ -31,6 +31,37 @@ export class Board {
 		const worldY = (tile.elevation * blocks.height) + 1
 		const worldZ = (place.rank - offsetZ + 0.5) * blocks.size
 		return [worldX, worldY, worldZ] as Vec3
+	}
+
+	#boundaryReport() {
+		const [cornerFile, cornerRank] = this.options.grid.extent
+		const corners = [
+			this.localize(new Place([0, 0])),
+			this.localize(new Place([0, cornerRank - 1])),
+			this.localize(new Place([cornerFile - 1, 0])),
+			this.localize(new Place([cornerFile - 1, cornerRank - 1])),
+		]
+		return {
+			min: {
+				x: Math.min(...corners.map(c => c[0])),
+				y: Math.min(...corners.map(c => c[1])),
+				z: Math.min(...corners.map(c => c[2])),
+			},
+			max: {
+				x: Math.max(...corners.map(c => c[0])),
+				y: Math.max(...corners.map(c => c[1])),
+				z: Math.max(...corners.map(c => c[2])),
+			},
+		}
+	}
+
+	clampPosition([x, y, z]: Vec3) {
+		const {min, max} = this.#boundaryReport()
+		return [
+			scalar.clamp(x, min.x, max.x),
+			scalar.clamp(y, min.y, max.y),
+			scalar.clamp(z, min.z, max.z),
+		] as Vec3
 	}
 
 	#spawnTile(tile: Tile, place: Place) {
