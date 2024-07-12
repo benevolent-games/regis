@@ -93,8 +93,8 @@ export async function freeplayFlow() {
 
 	const dragQueen = new DragQueen({
 		predicate: event => event.button === 2,
-		onDrag: orbitcam.drag,
-		onClick: event => {
+		onIndentedDrag: orbitcam.drag,
+		onIndentedClick: event => {
 			const {pickedMesh} = scene.pick(
 				event.clientX,
 				event.clientY,
