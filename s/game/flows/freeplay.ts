@@ -71,7 +71,7 @@ export async function freeplayFlow() {
 	parseAsciiMap({
 		grid,
 		placements,
-		ascii: maps.terrorBridge,
+		ascii: maps.crossover,
 	})
 
 	board.render()

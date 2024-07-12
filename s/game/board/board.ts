@@ -1,7 +1,7 @@
 
 import {Constructor} from "@benev/slate"
 import {scalar, vec2, Vec3} from "@benev/toolbox"
-import {AbstractMesh, Quaternion, TransformNode} from "@babylonjs/core"
+import {AbstractMesh, Quaternion, TransformNode, Vector3} from "@babylonjs/core"
 import {Grid, Place, Placements, Selectacon, Tile, Unit} from "../concepts.js"
 
 export type BlockInstancers = {
@@ -140,6 +140,7 @@ export class Board {
 		const instancer = unitInstancers.get(unit.constructor as any)
 		if (!instancer) throw new Error(`instancer not found for unit ${unit.constructor.name}`)
 		const instance = instancer()
+		instance.scaling = new Vector3().setAll(1.5)
 		if (unit.team === 1)
 			instance.rotationQuaternion = Quaternion.RotationYawPitchRoll(
 				scalar.radians.from.degrees(180),
