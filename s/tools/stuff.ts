@@ -8,7 +8,6 @@ export class Stuff {
 	readonly materials = new Map<string, PBRMaterial>()
 
 	constructor(public readonly glb: AssetContainer) {
-
 		for (const material of glb.materials)
 			if (material instanceof PBRMaterial)
 				this.materials.set(material.name, material)

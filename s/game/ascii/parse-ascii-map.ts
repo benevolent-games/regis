@@ -8,6 +8,12 @@ type Options = {
 	placements: Placements
 }
 
+export function generateMap(ascii: string) {
+	const grid = new Grid()
+	const placements = new Placements()
+	return parseAsciiMap({ascii, grid, placements})
+}
+
 export function parseAsciiMap(options: Options) {
 	const {ascii, grid, placements} = options
 

@@ -2,6 +2,8 @@
 import {Constructor} from "@benev/slate"
 import {scalar, vec2, Vec3} from "@benev/toolbox"
 import {AbstractMesh, Quaternion, TransformNode, Vector3} from "@babylonjs/core"
+
+import {World} from "../world/world.js"
 import {Grid, Place, Placements, Selectacon, Tile, Unit} from "../concepts.js"
 
 export type BlockInstancers = {
@@ -12,6 +14,7 @@ export type BlockInstancers = {
 }
 
 type Options = {
+	world: World
 	grid: Grid
 	properSelectacon: Selectacon
 	placements: Placements
@@ -162,12 +165,14 @@ export class Board {
 			this.#spawnUnit(unit, place)
 	}
 
-	isPickable(mesh: AbstractMesh) {
-		return this.#blocks.has(mesh)
-	}
-
-	pick(mesh: AbstractMesh) {
-		return this.#blocks.get(mesh)!
+	grab(event: PointerEvent) {
+		const {pickedMesh} = this.options.world.scene.pick(
+			event.clientX,
+			event.clientY,
+			mesh => this.#blocks.has(mesh),
+		)
+		if (pickedMesh)
+			return this.#blocks.get(pickedMesh)!
 	}
 
 	dispose() {
