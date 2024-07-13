@@ -1,14 +1,14 @@
 
 import {vec3} from "@benev/toolbox"
-import {Grid} from "../logic/concepts.js"
+import {Board} from "./board/board.js"
 import {Coordinator} from "./coordinator.js"
 
 export class Boundaries {
 	readonly min: vec3.Xyz
 	readonly max: vec3.Xyz
 
-	constructor(grid: Grid, coordinator: Coordinator) {
-		const [cornerFile, cornerRank] = grid.extent
+	constructor(board: Board, coordinator: Coordinator) {
+		const [cornerFile, cornerRank] = board.state.extent
 
 		const corners = [
 			coordinator.toPosition([0, 0]),

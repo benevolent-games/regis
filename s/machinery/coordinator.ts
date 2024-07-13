@@ -2,10 +2,10 @@
 import {Pipe} from "@benev/slate"
 import {Vec2, vec2, Vec3} from "@benev/toolbox"
 
-import {Grid} from "../logic/concepts.js"
+import {Board} from "./board/board.js"
 
 type Options = {
-	grid: Grid
+	grid: Board
 	blockSize: number
 	blockHeight: number
 }
@@ -37,7 +37,7 @@ export class Coordinator {
 	/////////////////////////////
 
 	get #halfGridOffset() {
-		return vec2.divideBy(this.options.grid.extent, 2)
+		return vec2.divideBy(this.options.grid.state.extent, 2)
 	}
 }
 
