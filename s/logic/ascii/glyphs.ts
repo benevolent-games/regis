@@ -2,7 +2,7 @@
 export const glyphs = {
 	resource: "$",
 	obstacle: "%",
-	tower: "!",
+	watchTower: "!",
 	elevation: {
 		one: ".",
 		two: "=",

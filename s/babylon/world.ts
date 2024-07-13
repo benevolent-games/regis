@@ -53,7 +53,7 @@ export class World {
 		public readonly dispose: () => void,
 	) {}
 
-	async loadGlb(url: string) {
+	async loadContainer(url: string) {
 		return await loadGlb(this.scene, url)
 	}
 }

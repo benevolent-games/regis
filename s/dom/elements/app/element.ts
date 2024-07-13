@@ -1,14 +1,13 @@
 
-import {html, nap} from "@benev/slate"
+import {html} from "@benev/slate"
 import {Orchestrator, orchestratorStyles, OrchestratorView} from "@benev/toolbox/x/ui/orchestrator/exports.js"
 
 import {nexus} from "../../nexus.js"
-import {freeplayFlow} from "../../../game/flows/freeplay.js"
+import {GameplayView} from "../../views/exhibits/gameplay.js"
 import {detectInputMethod} from "../../utils/input-method.js"
 import {MainMenuView} from "../../views/exhibits/main-menu.js"
 import {IntroPageView} from "../../views/exhibits/intro-page.js"
 import {LogoSplashView} from "../../views/loading-screens/logo-splash.js"
-import { GameplayView } from "../../views/exhibits/gameplay.js"
 
 export const GameApp = nexus.lightComponent(use => {
 
@@ -45,23 +44,23 @@ export const GameApp = nexus.lightComponent(use => {
 					dispose: () => {},
 					template: () => MainMenuView([{
 						goIntro: () => goExhibit.intro(),
-						goEditor: () => goExhibit.mapEditor(),
+						goEditor: () => {}, // goExhibit.mapEditor(),
 					}]),
 				}
 			}),
 
-			mapEditor: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
-				const {EditorCore} = await import("../../../game/editor/core.js")
-				const {MapEditorView} = await import("../../views/exhibits/map-editor.js")
-				const editorCore = await EditorCore.load(window)
-				return {
-					dispose: () => editorCore.dispose(),
-					template: () => MapEditorView([editorCore]),
-				}
-			}),
+			// mapEditor: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
+			// 	const {EditorCore} = await import("../../../game/editor/core.js")
+			// 	const {MapEditorView} = await import("../../views/exhibits/map-editor.js")
+			// 	const editorCore = await EditorCore.load(window)
+			// 	return {
+			// 		dispose: () => editorCore.dispose(),
+			// 		template: () => MapEditorView([editorCore]),
+			// 	}
+			// }),
 
 			gameplay: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
-				const {freeplayFlow} = await import("../../../game/flows/freeplay.js")
+				const {freeplayFlow} = await import("../../../babylon/flows/freeplay.js")
 				const {world, dispose} = await freeplayFlow()
 				return {
 					dispose,

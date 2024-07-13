@@ -2,7 +2,7 @@
 import {scalar, Vec2, vec3, Vec3} from "@benev/toolbox"
 import {ArcRotateCamera, Scene, Vector3} from "@babylonjs/core"
 
-import {Smooth, SmoothVector} from "../../tools/smooth.js"
+import {Smooth, SmoothVector} from "../tools/smooth.js"
 
 const {degrees} = scalar.radians.from
 

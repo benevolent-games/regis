@@ -2,7 +2,7 @@
 import {css} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
-import type {World} from "../../../game/world/world.js"
+import type {World} from "../../../babylon/world.js"
 
 export const GameplayView = nexus.shadowView(use => (world: World) => {
 	use.styles(styles)

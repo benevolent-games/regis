@@ -1,0 +1,70 @@
+
+import {Vec2} from "@benev/toolbox"
+
+import {glyphs} from "./glyphs.js"
+import {Grid, Team, UnitKind, Units} from "../concepts.js"
+
+export function asciiMap(ascii: string) {
+	const grid = new Grid()
+	const units = new Units()
+
+	const lines = ascii
+		.split("\n")
+		.map(s => s.trim())
+		.filter(s => s.length > 0)
+		.reverse()
+
+	lines.forEach((line, rank) => {
+		const parts = line.split(/\s+/)
+
+		parts.forEach((part, file) => {
+			const place = [file, rank] as Vec2
+			const tile = grid.at(place)
+
+			function zoop(glyph: string, fn: () => void) {
+				if (part.includes(glyph))
+					fn()
+			}
+
+			zoop(glyphs.resource, () => tile.resource = true)
+			zoop(glyphs.watchTower, () => tile.watchTower = true)
+
+			zoop(glyphs.elevation.one, () => tile.elevation = 1)
+			zoop(glyphs.elevation.two, () => tile.elevation = 2)
+			zoop(glyphs.elevation.three, () => tile.elevation = 3)
+
+			zoop(glyphs.ramps.north, () => tile.ramp = "north")
+			zoop(glyphs.ramps.east, () => tile.ramp = "east")
+			zoop(glyphs.ramps.south, () => tile.ramp = "south")
+			zoop(glyphs.ramps.west, () => tile.ramp = "west")
+
+			function makeUnit(kind: UnitKind, team: Team, place: Vec2) {
+				return () => units.add({
+					kind,
+					team,
+					place,
+					damage: 0,
+				})
+			}
+
+			zoop(glyphs.obstacle, makeUnit("obstacle", 0, place))
+
+			zoop(glyphs.whites.king, makeUnit("king", 1, place))
+			zoop(glyphs.whites.queen, makeUnit("queen", 1, place))
+			zoop(glyphs.whites.bishop, makeUnit("bishop", 1, place))
+			zoop(glyphs.whites.knight, makeUnit("knight", 1, place))
+			zoop(glyphs.whites.rook, makeUnit("rook", 1, place))
+			zoop(glyphs.whites.pawn, makeUnit("pawn", 1, place))
+
+			zoop(glyphs.blacks.king, makeUnit("king", 2, place))
+			zoop(glyphs.blacks.queen, makeUnit("queen", 2, place))
+			zoop(glyphs.blacks.bishop, makeUnit("bishop", 2, place))
+			zoop(glyphs.blacks.knight, makeUnit("knight", 2, place))
+			zoop(glyphs.blacks.rook, makeUnit("rook", 2, place))
+			zoop(glyphs.blacks.pawn, makeUnit("pawn", 2, place))
+		})
+	})
+
+	return {grid, units}
+}
+
