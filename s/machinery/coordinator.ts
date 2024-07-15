@@ -5,7 +5,7 @@ import {Vec2, vec2, Vec3} from "@benev/toolbox"
 import {Board} from "./board/board.js"
 
 type Options = {
-	grid: Board
+	board: Board
 	blockSize: number
 	blockHeight: number
 }
@@ -14,7 +14,7 @@ export class Coordinator {
 	constructor(private options: Options) {}
 
 	toPosition(place: Vec2) {
-		const tile = this.options.grid.at(place)
+		const tile = this.options.board.at(place)
 		const y = tile.elevation * this.options.blockHeight
 		return Pipe.with(place)
 			.to(v => vec2.subtract(v, this.#halfGridOffset))
@@ -37,7 +37,7 @@ export class Coordinator {
 	/////////////////////////////
 
 	get #halfGridOffset() {
-		return vec2.divideBy(this.options.grid.state.extent, 2)
+		return vec2.divideBy(this.options.board.state.extent, 2)
 	}
 }
 

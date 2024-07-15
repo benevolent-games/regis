@@ -5,19 +5,13 @@ import {DirectionalLight, Vector3} from "@babylonjs/core"
 import {make_envmap, scalar, Vec3, vec3, Vec2} from "@benev/toolbox"
 
 import {World} from "../world.js"
+import {Renderer} from "../renderer.js"
 import {ChessGlb} from "../chess-glb.js"
+import * as mapPool from "../../map-pool.js"
 import {Trashbin} from "../../tools/trashbin.js"
-import {Arbiter} from "../../logic/arbiter/arbiter.js"
-import * as asciiMaps from "../../logic/ascii/ascii-maps.js"
-
-// import {Game} from "./parts/game.js"
-// import {Place} from "../concepts.js"
-// import {World} from "../world/world.js"
-// import * as maps from "../ascii/maps.js"
-// import {Stuff} from "../../tools/stuff.js"
-// import {Trashbin} from "../../tools/trashbin.js"
-// import {Orbitcam} from "../orbitcam/orbitcam.js"
-// import {DragQueen} from "../../tools/drag-queen.js"
+import {Incident} from "../../machinery/game/data.js"
+import {Arbiter} from "../../machinery/game/arbiter.js"
+import {initializeRoster} from "../../machinery/teams/data.js"
 
 const {degrees} = scalar.radians.from
 
@@ -25,12 +19,35 @@ export async function freeplayFlow() {
 	const trash = new Trashbin()
 	const d = trash.disposable
 
-	const arbiter = new Arbiter(asciiMaps.bridge)
+	const arbiter = new Arbiter({
+		ascii: mapPool.bridge,
+		teams: [
+			{
+				name: "Friend",
+				resources: 3,
+				roster: initializeRoster(),
+			},
+			{
+				name: "Foe",
+				resources: 3,
+				roster: initializeRoster(),
+			},
+		],
+	})
 
 	const world = d(await World.load())
 	const container = d(await world.loadContainer("/assets/chess-07.glb"))
 	const chessGlb = new ChessGlb(container)
-	const {scene} = world
+
+	const firstState = arbiter.generateAgentState(null)
+	const renderer = d(new Renderer(world, chessGlb, firstState))
+	renderer.render()
+
+	// function performAction(action: Incident.Action.Any) {
+	// 	arbiter.commit(action)
+	// 	renderer.state = arbiter.generateAgentState(null)
+	// 	renderer.render()
+	// }
 
 	return {world, dispose: trash.dispose}
 

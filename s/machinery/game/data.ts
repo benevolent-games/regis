@@ -4,12 +4,6 @@ import {BoardState} from "../board/data.js"
 import {UnitsState} from "../units/data.js"
 import {TeamFoggy, TeamState} from "../teams/data.js"
 
-/** the data needed to replay the whole game */
-export type Replay = {
-	initiation: Initiation
-	chronicle: Incident.Any[]
-}
-
 /** starting state of the game */
 export type Initiation = {
 	board: BoardState

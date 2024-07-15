@@ -1,4 +1,5 @@
 
+import {deep} from "@benev/slate"
 import {scalar, vec2, Vec2} from "@benev/toolbox"
 
 import {Tile} from "../board/data.js"
@@ -6,7 +7,7 @@ import {TeamState} from "../teams/data.js"
 import {asciiMap} from "../ascii/ascii-map.js"
 import {BoardAuthor} from "../board/author.js"
 import {UnitsAuthor} from "../units/author.js"
-import {actionActuators, AgentState, Incident, Replay, Situation} from "./data.js"
+import {actionActuators, AgentState, Incident, Initiation, Situation} from "./data.js"
 
 type Options = {
 	ascii: string
@@ -14,10 +15,13 @@ type Options = {
 }
 
 export class Arbiter {
+
+	// the rest of this tracks the current state
+	chronicle: Incident.Any[] = []
+	initiation: Initiation
 	board: BoardAuthor
 	units: UnitsAuthor
 	teams: TeamState[]
-	replay: Replay
 	situation: Situation
 
 	constructor({ascii, teams}: Options) {
@@ -25,13 +29,10 @@ export class Arbiter {
 		this.board = board
 		this.units = units
 		this.teams = teams
-		this.replay = {
-			chronicle: [],
-			initiation: {
-				teams,
-				board: board.state,
-				units: units.state,
-			},
+		this.initiation = {
+			teams,
+			board: board.state,
+			units: units.state,
 		}
 		this.situation = {
 			currentTurn: 0,
@@ -39,21 +40,21 @@ export class Arbiter {
 		}
 	}
 
-	generateAgentState(_team: number): AgentState {
-		return {
+	generateAgentState(_team: number | null): AgentState {
+		return deep.freeze({
 			teams: this.teams,
 			board: this.board.state,
 			units: this.units.state,
 			situation: this.situation,
-		}
+		})
 	}
 
-	submit(incident: Incident.Any) {
+	commit(incident: Incident.Any) {
 		if (incident.kind === "conclusion")
 			this.#conclude(incident)
 		else if (incident.kind === "action")
 			this.#actions[incident.name](incident as any)
-		this.replay.chronicle.push(incident)
+		this.chronicle.push(incident)
 	}
 
 	#conclude(incident: Incident.Conclusion) {
@@ -93,7 +94,7 @@ export class Arbiter {
 			throw new Error("TODO implement move")
 		},
 		yield: (_action: Incident.Action.Move) => {
-			const teamCount = this.replay.initiation.teams.length
+			const teamCount = this.initiation.teams.length
 			this.situation.currentTurn = scalar.wrap(teamCount + 1, 0, teamCount - 1)
 		},
 	})

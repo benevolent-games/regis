@@ -2,7 +2,7 @@
 import {TransformNode} from "@babylonjs/core"
 
 import {Glb} from "./tools/glb.js"
-import {Unit, UnitKind} from "../logic/concepts.js"
+import {Unit, UnitKind} from "../machinery/units/data.js"
 
 export type BlockVariant = "normal" | "vision" | "hover" | "selected"
 
