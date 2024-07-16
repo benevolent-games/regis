@@ -7,7 +7,7 @@ export class BoardAuthor extends Board {
 	constructor() {
 		const extent: Vec2 = [8, 8]
 		const tiles = [...loop2d(extent)].map((): Tile => ({
-			ramp: null,
+			ramp: false,
 			elevation: 1,
 			resource: false,
 			watchTower: false,

@@ -3,16 +3,11 @@ export const glyphs = {
 	resource: "$",
 	obstacle: "%",
 	watchTower: "!",
+	ramp: "r",
 	elevation: {
 		one: ".",
 		two: "=",
 		three: "#",
-	},
-	ramps: {
-		north: "^",
-		east: ">",
-		south: "v",
-		west: "<",
 	},
 	whites: {
 		king: "♔",

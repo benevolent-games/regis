@@ -12,12 +12,16 @@ import {Trashbin} from "../../tools/trashbin.js"
 import {Incident} from "../../machinery/game/data.js"
 import {Arbiter} from "../../machinery/game/arbiter.js"
 import {initializeRoster} from "../../machinery/teams/data.js"
+import { Orbitcam } from "../orbitcam.js"
+import { DragQueen } from "../../tools/drag-queen.js"
+import { Selectacon } from "../../machinery/selectacon.js"
 
 const {degrees} = scalar.radians.from
 
 export async function freeplayFlow() {
 	const trash = new Trashbin()
 	const d = trash.disposable
+	const dr = trash.disposer
 
 	const arbiter = new Arbiter({
 		ascii: mapPool.bridge,
@@ -43,11 +47,98 @@ export async function freeplayFlow() {
 	const renderer = d(new Renderer(world, chessGlb, firstState))
 	renderer.render()
 
-	// function performAction(action: Incident.Action.Any) {
-	// 	arbiter.commit(action)
-	// 	renderer.state = arbiter.generateAgentState(null)
-	// 	renderer.render()
-	// }
+	const {board, units, coordinator, boundaries} = renderer
+	const mainSelectacon = new Selectacon(board, units)
+	const cameraSelectacon = new Selectacon(board, units)
+
+	const {scene} = world
+	d(make_envmap(scene, "/assets/studiolights.env"))
+	scene.environmentIntensity = 0.1
+
+	const orbitcam = d(new Orbitcam({
+		scene,
+		smoothing: 7,
+		zoomRange: [3, 30],
+		straightenAtTop: false,
+		zoomAddsPivotHeight: 1.5,
+		zoomSensitivity: 3 / 100,
+		orbitSensitivity: 5 / 1000,
+		verticalRange: [degrees(0), degrees(90)],
+	}))
+
+	orbitcam.gimbal = [degrees(-90), degrees(45)]
+	world.rendering.setCamera(orbitcam.camera)
+
+	dr(ev(world.canvas, {wheel: orbitcam.wheel}))
+	dr(world.gameloop.on(orbitcam.tick))
+
+	dr(cameraSelectacon.onSelected(selected => {
+		orbitcam.pivot = coordinator.toPosition(
+			selected
+				? selected.place
+				: [0, 0],
+		)
+	}))
+
+	cameraSelectacon.select([3, 3])
+
+	const rightMouseDrags = new DragQueen({
+		predicate: event => event.button === 2,
+		onAnyDrag: () => {},
+		onAnyClick: () => {},
+		onIntendedDrag: orbitcam.drag,
+		onIntendedClick: event => {
+			// const place = renderer.grab(event)
+			// if (place)
+			// 	cameraSelectacon.select(place)
+		},
+	})
+
+	const middleMouseDrags = new DragQueen({
+		predicate: event => event.button === 1,
+		onAnyClick: () => {},
+		onIntendedDrag: () => {},
+		onIntendedClick: () => {},
+		onAnyDrag: ({movementX, movementY}) => {
+			const panningSensitivity = 2 / 100
+			const movement = [movementX, movementY] as Vec2
+			orbitcam.pivot = (
+				Pipe.with(movement)
+					.to(v => vec2.rotate(
+						v,
+						orbitcam.camera.alpha + scalar.radians.from.degrees(90)
+					))
+					.to(v => vec2.multiplyBy(v, panningSensitivity))
+					.to(([x, z]) => [x, 0, z] as Vec3)
+					.to(v => vec3.add(orbitcam.pivot, v))
+					.to(v => boundaries.clampPosition(v))
+					.done()
+			)
+			// const place = coordinator.toPlace([orbitcam.pivot[0], orbitcam.pivot[2]])
+			// console.log(place)
+		},
+	})
+
+	dr(ev(world.canvas, rightMouseDrags.events))
+	dr(ev(world.canvas, middleMouseDrags.events))
+	dr(ev(document, {contextmenu: (e: Event) => e.preventDefault()}))
+
+	const sun = d(new DirectionalLight(
+		"sun",
+		new Vector3(.123, -1, .234).normalize(),
+		scene,
+	))
+
+	sun.intensity = .2
+	world.gameloop.start()
+
+	///////////////////////////////
+
+	function performAction(action: Incident.Action.Any) {
+		arbiter.commit(action)
+		renderer.state = arbiter.generateAgentState(null)
+		renderer.render()
+	}
 
 	return {world, dispose: trash.dispose}
 

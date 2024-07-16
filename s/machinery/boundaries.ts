@@ -1,5 +1,5 @@
 
-import {vec3} from "@benev/toolbox"
+import {scalar, Vec3, vec3} from "@benev/toolbox"
 import {Board} from "./board/board.js"
 import {Coordinator} from "./coordinator.js"
 
@@ -28,6 +28,15 @@ export class Boundaries {
 			y: 2,
 			z: Math.max(...corners.map(c => c[2])),
 		})
+	}
+
+	clampPosition([x, y, z]: Vec3) {
+		const {min, max} = this
+		return [
+			scalar.clamp(x, min.x, max.x),
+			scalar.clamp(y, min.y, max.y),
+			scalar.clamp(z, min.z, max.z),
+		] as Vec3
 	}
 }
 

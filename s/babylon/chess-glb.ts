@@ -4,10 +4,11 @@ import {TransformNode} from "@babylonjs/core"
 import {Glb} from "./tools/glb.js"
 import {Unit, UnitKind} from "../machinery/units/data.js"
 
-export type BlockVariant = "normal" | "vision" | "hover" | "selected"
+export type BlockVariant = "normal" | "vision" | "hover"
 
 export class ChessGlb extends Glb {
 	unit = new Map<UnitKind, (unit: Unit) => TransformNode>()
+		.set("obstacle", () => this.instance(`obstacle`))
 		.set("king", unit => this.instance(`unit-team${unit.team}-king`))
 		.set("queen", unit => this.instance(`unit-team${unit.team}-queen`))
 		.set("bishop", unit => this.instance(`unit-team${unit.team}-bishop`))

@@ -30,15 +30,11 @@ export function asciiMap(ascii: string) {
 
 			zoop(glyphs.resource, () => tile.resource = true)
 			zoop(glyphs.watchTower, () => tile.watchTower = true)
+			zoop(glyphs.ramp, () => tile.ramp = true)
 
 			zoop(glyphs.elevation.one, () => tile.elevation = 1)
 			zoop(glyphs.elevation.two, () => tile.elevation = 2)
 			zoop(glyphs.elevation.three, () => tile.elevation = 3)
-
-			zoop(glyphs.ramps.north, () => tile.ramp = "north")
-			zoop(glyphs.ramps.east, () => tile.ramp = "east")
-			zoop(glyphs.ramps.south, () => tile.ramp = "south")
-			zoop(glyphs.ramps.west, () => tile.ramp = "west")
 
 			function makeUnit(kind: UnitKind, team: null | number, place: Vec2) {
 				return () => units.add({

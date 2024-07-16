@@ -2,17 +2,17 @@
 export class Trashbin {
 	#fns: (() => void)[] = []
 
-	add = (fn: () => void) => {
+	disposer = (fn: () => void) => {
 		this.#fns.push(fn)
-	}
-
-	bag = <X>(x: X, fn: (x: X) => void) => {
-		this.add(() => fn(x))
-		return x
 	}
 
 	disposable = <X extends {dispose: () => void}>(x: X) => {
 		return this.bag(x, () => x.dispose())
+	}
+
+	bag = <X>(x: X, fn: (x: X) => void) => {
+		this.disposer(() => fn(x))
+		return x
 	}
 
 	dispose = () => {

@@ -8,8 +8,8 @@ type Activity = {
 
 type Options = {
 	predicate: (event: PointerEvent) => boolean
-	onIndentedDrag: (event: PointerEvent, activity: Activity) => void
-	onIndentedClick: (event: PointerEvent, activity: Activity) => void
+	onIntendedDrag: (event: PointerEvent, activity: Activity) => void
+	onIntendedClick: (event: PointerEvent, activity: Activity) => void
 	onAnyDrag: (event: PointerEvent, activity: Activity) => void
 	onAnyClick: (event: PointerEvent, activity: Activity) => void
 }
@@ -51,14 +51,14 @@ export class DragQueen {
 				this.#activity.movement += Math.abs(event.movementY)
 				this.options.onAnyDrag(event, this.#activity)
 				if (this.dragDetected)
-					this.options.onIndentedDrag(event, this.#activity)
+					this.options.onIntendedDrag(event, this.#activity)
 			}
 		},
 		pointerup: (event: PointerEvent) => {
 			if (this.#activity) {
 				this.options.onAnyClick(event, this.#activity)
 				if (!this.dragDetected)
-					this.options.onIndentedClick(event, this.#activity)
+					this.options.onIntendedClick(event, this.#activity)
 			}
 			this.#cancelActivity()
 		},
