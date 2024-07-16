@@ -14,7 +14,6 @@ export function asciiMap(ascii: string) {
 		.split("\n")
 		.map(s => s.trim())
 		.filter(s => s.length > 0)
-		.reverse()
 
 	lines.forEach((line, rank) => {
 		const parts = line.split(/\s+/)
@@ -28,9 +27,9 @@ export function asciiMap(ascii: string) {
 					fn()
 			}
 
+			zoop(glyphs.step, () => tile.step = true)
 			zoop(glyphs.resource, () => tile.resource = true)
 			zoop(glyphs.watchTower, () => tile.watchTower = true)
-			zoop(glyphs.ramp, () => tile.ramp = true)
 
 			zoop(glyphs.elevation.one, () => tile.elevation = 1)
 			zoop(glyphs.elevation.two, () => tile.elevation = 2)

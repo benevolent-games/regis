@@ -3,7 +3,7 @@ export const glyphs = {
 	resource: "$",
 	obstacle: "%",
 	watchTower: "!",
-	ramp: "r",
+	step: "^",
 	elevation: {
 		one: ".",
 		two: "=",

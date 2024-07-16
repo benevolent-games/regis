@@ -1,14 +1,15 @@
 
 import {Vec2, Vec3} from "@benev/toolbox"
+import {TransformNode} from "@babylonjs/core"
 
 import {World} from "./world.js"
+import {ChessGlb} from "./chess-glb.js"
 import {Trashbin} from "../tools/trashbin.js"
 import {Tile} from "../machinery/board/data.js"
 import {Board} from "../machinery/board/board.js"
 import {Units} from "../machinery/units/units.js"
 import {AgentState} from "../machinery/game/data.js"
 import {Boundaries} from "../machinery/boundaries.js"
-import {BlockVariant, ChessGlb} from "./chess-glb.js"
 import {Coordinator} from "../machinery/coordinator.js"
 
 export class Renderer {
@@ -40,29 +41,43 @@ export class Renderer {
 
 	#trashbin = new Trashbin()
 
-	#spawnBlock(tile: Tile, place: Vec2, elevationOverride: number) {
-		const variant: BlockVariant = "normal"
-		const instance = this.#trashbin.disposable(
-			tile.ramp
-				? this.chessGlb.ramp(elevationOverride, variant)
-				: this.chessGlb.block(elevationOverride, variant)
+	#spawnBlock(place: Vec2, layer: number) {
+		const block = this.#trashbin.disposable(
+			this.chessGlb.block(layer, "normal")
 		)
-		const position = this.coordinator.toPosition(place)
-		instance.position.set(...position)
+		this.#positionBlock(block, place, layer)
+		return block
+	}
+
+	#spawnStep(place: Vec2, layer: number) {
+		const step = this.#trashbin.disposable(
+			this.chessGlb.step(layer, "normal")
+		)
+		this.#positionBlock(step, place, layer)
+		return step
+	}
+
+	#positionBlock(instance: TransformNode, place: Vec2, elevation: number) {
+		const y = elevation
+		const [x,,z] = this.coordinator.toPosition(place)
+		instance.position.set(x, y, z)
 	}
 
 	#spawnUnit(tile: Tile, place: Vec3) {}
 
 	render() {
 		for (const {tile, place} of this.board.loop()) {
-			this.#spawnBlock(tile, place, tile.elevation)
+			if (tile.step)
+				this.#spawnStep(place, tile.elevation)
+			else
+				this.#spawnBlock(place, tile.elevation)
 
 			// spawn blocks underneath
 			if (tile.elevation > 1)
-				this.#spawnBlock(tile, place, 1)
+				this.#spawnBlock(place, 1)
 
 			if (tile.elevation > 2)
-				this.#spawnBlock(tile, place, 2)
+				this.#spawnBlock(place, 2)
 		}
 	}
 

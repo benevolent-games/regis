@@ -16,6 +16,10 @@ export class ChessGlb extends Glb {
 		.set("rook", unit => this.instance(`unit-team${unit.team}-rook`))
 		.set("pawn", unit => this.instance(`unit-team${unit.team}-pawn`))
 
+	border() {
+		return this.instance(`border8x8`)
+	}
+
 	#blockvariant(variant: BlockVariant) {
 		return variant === "normal" ? "" : `-${variant}`
 	}
@@ -24,8 +28,8 @@ export class ChessGlb extends Glb {
 		return this.instance(`block${elevation}${this.#blockvariant(variant)}`)
 	}
 
-	ramp = (elevation: number, variant: BlockVariant) => {
-		return this.instance(`ramp${elevation}${this.#blockvariant(variant)}`)
+	step = (elevation: number, variant: BlockVariant) => {
+		return this.instance(`step${elevation}${this.#blockvariant(variant)}`)
 	}
 
 	obstacle = () => this.instance(`obstacle`)

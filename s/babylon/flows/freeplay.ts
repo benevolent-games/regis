@@ -5,16 +5,16 @@ import {DirectionalLight, Vector3} from "@babylonjs/core"
 import {make_envmap, scalar, Vec3, vec3, Vec2} from "@benev/toolbox"
 
 import {World} from "../world.js"
+import {Orbitcam} from "../orbitcam.js"
 import {Renderer} from "../renderer.js"
 import {ChessGlb} from "../chess-glb.js"
 import * as mapPool from "../../map-pool.js"
 import {Trashbin} from "../../tools/trashbin.js"
+import {DragQueen} from "../../tools/drag-queen.js"
 import {Incident} from "../../machinery/game/data.js"
 import {Arbiter} from "../../machinery/game/arbiter.js"
+import {Selectacon} from "../../machinery/selectacon.js"
 import {initializeRoster} from "../../machinery/teams/data.js"
-import { Orbitcam } from "../orbitcam.js"
-import { DragQueen } from "../../tools/drag-queen.js"
-import { Selectacon } from "../../machinery/selectacon.js"
 
 const {degrees} = scalar.radians.from
 
@@ -40,8 +40,13 @@ export async function freeplayFlow() {
 	})
 
 	const world = d(await World.load())
-	const container = d(await world.loadContainer("/assets/chess-07.glb"))
+	const container = d(await world.loadContainer("/assets/chess-08.glb"))
 	const chessGlb = new ChessGlb(container)
+
+	chessGlb.props.forEach((_, name) => console.log("prop:", name))
+	chessGlb.meshes.forEach((_, name) => console.log("mesh:", name))
+
+	d(chessGlb.border())
 
 	const firstState = arbiter.generateAgentState(null)
 	const renderer = d(new Renderer(world, chessGlb, firstState))
@@ -66,7 +71,7 @@ export async function freeplayFlow() {
 		verticalRange: [degrees(0), degrees(90)],
 	}))
 
-	orbitcam.gimbal = [degrees(-90), degrees(45)]
+	orbitcam.gimbal = [degrees(90), degrees(45)]
 	world.rendering.setCamera(orbitcam.camera)
 
 	dr(ev(world.canvas, {wheel: orbitcam.wheel}))

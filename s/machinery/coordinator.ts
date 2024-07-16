@@ -15,7 +15,7 @@ export class Coordinator {
 
 	toPosition(place: Vec2) {
 		const tile = this.options.board.at(place)
-		const y = tile.elevation * this.options.blockHeight
+		const y = (tile.elevation - 1) * this.options.blockHeight
 		return Pipe.with(place)
 			.to(v => vec2.subtract(v, this.#halfGridOffset))
 			.to(v => vec2.add(v, [.5, .5]))

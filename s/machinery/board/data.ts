@@ -7,7 +7,7 @@ export type Tile = {
 	elevation: Elevation
 	resource: boolean
 	watchTower: boolean
-	ramp: boolean
+	step: boolean
 }
 
 export type BoardState = {
@@ -18,7 +18,7 @@ export type BoardState = {
 export function makeDefaultBoardState(): BoardState {
 	const extent: Vec2 = [8, 8]
 	const tiles = [...loop2d(extent)].map((): Tile => ({
-		ramp: false,
+		step: false,
 		elevation: 1,
 		resource: false,
 		watchTower: false,
