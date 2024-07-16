@@ -1,12 +1,11 @@
 
 import {vec2} from "@benev/toolbox"
 import {ev, Pipe} from "@benev/slate"
-import {DirectionalLight, Vector3} from "@babylonjs/core"
 import {make_envmap, scalar, Vec3, vec3, Vec2} from "@benev/toolbox"
 
 import {World} from "../world.js"
 import {Orbitcam} from "../orbitcam.js"
-import {Renderer} from "../renderer.js"
+import {makeBinder} from "../binder.js"
 import {ChessGlb} from "../chess-glb.js"
 import * as mapPool from "../../map-pool.js"
 import {Trashbin} from "../../tools/trashbin.js"
@@ -49,10 +48,9 @@ export async function freeplayFlow() {
 	d(chessGlb.border())
 
 	const firstState = arbiter.generateAgentState(null)
-	const renderer = d(new Renderer(world, chessGlb, firstState))
-	renderer.render()
+	const binder = makeBinder(chessGlb, firstState)
+	const {board, units, coordinator, boundaries} = binder
 
-	const {board, units, coordinator, boundaries} = renderer
 	const mainSelectacon = new Selectacon(board, units)
 	const cameraSelectacon = new Selectacon(board, units)
 
@@ -119,8 +117,6 @@ export async function freeplayFlow() {
 					.to(v => boundaries.clampPosition(v))
 					.done()
 			)
-			// const place = coordinator.toPlace([orbitcam.pivot[0], orbitcam.pivot[2]])
-			// console.log(place)
 		},
 	})
 
@@ -128,21 +124,20 @@ export async function freeplayFlow() {
 	dr(ev(world.canvas, middleMouseDrags.events))
 	dr(ev(document, {contextmenu: (e: Event) => e.preventDefault()}))
 
-	const sun = d(new DirectionalLight(
-		"sun",
-		new Vector3(.123, -1, .234).normalize(),
-		scene,
-	))
-
-	sun.intensity = .2
+	// const sun = d(new DirectionalLight(
+	// 	"sun",
+	// 	new Vector3(.123, -1, .234).normalize(),
+	// 	scene,
+	// ))
+	//
+	// sun.intensity = .2
 	world.gameloop.start()
 
 	///////////////////////////////
 
 	function performAction(action: Incident.Action.Any) {
 		arbiter.commit(action)
-		renderer.state = arbiter.generateAgentState(null)
-		renderer.render()
+		binder.updateState(arbiter.generateAgentState(null))
 	}
 
 	return {world, dispose: trash.dispose}
