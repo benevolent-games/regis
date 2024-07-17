@@ -43,20 +43,20 @@ export async function freeplayFlow() {
 	const chessGlb = new ChessGlb(container)
 
 	chessGlb.props.forEach((_, name) => console.log("prop:", name))
-	chessGlb.meshes.forEach((_, name) => console.log("mesh:", name))
+	// chessGlb.meshes.forEach((_, name) => console.log("mesh:", name))
 
 	d(chessGlb.border())
+	const {scene} = world
+
+	d(make_envmap(scene, "/assets/studiolights.env"))
+	scene.environmentIntensity = 0.1
 
 	const firstState = arbiter.generateAgentState(null)
-	const binder = makeBinder(chessGlb, firstState)
+	const binder = d(makeBinder(chessGlb, firstState))
 	const {board, units, coordinator, boundaries} = binder
 
 	const mainSelectacon = new Selectacon(board, units)
 	const cameraSelectacon = new Selectacon(board, units)
-
-	const {scene} = world
-	d(make_envmap(scene, "/assets/studiolights.env"))
-	scene.environmentIntensity = 0.1
 
 	const orbitcam = d(new Orbitcam({
 		scene,
@@ -85,15 +85,25 @@ export async function freeplayFlow() {
 
 	cameraSelectacon.select([3, 3])
 
+	function grab(event: PointerEvent) {
+		const {pickedMesh} = scene.pick(
+			event.clientX,
+			event.clientY,
+			mesh => binder.blockPlacements.has(mesh),
+		)
+		if (pickedMesh)
+			return binder.blockPlacements.get(pickedMesh)!
+	}
+
 	const rightMouseDrags = new DragQueen({
 		predicate: event => event.button === 2,
 		onAnyDrag: () => {},
 		onAnyClick: () => {},
 		onIntendedDrag: orbitcam.drag,
 		onIntendedClick: event => {
-			// const place = renderer.grab(event)
-			// if (place)
-			// 	cameraSelectacon.select(place)
+			const place = grab(event)
+			if (place)
+				cameraSelectacon.select(place)
 		},
 	})
 
