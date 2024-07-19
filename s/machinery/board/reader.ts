@@ -3,7 +3,7 @@ import {loop2d, scalar, Vec2} from "@benev/toolbox"
 import {BoardState, Tile} from "./data.js"
 import {Getter} from "../../tools/stately.js"
 
-export class Board {
+export class BoardReader {
 	#getState: Getter<BoardState>
 	get #state() { return this.#getState() }
 

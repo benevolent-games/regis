@@ -1,6 +1,6 @@
 
+import {ClaimsReader} from "./reader.js"
 import {Claim, ClaimsState} from "./data.js"
-import {ClaimsReader} from "./claims-reader.js"
 
 export class ClaimsAuthor {
 	#map = new Map<number, Claim.Any>()

@@ -2,10 +2,10 @@
 import {Pipe} from "@benev/slate"
 import {Vec2, vec2, Vec3} from "@benev/toolbox"
 
-import {Board} from "./board/board.js"
+import {BoardReader} from "./board/reader.js"
 
 type Options = {
-	board: Board
+	board: BoardReader
 	blockSize: number
 	blockHeight: number
 }

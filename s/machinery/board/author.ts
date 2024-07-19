@@ -1,7 +1,7 @@
 
 import {loop2d, Vec2} from "@benev/toolbox"
 
-import {Board} from "./board.js"
+import {BoardReader} from "./reader.js"
 import {BoardState, Tile} from "./data.js"
 
 export class BoardAuthor {
@@ -16,6 +16,6 @@ export class BoardAuthor {
 		return {extent, tiles}
 	})()
 
-	read = new Board(() => this.state)
+	read = new BoardReader(() => this.state)
 }
 

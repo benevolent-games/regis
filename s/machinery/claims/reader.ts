@@ -1,7 +1,7 @@
 
 import {vec2, Vec2} from "@benev/toolbox"
 import {ClaimsState} from "./data.js"
-import {UnitsReader} from "../units/units.js"
+import {UnitsReader} from "../units/reader.js"
 
 export class ClaimsReader {
 	#getState: () => ClaimsState

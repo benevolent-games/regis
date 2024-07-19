@@ -2,7 +2,7 @@
 import {id_counter} from "@benev/toolbox"
 
 import {Unit} from "./data.js"
-import {UnitsReader} from "./units.js"
+import {UnitsReader} from "./reader.js"
 
 export class UnitsAuthor {
 	#id = id_counter()
