@@ -8,7 +8,7 @@ export class Boundaries {
 	readonly max: vec3.Xyz
 
 	constructor(board: Board, coordinator: Coordinator) {
-		const [cornerFile, cornerRank] = board.state.extent
+		const [cornerFile, cornerRank] = board.extent
 
 		const corners = [
 			coordinator.toPosition([0, 0]),

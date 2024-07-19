@@ -51,8 +51,7 @@ export async function freeplayFlow() {
 	d(make_envmap(scene, "/assets/studiolights.env"))
 	scene.environmentIntensity = 0.1
 
-	const firstState = arbiter.generateAgentState(null)
-	const binder = d(makeBinder(chessGlb, firstState))
+	const binder = d(makeBinder(chessGlb, arbiter.generateAgentState(null)))
 	const {board, units, coordinator, boundaries} = binder
 
 	const mainSelectacon = new Selectacon(board, units)
@@ -61,7 +60,7 @@ export async function freeplayFlow() {
 	const orbitcam = d(new Orbitcam({
 		scene,
 		smoothing: 7,
-		zoomRange: [3, 30],
+		zoomRange: [3, 50],
 		straightenAtTop: false,
 		zoomAddsPivotHeight: 1.5,
 		zoomSensitivity: 3 / 100,
@@ -141,6 +140,7 @@ export async function freeplayFlow() {
 	// ))
 	//
 	// sun.intensity = .2
+
 	world.gameloop.start()
 
 	///////////////////////////////

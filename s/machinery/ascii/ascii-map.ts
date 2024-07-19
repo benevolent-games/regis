@@ -20,7 +20,7 @@ export function asciiMap(ascii: string) {
 
 		parts.forEach((part, file) => {
 			const place = [file, rank] as Vec2
-			const tile = board.at(place)
+			const tile = board.read.at(place)
 
 			function zoop(glyph: string, fn: () => void) {
 				if (part.includes(glyph))

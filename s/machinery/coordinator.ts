@@ -37,7 +37,7 @@ export class Coordinator {
 	/////////////////////////////
 
 	get #halfGridOffset() {
-		return vec2.divideBy(this.options.board.state.extent, 2)
+		return vec2.divideBy(this.options.board.extent, 2)
 	}
 }
 

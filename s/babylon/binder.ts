@@ -8,10 +8,15 @@ import {Boundaries} from "../machinery/boundaries.js"
 import {Coordinator} from "../machinery/coordinator.js"
 import {makeTileRenderer} from "./rendering/tile-renderer.js"
 
-export function makeBinder(chessGlb: ChessGlb, initialState: AgentState) {
+export function makeBinder(
+		chessGlb: ChessGlb,
+		initialState: AgentState,
+	) {
+
+	const agent = {state: initialState}
 	const trashbin = new Trashbin()
-	const board = new Board(initialState.board)
-	const units = new Units(initialState.units)
+	const board = new Board(() => agent.state.board)
+	const units = new Units(() => agent.state.units)
 	const coordinator = new Coordinator({board, blockSize: 2, blockHeight: 1})
 	const boundaries = new Boundaries(board, coordinator)
 	const {renderTile, blockPlacements} = makeTileRenderer(trashbin, chessGlb, coordinator)
@@ -19,7 +24,6 @@ export function makeBinder(chessGlb: ChessGlb, initialState: AgentState) {
 	function render() {
 		trashbin.dispose()
 		blockPlacements.clear()
-
 		for (const {tile, place} of board.loop())
 			renderTile(tile, place)
 	}
@@ -34,9 +38,7 @@ export function makeBinder(chessGlb: ChessGlb, initialState: AgentState) {
 		blockPlacements,
 		dispose: trashbin.dispose,
 		updateState(s: AgentState) {
-			initialState = s
-			board.state = s.board
-			units.state = s.units
+			agent.state = s
 			render()
 		},
 	}

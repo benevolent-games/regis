@@ -1,9 +1,7 @@
 
 import {Vec2} from "@benev/toolbox"
 
-export type UnitsState = {
-	entries: [number, Unit][]
-}
+export type UnitsState = [number, Unit][]
 
 export type Unit = {
 	place: Vec2
