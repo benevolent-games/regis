@@ -1,64 +1,25 @@
 
-import {deep} from "@benev/slate"
 import {scalar, vec2, Vec2} from "@benev/toolbox"
 
+import {Venue} from "./venue.js"
 import {Tile} from "../board/data.js"
-import {TeamState} from "../teams/data.js"
-import {asciiMap} from "../ascii/ascii-map.js"
-import {BoardAuthor} from "../board/author.js"
-import {UnitsAuthor} from "../units/author.js"
-import {actionActuators, AgentState, Incident, Initiation, Situation} from "./data.js"
-
-type Options = {
-	ascii: string
-	teams: TeamState[]
-}
+import {actionActuators, Incident} from "./data.js"
 
 export class Arbiter {
-
-	// the rest of this tracks the current state
-	chronicle: Incident.Any[] = []
-	initiation: Initiation
-	board: BoardAuthor
-	units: UnitsAuthor
-	teams: TeamState[]
-	situation: Situation
-
-	constructor({ascii, teams}: Options) {
-		const {board, units} = asciiMap(ascii)
-		this.board = board
-		this.units = units
-		this.teams = teams
-		this.initiation = {
-			teams,
-			board: board.state,
-			units: units.state,
-		}
-		this.situation = {
-			currentTurn: 0,
-			winner: null,
-		}
-	}
-
-	generateAgentState(_team: number | null): AgentState {
-		return deep.freeze({
-			teams: this.teams,
-			board: this.board.state,
-			units: this.units.state,
-			situation: this.situation,
-		})
-	}
+	constructor(public venue: Venue) {}
 
 	commit(incident: Incident.Any) {
 		if (incident.kind === "conclusion")
 			this.#conclude(incident)
+
 		else if (incident.kind === "action")
 			this.#actions[incident.name](incident as any)
-		this.chronicle.push(incident)
+
+		this.venue.chronicle.push(incident)
 	}
 
 	#conclude(incident: Incident.Conclusion) {
-		this.situation.winner = incident.winner
+		this.venue.situation.winner = incident.winner
 	}
 
 	#actions = actionActuators({
@@ -94,8 +55,8 @@ export class Arbiter {
 			throw new Error("TODO implement move")
 		},
 		yield: (_action: Incident.Action.Move) => {
-			const teamCount = this.initiation.teams.length
-			this.situation.currentTurn = scalar.wrap(teamCount + 1, 0, teamCount - 1)
+			const teamCount = this.venue.initiation.teams.length
+			this.venue.situation.currentTurn = scalar.wrap(teamCount + 1, 0, teamCount - 1)
 		},
 	})
 }

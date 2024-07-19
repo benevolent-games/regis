@@ -4,7 +4,7 @@ import {vec2, Vec2} from "@benev/toolbox"
 import {UnitsState} from "./data.js"
 import {Getter} from "../../tools/stately.js"
 
-export class Units {
+export class UnitsReader {
 	#state: Getter<UnitsState>
 
 	constructor(state: Getter<UnitsState>) {

@@ -4,11 +4,13 @@ import {ev, Pipe} from "@benev/slate"
 import {make_envmap, scalar, Vec3, vec3, Vec2} from "@benev/toolbox"
 
 import {World} from "../world.js"
+import {Renderer} from "../renderer.js"
 import {Orbitcam} from "../orbitcam.js"
-import {makeBinder} from "../binder.js"
 import {ChessGlb} from "../chess-glb.js"
 import * as mapPool from "../../map-pool.js"
 import {Trashbin} from "../../tools/trashbin.js"
+import {Agent} from "../../machinery/game/agent.js"
+import {Venue} from "../../machinery/game/venue.js"
 import {DragQueen} from "../../tools/drag-queen.js"
 import {Incident} from "../../machinery/game/data.js"
 import {Arbiter} from "../../machinery/game/arbiter.js"
@@ -22,7 +24,7 @@ export async function freeplayFlow() {
 	const d = trash.disposable
 	const dr = trash.disposer
 
-	const arbiter = new Arbiter({
+	const venue = new Venue({
 		ascii: mapPool.bridge,
 		teams: [
 			{
@@ -38,6 +40,10 @@ export async function freeplayFlow() {
 		],
 	})
 
+	const arbiter = new Arbiter(venue)
+	const agent = new Agent(() => venue.generateAgentState(null))
+	const {board, units, coordinator, boundaries} = agent
+
 	const world = d(await World.load())
 	const container = d(await world.loadContainer("/assets/chess-08.glb"))
 	const chessGlb = new ChessGlb(container)
@@ -51,8 +57,7 @@ export async function freeplayFlow() {
 	d(make_envmap(scene, "/assets/studiolights.env"))
 	scene.environmentIntensity = 0.1
 
-	const binder = d(makeBinder(chessGlb, arbiter.generateAgentState(null)))
-	const {board, units, coordinator, boundaries} = binder
+	const renderer = d(new Renderer(agent, chessGlb))
 
 	const mainSelectacon = new Selectacon(board, units)
 	const cameraSelectacon = new Selectacon(board, units)
@@ -88,10 +93,10 @@ export async function freeplayFlow() {
 		const {pickedMesh} = scene.pick(
 			event.clientX,
 			event.clientY,
-			mesh => binder.blockPlacements.has(mesh),
+			mesh => renderer.tiles.blockPlacements.has(mesh),
 		)
 		if (pickedMesh)
-			return binder.blockPlacements.get(pickedMesh)!
+			return renderer.tiles.blockPlacements.get(pickedMesh)!
 	}
 
 	const rightMouseDrags = new DragQueen({
@@ -147,7 +152,7 @@ export async function freeplayFlow() {
 
 	function performAction(action: Incident.Action.Any) {
 		arbiter.commit(action)
-		binder.updateState(arbiter.generateAgentState(null))
+		renderer.render()
 	}
 
 	return {world, dispose: trash.dispose}

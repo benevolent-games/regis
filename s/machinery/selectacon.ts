@@ -5,7 +5,7 @@ import {pubsub} from "@benev/slate"
 import {Tile} from "./board/data.js"
 import {Unit} from "./units/data.js"
 import {Board} from "./board/board.js"
-import {Units} from "./units/units.js"
+import {UnitsReader} from "./units/units.js"
 
 type Selectoid = {
 	place: Vec2
@@ -17,7 +17,7 @@ export class Selectacon {
 	selected: Selectoid | undefined
 	onSelected = pubsub<[Selectoid | undefined]>()
 
-	constructor(private board: Board, private units: Units) {}
+	constructor(private board: Board, private units: UnitsReader) {}
 
 	select(place: Vec2) {
 		const tile = this.board.at(place)

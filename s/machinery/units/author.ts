@@ -2,7 +2,7 @@
 import {id_counter} from "@benev/toolbox"
 
 import {Unit} from "./data.js"
-import {Units} from "./units.js"
+import {UnitsReader} from "./units.js"
 
 export class UnitsAuthor {
 	#id = id_counter()
@@ -12,11 +12,12 @@ export class UnitsAuthor {
 		return [...this.#map.entries()]
 	}
 
-	read = new Units(() => this.state)
+	read = new UnitsReader(() => this.state)
 
 	add(unit: Unit) {
 		const id = this.#id()
-		if (this.#map.has(id)) throw new Error(`unit already exists ${id}`)
+		if (this.#map.has(id))
+			throw new Error(`unit already exists ${id}`)
 		this.#map.set(id, unit)
 		return id
 	}

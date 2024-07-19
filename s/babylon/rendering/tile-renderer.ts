@@ -10,11 +10,11 @@ import {Coordinator} from "../../machinery/coordinator.js"
 export type TileRenderer = ReturnType<typeof makeTileRenderer>
 
 export function makeTileRenderer(
-		{disposable: d}: Trashbin,
 		chessGlb: ChessGlb,
 		coordinator: Coordinator,
 	) {
 
+	const trash = new Trashbin()
 	const blockPlacements = new Map<Prop, Vec2>()
 
 	function positionBlock(instance: TransformNode, place: Vec2, elevation: number) {
@@ -30,14 +30,14 @@ export function makeTileRenderer(
 	}
 
 	function spawnBlock(place: Vec2, layer: number) {
-		const instance = d(chessGlb.block(layer, "normal"))
+		const instance = trash.disposable(chessGlb.block(layer, "normal"))
 		positionBlock(instance, place, layer)
 		saveBlockPlacement(instance, place)
 		return instance
 	}
 
 	function spawnStep(place: Vec2, layer: number) {
-		const instance = d(chessGlb.step(layer, "normal"))
+		const instance = trash.disposable(chessGlb.step(layer, "normal"))
 		positionBlock(instance, place, layer)
 		saveBlockPlacement(instance, place)
 		return instance
@@ -60,6 +60,10 @@ export function makeTileRenderer(
 	return {
 		renderTile,
 		blockPlacements,
+		dispose() {
+			trash.dispose()
+			blockPlacements.clear()
+		},
 	}
 }
 
