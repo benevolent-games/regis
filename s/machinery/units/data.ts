@@ -12,224 +12,160 @@ export type Unit = {
 	damage: number
 }
 
-export type UnitArchetype = {
-	cost: null | number
-	cap: null | number
-	health: null | number
-	vision: null | {
-		pattern: string
-		seeUpCliffs: boolean
-		seeDownCliffs: boolean
-	}
-	move: null | {
-		cost: number
-		pattern: string
-		jump: boolean
-		cap: null | number
-	}
-	attack: null | {
-		cost: number
-		kind: "melee" | "ranged"
-		pattern: string
-		cap: null | number
-	}
-	captureResource: null | {
-		cost: number
-	}
-	captureWatchtower: null | {
-		cost: number
-	}
+export type Verticality = {
+	above: boolean
+	same: boolean
+	below: boolean
 }
 
-const patterns = {
-	omni1: `
-		|xxx
-		|x@x
-		|xxx
-	`,
-	omni2: `
-		|xxxxx
-		|xx@xx
-		|xxxxx
-	`,
-	cardinal1: `
-		| x
-		|x@x
-		| x
-	`,
-	ordinal1: `
-		|x x
-		| @
-		|x x
-	`,
+export const verticality = {
+	flat: {above: false, same: true, below: false},
+	downwards: {above: false, same: true, below: true},
+	upwards: {above: true, same: true, below: false},
+	everywhere: {above: true, same: true, below: true},
+} satisfies Record<string, Verticality>
+
+export type UnitArchetype = {
+	cost: null | number
+	health: null | number
+	royalty: boolean
+	claimant: boolean
+	vision: null | {
+		range: number
+		verticality: Verticality
+	}
+	move: null | {
+		range: number
+		verticality: Verticality
+	}
+	attack: null | {
+		damage: number
+		range: number
+		verticality: Verticality
+	}
 }
 
 export type UnitKind = keyof typeof unitArchetypes
 
 export const unitArchetypes = {
 	obstacle: {
-		health: 12,
-
 		cost: null,
-		cap: null,
+		health: 8,
+		royalty: false,
+		claimant: false,
 		vision: null,
 		move: null,
 		attack: null,
-		captureResource: null,
-		captureWatchtower: null,
 	},
 
 	king: {
 		cost: null,
-		cap: 3,
-		health: 2,
+		health: 4,
+		royalty: true,
+		claimant: false,
 		vision: {
-			seeUpCliffs: false,
-			seeDownCliffs: true,
-			pattern: patterns.omni1,
+			range: 2,
+			verticality: verticality.downwards,
 		},
 		move: {
-			cost: 1,
-			jump: false,
-			pattern: patterns.cardinal1,
-			cap: null,
+			range: 2,
+			verticality: verticality.flat,
 		},
 		attack: null,
-		captureWatchtower: {
-			cost: 0,
-		},
-		captureResource: null,
 	},
 
 	queen: {
-		cost: 20,
-		cap: 2,
-		health: 2,
+		cost: 16,
+		health: 3,
+		royalty: true,
+		claimant: false,
 		vision: {
-			seeUpCliffs: true,
-			seeDownCliffs: true,
-			pattern: patterns.omni2,
+			range: 2,
+			verticality: verticality.everywhere,
 		},
 		move: {
-			cost: 1,
-			cap: null,
-			jump: false,
-			pattern: patterns.cardinal1,
+			range: 2,
+			verticality: verticality.flat,
 		},
 		attack: null,
-		captureResource: null,
-		captureWatchtower: {
-			cost: 0,
-		},
 	},
 
 	bishop: {
-		cost: 12,
-		cap: 2,
-		health: 2,
+		cost: 16,
+		health: 3,
+		royalty: false,
+		claimant: false,
 		vision: {
-			seeUpCliffs: false,
-			seeDownCliffs: true,
-			pattern: patterns.omni1,
+			range: 2,
+			verticality: verticality.downwards,
 		},
 		move: {
-			cost: 1,
-			cap: null,
-			jump: false,
-			pattern: patterns.cardinal1,
+			range: 2,
+			verticality: verticality.flat,
 		},
 		attack: {
-			cost: 1,
-			cap: null,
-			kind: "ranged",
-			pattern: patterns.omni2,
-		},
-		captureResource: null,
-		captureWatchtower: {
-			cost: 0,
+			damage: 2,
+			range: 2,
 		},
 	},
 
 	knight: {
-		cost: 4,
-		cap: 3,
-		health: 2,
+		cost: 8,
+		health: 3,
+		royalty: false,
+		claimant: false,
 		vision: {
-			seeUpCliffs: false,
-			seeDownCliffs: true,
-			pattern: patterns.omni1,
+			range: 2,
+			verticality: verticality.downwards,
 		},
 		move: {
-			cost: 1,
-			cap: null,
-			jump: false,
-			pattern: patterns.cardinal1,
+			range: 3,
+			verticality: verticality.flat,
 		},
 		attack: {
-			cost: 1,
-			cap: 2,
-			kind: "melee",
-			pattern: patterns.omni1,
-		},
-		captureResource: null,
-		captureWatchtower: {
-			cost: 0,
+			damage: 1,
+			range: 1,
+			verticality: verticality.flat,
 		},
 	},
 
 	rook: {
-		cost: 8,
-		cap: 3,
-		health: 8,
+		cost: 12,
+		health: 5,
+		royalty: false,
+		claimant: false,
 		vision: {
-			seeUpCliffs: false,
-			seeDownCliffs: true,
-			pattern: patterns.omni1,
+			range: 1,
+			verticality: verticality.downwards,
 		},
 		move: {
-			cap: 1,
-			cost: 2,
-			jump: false,
-			pattern: patterns.cardinal1,
+			range: 1,
+			verticality: verticality.flat,
 		},
 		attack: {
-			cost: 1,
-			cap: null,
-			kind: "melee",
-			pattern: patterns.omni1,
-		},
-		captureResource: null,
-		captureWatchtower: {
-			cost: 0,
+			damage: 2,
+			range: 1,
+			verticality: verticality.everywhere,
 		},
 	},
 
 	pawn: {
-		cost: 2,
-		cap: 2,
+		cost: 6,
 		health: 2,
+		royalty: false,
+		claimant: false,
 		vision: {
-			seeUpCliffs: false,
-			seeDownCliffs: true,
-			pattern: patterns.omni1,
+			range: 1,
+			verticality: verticality.downwards,
 		},
 		move: {
-			cost: 1,
-			cap: null,
-			jump: false,
-			pattern: patterns.cardinal1,
+			range: 2,
+			verticality: verticality.flat,
 		},
 		attack: {
-			cost: 1,
-			cap: null,
-			kind: "melee",
-			pattern: patterns.omni1,
-		},
-		captureResource: {
-			cost: 8,
-		},
-		captureWatchtower: {
-			cost: 0,
+			damage: 1,
+			range: 1,
+			verticality: verticality.flat,
 		},
 	},
 }
