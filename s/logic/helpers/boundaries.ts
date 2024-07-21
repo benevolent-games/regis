@@ -4,11 +4,16 @@ import {scalar, Vec3, vec3} from "@benev/toolbox"
 import {Board} from "../state/board.js"
 import {Coordinator} from "./coordinator.js"
 
+export function boundaries(board: Board) {
+	return new Boundaries(board)
+}
+
 export class Boundaries {
 	readonly min: vec3.Xyz
 	readonly max: vec3.Xyz
 
-	constructor(board: Board, coordinator: Coordinator) {
+	constructor(board: Board) {
+		const coordinator = new Coordinator(board)
 		const [cornerFile, cornerRank] = board.extent
 
 		const corners = [

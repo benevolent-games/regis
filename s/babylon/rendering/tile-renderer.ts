@@ -2,20 +2,28 @@
 import {TransformNode} from "@babylonjs/core"
 import {babyloid, Prop, Vec2} from "@benev/toolbox"
 
-import {ChessGlb} from "../chess-glb.js"
-import {Trashbin} from "../../tools/trashbin.js"
-import {Tile} from "../../machinery/board/data.js"
-import {Coordinator} from "../../machinery/coordinator.js"
+import {constants} from "./constants.js"
+import {Venue} from "./aspects/venue.js"
+import {Ephemeral} from "./aspects/ephemeral.js"
+import {Board, Tile} from "../../logic/state/board.js"
+import {Coordinator} from "../../logic/helpers/coordinator.js"
 
 export type TileRenderer = ReturnType<typeof makeTileRenderer>
 
 export function makeTileRenderer(
-		chessGlb: ChessGlb,
-		coordinator: Coordinator,
+		board: Board,
+		venue: Venue,
+		ephemeral: Ephemeral,
 	) {
 
-	const trash = new Trashbin()
-	const blockPlacements = new Map<Prop, Vec2>()
+	const {chessGlb} = venue
+	const {trashbin} = ephemeral
+
+	const coordinator = new Coordinator({
+		board,
+		blockSize: constants.blockSize,
+		blockHeight: constants.blockHeight,
+	})
 
 	function positionBlock(instance: TransformNode, place: Vec2, elevation: number) {
 		const y = elevation
@@ -26,18 +34,18 @@ export function makeTileRenderer(
 	function saveBlockPlacement(instance: Prop, place: Vec2) {
 		for (const mesh of [instance, ...instance.getChildMeshes()])
 			if (babyloid.is.meshoid(mesh))
-				blockPlacements.set(mesh, place)
+				ephemeral.blockPlacements.set(mesh, place)
 	}
 
 	function spawnBlock(place: Vec2, layer: number) {
-		const instance = trash.disposable(chessGlb.block(layer, "normal"))
+		const instance = trashbin.disposable(chessGlb.block(layer, "normal"))
 		positionBlock(instance, place, layer)
 		saveBlockPlacement(instance, place)
 		return instance
 	}
 
 	function spawnStep(place: Vec2, layer: number) {
-		const instance = trash.disposable(chessGlb.step(layer, "normal"))
+		const instance = trashbin.disposable(chessGlb.step(layer, "normal"))
 		positionBlock(instance, place, layer)
 		saveBlockPlacement(instance, place)
 		return instance
@@ -57,13 +65,6 @@ export function makeTileRenderer(
 			spawnBlock(place, 2)
 	}
 
-	return {
-		renderTile,
-		blockPlacements,
-		dispose() {
-			trash.dispose()
-			blockPlacements.clear()
-		},
-	}
+	return {renderTile}
 }
 

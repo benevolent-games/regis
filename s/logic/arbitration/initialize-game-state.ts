@@ -11,7 +11,7 @@ type Options = {
 	teams: Team[]
 }
 
-export function initialize({ascii, teams}: Options): GameState {
+export function initializeGameState({ascii, teams}: Options): GameState {
 	const {board, units, claims} = asciiMap(ascii)
 	const details: GameDetails = {teams, board, units, claims}
 	return clone({
