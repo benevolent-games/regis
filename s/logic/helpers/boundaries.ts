@@ -1,5 +1,5 @@
 
-import {scalar, Vec3, vec3} from "@benev/toolbox"
+import {scalar, vec2, Vec2, Vec3} from "@benev/toolbox"
 
 import {Board} from "../state/board.js"
 import {Coordinator} from "./coordinator.js"
@@ -9,39 +9,37 @@ export function boundaries(board: Board) {
 }
 
 export class Boundaries {
-	readonly min: vec3.Xyz
-	readonly max: vec3.Xyz
+	readonly place: {min: Vec2, max: Vec2}
+	readonly position: {min: Vec3, max: Vec3}
 
 	constructor(board: Board) {
 		const coordinator = new Coordinator(board)
-		const [cornerFile, cornerRank] = board.extent
 
-		const corners = [
-			coordinator.toPosition([0, 0]),
-			coordinator.toPosition([0, cornerRank - 1]),
-			coordinator.toPosition([cornerFile - 1, 0]),
-			coordinator.toPosition([cornerFile - 1, cornerRank - 1]),
-		]
+		this.place = {
+			min: [0, 0],
+			max: vec2.addBy(board.extent, -1),
+		}
 
-		this.min = Object.freeze({
-			x: Math.min(...corners.map(c => c[0])),
-			y: 0,
-			z: Math.min(...corners.map(c => c[2])),
-		})
+		this.position = {
+			min: coordinator.toPosition(this.place.min),
+			max: coordinator.toPosition(this.place.max),
+		}
+	}
 
-		this.max = Object.freeze({
-			x: Math.max(...corners.map(c => c[0])),
-			y: 2,
-			z: Math.max(...corners.map(c => c[2])),
-		})
+	clampPlace([x, y]: Vec2) {
+		const {min: [minX, minY], max: [maxX, maxY]} = this.place
+		return [
+			scalar.clamp(x, minX, maxX),
+			scalar.clamp(y, minY, maxY),
+		] as Vec2
 	}
 
 	clampPosition([x, y, z]: Vec3) {
-		const {min, max} = this
+		const {min: [minX,,minZ], max: [maxX,,maxZ]} = this.position
 		return [
-			scalar.clamp(x, min.x, max.x),
-			scalar.clamp(y, min.y, max.y),
-			scalar.clamp(z, min.z, max.z),
+			scalar.clamp(x, minX, maxX),
+			y,
+			scalar.clamp(z, minZ, maxZ),
 		] as Vec3
 	}
 }

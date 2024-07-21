@@ -18,6 +18,8 @@ export async function makeVisualizer() {
 	const {orbitcam} = makeVisualizerFixtures(world)
 	const tiles = makeTileRenderer(chessGlb)
 
+	chessGlb.border()
+
 	function grab(event: PointerEvent) {
 		const {pickedMesh} = world.scene.pick(
 			event.clientX,

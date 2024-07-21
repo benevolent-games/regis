@@ -18,6 +18,7 @@ export function asciiMap(ascii: string) {
 		.split("\n")
 		.map(s => s.trim())
 		.filter(s => s.length > 0)
+		.reverse()
 
 	lines.forEach((line, rank) => {
 		const parts = line.split(/\s+/)

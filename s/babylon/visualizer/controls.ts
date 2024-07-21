@@ -1,19 +1,23 @@
 
 import {ev, Pipe} from "@benev/slate"
-import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
+import {human, scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
 
 import {Visualizer} from "./visualizer.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {DragQueen} from "../../tools/drag-queen.js"
 import {AgentState} from "../../logic/state/game.js"
-import {coordinator} from "../../logic/helpers/coordinator.js"
 import {boundaries} from "../../logic/helpers/boundaries.js"
+import {coordinator} from "../../logic/helpers/coordinator.js"
 
 export function makeControls(visualizer: Visualizer, getState: () => AgentState) {
 	const {world, orbitcam} = visualizer
 
+	const state = {
+		get board() { return getState().board },
+	}
+
 	function setCameraPivot(place: Vec2) {
-		orbitcam.pivot = coordinator(getState().board).toPosition(place)
+		orbitcam.pivot = coordinator(state.board).toPosition(place)
 	}
 
 	function grab(event: PointerEvent) {
@@ -55,7 +59,14 @@ export function makeControls(visualizer: Visualizer, getState: () => AgentState)
 					.to(v => vec2.multiplyBy(v, panningSensitivity))
 					.to(([x, z]) => [x, 0, z] as Vec3)
 					.to(v => vec3.add(orbitcam.pivot, v))
-					.to(v => boundaries(getState().board).clampPosition(v))
+					.to(v => boundaries(state.board).clampPosition(v))
+					.to(v => {
+						const c = coordinator(state.board)
+						const place = c.toPlace(v)
+						const [,y] = c.toPosition(place)
+						const [x,,z] = v
+						return [x, y, z] as Vec3
+					})
 					.done()
 			)
 		},

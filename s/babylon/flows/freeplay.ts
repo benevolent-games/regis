@@ -10,7 +10,7 @@ import {initializeGameState} from "../../logic/arbitration/initialize-game-state
 
 export async function freeplayFlow() {
 	let state = initializeGameState({
-		ascii: mapPool.bridge,
+		ascii: mapPool.basin,
 		teams: [
 			{
 				name: "Blue",

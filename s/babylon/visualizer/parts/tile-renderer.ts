@@ -21,7 +21,7 @@ export function makeTileRenderer(chessGlb: ChessGlb) {
 		wipe()
 
 		function positionBlock(instance: TransformNode, place: Vec2, elevation: number) {
-			const y = elevation
+			const y = coordinator(board).toHeight(elevation)
 			const [x,,z] = coordinator(board).toPosition(place)
 			instance.position.set(x, y, z)
 		}

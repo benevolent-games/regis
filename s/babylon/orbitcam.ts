@@ -1,5 +1,5 @@
 
-import {scalar, Vec2, vec3, Vec3} from "@benev/toolbox"
+import {human, scalar, Vec2, vec3, Vec3} from "@benev/toolbox"
 import {ArcRotateCamera, Scene, Vector3} from "@babylonjs/core"
 
 import {Smooth, SmoothVector} from "../tools/smooth.js"
