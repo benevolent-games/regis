@@ -1,7 +1,7 @@
 
 import {Vec2} from "@benev/toolbox"
 
-export type Units = UnitEntry[]
+export type UnitsState = UnitEntry[]
 export type UnitEntry = [string, Unit]
 
 export type Unit = {

@@ -2,16 +2,12 @@
 import {Pipe} from "@benev/slate"
 import {Vec2, vec2, Vec3} from "@benev/toolbox"
 
-import {boardery} from "./boardery.js"
-import {Board} from "../state/board.js"
+import {BoardHelper} from "./board.js"
+import {BoardState} from "../state/board.js"
 import {constants} from "../../babylon/constants.js"
 
-export function coordinator(board: Board) {
-	return new Coordinator(board)
-}
-
-export class Coordinator {
-	constructor(private board: Board) {}
+export class CoordinatorHelper {
+	constructor(private board: BoardState) {}
 
 	toHeight(elevation: number) {
 		const {verticalOffset, height} = constants.block
@@ -19,7 +15,7 @@ export class Coordinator {
 	}
 
 	toPosition(place: Vec2) {
-		const tile = boardery(this.board).at(place)
+		const tile = new BoardHelper(this.board).at(place)
 		const y = this.toHeight(tile.elevation + (tile.step ? 0.5 : 0) + 1)
 		return Pipe.with(place)
 			.to(v => vec2.subtract(v, this.#halfGridOffset))

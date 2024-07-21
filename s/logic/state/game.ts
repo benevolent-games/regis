@@ -1,9 +1,9 @@
 
 import {Vec2} from "@benev/toolbox"
 
-import {Board} from "./board.js"
-import {Units} from "./units.js"
-import {Claims} from "./claims.js"
+import {BoardState} from "./board.js"
+import {UnitsState} from "./units.js"
+import {ClaimsState} from "./claims.js"
 import {TeamFoggy, Team} from "./teams.js"
 
 export type GameState = GameReplay & GameTemporal
@@ -21,16 +21,16 @@ export type GameTemporal = {
 
 export type GameDetails = {
 	teams: Team[]
-	board: Board
-	units: Units
-	claims: Claims
+	board: BoardState
+	units: UnitsState
+	claims: ClaimsState
 }
 
 export type GamePerspective = {
 	teams: (Team | TeamFoggy)[]
-	board: Board
-	units: Units
-	claims: Claims
+	board: BoardState
+	units: UnitsState
+	claims: ClaimsState
 }
 
 /** game state that a client can render (may be partial for fog-of-war) */

@@ -5,13 +5,12 @@ import {babyloid, Prop, Vec2} from "@benev/toolbox"
 import {World} from "../../world.js"
 import {ChessGlb} from "../../chess-glb.js"
 import {Trashbin} from "../../../tools/trashbin.js"
-import {Board, Tile} from "../../../logic/state/board.js"
-import {boardery} from "../../../logic/helpers/boardery.js"
-import {coordinator} from "../../../logic/helpers/coordinator.js"
+import {Detective} from "../../../logic/detective.js"
+import {BoardState, Tile} from "../../../logic/state/board.js"
 
 export type TileRenderer = ReturnType<typeof makeTileRenderer>
 
-export function makeTileRenderer(world: World, chessGlb: ChessGlb) {
+export function makeTileRenderer(detective: Detective, world: World, chessGlb: ChessGlb) {
 	const trashbin = new Trashbin()
 	const blockPlacements = new Map<Prop, Vec2>()
 
@@ -20,12 +19,12 @@ export function makeTileRenderer(world: World, chessGlb: ChessGlb) {
 		blockPlacements.clear()
 	}
 
-	function render(board: Board) {
+	function render(board: BoardState) {
 		wipe()
 
 		function positionBlock(instance: TransformNode, place: Vec2, elevation: number) {
-			const y = coordinator(board).toHeight(elevation)
-			const [x,,z] = coordinator(board).toBlockPosition(place)
+			const y = detective.coordinator.toHeight(elevation)
+			const [x,,z] = detective.coordinator.toBlockPosition(place)
 			instance.position.set(x, y, z)
 		}
 
@@ -66,7 +65,7 @@ export function makeTileRenderer(world: World, chessGlb: ChessGlb) {
 				spawnBlock(place, 2)
 		}
 
-		for (const {tile, place} of boardery(board).list())
+		for (const {tile, place} of detective.board.list())
 			renderTile(tile, place)
 	}
 

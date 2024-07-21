@@ -2,7 +2,8 @@
 import {Vec2} from "@benev/toolbox"
 
 import {Trashbin} from "../../tools/trashbin.js"
-import {Board} from "../../logic/state/board.js"
+import {Detective} from "../../logic/detective.js"
+import {BoardState} from "../../logic/state/board.js"
 import {AgentState} from "../../logic/state/game.js"
 import {makeVisualizerBasics} from "./parts/basics.js"
 import {makeTileRenderer} from "./parts/tile-renderer.js"
@@ -13,7 +14,7 @@ import {makeSelectionRenderer} from "./parts/selection-renderer.js"
 
 export type Visualizer = Awaited<ReturnType<typeof makeVisualizer>>
 
-export async function makeVisualizer() {
+export async function makeVisualizer(detective: Detective) {
 	const trashbin = new Trashbin()
 	const d = trashbin.disposable
 
@@ -23,10 +24,10 @@ export async function makeVisualizer() {
 	d(chessGlb.border())
 
 	// renderers
-	const tileRenderer = d(makeTileRenderer(world, chessGlb))
-	const unitRenderer = d(makeUnitRenderer(chessGlb))
-	const hoverRenderer = d(makeHoverRenderer(chessGlb))
-	const selectionRenderer = d(makeSelectionRenderer(chessGlb))
+	const tileRenderer = d(makeTileRenderer(detective, world, chessGlb))
+	const unitRenderer = d(makeUnitRenderer(detective, chessGlb))
+	const hoverRenderer = d(makeHoverRenderer(detective, chessGlb))
+	const selectionRenderer = d(makeSelectionRenderer(detective, chessGlb))
 	const {orbitcam} = d(makeCameraRigging(world))
 
 	// start the rendering gameloop
@@ -42,9 +43,9 @@ export async function makeVisualizer() {
 		dispose: trashbin.dispose,
 
 		// render a new state
-		update(state: AgentState) {
-			tileRenderer.render(state.board)
-			unitRenderer.render(state.board, state.units)
+		update() {
+			tileRenderer.render()
+			unitRenderer.render()
 		},
 	}
 }

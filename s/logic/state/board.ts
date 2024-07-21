@@ -8,12 +8,12 @@ export type Tile = {
 	step: boolean
 }
 
-export type Board = {
+export type BoardState = {
 	extent: Vec2
 	tiles: Tile[]
 }
 
-export function makeBoard(): Board {
+export function makePlainBoardState(): BoardState {
 	const extent: Vec2 = [8, 8]
 	const tiles = [...loop2d(extent)].map((): Tile => ({
 		step: false,

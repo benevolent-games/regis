@@ -1,19 +1,15 @@
 
 import {scalar, vec2, Vec2, Vec3} from "@benev/toolbox"
 
-import {Board} from "../state/board.js"
-import {Coordinator} from "./coordinator.js"
+import {BoardState} from "../state/board.js"
+import {CoordinatorHelper} from "./coordinator.js"
 
-export function boundaries(board: Board) {
-	return new Boundaries(board)
-}
-
-export class Boundaries {
+export class BoundaryHelper {
 	readonly place: {min: Vec2, max: Vec2}
 	readonly position: {min: Vec3, max: Vec3}
 
-	constructor(board: Board) {
-		const coordinator = new Coordinator(board)
+	constructor(public board: BoardState) {
+		const coordinator = new CoordinatorHelper(board)
 
 		this.place = {
 			min: [0, 0],

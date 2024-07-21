@@ -1,7 +1,7 @@
 
 import {ChessGlb} from "../../chess-glb.js"
-import {Board} from "../../../logic/state/board.js"
-import {Units} from "../../../logic/state/units.js"
+import {BoardState} from "../../../logic/state/board.js"
+import {UnitsState} from "../../../logic/state/units.js"
 import {Trashbin} from "../../../tools/trashbin.js"
 import {unitry} from "../../../logic/helpers/unitry.js"
 import {coordinator} from "../../../logic/helpers/coordinator.js"
@@ -13,7 +13,7 @@ export function makeUnitRenderer(chessGlb: ChessGlb) {
 		trashbin.dispose()
 	}
 
-	function render(board: Board, units: Units) {
+	function render(board: BoardState, units: UnitsState) {
 		wipe()
 		for (const [,unit] of unitry(units).list()) {
 			const instancer = chessGlb.unit.get(unit.kind)

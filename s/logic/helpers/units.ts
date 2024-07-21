@@ -1,34 +1,30 @@
 
 import {vec2, Vec2} from "@benev/toolbox"
 import {mintId} from "../../tools/mint-id.js"
-import {Unit, UnitEntry, Units} from "../state/units.js"
+import {Unit, UnitEntry, UnitsState} from "../state/units.js"
 
-export function unitry(units: Units) {
-	return new Unitry(units)
-}
-
-export class Unitry {
-	constructor(public units: Units) {}
+export class UnitsHelper {
+	constructor(public state: UnitsState) {}
 
 	has(id: string) {
-		return this.units.some(([unitId]) => unitId === id)
+		return this.state.some(([unitId]) => unitId === id)
 	}
 
 	get(id: string) {
-		for (const [unitId, unit] of this.units)
+		for (const [unitId, unit] of this.state)
 			if (unitId === id)
 				return unit
 		throw new Error(`unit not found ${id}`)
 	}
 
 	at(place: Vec2) {
-		for (const [id, unit] of this.units)
+		for (const [id, unit] of this.state)
 			if (vec2.equal(place, unit.place))
 				return [id, unit] as UnitEntry
 	}
 
 	;*list(filter?: {team: null | number}) {
-		for (const [id, unit] of this.units)
+		for (const [id, unit] of this.state)
 			if (filter ? unit.team === filter.team : true)
 				yield [id, unit] as UnitEntry
 	}
@@ -37,12 +33,12 @@ export class Unitry {
 		const id = mintId()
 		if (this.has(id))
 			throw new Error(`unit already exists ${id}`)
-		this.units.push([id, unit])
+		this.state.push([id, unit])
 		return id
 	}
 
 	delete(id: string) {
-		this.units = this.units.filter(([unitId]) => unitId !== id)
+		this.state = this.state.filter(([unitId]) => unitId !== id)
 	}
 }
 

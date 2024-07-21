@@ -2,17 +2,17 @@
 import {Vec2} from "@benev/toolbox"
 
 import {glyphs} from "./glyphs.js"
-import {unitry} from "../helpers/unitry.js"
-import {makeBoard} from "../state/board.js"
-import {boardery} from "../helpers/boardery.js"
-import {claimery} from "../helpers/claimery.js"
-import {UnitKind, Units} from "../state/units.js"
-import {Claims, defaultClaims} from "../state/claims.js"
+import {UnitKind} from "../state/units.js"
+import {BoardHelper} from "../helpers/board.js"
+import {UnitsHelper} from "../helpers/units.js"
+import {defaultClaims} from "../state/claims.js"
+import {ClaimsHelper} from "../helpers/claims.js"
+import {makePlainBoardState} from "../state/board.js"
 
 export function asciiMap(ascii: string) {
-	const board = makeBoard()
-	const units: Units = []
-	const claims: Claims = []
+	const board = new BoardHelper(makePlainBoardState())
+	const units = new UnitsHelper([])
+	const claims = new ClaimsHelper([])
 
 	const lines = ascii
 		.split("\n")
@@ -25,7 +25,7 @@ export function asciiMap(ascii: string) {
 
 		parts.forEach((part, file) => {
 			const place = [file, rank] as Vec2
-			const tile = boardery(board).at(place)
+			const tile = board.at(place)
 
 			function zoop(glyph: string, fn: () => void) {
 				if (part.includes(glyph))
@@ -45,23 +45,23 @@ export function asciiMap(ascii: string) {
 			// claims
 			//
 
-			zoop(glyphs.claims.resource, () => claimery(claims).create(
+			zoop(glyphs.claims.resource, () => claims.create(
 				defaultClaims.resource(place))
 			)
 
-			zoop(glyphs.claims.watchtower, () => claimery(claims).create(
+			zoop(glyphs.claims.watchtower, () => claims.create(
 				defaultClaims.watchtower(place)
 			))
 
-			zoop(glyphs.claims.techKnight, () => claimery(claims).create(
+			zoop(glyphs.claims.techKnight, () => claims.create(
 				defaultClaims.techKnight(place)
 			))
 
-			zoop(glyphs.claims.techRook, () => claimery(claims).create(
+			zoop(glyphs.claims.techRook, () => claims.create(
 				defaultClaims.techRook(place)
 			))
 
-			zoop(glyphs.claims.techAdvanced, () => claimery(claims).create(
+			zoop(glyphs.claims.techAdvanced, () => claims.create(
 				defaultClaims.techAdvanced(place)
 			))
 
@@ -70,7 +70,7 @@ export function asciiMap(ascii: string) {
 			//
 
 			function makeUnit(kind: UnitKind, team: null | number, place: Vec2) {
-				return () => unitry(units).add({
+				return () => units.add({
 					kind,
 					team,
 					place,
@@ -96,6 +96,10 @@ export function asciiMap(ascii: string) {
 		})
 	})
 
-	return {board, units, claims}
+	return {
+		board: board.state,
+		units: units.state,
+		claims: claims.state,
+	}
 }
 

@@ -1,7 +1,7 @@
 
 import {Vec2} from "@benev/toolbox"
 
-export type Claims = ClaimEntry[]
+export type ClaimsState = ClaimEntry[]
 export type ClaimEntry = [string, Claim.Any]
 export type ClaimKind = Claim.Any["kind"]
 

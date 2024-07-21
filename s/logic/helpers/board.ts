@@ -1,22 +1,18 @@
 
-import {Board, Tile} from "../state/board.js"
+import {BoardState, Tile} from "../state/board.js"
 import {loop2d, scalar, Vec2} from "@benev/toolbox"
 
-export function boardery(board: Board) {
-	return new Boardery(board)
-}
-
-export class Boardery {
-	constructor(public board: Board) {}
+export class BoardHelper {
+	constructor(public state: BoardState) {}
 
 	#index([file, rank]: Vec2) {
-		return (rank * this.board.extent[0]) + file
+		return (rank * this.state.extent[0]) + file
 	}
 
 	#valid([file, rank]: Vec2) {
 		return (
-			scalar.within(file, 0, this.board.extent[0] - 1) &&
-			scalar.within(rank, 0, this.board.extent[1] - 1)
+			scalar.within(file, 0, this.state.extent[0] - 1) &&
+			scalar.within(rank, 0, this.state.extent[1] - 1)
 		)
 	}
 
@@ -25,7 +21,7 @@ export class Boardery {
 		if (!this.#valid(place))
 			throw new Error(`invalid ascii map, rank ${rank}x${file} is not on the grid`)
 		const index = this.#index(place)
-		const tile = this.board.tiles[index]
+		const tile = this.state.tiles[index]
 		if (!tile)
 			throw new Error(`tile not found`)
 		return tile
@@ -39,7 +35,7 @@ export class Boardery {
 	}
 
 	;*list() {
-		for (const place of loop2d(this.board.extent)) {
+		for (const place of loop2d(this.state.extent)) {
 			yield {place, tile: this.at(place)}
 		}
 	}
