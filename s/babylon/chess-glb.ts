@@ -14,7 +14,7 @@ function teamNumber(unit: Unit) {
 
 export class ChessGlb extends Glb {
 	unit = new Map<UnitKind, (unit: Unit) => TransformNode>()
-		.set("obstacle", () => this.instance(`obstacle-rock12`))
+		.set("obstacle", () => this.instance(`obstacle12`))
 		.set("king", unit => this.instance(`unit-team${teamNumber(unit)}-king`))
 		.set("queen", unit => this.instance(`unit-team${teamNumber(unit)}-queen`))
 		.set("bishop", unit => this.instance(`unit-team${teamNumber(unit)}-bishop1`))
@@ -39,5 +39,7 @@ export class ChessGlb extends Glb {
 	}
 
 	obstacle = () => this.instance(`obstacle`)
+
+	indicatorHover = (teamId: number) => this.instance(`indicator-hover-team${teamId + 1}`)
 }
 

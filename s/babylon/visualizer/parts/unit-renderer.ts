@@ -15,15 +15,13 @@ export function makeUnitRenderer(chessGlb: ChessGlb) {
 
 	function render(board: Board, units: Units) {
 		wipe()
-		console.log("render units", units)
 		for (const [,unit] of unitry(units).list()) {
-			console.log(unit)
 			const instancer = chessGlb.unit.get(unit.kind)
 			if (!instancer)
 				throw new Error(`cannot spawn unknown unit kind "${unit.kind}"`)
 			const instance = instancer(unit)
 			trashbin.disposable(instance)
-			instance.position.set(...coordinator(board).toPosition(unit.place, true))
+			instance.position.set(...coordinator(board).toPosition(unit.place))
 		}
 	}
 

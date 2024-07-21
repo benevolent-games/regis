@@ -2,13 +2,16 @@
 import {TransformNode} from "@babylonjs/core"
 import {babyloid, Prop, Vec2} from "@benev/toolbox"
 
+import {World} from "../../world.js"
 import {ChessGlb} from "../../chess-glb.js"
 import {Trashbin} from "../../../tools/trashbin.js"
 import {Board, Tile} from "../../../logic/state/board.js"
 import {boardery} from "../../../logic/helpers/boardery.js"
 import {coordinator} from "../../../logic/helpers/coordinator.js"
 
-export function makeTileRenderer(chessGlb: ChessGlb) {
+export type TileRenderer = ReturnType<typeof makeTileRenderer>
+
+export function makeTileRenderer(world: World, chessGlb: ChessGlb) {
 	const trashbin = new Trashbin()
 	const blockPlacements = new Map<Prop, Vec2>()
 
@@ -22,7 +25,7 @@ export function makeTileRenderer(chessGlb: ChessGlb) {
 
 		function positionBlock(instance: TransformNode, place: Vec2, elevation: number) {
 			const y = coordinator(board).toHeight(elevation)
-			const [x,,z] = coordinator(board).toPosition(place)
+			const [x,,z] = coordinator(board).toBlockPosition(place)
 			instance.position.set(x, y, z)
 		}
 
@@ -67,7 +70,18 @@ export function makeTileRenderer(chessGlb: ChessGlb) {
 			renderTile(tile, place)
 	}
 
+	function pick(event: {clientX: number, clientY: number}) {
+		const {pickedMesh} = world.scene.pick(
+			event.clientX,
+			event.clientY,
+			mesh => blockPlacements.has(mesh),
+		)
+		if (pickedMesh)
+			return blockPlacements.get(pickedMesh)!
+	}
+
 	return {
+		pick,
 		render,
 		blockPlacements,
 		dispose: wipe,

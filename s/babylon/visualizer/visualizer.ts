@@ -1,101 +1,48 @@
 
-import {ev} from "@benev/slate"
-import {make_envmap, scalar} from "@benev/toolbox"
+import {Vec2} from "@benev/toolbox"
 
-import {World} from "../world.js"
-import {Orbitcam} from "../orbitcam.js"
-import {ChessGlb} from "../chess-glb.js"
-import {constants} from "../constants.js"
+import {Trashbin} from "../../tools/trashbin.js"
+import {Board} from "../../logic/state/board.js"
 import {AgentState} from "../../logic/state/game.js"
+import {makeVisualizerBasics} from "./parts/basics.js"
 import {makeTileRenderer} from "./parts/tile-renderer.js"
-import { makeUnitRenderer } from "./parts/unit-renderer.js"
-
-const {degrees} = scalar.radians.from
+import {makeUnitRenderer} from "./parts/unit-renderer.js"
+import {makeCameraRigging} from "./parts/camera-rigging.js"
+import {makeHoverRenderer} from "./parts/hover-renderer.js"
 
 export type Visualizer = Awaited<ReturnType<typeof makeVisualizer>>
 
 export async function makeVisualizer() {
-	const {world, chessGlb} = await makeVisualizerBasics()
-	const {orbitcam} = makeVisualizerFixtures(world)
+	const trashbin = new Trashbin()
+	const d = trashbin.disposable
 
-	const border = chessGlb.border()
-	const tiles = makeTileRenderer(chessGlb)
-	const units = makeUnitRenderer(chessGlb)
+	const {world, chessGlb} = d(await makeVisualizerBasics())
 
-	function grab(event: PointerEvent) {
-		const {pickedMesh} = world.scene.pick(
-			event.clientX,
-			event.clientY,
-			mesh => tiles.blockPlacements.has(mesh),
-		)
-		if (pickedMesh)
-			return tiles.blockPlacements.get(pickedMesh)!
-	}
+	// initialize border
+	d(chessGlb.border())
 
+	// renderers
+	const tileRenderer = d(makeTileRenderer(world, chessGlb))
+	const unitRenderer = d(makeUnitRenderer(chessGlb))
+	const hoverRenderer = d(makeHoverRenderer(chessGlb))
+	const {orbitcam} = d(makeCameraRigging(world))
+
+	// start the rendering gameloop
 	world.gameloop.start()
 
 	return {
-		grab,
 		world,
-		tiles,
 		orbitcam,
+		tileRenderer,
+		unitRenderer,
+		hoverRenderer,
+		dispose: trashbin.dispose,
+
+		// render a new state
 		update(state: AgentState) {
-			tiles.render(state.board)
-			units.render(state.board, state.units)
-		},
-		dispose() {
-			border.dispose()
-			world.gameloop.stop()
-			tiles.dispose()
-			units.dispose()
-			orbitcam.dispose()
-			chessGlb.container.dispose()
-			world.dispose()
+			tileRenderer.render(state.board)
+			unitRenderer.render(state.board, state.units)
 		},
 	}
-}
-
-////////////////////////////////////////////////
-////////////////////////////////////////////////
-
-export async function makeVisualizerBasics() {
-	const world = await World.load()
-	const container = await world.loadContainer(constants.urls.chessGlb)
-	const {scene} = world
-
-	const chessGlb = new ChessGlb(container)
-	chessGlb.props.forEach((_, name) => console.log("prop:", name))
-
-	make_envmap(scene, constants.urls.envmap)
-	scene.environmentIntensity = 0.1
-
-	return {world, chessGlb}
-}
-
-////////////////////////////////////////////////
-////////////////////////////////////////////////
-
-export function makeVisualizerFixtures(
-		{scene, canvas, rendering, gameloop}: World,
-	) {
-
-	const orbitcam = new Orbitcam({
-		scene,
-		smoothing: 7,
-		zoomRange: [3, 50],
-		straightenAtTop: false,
-		zoomAddsPivotHeight: 1.5,
-		zoomSensitivity: 3 / 100,
-		orbitSensitivity: 5 / 1000,
-		verticalRange: [degrees(0), degrees(90)],
-	})
-
-	orbitcam.gimbal = [degrees(90), degrees(45)]
-	rendering.setCamera(orbitcam.camera)
-
-	ev(canvas, {wheel: orbitcam.wheel})
-	gameloop.on(orbitcam.tick)
-
-	return {orbitcam}
 }
 

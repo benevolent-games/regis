@@ -1,8 +1,6 @@
 
+import {makeAgent} from "../agent/agent.js"
 import * as mapPool from "../../map-pool.js"
-import {Incident} from "../../logic/state/game.js"
-import {makeControls} from "../visualizer/controls.js"
-import {commit} from "../../logic/arbitration/commit.js"
 import {defaultRoster} from "../../logic/state/teams.js"
 import {makeVisualizer} from "../visualizer/visualizer.js"
 import {extractAgentState} from "../../logic/arbitration/extract-agent-state.js"
@@ -29,15 +27,18 @@ export async function freeplayFlow() {
 	// 	state = commit(state, incident)
 	// }
 
+	const getState = () => extractAgentState(state, state.arbiter)
+
 	const visualizer = await makeVisualizer()
 
-	const controls = makeControls(
+	const agent = makeAgent({
+		getState,
 		visualizer,
-		() => extractAgentState(state, state.arbiter)
-	)
+		playAsTeams: [0, 1],
+	})
 
 	function update() {
-		const agentState = extractAgentState(state, state.arbiter)
+		const agentState = getState()
 		visualizer.update(agentState)
 	}
 
@@ -46,7 +47,7 @@ export async function freeplayFlow() {
 	return {
 		world: visualizer.world,
 		dispose() {
-			controls.dispose()
+			agent.dispose()
 			visualizer.dispose()
 		},
 	}

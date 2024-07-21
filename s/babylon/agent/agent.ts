@@ -2,33 +2,56 @@
 import {ev, Pipe} from "@benev/slate"
 import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
 
-import {Visualizer} from "./visualizer.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {DragQueen} from "../../tools/drag-queen.js"
 import {AgentState} from "../../logic/state/game.js"
+import {Visualizer} from "../visualizer/visualizer.js"
 import {boundaries} from "../../logic/helpers/boundaries.js"
 import {coordinator} from "../../logic/helpers/coordinator.js"
 
-export function makeControls(visualizer: Visualizer, getState: () => AgentState) {
+export function makeAgent({playAsTeams, visualizer, getState}: {
+		playAsTeams: number[]
+		visualizer: Visualizer
+		getState: () => AgentState
+	}) {
+
+	const trashbin = new Trashbin()
+	const d = trashbin.disposable
+	const dr = trashbin.disposer
+
 	const {world, orbitcam} = visualizer
 
 	const state = {
 		get board() { return getState().board },
+		get context() { return getState().context },
 	}
+
+	let lastHoverPoint: undefined | {clientX: number, clientY: number}
+
+	dr(ev(world.canvas, {
+		pointermove: ({clientX, clientY}: PointerEvent) => {
+			lastHoverPoint = {clientX, clientY}
+		},
+	}))
+
+	dr(world.gameloop.on(() => {
+		if (lastHoverPoint) {
+			const place = visualizer.tileRenderer.pick(lastHoverPoint)
+			visualizer.hoverRenderer.hover(state.board, state.context.currentTurn, place)
+		}
+	}))
 
 	function setCameraPivot(place: Vec2) {
 		orbitcam.pivot = coordinator(state.board).toPosition(place)
 	}
 
-	function grab(event: PointerEvent) {
-		const {pickedMesh} = visualizer.world.scene.pick(
-			event.clientX,
-			event.clientY,
-			mesh => visualizer.tiles.blockPlacements.has(mesh),
-		)
-		if (pickedMesh)
-			return visualizer.tiles.blockPlacements.get(pickedMesh)!
-	}
+	// const leftClicks = {
+	// 	pointerdown: (event: PointerEvent) => {
+	// 		if (event.button !== 0)
+	// 			return
+	// 		console.log("leftclick!")
+	// 	},
+	// }
 
 	const rightMouseDrags = new DragQueen({
 		predicate: event => event.button === 2,
@@ -36,7 +59,7 @@ export function makeControls(visualizer: Visualizer, getState: () => AgentState)
 		onAnyClick: () => {},
 		onIntendedDrag: orbitcam.drag,
 		onIntendedClick: event => {
-			const place = grab(event)
+			const place = visualizer.tileRenderer.pick(event)
 			if (place)
 				setCameraPivot(place)
 		},
@@ -72,10 +95,11 @@ export function makeControls(visualizer: Visualizer, getState: () => AgentState)
 		},
 	})
 
-	const trashbin = new Trashbin()
-	trashbin.disposer(ev(world.canvas, rightMouseDrags.events))
-	trashbin.disposer(ev(world.canvas, middleMouseDrags.events))
-	trashbin.disposer(ev(document, {contextmenu: (e: Event) => e.preventDefault()}))
+	dr(ev(world.canvas, {wheel: orbitcam.wheel}))
+	dr(ev(world.canvas, rightMouseDrags.events))
+	dr(ev(world.canvas, middleMouseDrags.events))
+	dr(ev(document, {contextmenu: (e: Event) => e.preventDefault()}))
+
 
 	return {
 		dispose: trashbin.dispose,
