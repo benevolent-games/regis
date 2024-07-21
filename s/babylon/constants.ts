@@ -8,7 +8,7 @@ export const constants = deep.freeze({
 		verticalOffset: -1,
 	},
 	urls: {
-		chessGlb: "/assets/chess-08.glb",
+		chessGlb: "/assets/chess-09.glb",
 		envmap: "/assets/studiolights.env",
 	},
 })

@@ -29,7 +29,7 @@ export class Unitry {
 
 	;*list(filter?: {team: null | number}) {
 		for (const [id, unit] of this.units)
-			if (filter && unit.team === filter.team)
+			if (filter ? unit.team === filter.team : true)
 				yield [id, unit] as UnitEntry
 	}
 

@@ -18,9 +18,9 @@ export class Coordinator {
 		return (elevation - 1 + verticalOffset) * height
 	}
 
-	toPosition(place: Vec2) {
+	toPosition(place: Vec2, onTopOfTile = false) {
 		const tile = boardery(this.board).at(place)
-		const y = this.toHeight(tile.elevation + (tile.step ? 0.5 : 0))
+		const y = this.toHeight(tile.elevation + (tile.step ? 0.5 : 0)) + (onTopOfTile ? constants.block.height : 0)
 		return Pipe.with(place)
 			.to(v => vec2.subtract(v, this.#halfGridOffset))
 			.to(v => vec2.add(v, [.5, .5]))

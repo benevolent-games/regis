@@ -8,6 +8,7 @@ import {ChessGlb} from "../chess-glb.js"
 import {constants} from "../constants.js"
 import {AgentState} from "../../logic/state/game.js"
 import {makeTileRenderer} from "./parts/tile-renderer.js"
+import { makeUnitRenderer } from "./parts/unit-renderer.js"
 
 const {degrees} = scalar.radians.from
 
@@ -16,9 +17,10 @@ export type Visualizer = Awaited<ReturnType<typeof makeVisualizer>>
 export async function makeVisualizer() {
 	const {world, chessGlb} = await makeVisualizerBasics()
 	const {orbitcam} = makeVisualizerFixtures(world)
-	const tiles = makeTileRenderer(chessGlb)
 
-	chessGlb.border()
+	const border = chessGlb.border()
+	const tiles = makeTileRenderer(chessGlb)
+	const units = makeUnitRenderer(chessGlb)
 
 	function grab(event: PointerEvent) {
 		const {pickedMesh} = world.scene.pick(
@@ -39,10 +41,13 @@ export async function makeVisualizer() {
 		orbitcam,
 		update(state: AgentState) {
 			tiles.render(state.board)
+			units.render(state.board, state.units)
 		},
 		dispose() {
+			border.dispose()
 			world.gameloop.stop()
 			tiles.dispose()
+			units.dispose()
 			orbitcam.dispose()
 			chessGlb.container.dispose()
 			world.dispose()
@@ -93,5 +98,4 @@ export function makeVisualizerFixtures(
 
 	return {orbitcam}
 }
-
 
