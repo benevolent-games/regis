@@ -29,6 +29,7 @@ export namespace Claim {
 		place: Vec2
 		stakeCost: number
 		unlocks: {
+			knight: boolean
 			rook: boolean
 			bishop: boolean
 			queen: boolean
@@ -43,26 +44,63 @@ export const defaultClaims = {
 		kind: "resource",
 		place,
 		level: 1,
-		stakeCost: 6,
+		stakeCost: 8,
 		stockpile: 100,
 		upgradeCosts: {
 			level2: 12,
-			level3: 18,
+			level3: 16,
 		},
 	}),
 
 	watchtower: (place: Vec2): Claim.Watchtower => ({
 		kind: "watchtower",
 		place,
-		stakeCost: 6,
+		stakeCost: 0,
 	}),
 
-	tech: (place: Vec2): Claim.Tech => ({
+	techKnight: (place: Vec2): Claim.Tech => ({
 		kind: "tech",
 		place,
-		stakeCost: 6,
+		stakeCost: 2,
 		unlocks: {
+			knight: true,
+			rook: false,
+			queen: false,
+			bishop: false,
+		},
+	}),
+
+	techRook: (place: Vec2): Claim.Tech => ({
+		kind: "tech",
+		place,
+		stakeCost: 4,
+		unlocks: {
+			knight: false,
 			rook: true,
+			queen: false,
+			bishop: false,
+		},
+	}),
+
+	techBasic: (place: Vec2): Claim.Tech => ({
+		kind: "tech",
+		place,
+		stakeCost: 8,
+		unlocks: {
+			knight: true,
+			rook: true,
+			queen: false,
+			bishop: false,
+		},
+	}),
+
+	techAdvanced: (place: Vec2): Claim.Tech => ({
+		kind: "tech",
+		place,
+		stakeCost: 8,
+		unlocks: {
+			knight: false,
+			rook: false,
 			queen: true,
 			bishop: true,
 		},

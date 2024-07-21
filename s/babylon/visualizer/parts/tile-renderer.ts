@@ -40,17 +40,20 @@ export function makeTileRenderer(chessGlb: ChessGlb) {
 		}
 
 		function spawnStep(place: Vec2, layer: number) {
-			const instance = trashbin.disposable(chessGlb.step(layer, "normal"))
+			const instance = trashbin.disposable(chessGlb.step(layer - 1, "normal"))
 			positionBlock(instance, place, layer)
 			saveBlockPlacement(instance, place)
 			return instance
 		}
 
 		function renderTile(tile: Tile, place: Vec2) {
-			if (tile.step)
-				spawnStep(place, tile.elevation)
-			else
+			if (tile.step) {
 				spawnBlock(place, tile.elevation)
+				spawnStep(place, tile.elevation + 1)
+			}
+			else {
+				spawnBlock(place, tile.elevation)
+			}
 
 			// spawn blocks underneath
 			if (tile.elevation > 1)

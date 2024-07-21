@@ -53,8 +53,16 @@ export function asciiMap(ascii: string) {
 				defaultClaims.watchtower(place)
 			))
 
-			zoop(glyphs.claims.tech, () => claimery(claims).create(
-				defaultClaims.tech(place)
+			zoop(glyphs.claims.techKnight, () => claimery(claims).create(
+				defaultClaims.techKnight(place)
+			))
+
+			zoop(glyphs.claims.techRook, () => claimery(claims).create(
+				defaultClaims.techRook(place)
+			))
+
+			zoop(glyphs.claims.techAdvanced, () => claimery(claims).create(
+				defaultClaims.techAdvanced(place)
 			))
 
 			//
