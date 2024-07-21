@@ -1,6 +1,6 @@
 
 import {ev, Pipe} from "@benev/slate"
-import {human, scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
+import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
 
 import {Visualizer} from "./visualizer.js"
 import {Trashbin} from "../../tools/trashbin.js"
