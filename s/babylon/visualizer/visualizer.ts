@@ -9,6 +9,7 @@ import {makeTileRenderer} from "./parts/tile-renderer.js"
 import {makeUnitRenderer} from "./parts/unit-renderer.js"
 import {makeCameraRigging} from "./parts/camera-rigging.js"
 import {makeHoverRenderer} from "./parts/hover-renderer.js"
+import {makeSelectionRenderer} from "./parts/selection-renderer.js"
 
 export type Visualizer = Awaited<ReturnType<typeof makeVisualizer>>
 
@@ -25,6 +26,7 @@ export async function makeVisualizer() {
 	const tileRenderer = d(makeTileRenderer(world, chessGlb))
 	const unitRenderer = d(makeUnitRenderer(chessGlb))
 	const hoverRenderer = d(makeHoverRenderer(chessGlb))
+	const selectionRenderer = d(makeSelectionRenderer(chessGlb))
 	const {orbitcam} = d(makeCameraRigging(world))
 
 	// start the rendering gameloop
@@ -36,6 +38,7 @@ export async function makeVisualizer() {
 		tileRenderer,
 		unitRenderer,
 		hoverRenderer,
+		selectionRenderer,
 		dispose: trashbin.dispose,
 
 		// render a new state
