@@ -42,5 +42,6 @@ export class ChessGlb extends Glb {
 
 	indicatorSelection = () => this.instance(`indicator-selected`)
 	indicatorHover = (teamId: number) => this.instance(`indicator-hover-team${teamId + 1}`)
+	indicatorLiberty = () => this.instance(`indicator-liberty`)
 }
 
