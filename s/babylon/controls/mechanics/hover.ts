@@ -14,8 +14,10 @@ export function attachHoverMechanic(visualizer: Visualizer, agent: Agent) {
 
 	const stopLooping = visualizer.world.gameloop.on(() => {
 		if (lastHoverPoint) {
-			const place = visualizer.tileRenderer.pick(lastHoverPoint)
-			visualizer.hoverRenderer.hover(agent.state.context.currentTurn, place)
+			visualizer.party.hover(
+				agent.state.context.currentTurn,
+				visualizer.pickTile(lastHoverPoint),
+			)
 		}
 	})
 

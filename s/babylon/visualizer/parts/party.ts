@@ -6,13 +6,20 @@ import {Tile} from "../../../logic/state/board.js"
 import {Unit} from "../../../logic/state/units.js"
 import {wherefor} from "../../../tools/wherefor.js"
 
+type HoverState = {
+	place: Vec2
+	teamId: number
+}
+
+type SelectionState = {
+	place: Vec2
+	tile: Tile
+	unit: null | Unit
+}
+
 export type PartyState = {
-	hover: null | Vec2
-	selection: null | {
-		place: Vec2
-		tile: Tile
-		unit: null | Unit
-	}
+	hover: null | HoverState
+	selection: null | SelectionState
 }
 
 /** the local state of a user interface to play the game */
@@ -22,33 +29,40 @@ export class Party {
 		selection: null,
 	}
 
-	constructor(public agent: Agent, public update: () => void) {}
+	constructor(private options: {
+		agent: Agent
+		updateHover: () => void
+		updateSelection: () => void
+	}) {}
 
-	#updater(fn: () => any) {
+	#changeChecker(fn: () => any) {
 		const previous = fn()
 		return () => {
 			const fresh = fn()
-			if (deep.equal(previous, fresh))
-				this.update()
+			return !deep.equal(previous, fresh)
 		}
 	}
 
-	select(place: null | Vec2) {
-		const update = this.#updater(() => this.state.selection)
+	select(place: Vec2 | undefined) {
+		const changed = this.#changeChecker(() => this.state.selection)
 		this.state.selection = place
 			? {
 				place,
-				tile: this.agent.board.at(place),
-				unit: wherefor(this.agent.units.at(place), ([,unit]) => unit) ?? null,
+				tile: this.options.agent.board.at(place),
+				unit: wherefor(this.options.agent.units.at(place), ([,unit]) => unit) ?? null,
 			}
 			: null
-		update()
+		if (changed())
+			this.options.updateSelection()
 	}
 
-	hover(place: null | Vec2) {
-		const update = this.#updater(() => this.state.hover)
+	hover(teamId: number, place: Vec2 | undefined) {
+		const changed = this.#changeChecker(() => this.state.hover)
 		this.state.hover = place
-		update()
+			? {teamId, place}
+			: null
+		if (changed())
+			this.options.updateHover()
 	}
 }
 

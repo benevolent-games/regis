@@ -1,15 +1,16 @@
 
-import {Vec2} from "@benev/toolbox"
 import {Viz} from "../viz.js"
 import {Trashbin} from "../../../tools/trashbin.js"
 
-export function makeSelectionRenderer({agent, chessGlb}: Viz) {
+export function makeSelectionRenderer({agent, chessGlb, party}: Viz) {
 	const trashbin = new Trashbin()
 
-	function select(place: Vec2 | undefined) {
+	function render() {
 		trashbin.dispose()
-		if (place) {
-			const position = agent.coordinator.toPosition(place)
+		const selection = party.state.selection
+
+		if (selection) {
+			const position = agent.coordinator.toPosition(selection.place)
 			const instance = chessGlb.indicatorSelection()
 			instance.position.set(...position)
 			trashbin.disposable(instance)
@@ -17,7 +18,7 @@ export function makeSelectionRenderer({agent, chessGlb}: Viz) {
 	}
 
 	return {
-		select,
+		render,
 		dispose: trashbin.dispose,
 	}
 }

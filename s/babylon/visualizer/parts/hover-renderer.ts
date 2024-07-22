@@ -1,13 +1,15 @@
 
-import {Vec2} from "@benev/toolbox"
 import {Viz} from "../viz.js"
 
-export function makeHoverRenderer({agent, chessGlb}: Viz) {
+export function makeHoverRenderer({agent, chessGlb, party}: Viz) {
 	let wipe = () => {}
 
-	function hover(teamId: number, place: Vec2 | undefined) {
+	function render() {
 		wipe()
-		if (place) {
+		const hovering = party.state.hover
+
+		if (hovering) {
+			const {teamId, place} = hovering
 			const position = agent.coordinator.toPosition(place)
 			const instance = chessGlb.indicatorHover(teamId)
 			instance.position.set(...position)
@@ -16,7 +18,7 @@ export function makeHoverRenderer({agent, chessGlb}: Viz) {
 	}
 
 	return {
-		hover,
+		render,
 		dispose: wipe,
 	}
 }

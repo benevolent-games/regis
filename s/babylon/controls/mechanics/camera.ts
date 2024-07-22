@@ -23,7 +23,7 @@ export function attachCameraMechanic(visualizer: Visualizer, agent: Agent) {
 		onAnyClick: () => {},
 		onIntendedDrag: orbitcam.drag,
 		onIntendedClick: event => {
-			const place = visualizer.tileRenderer.pick(event)
+			const place = visualizer.pickTile(event)
 			if (place)
 				setCameraPivot(place)
 		},

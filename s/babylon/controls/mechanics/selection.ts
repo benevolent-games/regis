@@ -9,9 +9,9 @@ export class SelectionMechanic {
 		pointerdown: (event: PointerEvent) => {
 			if (event.button !== 0)
 				return
-			const place = this.visualizer.tileRenderer.pick(event)
+			const place = this.visualizer.pickTile(event)
 			if (place)
-				this.visualizer.selectionRenderer.select(place)
+				this.visualizer.party.select(place)
 		},
 	}
 
@@ -25,9 +25,9 @@ export function attachSelectionMechanic(visualizer: Visualizer) {
 		pointerdown: (event: PointerEvent) => {
 			if (event.button !== 0)
 				return
-			const place = visualizer.tileRenderer.pick(event)
-			if (place)
-				visualizer.selectionRenderer.select(place)
+			visualizer.party.select(
+				visualizer.pickTile(event)
+			)
 		},
 	})
 }

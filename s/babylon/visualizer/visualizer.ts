@@ -1,6 +1,4 @@
 
-import {Vec2} from "@benev/toolbox"
-
 import {Viz} from "./viz.js"
 import {Party} from "./parts/party.js"
 import {Agent} from "../../logic/agent.js"
@@ -18,8 +16,14 @@ export async function makeVisualizer(agent: Agent) {
 	const trashbin = new Trashbin()
 	const d = trashbin.disposable
 
-	const party = new Party(agent, update)
 	const {world, chessGlb} = d(await makeVisualizerBasics())
+
+	// party contains local ui state
+	const party = new Party({
+		agent,
+		updateHover: () => hoverRenderer.render(),
+		updateSelection: () => selectionRenderer.render(),
+	})
 
 	const viz: Viz = {agent, party, world, chessGlb}
 
@@ -39,19 +43,19 @@ export async function makeVisualizer(agent: Agent) {
 	function update() {
 		tileRenderer.render()
 		unitRenderer.render()
+		hoverRenderer.render()
+		selectionRenderer.render()
 	}
 
 	return {
 		world,
 		party,
 		orbitcam,
-		tileRenderer,
-		unitRenderer,
-		hoverRenderer,
-		selectionRenderer,
 		dispose: trashbin.dispose,
 
-		// render a new state
+		pickTile: tileRenderer.pick,
+
+		// fully render a new state
 		update,
 	}
 }
