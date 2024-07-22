@@ -1,7 +1,7 @@
 
 import {scalar} from "@benev/toolbox"
-import {World} from "../../world.js"
-import {Orbitcam} from "../../orbitcam.js"
+import {World} from "./world.js"
+import {Orbitcam} from "./orbitcam.js"
 
 const {degrees} = scalar.radians.from
 

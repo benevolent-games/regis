@@ -1,14 +1,9 @@
 
 import {ev} from "@benev/slate"
-import {AgentState} from "../../../logic/state/game.js"
+import {Agent} from "../../../logic/agent.js"
 import {Visualizer} from "../../visualizer/visualizer.js"
 
-export function attachHoverMechanic(visualizer: Visualizer, getState: () => AgentState) {
-	const state = {
-		get board() { return getState().board },
-		get context() { return getState().context },
-	}
-
+export function attachHoverMechanic(visualizer: Visualizer, agent: Agent) {
 	let lastHoverPoint: undefined | {clientX: number, clientY: number}
 
 	const stopListening = ev(visualizer.world.canvas, {
@@ -20,7 +15,7 @@ export function attachHoverMechanic(visualizer: Visualizer, getState: () => Agen
 	const stopLooping = visualizer.world.gameloop.on(() => {
 		if (lastHoverPoint) {
 			const place = visualizer.tileRenderer.pick(lastHoverPoint)
-			visualizer.hoverRenderer.hover(state.board, state.context.currentTurn, place)
+			visualizer.hoverRenderer.hover(agent.state.context.currentTurn, place)
 		}
 	})
 

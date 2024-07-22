@@ -1,8 +1,8 @@
 
 import {make_envmap} from "@benev/toolbox"
 
-import {World} from "../../world.js"
-import {ChessGlb} from "../../chess-glb.js"
+import {World} from "./world.js"
+import {ChessGlb} from "./chess-glb.js"
 import {constants} from "../../constants.js"
 
 export async function makeVisualizerBasics() {

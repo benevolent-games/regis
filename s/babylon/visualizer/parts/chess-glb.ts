@@ -1,8 +1,8 @@
 
 import {TransformNode} from "@babylonjs/core"
 
-import {Glb} from "./tools/glb.js"
-import {Unit, UnitKind} from "../logic/state/units.js"
+import {Glb} from "../../tools/glb.js"
+import {Unit, UnitKind} from "../../../logic/state/units.js"
 
 export type BlockVariant = "normal" | "vision" | "hover"
 

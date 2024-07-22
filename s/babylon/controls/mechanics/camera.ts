@@ -1,26 +1,20 @@
 
-import { ev, Pipe } from "@benev/slate"
+import {ev, Pipe} from "@benev/slate"
 import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
 
+import {Agent} from "../../../logic/agent.js"
 import {Trashbin} from "../../../tools/trashbin.js"
 import {DragQueen} from "../../../tools/drag-queen.js"
-import {AgentState} from "../../../logic/state/game.js"
 import {Visualizer} from "../../visualizer/visualizer.js"
-import {boundaries} from "../../../logic/helpers/boundaries.js"
-import {coordinator} from "../../../logic/helpers/coordinator.js"
 
-export function attachCameraControls(visualizer: Visualizer, getState: () => AgentState) {
+export function attachCameraMechanic(visualizer: Visualizer, agent: Agent) {
 	const {world, orbitcam} = visualizer
 
 	const trashbin = new Trashbin()
 	const dr = trashbin.disposer
 
-	const state = {
-		get board() { return getState().board },
-	}
-
 	function setCameraPivot(place: Vec2) {
-		orbitcam.pivot = coordinator(state.board).toPosition(place)
+		orbitcam.pivot = agent.coordinator.toPosition(place)
 	}
 
 	const rightMouseDrags = new DragQueen({
@@ -52,11 +46,10 @@ export function attachCameraControls(visualizer: Visualizer, getState: () => Age
 					.to(v => vec2.multiplyBy(v, panningSensitivity))
 					.to(([x, z]) => [x, 0, z] as Vec3)
 					.to(v => vec3.add(orbitcam.pivot, v))
-					.to(v => boundaries(state.board).clampPosition(v))
+					.to(v => agent.boundary.clampPosition(v))
 					.to(v => {
-						const c = coordinator(state.board)
-						const place = c.toPlace(v)
-						const [,y] = c.toPosition(place)
+						const place = agent.coordinator.toPlace(v)
+						const [,y] = agent.coordinator.toPosition(place)
 						const [x,,z] = v
 						return [x, y, z] as Vec3
 					})

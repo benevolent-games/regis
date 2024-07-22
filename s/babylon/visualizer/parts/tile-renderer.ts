@@ -2,15 +2,13 @@
 import {TransformNode} from "@babylonjs/core"
 import {babyloid, Prop, Vec2} from "@benev/toolbox"
 
-import {World} from "../../world.js"
-import {ChessGlb} from "../../chess-glb.js"
+import {Viz} from "../viz.js"
+import {Tile} from "../../../logic/state/board.js"
 import {Trashbin} from "../../../tools/trashbin.js"
-import {Detective} from "../../../logic/detective.js"
-import {BoardState, Tile} from "../../../logic/state/board.js"
 
 export type TileRenderer = ReturnType<typeof makeTileRenderer>
 
-export function makeTileRenderer(detective: Detective, world: World, chessGlb: ChessGlb) {
+export function makeTileRenderer({agent, world, chessGlb}: Viz) {
 	const trashbin = new Trashbin()
 	const blockPlacements = new Map<Prop, Vec2>()
 
@@ -19,12 +17,12 @@ export function makeTileRenderer(detective: Detective, world: World, chessGlb: C
 		blockPlacements.clear()
 	}
 
-	function render(board: BoardState) {
+	function render() {
 		wipe()
 
 		function positionBlock(instance: TransformNode, place: Vec2, elevation: number) {
-			const y = detective.coordinator.toHeight(elevation)
-			const [x,,z] = detective.coordinator.toBlockPosition(place)
+			const y = agent.coordinator.toHeight(elevation)
+			const [x,,z] = agent.coordinator.toBlockPosition(place)
 			instance.position.set(x, y, z)
 		}
 
@@ -65,7 +63,7 @@ export function makeTileRenderer(detective: Detective, world: World, chessGlb: C
 				spawnBlock(place, 2)
 		}
 
-		for (const {tile, place} of detective.board.list())
+		for (const {tile, place} of agent.board.list())
 			renderTile(tile, place)
 	}
 
