@@ -47,14 +47,14 @@ export namespace Incident {
 		export type Move = {
 			kind: "action"
 			name: "move"
-			unitId: number
+			unitId: string
 			to: Vec2
 		}
 
 		export type Attack = {
 			kind: "action"
 			name: "attack"
-			unitId: number
+			unitId: string
 			to: Vec2
 		}
 

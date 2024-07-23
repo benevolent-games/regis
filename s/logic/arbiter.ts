@@ -30,7 +30,7 @@ export class Arbiter {
 		})
 	}
 
-	commit = (incident: Incident.Any) => {
+	actuate = (incident: Incident.Any) => {
 		this.state = commit(this.state, incident)
 		for (const {refresh} of this.agents)
 			refresh()

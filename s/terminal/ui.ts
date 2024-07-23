@@ -3,16 +3,20 @@ import {Vec2} from "@benev/toolbox"
 import {Unit} from "../logic/state/units.js"
 import {Tile} from "../logic/state/board.js"
 
+export type Hover = {
+	place: Vec2
+}
+
+export type Selected = {
+	tile: Tile
+	place: Vec2
+	unit: Unit | undefined
+}
+
 export type UiState = {
 	playableTeams: number[]
-	hover: null | {
-		place: Vec2
-	}
-	selection: null | {
-		tile: Tile
-		place: Vec2
-		unit: Unit | undefined
-	}
+	hover: null | Hover
+	selection: null | Selected
 }
 
 export class Ui {
