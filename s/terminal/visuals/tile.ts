@@ -2,23 +2,25 @@
 import {TransformNode} from "@babylonjs/core"
 import {babyloid, Prop, Vec2} from "@benev/toolbox"
 
-import {Viz} from "../viz.js"
-import {Tile} from "../../../logic/state/board.js"
-import {Trashbin} from "../../../tools/trashbin.js"
+import {World} from "./parts/world.js"
+import {Assets} from "./parts/assets.js"
+import {Agent} from "../../logic/agent.js"
+import {FnPickTilePlace} from "./types.js"
+import {Tile} from "../../logic/state/board.js"
+import {Trashbin} from "../../tools/trashbin.js"
+import {wherefor} from "../../tools/wherefor.js"
 
-export type TileRenderer = ReturnType<typeof makeTileRenderer>
-
-export function makeTileRenderer({agent, world, chessGlb}: Viz) {
+export function makeTileVisuals(agent: Agent, world: World, assets: Assets) {
 	const trashbin = new Trashbin()
 	const blockPlacements = new Map<Prop, Vec2>()
 
-	function wipe() {
+	function dispose() {
 		trashbin.dispose()
 		blockPlacements.clear()
 	}
 
 	function render() {
-		wipe()
+		dispose()
 
 		function positionBlock(instance: TransformNode, place: Vec2, elevation: number) {
 			const y = agent.coordinator.toHeight(elevation)
@@ -33,14 +35,14 @@ export function makeTileRenderer({agent, world, chessGlb}: Viz) {
 		}
 
 		function spawnBlock(place: Vec2, layer: number) {
-			const instance = trashbin.disposable(chessGlb.block(layer, "normal"))
+			const instance = trashbin.disposable(assets.theme.block(layer))
 			positionBlock(instance, place, layer)
 			saveBlockPlacement(instance, place)
 			return instance
 		}
 
 		function spawnStep(place: Vec2, layer: number) {
-			const instance = trashbin.disposable(chessGlb.step(layer - 1, "normal"))
+			const instance = trashbin.disposable(assets.theme.step(layer - 1))
 			positionBlock(instance, place, layer)
 			saveBlockPlacement(instance, place)
 			return instance
@@ -67,21 +69,15 @@ export function makeTileRenderer({agent, world, chessGlb}: Viz) {
 			renderTile(tile, place)
 	}
 
-	function pick(event: {clientX: number, clientY: number}) {
-		const {pickedMesh} = world.scene.pick(
+	const pick: FnPickTilePlace = event => wherefor(
+		world.scene.pick(
 			event.clientX,
 			event.clientY,
 			mesh => blockPlacements.has(mesh),
-		)
-		if (pickedMesh)
-			return blockPlacements.get(pickedMesh)!
-	}
+		).pickedMesh,
+		mesh => blockPlacements.get(mesh)!
+	)
 
-	return {
-		pick,
-		render,
-		blockPlacements,
-		dispose: wipe,
-	}
+	return {pick, render, dispose}
 }
 

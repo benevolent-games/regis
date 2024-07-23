@@ -1,6 +1,7 @@
 
 import {vec2, Vec2} from "@benev/toolbox"
 import {mintId} from "../../tools/mint-id.js"
+import {wherefor} from "../../tools/wherefor.js"
 import {Unit, UnitEntry, UnitsState} from "../state/units.js"
 
 export class UnitsHelper {
@@ -17,10 +18,15 @@ export class UnitsHelper {
 		throw new Error(`unit not found ${id}`)
 	}
 
-	at(place: Vec2) {
+	query(place: Vec2) {
 		for (const [id, unit] of this.state)
 			if (vec2.equal(place, unit.place))
 				return [id, unit] as UnitEntry
+	}
+
+	at(place: Vec2) {
+		const found = this.query(place)
+		return wherefor(found, ([,unit]) => unit)
 	}
 
 	;*list(filter?: {team: null | number}) {

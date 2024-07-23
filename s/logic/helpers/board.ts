@@ -18,12 +18,16 @@ export class BoardHelper {
 
 	at(place: Vec2) {
 		const [file, rank] = place
+
 		if (!this.#valid(place))
 			throw new Error(`invalid ascii map, rank ${rank}x${file} is not on the grid`)
+
 		const index = this.#index(place)
 		const tile = this.state.tiles[index]
+
 		if (!tile)
 			throw new Error(`tile not found`)
+
 		return tile
 	}
 

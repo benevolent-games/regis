@@ -60,7 +60,7 @@ export const GameApp = nexus.lightComponent(use => {
 			// }),
 
 			gameplay: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
-				const {freeplayFlow} = await import("../../../babylon/flows/freeplay.js")
+				const {freeplayFlow} = await import("../../../flows/freeplay.js")
 				const {world, dispose} = await freeplayFlow()
 				return {
 					dispose,

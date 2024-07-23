@@ -4,6 +4,7 @@ import {UnitsHelper} from "./units.js"
 import {UnitsState} from "../state/units.js"
 import {mintId} from "../../tools/mint-id.js"
 import {Claim, ClaimsState} from "../state/claims.js"
+import { wherefor } from "../../tools/wherefor.js"
 
 export class ClaimsHelper {
 	constructor(public state: ClaimsState) {}
@@ -15,13 +16,17 @@ export class ClaimsHelper {
 		throw new Error(`claim ${id} not found`)
 	}
 
-	at(place: Vec2) {
+	query(place: Vec2) {
 		return this.state.filter(([,claim]) => vec2.equal(claim.place, place))
+	}
+
+	at(place: Vec2) {
+		return this.query(place).map(([,claim]) => claim)
 	}
 
 	getStakeholder(id: string, units: UnitsState) {
 		const claim = this.get(id)
-		return new UnitsHelper(units).at(claim.place)
+		return new UnitsHelper(units).query(claim.place)
 	}
 
 	create(claim: Claim.Any) {

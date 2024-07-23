@@ -3,8 +3,8 @@ import {Pipe} from "@benev/slate"
 import {Vec2, vec2, Vec3} from "@benev/toolbox"
 
 import {BoardHelper} from "./board.js"
+import {constants} from "../../constants.js"
 import {BoardState} from "../state/board.js"
-import {constants} from "../../babylon/constants.js"
 
 export class CoordinatorHelper {
 	constructor(private board: BoardState) {}

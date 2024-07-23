@@ -2,14 +2,46 @@
 import {ev, Pipe} from "@benev/slate"
 import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
 
-import {Agent} from "../../../logic/agent.js"
-import {Trashbin} from "../../../tools/trashbin.js"
-import {DragQueen} from "../../../tools/drag-queen.js"
-import {Visualizer} from "../../visualizer/visualizer.js"
+import {World} from "./parts/world.js"
+import {Agent} from "../../logic/agent.js"
+import {FnPickTilePlace} from "./types.js"
+import {Orbitcam} from "./parts/orbitcam.js"
+import {Trashbin} from "../../tools/trashbin.js"
+import {DragQueen} from "../../tools/drag-queen.js"
 
-export function attachCameraMechanic(visualizer: Visualizer, agent: Agent) {
-	const {world, orbitcam} = visualizer
+const {degrees} = scalar.radians.from
 
+export function makeCameraVisuals(agent: Agent, world: World, pick: FnPickTilePlace) {
+	const orbitcam = new Orbitcam({
+		scene: world.scene,
+		smoothing: 7,
+		zoomRange: [3, 50],
+		straightenAtTop: false,
+		zoomAddsPivotHeight: 2,
+		zoomSensitivity: 3 / 100,
+		orbitSensitivity: 5 / 1000,
+		verticalRange: [degrees(0), degrees(90)],
+	})
+
+	orbitcam.gimbal = [degrees(90), degrees(45)]
+	world.rendering.setCamera(orbitcam.camera)
+
+	const cancelLoop = world.gameloop.on(orbitcam.tick)
+	const mechanics = cameraMechanics(agent, world, orbitcam, pick)
+
+	return {
+		orbitcam,
+		dispose() {
+			mechanics.dispose()
+			if (world.rendering.camera === orbitcam.camera)
+				world.rendering.setCamera(null)
+			cancelLoop()
+			orbitcam.dispose()
+		},
+	}
+}
+
+function cameraMechanics(agent: Agent, world: World, orbitcam: Orbitcam, pick: FnPickTilePlace) {
 	const trashbin = new Trashbin()
 	const dr = trashbin.disposer
 
@@ -23,7 +55,7 @@ export function attachCameraMechanic(visualizer: Visualizer, agent: Agent) {
 		onAnyClick: () => {},
 		onIntendedDrag: orbitcam.drag,
 		onIntendedClick: event => {
-			const place = visualizer.pickTile(event)
+			const place = pick(event)
 			if (place)
 				setCameraPivot(place)
 		},
@@ -63,6 +95,6 @@ export function attachCameraMechanic(visualizer: Visualizer, agent: Agent) {
 	dr(ev(world.canvas, middleMouseDrags.events))
 	dr(ev(document, {contextmenu: (e: Event) => e.preventDefault()}))
 
-	return trashbin.dispose
+	return {dispose: trashbin.dispose}
 }
 
