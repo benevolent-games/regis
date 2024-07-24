@@ -105,6 +105,7 @@ export const unitArchetypes = {
 		attack: {
 			damage: 2,
 			range: 2,
+			verticality: verticality.everywhere,
 		},
 	},
 

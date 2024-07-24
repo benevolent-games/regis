@@ -22,6 +22,15 @@ export function makeTileVisuals(agent: Agent, world: World, assets: Assets) {
 	function render() {
 		dispose()
 
+		function oddOrEven([x, y]: Vec2) {
+			return ((x + y) % 2) === 0
+				? "odd"
+				: "even"
+			// return ((agent.board.index(place) + place[1]) % 2) === 0
+			// 	? "odd"
+			// 	: "even"
+		}
+
 		function positionBlock(instance: TransformNode, place: Vec2, elevation: number) {
 			const y = agent.coordinator.toHeight(elevation)
 			const [x,,z] = agent.coordinator.toBlockPosition(place)
@@ -35,14 +44,14 @@ export function makeTileVisuals(agent: Agent, world: World, assets: Assets) {
 		}
 
 		function spawnBlock(place: Vec2, layer: number) {
-			const instance = trashbin.disposable(assets.theme.block(layer))
+			const instance = trashbin.disposable(assets.theme.block(layer, oddOrEven(place)))
 			positionBlock(instance, place, layer)
 			saveBlockPlacement(instance, place)
 			return instance
 		}
 
 		function spawnStep(place: Vec2, layer: number) {
-			const instance = trashbin.disposable(assets.theme.step(layer - 1))
+			const instance = trashbin.disposable(assets.theme.step(layer - 1, oddOrEven(place)))
 			positionBlock(instance, place, layer)
 			saveBlockPlacement(instance, place)
 			return instance

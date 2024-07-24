@@ -6,7 +6,7 @@ import {Agent} from "../../logic/agent.js"
 import {Selectacon} from "./selectacon.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {Incident} from "../../logic/state/game.js"
-import {findValidMoves, isMovementValid} from "../../logic/arbitration/routines.js"
+import {findValidAttacks, findValidMoves, isMovementValid} from "../../logic/arbitration/routines.js"
 
 export class Traversal {
 	#trashbin = new Trashbin()
@@ -28,13 +28,24 @@ export class Traversal {
 		const {selection} = selectacon
 
 		if (selection && selection.unit) {
+
+			// render traversal liberties
 			for (const move of findValidMoves(agent, selection.unit)) {
 				const instance = assets.indicators.liberty()
 				instance.position.set(...agent.coordinator.toPosition(move))
 				this.#trashbin.disposable(instance)
 			}
+
+			// render attack indicators
+			for (const attack of findValidAttacks(agent, selection.unit)) {
+				const instance = assets.indicators.attack()
+				instance.position.set(...agent.coordinator.toPosition(attack))
+				this.#trashbin.disposable(instance)
+			}
 		}
 	}
+
+	attemptAttack() {}
 
 	attemptMove(placeA: Vec2, placeB: Vec2) {
 		const {agent, actuate} = this.options

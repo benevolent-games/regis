@@ -39,8 +39,8 @@ export class Assets {
 
 export class ThemeGlb extends Glb {
 	border = () => this.instance(`border8x8`)
-	block = (elevation: number) => this.instance(`block${elevation}-v1`)
-	step = (elevation: number) => this.instance(`step${elevation}-v1`)
+	block = (elevation: number, alt: string) => this.instance(`block${elevation}-${alt}`)
+	step = (elevation: number, alt: string) => this.instance(`step${elevation}-${alt}`)
 	obstacle = () => this.instance(`obstacle12`)
 }
 
@@ -69,5 +69,6 @@ export class IndicatorsGlb extends Glb {
 	selection = () => this.instance(`indicator-selected`)
 	hover = (teamId: number) => this.instance(`indicator-hover-team${teamId + 1}`)
 	liberty = () => this.instance(`indicator-liberty`)
+	attack = () => this.instance(`indicator-attack`)
 }
 

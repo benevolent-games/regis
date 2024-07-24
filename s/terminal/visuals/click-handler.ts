@@ -1,8 +1,8 @@
 
 import {ev} from "@benev/slate"
+import {Vec2} from "@benev/toolbox"
+
 import {World} from "./parts/world.js"
-import {Traversal} from "./traversal.js"
-import {Selectacon} from "./selectacon.js"
 import {FnPickTilePlace} from "./types.js"
 
 export class ClickHandler {
@@ -10,9 +10,8 @@ export class ClickHandler {
 
 	constructor(private options: {
 			world: World
-			traversal: Traversal
-			selectacon: Selectacon
 			pick: FnPickTilePlace
+			onPlaceClick: (place: Vec2 | null) => void
 		}) {
 		this.#stop = ev(options.world.canvas, this.#events)
 	}
@@ -21,15 +20,8 @@ export class ClickHandler {
 		pointerdown: (event: PointerEvent) => {
 			if (event.button !== 0)
 				return
-
-			const {selectacon, traversal, pick} = this.options
-			const {selection} = selectacon
-			const clickedPlace = pick(event) ?? null
-
-			if (clickedPlace && selection?.unit)
-				traversal.attemptMove(selection.place, clickedPlace)
-
-			selectacon.select(clickedPlace ?? null)
+			const {pick, onPlaceClick} = this.options
+			onPlaceClick(pick(event) ?? null)
 		},
 	}
 

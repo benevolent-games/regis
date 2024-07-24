@@ -4,31 +4,40 @@ import {Agent} from "../agent.js"
 import {Tile} from "../state/board.js"
 import {Unit, unitArchetypes, Verticality} from "../state/units.js"
 
+export function findValidAttacks(agent: Agent, unit: Unit) {
+	return [...agent.board.list()]
+		.filter(target => isAttackValid(agent, unit.place, target.place))
+		.map(target => target.place)
+}
+
+export function isAttackValid(agent: Agent, placeA: Vec2, placeB: Vec2) {
+	const a = placeReport(agent, placeA)
+	const b = placeReport(agent, placeB)
+
+	if (!a.unit || !b.unit)
+		return false
+
+	if (a.unit.team === b.unit.team)
+		return false
+
+	const {attack} = unitArchetypes[a.unit.kind]
+	return !!(
+		attack &&
+		isVerticallyAllowed(attack.verticality, a.tile, b.tile) &&
+		isWithinRange(attack.range, a.place, b.place)
+	)
+}
+
 export function findValidMoves(agent: Agent, unit: Unit) {
 	return [...agent.board.list()]
 		.filter(target => isMovementValid(agent, unit.place, target.place))
 		.map(target => target.place)
-	// const validMoves: Vec2[] = []
-	// const unitTile = agent.board.at(unit.place)
-	// for (const target of agent.board.list()) {
-	// 	const {move} = unitArchetypes[unit.kind]
-	// 	const isVacant = !agent.units.at(target.place)
-	// 	const isValid = !!(
-	// 		move &&
-	// 		isVacant &&
-	// 		isVerticallyAllowed(move.verticality, unitTile, target.tile) &&
-	// 		isCardinalMove(unit.place, target.place)
-	// 	)
-	// 	if (isValid)
-	// 		validMoves.push(target.place)
-	// }
-	//
-	// return validMoves
 }
 
 export function isMovementValid(agent: Agent, placeA: Vec2, placeB: Vec2) {
 	const a = placeReport(agent, placeA)
 	const b = placeReport(agent, placeB)
+
 	const {unit} = a
 	const targetIsVacant = !b.unit
 
@@ -37,7 +46,7 @@ export function isMovementValid(agent: Agent, placeA: Vec2, placeB: Vec2) {
 
 	const {move} = unitArchetypes[unit.kind]
 
-	return (
+	return !!(
 		move &&
 		isVerticallyAllowed(move.verticality, a.tile, b.tile) &&
 		isCardinalMove(a.place, b.place)
@@ -51,34 +60,40 @@ function placeReport(agent: Agent, place: Vec2) {
 }
 
 export type VerticalityReport = {
-	factor: number
-	same: boolean
 	above: boolean
 	below: boolean
+	distance: number
+	withinHalfStep: boolean
+	withinFullStep: boolean
 }
 
 export function isVerticallyAllowed(allow: Verticality, a: Tile, b: Tile) {
 	const report = verticalityReport(a, b)
 	return (
-		(allow.same && report.same) ||
-		(allow.above && report.above) ||
-		(allow.below && report.below)
+		(allow.same && report.withinHalfStep) ||
+		(allow.above && report.above && report.withinFullStep) ||
+		(allow.below && report.below && report.withinFullStep)
 	)
 }
 
-export function verticalityReport(a: Tile, b: Tile) {
-	const difference = b.elevation - a.elevation
+export function verticalityReport(a: Tile, b: Tile): VerticalityReport {
 
+	// double the values, for clean integer-math, where 1 is a half-step
+	const alpha = (a.elevation * 2) + (a.step ? 1 : 0)
+	const bravo = (b.elevation * 2) + (b.step ? 1 : 0)
+
+	const difference = bravo - alpha
 	const negative = difference < 0
-	const stepInvolved = a.step || b.step
-	const distance = Math.abs(difference)
-	const factor = Math.max(0, distance - (stepInvolved ? 1 : 0))
+	const factor = Math.abs(difference)
+	const withinHalfStep = factor <= 1
 
-	const same = factor === 0
-	const above = (factor > 0) && !negative
-	const below = (factor > 0) && negative
-
-	return {factor, same, above, below}
+	return {
+		above: !negative,
+		below: negative,
+		distance: factor / 2,
+		withinFullStep: factor <= 2,
+		withinHalfStep: withinHalfStep,
+	}
 }
 
 export const cardinals: Vec2[] = [

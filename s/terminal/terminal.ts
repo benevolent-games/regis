@@ -31,9 +31,12 @@ export async function makeGameTerminal(agent: Agent, actuate: FnActuate) {
 
 	d(new ClickHandler({
 		world,
-		traversal,
-		selectacon,
 		pick: tiles.pick,
+		onPlaceClick: place => {
+			if (place && selectacon.selection?.unit)
+				traversal.attemptMove(selectacon.selection.place, place)
+			selectacon.select(place)
+		},
 	}))
 
 	function render() {

@@ -5,7 +5,7 @@ import {loop2d, scalar, Vec2} from "@benev/toolbox"
 export class BoardHelper {
 	constructor(public state: BoardState) {}
 
-	#index([file, rank]: Vec2) {
+	index([file, rank]: Vec2) {
 		return (rank * this.state.extent[0]) + file
 	}
 
@@ -22,7 +22,7 @@ export class BoardHelper {
 		if (!this.#valid(place))
 			throw new Error(`invalid ascii map, rank ${rank}x${file} is not on the grid`)
 
-		const index = this.#index(place)
+		const index = this.index(place)
 		const tile = this.state.tiles[index]
 
 		if (!tile)
