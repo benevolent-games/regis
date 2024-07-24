@@ -1,4 +1,6 @@
 
+import {clone, pubsub} from "@benev/slate"
+
 import {Agent} from "./agent.js"
 import {defaultRoster} from "./state/teams.js"
 import {commit} from "./arbitration/commit.js"
@@ -6,11 +8,9 @@ import {GameState, Incident} from "./state/game.js"
 import {extractAgentState} from "./arbitration/extract-agent-state.js"
 import {initializeGameState} from "./arbitration/initialize-game-state.js"
 
-type AgentResult = {agent: Agent, refresh: () => void}
-
 export class Arbiter {
 	state: GameState
-	agents = new Set<AgentResult>()
+	onStateChange = pubsub<[GameState]>()
 
 	constructor(ascii: string) {
 		this.state = initializeGameState({
@@ -18,12 +18,12 @@ export class Arbiter {
 			teams: [
 				{
 					name: "Blue",
-					resources: 9, // first-turn income will be added
+					resources: 12,
 					roster: defaultRoster(),
 				},
 				{
 					name: "Orange",
-					resources: 12, // first-turn income will be added
+					resources: 15,
 					roster: defaultRoster(),
 				},
 			],
@@ -32,15 +32,13 @@ export class Arbiter {
 
 	actuate = (incident: Incident.Any) => {
 		this.state = commit(this.state, incident)
-		for (const {refresh} of this.agents)
-			refresh()
+		this.onStateChange.publish(this.state)
 	}
 
 	makeArbiterAgent() {
-		const getState = () => extractAgentState(this.state, this.state.arbiter)
+		const getState = () => clone(extractAgentState(this.state, this.state.arbiter))
 		const agent = new Agent(getState())
-		const refresh = () => { agent.state = getState()}
-		this.agents.add({agent, refresh})
+		this.onStateChange(() => { agent.state = getState() })
 		return agent
 	}
 }

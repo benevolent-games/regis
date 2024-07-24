@@ -2,7 +2,7 @@
 import {Ui} from "./ui.js"
 import {Agent} from "../logic/agent.js"
 import {Trashbin} from "../tools/trashbin.js"
-import {Incident} from "../logic/state/game.js"
+import {FnActuate} from "../logic/state/game.js"
 import {Traversal} from "./visuals/traversal.js"
 import {makeTileVisuals} from "./visuals/tile.js"
 import {makeUnitVisuals} from "./visuals/unit.js"
@@ -12,13 +12,7 @@ import {makeBasicVisuals} from "./visuals/basics.js"
 import {makeCameraVisuals} from "./visuals/camera.js"
 import {ClickHandler} from "./visuals/click-handler.js"
 
-export async function makeGameTerminal(agent: Agent, originalActuate: (incident: Incident.Any) => void) {
-
-	function actuate(incident: Incident.Any) {
-		originalActuate(incident)
-		render()
-	}
-
+export async function makeGameTerminal(agent: Agent, actuate: FnActuate) {
 	const trashbin = new Trashbin()
 	const d = trashbin.disposable
 	const {dispose} = trashbin

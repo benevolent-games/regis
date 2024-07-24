@@ -26,14 +26,10 @@ export class ClickHandler {
 			const {selection} = selectacon
 			const clickedPlace = pick(event) ?? null
 
-			const movementHappened = (
-				clickedPlace &&
-				selection?.unit &&
+			if (clickedPlace && selection?.unit)
 				traversal.attemptMove(selection.place, clickedPlace)
-			)
 
-			if (!movementHappened)
-				selectacon.select(clickedPlace ?? null)
+			selectacon.select(clickedPlace ?? null)
 		},
 	}
 

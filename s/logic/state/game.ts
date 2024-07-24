@@ -41,6 +41,8 @@ export type GameContext = {
 	winner: number | null
 }
 
+export type FnActuate = (incident: Incident.Any) => void
+
 /** everything that can happen throughout the course of a game */
 export namespace Incident {
 	export namespace Action {
