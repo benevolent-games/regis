@@ -12,8 +12,9 @@
 		"s"
 	],
 	"scripts": {
-		"build": "rm -rf x && turtle build --out=x -v && turtle ssg --in=s,x --out=x --exclude=bin -v && run-s links",
-		"links": "mkdir -p assets && ln -s \"$(realpath assets)\" x/assets && ln -s \"$(realpath s)\" x/s",
+		"build": "rm -rf x && turtle build --out=x -v && turtle ssg --in=s,x --out=x --exclude=bin -v && run-s assets links",
+		"assets": "rm -rf x/assets && batch 3d glb --in=assets --out=x/assets --tier=mid --verbose && batch copy --in=assets --out=x/assets --find=svg,env,png --verbose",
+		"links": "mkdir -p assets && ln -s \"$(realpath s)\" x/s",
 		"http": "http-server x",
 		"watch": "turtle watch --in=s,x --out=x --exclude=bin -v",
 		"start": "run-p http watch",
