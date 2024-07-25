@@ -1,8 +1,8 @@
 
 import {Ui} from "./ui.js"
-import {Agent} from "../logic/agent.js"
 import {Trashbin} from "../tools/trashbin.js"
-import {FnActuate} from "../logic/state/game.js"
+import {FnActuate} from "../logic2/arbiter.js"
+import {Agent} from "../logic2/helpers/agent.js"
 import {Traversal} from "./visuals/traversal.js"
 import {makeTileVisuals} from "./visuals/tile.js"
 import {makeUnitVisuals} from "./visuals/unit.js"

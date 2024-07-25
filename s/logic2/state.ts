@@ -54,6 +54,11 @@ export function defaultGameConfig(): GameConfig {
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
+export type GameStates = {
+	arbiter: ArbiterState
+	agents: AgentState[]
+}
+
 // full uncensored view of of the game at one point in time
 export type ArbiterState = {
 	initial: GameInitial

@@ -1,7 +1,6 @@
 
 import {Vec2} from "@benev/toolbox"
-import {Unit} from "../logic/state/units.js"
-import {Tile} from "../logic/state/board.js"
+import {Unit, Tile} from "../logic2/state.js"
 
 export type Hover = {
 	place: Vec2

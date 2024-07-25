@@ -3,7 +3,7 @@ import {AssetContainer, TransformNode} from "@babylonjs/core"
 
 import {Glb} from "./glb.js"
 import {World} from "./world.js"
-import {Unit, UnitKind} from "../../../logic/state/units.js"
+import { Unit, UnitKind } from "../../../logic2/state.js"
 
 export type AssetUrls = {
 	theme: string

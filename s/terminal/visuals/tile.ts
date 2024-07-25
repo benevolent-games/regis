@@ -4,11 +4,11 @@ import {babyloid, Prop, Vec2} from "@benev/toolbox"
 
 import {World} from "./parts/world.js"
 import {Assets} from "./parts/assets.js"
-import {Agent} from "../../logic/agent.js"
 import {FnPickTilePlace} from "./types.js"
-import {Tile} from "../../logic/state/board.js"
+import {Tile} from "../../logic2/state.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {wherefor} from "../../tools/wherefor.js"
+import {Agent} from "../../logic2/helpers/agent.js"
 
 export function makeTileVisuals(agent: Agent, world: World, assets: Assets) {
 	const trashbin = new Trashbin()
@@ -74,7 +74,7 @@ export function makeTileVisuals(agent: Agent, world: World, assets: Assets) {
 				spawnBlock(place, 2)
 		}
 
-		for (const {tile, place} of agent.board.list())
+		for (const {tile, place} of agent.tiles.list())
 			renderTile(tile, place)
 	}
 

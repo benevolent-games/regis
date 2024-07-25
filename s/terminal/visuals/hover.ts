@@ -4,8 +4,8 @@ import {ev} from "@benev/slate"
 import {Ui} from "../ui.js"
 import {World} from "./parts/world.js"
 import {Assets} from "./parts/assets.js"
-import {Agent} from "../../logic/agent.js"
 import {FnPickTilePlace} from "./types.js"
+import {Agent} from "../../logic2/helpers/agent.js"
 
 export function makeHoverVisuals(
 		agent: Agent,

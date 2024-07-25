@@ -5,9 +5,9 @@ import {pubsub} from "@benev/slate"
 import {Ui, Selected} from "../ui.js"
 import {World} from "./parts/world.js"
 import {Assets} from "./parts/assets.js"
-import {Agent} from "../../logic/agent.js"
 import {FnPickTilePlace} from "./types.js"
 import {Trashbin} from "../../tools/trashbin.js"
+import {Agent} from "../../logic2/helpers/agent.js"
 
 export class Selectacon {
 	#trashbin = new Trashbin()
@@ -34,7 +34,7 @@ export class Selectacon {
 		this.selection = place
 			? {
 				place,
-				tile: agent.board.at(place),
+				tile: agent.tiles.at(place),
 				unit: agent.units.at(place),
 			}
 			: null

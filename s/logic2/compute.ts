@@ -1,8 +1,9 @@
 
 import {clone} from "@benev/slate"
-import {ArbiterState, FullTeamInfo, GameHistory} from "./state.js"
+import {deriveAgentState} from "./derive.js"
+import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "./state.js"
 
-export function computeArbiterState(original: GameHistory): ArbiterState {
+export function compute(original: GameHistory): GameStates {
 	const {initial, chronicle} = clone(original)
 
 	const state: ArbiterState = {
@@ -35,6 +36,11 @@ export function computeArbiterState(original: GameHistory): ArbiterState {
 		}
 	}
 
-	return state
+	return {
+		arbiter: state,
+		agents: initial
+			.teams
+			.map((_, teamId) => deriveAgentState(state, teamId)),
+	}
 }
 
