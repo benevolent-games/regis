@@ -5,7 +5,7 @@ import {Assets} from "./parts/assets.js"
 import {Selectacon} from "./selectacon.js"
 import {Incident} from "../../logic/state.js"
 import {Trashbin} from "../../tools/trashbin.js"
-import {Agent} from "../../logic/helpers/agent.js"
+import {Agent} from "../../logic/agent.js"
 
 export class Traversal {
 	#trashbin = new Trashbin()

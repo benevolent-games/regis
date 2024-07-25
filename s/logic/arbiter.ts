@@ -2,8 +2,8 @@
 import {clone} from "@benev/slate"
 import {pubsub} from "@benev/toolbox"
 
-import {compute} from "./compute.js"
-import {Agent} from "./helpers/agent.js"
+import {Agent} from "./agent.js"
+import {compute} from "./routines/compute.js"
 import {asciiMap} from "./ascii/ascii-map.js"
 import {defaultGameConfig, defaultRoster, GameHistory, GameStates, Incident} from "./state.js"
 

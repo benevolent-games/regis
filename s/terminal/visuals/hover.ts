@@ -5,7 +5,7 @@ import {Ui} from "../ui.js"
 import {World} from "./parts/world.js"
 import {Assets} from "./parts/assets.js"
 import {FnPickTilePlace} from "./types.js"
-import {Agent} from "../../logic/helpers/agent.js"
+import {Agent} from "../../logic/agent.js"
 
 export function makeHoverVisuals(
 		agent: Agent,

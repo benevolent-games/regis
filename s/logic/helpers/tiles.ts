@@ -9,7 +9,7 @@ export class TilesHelper {
 		return (rank * this.state.extent[0]) + file
 	}
 
-	#valid([file, rank]: Vec2) {
+	valid([file, rank]: Vec2) {
 		return (
 			scalar.within(file, 0, this.state.extent[0] - 1) &&
 			scalar.within(rank, 0, this.state.extent[1] - 1)
@@ -19,8 +19,8 @@ export class TilesHelper {
 	at(place: Vec2) {
 		const [file, rank] = place
 
-		if (!this.#valid(place))
-			throw new Error(`invalid ascii map, rank ${rank}x${file} is not on the grid`)
+		if (!this.valid(place))
+			throw new Error(`place ${rank}x${file} is not on the grid`)
 
 		const index = this.index(place)
 		const tile = this.state.tiles[index]

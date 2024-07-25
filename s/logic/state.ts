@@ -225,18 +225,17 @@ export type Unit = {
 	damage: number
 }
 
-export type Verticality = {
+export type VerticalCapability = {
 	above: boolean
-	same: boolean
 	below: boolean
 }
 
 export const verticality = {
-	flat: {above: false, same: true, below: false},
-	downwards: {above: false, same: true, below: true},
-	upwards: {above: true, same: true, below: false},
-	everywhere: {above: true, same: true, below: true},
-} satisfies Record<string, Verticality>
+	flat: {above: false, below: false},
+	downwards: {above: false, below: true},
+	upwards: {above: true, below: false},
+	everywhere: {above: true, below: true},
+} satisfies Record<string, VerticalCapability>
 
 export type UnitArchetype = {
 	cost: null | number
@@ -245,16 +244,16 @@ export type UnitArchetype = {
 	stakeholder: boolean
 	vision: null | {
 		range: number
-		verticality: Verticality
+		verticality: VerticalCapability
 	}
 	move: null | {
 		range: number
-		verticality: Verticality
+		verticality: VerticalCapability
 	}
 	attack: null | {
 		damage: number
 		range: number
-		verticality: Verticality
+		verticality: VerticalCapability
 	}
 }
 

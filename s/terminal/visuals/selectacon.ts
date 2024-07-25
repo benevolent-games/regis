@@ -7,7 +7,7 @@ import {World} from "./parts/world.js"
 import {Assets} from "./parts/assets.js"
 import {FnPickTilePlace} from "./types.js"
 import {Trashbin} from "../../tools/trashbin.js"
-import {Agent} from "../../logic/helpers/agent.js"
+import {Agent} from "../../logic/agent.js"
 
 export class Selectacon {
 	#trashbin = new Trashbin()
