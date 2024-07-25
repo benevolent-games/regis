@@ -1,6 +1,6 @@
 
 import * as mapPool from "../map-pool.js"
-import {Arbiter} from "../logic2/arbiter.js"
+import {Arbiter} from "../logic/arbiter.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 
 export async function freeplayFlow() {

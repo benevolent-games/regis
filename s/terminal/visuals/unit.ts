@@ -1,7 +1,7 @@
 
 import {Assets} from "./parts/assets.js"
 import {Trashbin} from "../../tools/trashbin.js"
-import {Agent} from "../../logic2/helpers/agent.js"
+import {Agent} from "../../logic/helpers/agent.js"
 
 export function makeUnitVisuals(agent: Agent, assets: Assets) {
 	const trashbin = new Trashbin()

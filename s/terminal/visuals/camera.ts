@@ -6,7 +6,7 @@ import {World} from "./parts/world.js"
 import {FnPickTilePlace} from "./types.js"
 import {Orbitcam} from "./parts/orbitcam.js"
 import {Trashbin} from "../../tools/trashbin.js"
-import {Agent} from "../../logic2/helpers/agent.js"
+import {Agent} from "../../logic/helpers/agent.js"
 import {DragQueen} from "../../tools/drag-queen.js"
 
 const {degrees} = scalar.radians.from
