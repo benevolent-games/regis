@@ -18,7 +18,10 @@ export function initializeGameState({ascii, teams}: Options): GameState {
 		initiation: details,
 		chronicle: [],
 		arbiter: details,
-		context: {currentTurn: 0, winner: null},
+		context: {
+			currentTurn: 0,
+			winner: null,
+		},
 		agents: teams.map((_, agentIndex) => ({
 			...details,
 			teams: teams.map((team, teamIndex) => {

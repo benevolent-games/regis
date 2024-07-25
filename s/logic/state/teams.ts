@@ -1,9 +1,11 @@
 
 import {UnitKind} from "./units.js"
+import {ExpenseEntry} from "./expenses.js"
 
 export type Team = {
 	name: string
 	resources: number
+	expenses: ExpenseEntry[]
 	roster: Record<UnitKind, number>
 }
 

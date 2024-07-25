@@ -1,7 +1,7 @@
 
 import {loop2d, Vec2} from "@benev/toolbox"
 
-export type Elevation = 1 | 2 | 3
+export type Elevation = 0 | 1 | 2 | 3
 
 export type Tile = {
 	elevation: Elevation

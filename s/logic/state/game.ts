@@ -6,6 +6,8 @@ import {UnitsState} from "./units.js"
 import {ClaimsState} from "./claims.js"
 import {TeamFoggy, Team} from "./teams.js"
 
+///////////////////////////////////
+
 export type GameState = GameReplay & GameTemporal
 
 export type GameReplay = {
@@ -19,6 +21,7 @@ export type GameTemporal = {
 	agents: GamePerspective[]
 }
 
+/** uncensored current game info */
 export type GameDetails = {
 	teams: Team[]
 	board: BoardState
@@ -26,6 +29,7 @@ export type GameDetails = {
 	claims: ClaimsState
 }
 
+/** censored current game info (applying fog of war) */
 export type GamePerspective = {
 	teams: (Team | TeamFoggy)[]
 	board: BoardState

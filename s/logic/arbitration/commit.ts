@@ -19,10 +19,10 @@ export function commit(original: GameState, incident: Incident.Any): GameState {
 			const {unitId, to} = incident
 			const unit = agent.units.get(unitId)
 			const valid = isMovementValid(agent, unit.place, to)
-			if (valid)
+			if (valid) {
 				unit.place = to
-			else
-				throw new Error(`invalid move`)
+			}
+			else throw new Error(`invalid move`)
 		}
 		else if (incident.name === "attack") {
 			throw new Error("TODO implement attack")

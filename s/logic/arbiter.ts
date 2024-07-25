@@ -8,6 +8,10 @@ import {GameState, Incident} from "./state/game.js"
 import {extractAgentState} from "./arbitration/extract-agent-state.js"
 import {initializeGameState} from "./arbitration/initialize-game-state.js"
 
+export class MasterAgent {
+	constructor(state: GameState) {}
+}
+
 export class Arbiter {
 	state: GameState
 	onStateChange = pubsub<[GameState]>()
@@ -20,11 +24,13 @@ export class Arbiter {
 					name: "Blue",
 					resources: 12,
 					roster: defaultRoster(),
+					expenses: [],
 				},
 				{
 					name: "Orange",
 					resources: 15,
 					roster: defaultRoster(),
+					expenses: [],
 				},
 			],
 		})
