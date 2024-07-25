@@ -2,15 +2,13 @@
 import {Vec2} from "@benev/toolbox"
 
 import {glyphs} from "./glyphs.js"
-import {UnitKind} from "../state/units.js"
-import {BoardHelper} from "../helpers/board.js"
+import {TilesHelper} from "../helpers/tiles.js"
 import {UnitsHelper} from "../helpers/units.js"
-import {defaultClaims} from "../state/claims.js"
-import {ClaimsHelper} from "../helpers/claims.js"
-import {makePlainBoardState} from "../state/board.js"
+import {defaultClaims} from "./default-claims.js"
+import {makePlainBoardState, UnitKind} from "../state.js"
 
 export function asciiMap(ascii: string) {
-	const board = new BoardHelper(makePlainBoardState())
+	const board = new TilesHelper(makePlainBoardState())
 	const units = new UnitsHelper([])
 
 	const lines = ascii
@@ -44,25 +42,15 @@ export function asciiMap(ascii: string) {
 			// claims
 			//
 
-			zoop(glyphs.claims.resource, () => claims.create(
-				defaultClaims.resource(place))
-			)
-
-			zoop(glyphs.claims.watchtower, () => claims.create(
-				defaultClaims.watchtower(place)
-			))
-
-			zoop(glyphs.claims.techKnight, () => claims.create(
-				defaultClaims.techKnight(place)
-			))
-
-			zoop(glyphs.claims.techRook, () => claims.create(
-				defaultClaims.techRook(place)
-			))
-
-			zoop(glyphs.claims.techAdvanced, () => claims.create(
-				defaultClaims.techAdvanced(place)
-			))
+			zoop(glyphs.claims.resource, () => defaultClaims.resource(tile))
+			zoop(glyphs.claims.goldResource, () => defaultClaims.goldResource(tile))
+			zoop(glyphs.claims.watchtower, () => defaultClaims.watchtower(tile))
+			zoop(glyphs.claims.techKnight, () => defaultClaims.techKnight(tile))
+			zoop(glyphs.claims.techRook, () => defaultClaims.techRook(tile))
+			zoop(glyphs.claims.techBishop, () => defaultClaims.techBishop(tile))
+			zoop(glyphs.claims.techQueen, () => defaultClaims.techQueen(tile))
+			zoop(glyphs.claims.techBasic, () => defaultClaims.techBasic(tile))
+			zoop(glyphs.claims.techAdvanced, () => defaultClaims.techAdvanced(tile))
 
 			//
 			// units
@@ -98,7 +86,6 @@ export function asciiMap(ascii: string) {
 	return {
 		board: board.state,
 		units: units.state,
-		claims: claims.state,
 	}
 }
 

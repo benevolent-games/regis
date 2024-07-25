@@ -6,7 +6,7 @@ export function computeArbiterState(original: GameHistory): ArbiterState {
 	const {initial, chronicle} = clone(original)
 
 	const state: ArbiterState = {
-		board: initial.board,
+		initial,
 		units: initial.units,
 		context: {
 			currentTurn: 0,
@@ -25,7 +25,7 @@ export function computeArbiterState(original: GameHistory): ArbiterState {
 			for (const spawn of incident.spawns) {}
 			for (const attack of incident.attacks) {}
 			for (const movement of incident.movements) {}
-			for (const investments of incident.investments) {}
+			for (const investment of incident.investments) {}
 		}
 		else if (incident.kind === "conclusion") {
 			state.context.winner = incident

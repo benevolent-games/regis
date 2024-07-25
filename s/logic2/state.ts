@@ -56,7 +56,7 @@ export function defaultGameConfig(): GameConfig {
 
 // full uncensored view of of the game at one point in time
 export type ArbiterState = {
-	board: BoardState
+	initial: GameInitial
 	units: Unit[]
 	teams: FullTeamInfo[]
 	context: GameContext
@@ -64,7 +64,7 @@ export type ArbiterState = {
 
 // view of the game which might be censored
 export type AgentState = {
-	board: BoardState
+	initial: GameInitial
 	units: Unit[]
 	teams: (FullTeamInfo | LimitedTeamInfo)[]
 	context: GameContext
@@ -111,13 +111,6 @@ export function defaultRoster(): Roster {
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-
-export type TileClaim = {
-	place: Vec2
-	resource: null | Claim.Resource
-	watchtower: null | Claim.Watchtower
-	tech: null | Claim.Tech
-}
 
 export type Investment = {
 	place: Vec2
@@ -189,12 +182,18 @@ export type Elevation = 0 | 1 | 2 | 3
 export type Tile = {
 	elevation: Elevation
 	step: boolean
+	claim: TileClaim
+}
+
+export type TileClaim = {
+	resource: null | Claim.Resource
+	watchtower: null | Claim.Watchtower
+	tech: null | Claim.Tech
 }
 
 export type BoardState = {
 	extent: Vec2
 	tiles: Tile[]
-	claims: TileClaim[]
 }
 
 export function makePlainBoardState(): BoardState {
@@ -202,9 +201,13 @@ export function makePlainBoardState(): BoardState {
 	const tiles = [...loop2d(extent)].map((): Tile => ({
 		step: false,
 		elevation: 1,
+		claim: {
+			resource: null,
+			watchtower: null,
+			tech: null,
+		}
 	}))
-	const claims: TileClaim[] = []
-	return {extent, tiles, claims}
+	return {extent, tiles}
 }
 
 /////////////////////////////////////////////////
