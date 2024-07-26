@@ -1,5 +1,5 @@
 
-import {ArbiterState, FullTeamInfo} from "../../state.js"
+import {ArbiterState, FullTeamInfo, UnitArchetype} from "../../state.js"
 
 export function purchase(state: ArbiterState, teamId: number, cost: number) {
 	const team = state.teams.at(teamId)!
@@ -11,6 +11,8 @@ export function purchase(state: ArbiterState, teamId: number, cost: number) {
 }
 
 export function canAfford(team: FullTeamInfo, cost: number) {
-	return (team.resources >= cost)
+	if (cost === null)
+		throw new Error(`invalid cost null`)
+	return team.resources >= cost
 }
 

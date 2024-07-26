@@ -95,7 +95,6 @@ export type LimitedTeamInfo = {
 
 export type FullTeamInfo = {
 	name: string
-	roster: Roster
 	resources: number
 	investments: Investment[]
 }

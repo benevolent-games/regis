@@ -1,7 +1,7 @@
 
 import {Assets} from "./parts/assets.js"
-import {Trashbin} from "../../tools/trashbin.js"
 import {Agent} from "../../logic/agent.js"
+import {Trashbin} from "../../tools/trashbin.js"
 
 export function makeUnitVisuals(agent: Agent, assets: Assets) {
 	const trashbin = new Trashbin()
@@ -12,7 +12,7 @@ export function makeUnitVisuals(agent: Agent, assets: Assets) {
 			const instancer = assets.units.unit.get(unit.kind)
 			if (!instancer)
 				throw new Error(`cannot spawn unknown unit kind "${unit.kind}"`)
-			const instance = trashbin.disposable(instancer(unit))
+			const instance = trashbin.disposable(instancer(unit.team))
 			instance.position.set(...agent.coordinator.toPosition(unit.place))
 		}
 	}

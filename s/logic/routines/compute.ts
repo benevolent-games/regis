@@ -34,7 +34,6 @@ export function compute(original: GameHistory): GameStates {
 		},
 		teams: initial.teams.map((team): FullTeamInfo => ({
 			name: team.name,
-			roster: team.roster,
 			resources: initial.config.startingResources,
 			investments: [],
 		})),

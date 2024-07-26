@@ -1,5 +1,5 @@
 
-import {AgentState, UnitKind} from "./state.js"
+import {AgentState, FullTeamInfo, UnitKind} from "./state.js"
 import {TilesHelper} from "./helpers/tiles.js"
 import {UnitsHelper} from "./helpers/units.js"
 import {BoundaryHelper} from "./helpers/boundary.js"
@@ -15,6 +15,15 @@ export class Agent {
 
 	archetype(unitKind: UnitKind) {
 		return this.state.initial.config.unitArchetypes[unitKind]
+	}
+
+	get fullTeams() {
+		const teams: {teamId: number, team: FullTeamInfo}[] = []
+		this.state.teams.forEach((team, teamId) => {
+			if ("resources" in team)
+				teams.push({teamId, team})
+		})
+		return teams
 	}
 }
 
