@@ -4,12 +4,8 @@ import {Vec2, Vec3} from "@benev/toolbox"
 import {Agent} from "../../logic/agent.js"
 import {Tile, Unit, UnitKind} from "../../logic/state.js"
 
-export class Cells {
-	constructor(agent: Agent) {
-		for (const {tile, place} of agent.tiles.list()) {
-			const position = agent.coordinator.toPosition(place)
-		}
-	}
+export class Selectacon2 {
+	constructor(agent: Agent) {}
 }
 
 ///////////////////////////////////////////

@@ -5,8 +5,8 @@ import {pubsub} from "@benev/slate"
 import {Ui, Selected} from "../ui.js"
 import {World} from "./parts/world.js"
 import {Assets} from "./parts/assets.js"
+import {FnPickTilePlace} from "./tile.js"
 import {Agent} from "../../logic/agent.js"
-import {FnPickTilePlace} from "./types.js"
 import {Trashbin} from "../../tools/trashbin.js"
 
 export class Selectacon {

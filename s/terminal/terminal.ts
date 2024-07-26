@@ -1,7 +1,7 @@
 
 import {Ui} from "./ui.js"
 import {Agent} from "../logic/agent.js"
-import {Rosters} from "./visuals/roster.js"
+import {Rosters} from "./visuals/rosters.js"
 import {Trashbin} from "../tools/trashbin.js"
 import {FnActuate} from "../logic/arbiter.js"
 import {Traversal} from "./visuals/traversal.js"
@@ -24,9 +24,10 @@ export async function makeGameTerminal(agent: Agent, actuate: FnActuate) {
 	d(assets.board.border())
 	const tiles = d(makeTileVisuals(agent, world, assets))
 	d(makeCameraVisuals(agent, world, tiles.pick))
-	const units = d(makeUnitVisuals(agent, assets))
-	const hover = d(makeHoverVisuals(agent, world, assets, ui, tiles.pick))
 	const rosters = d(new Rosters({agent, world, assets}))
+	const units = d(makeUnitVisuals(agent, assets))
+
+	const hover = d(makeHoverVisuals(agent, world, assets, ui, tiles.pick))
 
 	const selectacon = d(new Selectacon({agent, world, assets, ui, pick: tiles.pick}))
 	const traversal = d(new Traversal({agent, assets, selectacon, actuate}))
@@ -43,11 +44,11 @@ export async function makeGameTerminal(agent: Agent, actuate: FnActuate) {
 
 	function render() {
 		tiles.render()
+		rosters.render()
 		units.render()
 		hover.render()
 		selectacon.render()
 		traversal.render()
-		rosters.render()
 	}
 
 	render()

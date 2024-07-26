@@ -3,7 +3,7 @@ import {ev, Pipe} from "@benev/slate"
 import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
 
 import {World} from "./parts/world.js"
-import {FnPickTilePlace} from "./types.js"
+import {FnPickTilePlace} from "./tile.js"
 import {Orbitcam} from "./parts/orbitcam.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {Agent} from "../../logic/agent.js"

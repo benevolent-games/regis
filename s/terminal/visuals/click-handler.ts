@@ -3,7 +3,7 @@ import {ev} from "@benev/slate"
 import {Vec2} from "@benev/toolbox"
 
 import {World} from "./parts/world.js"
-import {FnPickTilePlace} from "./types.js"
+import {FnPickTilePlace} from "./tile.js"
 
 export class ClickHandler {
 	#stop: () => void
