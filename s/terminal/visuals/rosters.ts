@@ -1,27 +1,23 @@
 
 import {AbstractMesh, MeshBuilder, TransformNode} from "@babylonjs/core"
-import {assert_babylon_quaternion, Meshoid, Vec3} from "@benev/toolbox"
+import {assert_babylon_quaternion, Meshoid, vec3, Vec3} from "@benev/toolbox"
 
-import {Pointing} from "./types.js"
 import {World} from "./parts/world.js"
 import {Assets} from "./parts/assets.js"
 import {Agent} from "../../logic/agent.js"
 import {constants} from "../../constants.js"
 import {UnitKind} from "../../logic/state.js"
 import {Trashbin} from "../../tools/trashbin.js"
-import {wherefor} from "../../tools/wherefor.js"
 
-export type RosterChunk = {
+export type RosterPlacement = {
 	mesh: Meshoid
 	unitKind: UnitKind
 	teamId: number
 	position: Vec3
 }
 
-export type FnPickRosterChunk = (pointing: Pointing) => (RosterChunk | undefined)
-
 export class Rosters {
-	chunks = new Map<AbstractMesh, RosterChunk>()
+	placements = new Map<AbstractMesh, RosterPlacement>()
 	#trashbin = new Trashbin()
 
 	constructor(public options: {
@@ -32,7 +28,7 @@ export class Rosters {
 
 	render() {
 		this.#trashbin.dispose()
-		this.chunks.clear()
+		this.placements.clear()
 
 		this.#instanceRoster(0, "team1-roster")
 		this.#instanceRoster(1, "team2-roster")
@@ -53,7 +49,7 @@ export class Rosters {
 		const offset = (unitKinds.length / 2) - 0.5
 		const transform = new TransformNode("rosterRoot", world.scene)
 
-		unitKinds.forEach((unitKind, index) => {
+		const placers = unitKinds.map((unitKind, index) => {
 			const {size} = constants.block
 			const instance = d(assets.units.unit.get(unitKind)!(teamId))
 			const block = d(MeshBuilder.CreateBox("block", {size}, world.scene))
@@ -66,21 +62,21 @@ export class Rosters {
 			block.setParent(transform)
 			instance.setParent(transform)
 
-			this.chunks.set(block, {mesh: block, unitKind, teamId, position})
+			block.isVisible = false
+
+			return () => {
+				instance.computeWorldMatrix(true)
+				const position = vec3.from.xyz(instance.getAbsolutePosition())
+				this.placements.set(block, {mesh: block, unitKind, teamId, position})
+			}
 		})
 
 		transform.position = rosterGuide.position.clone()
 		transform.rotationQuaternion = assert_babylon_quaternion(rosterGuide)
-	}
 
-	pick: FnPickRosterChunk = event => wherefor(
-		this.options.world.scene.pick(
-			event.clientX,
-			event.clientY,
-			mesh => this.chunks.has(mesh),
-		).pickedMesh,
-		mesh => this.chunks.get(mesh)!
-	)
+		for (const placer of placers)
+			placer()
+	}
 
 	dispose = this.#trashbin.dispose
 }

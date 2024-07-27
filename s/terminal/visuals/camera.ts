@@ -3,15 +3,45 @@ import {ev, Pipe} from "@benev/slate"
 import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
 
 import {World} from "./parts/world.js"
-import {FnPickTilePlace} from "./tile.js"
+import {Selectacon} from "./selectacon.js"
+import {Agent} from "../../logic/agent.js"
 import {Orbitcam} from "./parts/orbitcam.js"
 import {Trashbin} from "../../tools/trashbin.js"
-import {Agent} from "../../logic/agent.js"
 import {DragQueen} from "../../tools/drag-queen.js"
 
 const {degrees} = scalar.radians.from
 
-export function makeCameraVisuals(agent: Agent, world: World, pick: FnPickTilePlace) {
+export class CameraRig {
+	orbitcam: Orbitcam
+	#trashbin = new Trashbin()
+
+	constructor(private options: {
+			agent: Agent
+			world: World
+		}) {
+
+		const {agent, world} = options
+
+		const orbitcam = new Orbitcam({
+			scene: world.scene,
+			smoothing: 7,
+			zoomRange: [3, 50],
+			straightenAtTop: false,
+			zoomAddsPivotHeight: 2,
+			zoomSensitivity: 3 / 100,
+			orbitSensitivity: 5 / 1000,
+			verticalRange: [degrees(0), degrees(90)],
+		})
+
+		orbitcam.gimbal = [degrees(90), degrees(45)]
+		world.rendering.setCamera(orbitcam.camera)
+
+		const cancelLoop = world.gameloop.on(orbitcam.tick)
+		const mechanics = cameraMechanics(agent, world, orbitcam, selectacon)
+	}
+}
+
+export function makeCameraVisuals(agent: Agent, world: World, selectacon: Selectacon) {
 	const orbitcam = new Orbitcam({
 		scene: world.scene,
 		smoothing: 7,
@@ -27,7 +57,7 @@ export function makeCameraVisuals(agent: Agent, world: World, pick: FnPickTilePl
 	world.rendering.setCamera(orbitcam.camera)
 
 	const cancelLoop = world.gameloop.on(orbitcam.tick)
-	const mechanics = cameraMechanics(agent, world, orbitcam, pick)
+	const mechanics = cameraMechanics(agent, world, orbitcam, selectacon)
 
 	return {
 		orbitcam,
@@ -41,12 +71,12 @@ export function makeCameraVisuals(agent: Agent, world: World, pick: FnPickTilePl
 	}
 }
 
-function cameraMechanics(agent: Agent, world: World, orbitcam: Orbitcam, pick: FnPickTilePlace) {
+function cameraMechanics(agent: Agent, world: World, orbitcam: Orbitcam) {
 	const trashbin = new Trashbin()
 	const dr = trashbin.disposer
 
-	function setCameraPivot(place: Vec2) {
-		orbitcam.pivot = agent.coordinator.toPosition(place)
+	function setCameraPivot(position: Vec3) {
+		orbitcam.pivot = position
 	}
 
 	const rightMouseDrags = new DragQueen({
@@ -55,9 +85,9 @@ function cameraMechanics(agent: Agent, world: World, orbitcam: Orbitcam, pick: F
 		onAnyClick: () => {},
 		onIntendedDrag: orbitcam.drag,
 		onIntendedClick: event => {
-			const place = pick(event)
-			if (place)
-				setCameraPivot(place)
+			const cell = selectacon.pick(event)
+			if (cell)
+				setCameraPivot(cell.position)
 		},
 	})
 

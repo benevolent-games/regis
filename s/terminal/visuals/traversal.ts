@@ -2,10 +2,10 @@
 import {Vec2} from "@benev/toolbox"
 
 import {Assets} from "./parts/assets.js"
+import {Agent} from "../../logic/agent.js"
 import {Selectacon} from "./selectacon.js"
 import {Incident} from "../../logic/state.js"
 import {Trashbin} from "../../tools/trashbin.js"
-import {Agent} from "../../logic/agent.js"
 
 export class Traversal {
 	#trashbin = new Trashbin()
@@ -17,16 +17,16 @@ export class Traversal {
 			selectacon: Selectacon
 			actuate: (incident: Incident.Any) => void
 		}) {
-		this.#stopListening = options.selectacon.onSelectionChange(() => this.render())
+		this.#stopListening = options.selectacon.selection.on(() => this.render())
 	}
 
 	render() {
 		this.#trashbin.dispose()
 
 		const {agent, selectacon, assets} = this.options
-		const {selection} = selectacon
+		const selection = selectacon.selection.value
 
-		if (selection && selection.unit) {
+		if (selection) {
 			console.log("TODO selection")
 
 			// // render traversal liberties

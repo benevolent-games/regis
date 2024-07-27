@@ -2,27 +2,32 @@
 import {TransformNode} from "@babylonjs/core"
 import {babyloid, Prop, Vec2} from "@benev/toolbox"
 
-import {Pointing} from "./types.js"
 import {World} from "./parts/world.js"
 import {Assets} from "./parts/assets.js"
 import {Tile} from "../../logic/state.js"
 import {Agent} from "../../logic/agent.js"
 import {Trashbin} from "../../tools/trashbin.js"
-import {wherefor} from "../../tools/wherefor.js"
 
-export type FnPickTilePlace = (pointing: Pointing) => (Vec2 | undefined)
+export type TilePlacement = {
+	place: Vec2
+}
 
-export function makeTileVisuals(agent: Agent, world: World, assets: Assets) {
-	const trashbin = new Trashbin()
-	const blockPlacements = new Map<Prop, Vec2>()
+export class Tiler {
+	#trashbin = new Trashbin()
+	placements = new Map<Prop, TilePlacement>()
 
-	function dispose() {
-		trashbin.dispose()
-		blockPlacements.clear()
-	}
+	constructor(private options: {
+		agent: Agent
+		world: World
+		assets: Assets
+	}) {}
 
-	function render() {
-		dispose()
+	render() {
+		const trashbin = this.#trashbin
+		const placements = this.placements
+		const {agent, assets} = this.options
+
+		this.dispose()
 
 		function oddOrEven([x, y]: Vec2) {
 			return ((x + y) % 2) === 0
@@ -39,7 +44,7 @@ export function makeTileVisuals(agent: Agent, world: World, assets: Assets) {
 		function saveBlockPlacement(instance: Prop, place: Vec2) {
 			for (const mesh of [instance, ...instance.getChildMeshes()])
 				if (babyloid.is.meshoid(mesh))
-					blockPlacements.set(mesh, place)
+					placements.set(mesh, {place})
 		}
 
 		function spawnBlock(place: Vec2, layer: number) {
@@ -75,17 +80,12 @@ export function makeTileVisuals(agent: Agent, world: World, assets: Assets) {
 
 		for (const {tile, place} of agent.tiles.list())
 			renderTile(tile, place)
+
 	}
 
-	const pick: FnPickTilePlace = event => wherefor(
-		world.scene.pick(
-			event.clientX,
-			event.clientY,
-			mesh => blockPlacements.has(mesh),
-		).pickedMesh,
-		mesh => blockPlacements.get(mesh)!
-	)
-
-	return {pick, render, dispose}
+	dispose() {
+		this.#trashbin.dispose()
+		this.placements.clear()
+	}
 }
 

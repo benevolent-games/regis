@@ -1,40 +1,42 @@
 
-import {Ui} from "./ui.js"
 import {Agent} from "../logic/agent.js"
+import {Tiler} from "./visuals/tiler.js"
 import {Rosters} from "./visuals/rosters.js"
 import {Trashbin} from "../tools/trashbin.js"
 import {FnActuate} from "../logic/arbiter.js"
 import {Traversal} from "./visuals/traversal.js"
-import {makeTileVisuals} from "./visuals/tile.js"
 import {makeUnitVisuals} from "./visuals/unit.js"
-import {Selectacon} from "./visuals/selectacon.js"
-import {makeHoverVisuals} from "./visuals/hover.js"
 import {makeBasicVisuals} from "./visuals/basics.js"
 import {makeCameraVisuals} from "./visuals/camera.js"
-import {ClickHandler} from "./visuals/click-handler.js"
+import { Selectacon } from "./visuals/selectacon.js"
 
 export async function makeGameTerminal(agent: Agent, actuate: FnActuate) {
 	const trashbin = new Trashbin()
 	const d = trashbin.disposable
 	const {dispose} = trashbin
 
-	const ui = new Ui()
 	const {world, assets} = d(await makeBasicVisuals())
 
 	d(assets.board.border())
-	const tiles = d(makeTileVisuals(agent, world, assets))
-	d(makeCameraVisuals(agent, world, tiles.pick))
+	const tiler = d(new Tiler({agent, world, assets}))
 	const rosters = d(new Rosters({agent, world, assets}))
+	const selectacon = d(new Selectacon({agent, world, assets, tiler, rosters}))
 	const units = d(makeUnitVisuals(agent, assets))
-
-	const hover = d(makeHoverVisuals(agent, world, assets, ui, tiles.pick))
-
-	const selectacon = d(new Selectacon({agent, world, assets, ui, pick: tiles.pick}))
 	const traversal = d(new Traversal({agent, assets, selectacon, actuate}))
+
+	d(makeCameraVisuals(agent, world, selectacon))
 
 	d(new ClickHandler({
 		world,
-		pick: tiles.pick,
+		onMousePrimary: cell => {
+			selectacon.select(cell)
+			// TODO logic for attempting moves, attacks, spawns, etc
+		},
+		onMouseSecondary: cell => {
+			camera.pivot(cell.position)
+		},
+		onMouseTertiary: cell => {},
+
 		onPlaceClick: place => {
 			if (place && selectacon.selection?.unit)
 				traversal.attemptMove(selectacon.selection.place, place)
@@ -43,10 +45,9 @@ export async function makeGameTerminal(agent: Agent, actuate: FnActuate) {
 	}))
 
 	function render() {
-		tiles.render()
+		tiler.render()
 		rosters.render()
 		units.render()
-		hover.render()
 		selectacon.render()
 		traversal.render()
 	}
