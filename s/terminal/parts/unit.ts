@@ -1,5 +1,5 @@
 
-import {Assets} from "./parts/assets.js"
+import {Assets} from "./assets.js"
 import {Agent} from "../../logic/agent.js"
 import {Trashbin} from "../../tools/trashbin.js"
 

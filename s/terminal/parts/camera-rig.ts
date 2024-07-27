@@ -1,12 +1,9 @@
 
-import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
+import {scalar} from "@benev/toolbox"
 
-import {World} from "./parts/world.js"
-import {Selectacon} from "./selectacon.js"
-import {Agent} from "../../logic/agent.js"
-import {Orbitcam} from "./parts/orbitcam.js"
+import {World} from "./world.js"
+import {Orbitcam} from "./orbitcam.js"
 import {Trashbin} from "../../tools/trashbin.js"
-import {DragQueen} from "../../tools/drag-queen.js"
 
 const {degrees} = scalar.radians.from
 

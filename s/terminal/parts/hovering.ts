@@ -1,7 +1,7 @@
 
 import {ev} from "@benev/slate"
 import {Pointing} from "./types.js"
-import {World} from "./parts/world.js"
+import {World} from "./world.js"
 import {Selectacon} from "./selectacon.js"
 import {Trashbin} from "../../tools/trashbin.js"
 

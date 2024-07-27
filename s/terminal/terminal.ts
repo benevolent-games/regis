@@ -1,16 +1,16 @@
 
+import {Tiler} from "./parts/tiler.js"
 import {Agent} from "../logic/agent.js"
-import {Tiler} from "./visuals/tiler.js"
-import {Rosters} from "./visuals/rosters.js"
+import {Rosters} from "./parts/rosters.js"
 import {Trashbin} from "../tools/trashbin.js"
 import {FnActuate} from "../logic/arbiter.js"
-import {Hovering} from "./visuals/hovering.js"
-import {Traversal} from "./visuals/traversal.js"
-import {CameraRig} from "./visuals/camera-rig.js"
-import {makeUnitVisuals} from "./visuals/unit.js"
-import {Selectacon} from "./visuals/selectacon.js"
-import {UserInputs} from "./visuals/user-inputs.js"
-import {makeBasicVisuals} from "./visuals/basics.js"
+import {Hovering} from "./parts/hovering.js"
+import {Traversal} from "./parts/traversal.js"
+import {CameraRig} from "./parts/camera-rig.js"
+import {makeUnitVisuals} from "./parts/unit.js"
+import {Selectacon} from "./parts/selectacon.js"
+import {UserInputs} from "./parts/user-inputs.js"
+import {makeBasicVisuals} from "./parts/basics.js"
 
 export async function makeGameTerminal(agent: Agent, actuate: FnActuate) {
 	const trashbin = new Trashbin()

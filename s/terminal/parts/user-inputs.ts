@@ -2,7 +2,7 @@
 import {ev, Pipe} from "@benev/slate"
 import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
 
-import {World} from "./parts/world.js"
+import {World} from "./world.js"
 import {CameraRig} from "./camera-rig.js"
 import {Agent} from "../../logic/agent.js"
 import {Selectacon} from "./selectacon.js"

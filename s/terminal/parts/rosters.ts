@@ -2,8 +2,8 @@
 import {AbstractMesh, MeshBuilder, TransformNode} from "@babylonjs/core"
 import {assert_babylon_quaternion, Meshoid, vec3, Vec3} from "@benev/toolbox"
 
-import {World} from "./parts/world.js"
-import {Assets} from "./parts/assets.js"
+import {World} from "./world.js"
+import {Assets} from "./assets.js"
 import {Agent} from "../../logic/agent.js"
 import {constants} from "../../constants.js"
 import {UnitKind} from "../../logic/state.js"
