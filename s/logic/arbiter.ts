@@ -7,7 +7,7 @@ import {compute} from "./routines/compute.js"
 import {asciiMap} from "./ascii/ascii-map.js"
 import {defaultGameConfig, defaultRoster, GameHistory, GameStates, Incident} from "./state.js"
 
-export type FnActuate = (incident: Incident.Any) => void
+export type SubmitTurnFn = (incident: Incident.Turn) => void
 
 export class Arbiter {
 	history: GameHistory
@@ -44,7 +44,7 @@ export class Arbiter {
 		return agent
 	}
 
-	actuate: FnActuate = incident => {
+	actuate: SubmitTurnFn = incident => {
 		const newHistory = clone(this.history)
 		newHistory.chronicle.push(incident)
 		this.#commit(newHistory)

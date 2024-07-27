@@ -1,5 +1,5 @@
 
-import {Vec2} from "@benev/toolbox"
+import {vec2, Vec2} from "@benev/toolbox"
 import {Agent} from "../../agent.js"
 import {getCardinalNeighbors} from "./navigation.js"
 
@@ -19,6 +19,6 @@ export function isValidSpawnPlace(agent: Agent, teamId: number, place: Vec2) {
 		.filter(neighbor => !agent.units.at(neighbor))
 
 		// is the place a valid spawnpoint
-		.includes(place)
+		.some(v => vec2.equal(v, place))
 }
 
