@@ -56,6 +56,14 @@ export class Selectacon {
 		this.#trashbin.disposer(this.selection.on(() => this.render()))
 	}
 
+	performSelection(p: Pointing | null) {
+		this.selection.value = p ? this.pick(p) : null
+	}
+
+	performHover(p: Pointing | null) {
+		this.hover.value = p ? this.pick(p) : null
+	}
+
 	#hoverbin = new Trashbin()
 	#selectbin = new Trashbin()
 

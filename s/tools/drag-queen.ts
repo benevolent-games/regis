@@ -8,10 +8,10 @@ type Activity = {
 
 type Options = {
 	predicate: (event: PointerEvent) => boolean
+	onAnyDrag: (event: PointerEvent, activity: Activity) => void
+	onAnyClick: (event: PointerEvent) => void
 	onIntendedDrag: (event: PointerEvent, activity: Activity) => void
 	onIntendedClick: (event: PointerEvent, activity: Activity) => void
-	onAnyDrag: (event: PointerEvent, activity: Activity) => void
-	onAnyClick: (event: PointerEvent, activity: Activity) => void
 }
 
 /** differentiate clicks vs drags for pointerevents */
@@ -41,6 +41,7 @@ export class DragQueen {
 	events = {
 		pointerdown: (event: PointerEvent) => {
 			if (this.options.predicate(event)) {
+				this.options.onAnyClick(event)
 				this.#activity = {movement: 0, startTime: Date.now()}
 				this.#pointerCaptor.capture(event)
 			}
@@ -55,11 +56,8 @@ export class DragQueen {
 			}
 		},
 		pointerup: (event: PointerEvent) => {
-			if (this.#activity) {
-				this.options.onAnyClick(event, this.#activity)
-				if (!this.dragDetected)
-					this.options.onIntendedClick(event, this.#activity)
-			}
+			if (this.#activity && !this.dragDetected)
+				this.options.onIntendedClick(event, this.#activity)
 			this.#cancelActivity()
 		},
 		blur: this.#cancelActivity,

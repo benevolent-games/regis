@@ -3,13 +3,26 @@
 // import {Vec2} from "@benev/toolbox"
 //
 // import {World} from "./parts/world.js"
+// import {DragQueen} from "../../tools/drag-queen.js"
 //
 // export class ClickHandler {
 // 	#stop: () => void
 //
+// 	rightMouseDrags = new DragQueen({
+// 		predicate: event => event.button === 2,
+// 		onAnyDrag: () => {},
+// 		onAnyClick: () => {},
+// 		onIntendedDrag: (event, activity) => {
+// 		},
+// 		onIntendedClick: event => {
+// 			const cell = selectacon.pick(event)
+// 			if (cell)
+// 				setCameraPivot(cell.position)
+// 		},
+// 	})
+//
 // 	constructor(private options: {
 // 			world: World
-// 			pick: FnPickTilePlace
 // 			onPlaceClick: (place: Vec2 | null) => void
 // 		}) {
 // 		this.#stop = ev(options.world.canvas, this.#events)
