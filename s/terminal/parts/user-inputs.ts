@@ -3,11 +3,13 @@ import {ev, Pipe} from "@benev/slate"
 import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
 
 import {World} from "./world.js"
+import {Planner} from "./planner.js"
 import {CameraRig} from "./camera-rig.js"
 import {Agent} from "../../logic/agent.js"
 import {Selectacon} from "./selectacon.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {DragQueen} from "../../tools/drag-queen.js"
+import {handlePrimaryClick} from "./handle-primary-click.js"
 
 export class UserInputs {
 	#trashbin = new Trashbin()
@@ -17,6 +19,7 @@ export class UserInputs {
 	constructor(private options: {
 			agent: Agent
 			world: World
+			planner: Planner
 			cameraRig: CameraRig
 			selectacon: Selectacon
 		}) {
@@ -31,9 +34,10 @@ export class UserInputs {
 		onAnyDrag: () => {},
 		onIntendedDrag: () => {},
 		onIntendedClick: () => {},
-		onAnyClick: event => {
-			this.options.selectacon.performSelection(event)
-		},
+		onAnyClick: event => handlePrimaryClick({
+			...this.options,
+			pointing: event,
+		}),
 	})
 
 	rightMouse = new DragQueen({

@@ -2,6 +2,7 @@
 import {Tiler} from "./parts/tiler.js"
 import {Agent} from "../logic/agent.js"
 import {Rosters} from "./parts/rosters.js"
+import {Planner} from "./parts/planner.js"
 import {Hovering} from "./parts/hovering.js"
 import {Trashbin} from "../tools/trashbin.js"
 import {SubmitTurnFn} from "../logic/arbiter.js"
@@ -10,7 +11,6 @@ import {makeUnitVisuals} from "./parts/unit.js"
 import {Selectacon} from "./parts/selectacon.js"
 import {UserInputs} from "./parts/user-inputs.js"
 import {makeBasicVisuals} from "./parts/basics.js"
-import { Planner } from "./parts/planner.js"
 
 export async function makeGameTerminal(agent: Agent, submitTurn: SubmitTurnFn) {
 	const trashbin = new Trashbin()
@@ -28,7 +28,7 @@ export async function makeGameTerminal(agent: Agent, submitTurn: SubmitTurnFn) {
 	const planner = d(new Planner({agent, assets, selectacon, submitTurn}))
 
 	d(new Hovering({world, selectacon}))
-	d(new UserInputs({agent, world, selectacon, cameraRig}))
+	d(new UserInputs({agent, world, planner, selectacon, cameraRig}))
 
 	function render() {
 		tiler.render()

@@ -6,6 +6,7 @@ import {Trashbin} from "../../tools/trashbin.js"
 import {SubmitTurnFn} from "../../logic/arbiter.js"
 import {Choice, Incident} from "../../logic/state.js"
 import {isValidSpawnPlace} from "../../logic/routines/aspects/spawning.js"
+import { getValidPath } from "../../logic/routines/aspects/movement.js"
 
 function createBlankTurn(): Incident.Turn {
 	return {
@@ -51,9 +52,25 @@ export class Planner {
 
 			// render spawning liberties
 			if (selection.kind === "roster") {
-				console.log("select roster")
 				for (const {place} of agent.tiles.list()) {
 					if (isValidSpawnPlace(agent, teamId, place)) {
+						const instance = assets.indicators.liberty()
+						instance.position.set(...agent.coordinator.toPosition(place))
+						this.#rendertrash.disposable(instance)
+					}
+				}
+			}
+
+			// render movement liberties
+			if (selection.kind === "tile") {
+				for (const {place} of agent.tiles.list()) {
+					const path = getValidPath({
+						agent,
+						teamId,
+						source: selection.place,
+						target: place,
+					})
+					if (path && path.length <= 4) {
 						const instance = assets.indicators.liberty()
 						instance.position.set(...agent.coordinator.toPosition(place))
 						this.#rendertrash.disposable(instance)
@@ -75,11 +92,26 @@ export class Planner {
 		return false
 	}
 
-	planAttack(choice: Choice.Attack) {}
+	planAttack(choice: Choice.Attack) {
+		return false
+	}
 
-	planMovement(choice: Choice.Movement) {}
+	planMovement(choice: Choice.Movement) {
+		return false
+	}
 
-	planInvestment(choice: Choice.Investment) {}
+	planInvestment(choice: Choice.Investment) {
+		return false
+	}
+
+	doTheFirstValidThing(fns: (() => boolean)[]) {
+		for (const fn of fns) {
+			const result = fn()
+			if (result)
+				return result
+		}
+		return false
+	}
 
 	executePlan() {
 		this.options.submitTurn(this.plan)
