@@ -7,6 +7,8 @@ import {SubmitTurnFn} from "../../logic/arbiter.js"
 import {Choice, Incident} from "../../logic/state.js"
 import {isValidSpawnPlace} from "../../logic/routines/aspects/spawning.js"
 import { getValidPath } from "../../logic/routines/aspects/movement.js"
+import { TransformNode } from "@babylonjs/core"
+import { Vec2 } from "@benev/toolbox"
 
 function createBlankTurn(): Incident.Turn {
 	return {
@@ -41,6 +43,15 @@ export class Planner {
 		)
 	}
 
+	#spawn(fn: () => TransformNode, place: Vec2) {
+		const {agent} = this.options
+		const instance = fn()
+		const position = agent.coordinator.toPosition(place)
+		instance.position.set(...position)
+		this.#rendertrash.disposable(instance)
+		return instance
+	}
+
 	render() {
 		this.#rendertrash.dispose()
 
@@ -54,9 +65,7 @@ export class Planner {
 			if (selection.kind === "roster") {
 				for (const {place} of agent.tiles.list()) {
 					if (isValidSpawnPlace(agent, teamId, place)) {
-						const instance = assets.indicators.liberty()
-						instance.position.set(...agent.coordinator.toPosition(place))
-						this.#rendertrash.disposable(instance)
+						this.#spawn(assets.indicators.liberty, place)
 					}
 				}
 			}
@@ -70,11 +79,8 @@ export class Planner {
 						source: selection.place,
 						target: place,
 					})
-					if (path && path.length <= 4) {
-						const instance = assets.indicators.liberty()
-						instance.position.set(...agent.coordinator.toPosition(place))
-						this.#rendertrash.disposable(instance)
-					}
+					if (path)
+						this.#spawn(assets.indicators.liberty, place)
 				}
 			}
 		}
