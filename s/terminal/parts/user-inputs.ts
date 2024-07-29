@@ -23,10 +23,16 @@ export class UserInputs {
 			cameraRig: CameraRig
 			selectacon: Selectacon
 		}) {
+
+		const {cameraRig} = options
 		const {canvas} = options.world
-		this.#trashbin.disposer(ev(canvas, this.leftMouse.events))
-		this.#trashbin.disposer(ev(canvas, this.rightMouse.events))
-		this.#trashbin.disposer(ev(canvas, this.middleMouse.events))
+		const dr = this.#trashbin.disposer
+
+		dr(ev(canvas, this.leftMouse.events))
+		dr(ev(canvas, this.rightMouse.events))
+		dr(ev(canvas, this.middleMouse.events))
+		dr(ev(document, {contextmenu: (e: Event) => e.preventDefault()}))
+		dr(ev(canvas, {wheel: cameraRig.orbitcam.wheel}))
 	}
 
 	leftMouse = new DragQueen({
