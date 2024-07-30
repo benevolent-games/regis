@@ -1,10 +1,8 @@
 
 import {clone} from "@benev/slate"
 
-import {Agent} from "../agent.js"
-import {purchase} from "./aspects/money.js"
+import {applyTurn} from "./patch.js"
 import {nextTurn} from "./aspects/turns.js"
-import {propose} from "./aspects/propose.js"
 import {visionForTeam} from "./aspects/vision.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
 import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
@@ -37,59 +35,28 @@ export function compute(original: GameHistory): GameStates {
 			resources: initial.config.startingResources,
 			investments: [],
 		})),
+		reminders: {
+			choices: [],
+			kills: [],
+		},
 	}
 
 	// we churn through every event in the game history,
 	// updating the arbiter state as we go along
 	for (const incident of chronicle) {
-		const teamId = state.context.currentTurn
-		const agent = new Agent(state)
 
-		// process a new turn
+		// process a turn
 		if (incident.kind === "turn") {
-
-			// spawns
-			for (const choice of incident.spawns) {
-				const possible = propose(agent).spawn(choice)
-				if (possible) {
-					purchase(state, teamId, possible.cost)
-					agent.units.add({
-						kind: choice.unitKind,
-						place: choice.place,
-						team: teamId,
-						damage: 0,
-					})
-				}
-				else throw new Error("invalid spawn")
-			}
-
-			// movements
-			for (const choice of incident.movements) {
-				const possible = propose(agent).movement(choice)
-				if (possible) {
-					possible.unit.place = choice.target
-				}
-				else throw new Error("invalid movement")
-			}
-
-			// attacks
-			for (const attack of incident.attacks) {}
-
-			// investments
-			for (const investment of incident.investments) {}
-
-			// switch to next turn
+			applyTurn(state, incident)
 			nextTurn(state)
 		}
 
 		// the game has ended
-		else if (incident.kind === "conclusion") {
+		else if (incident.kind === "conclusion")
 			state.context.winner = incident
-		}
 
-		else {
+		else
 			throw new Error(`unknown incident kind`)
-		}
 	}
 
 	// finally, we return the final result states
@@ -102,6 +69,10 @@ export function compute(original: GameHistory): GameStates {
 				context: state.context,
 				units: censorUnits(state.units, vision),
 				teams: state.teams.map((team, id) => id === teamId ? team : censorTeam(team)),
+				reminders: {
+					choices: [],
+					kills: [],
+				},
 			})
 		}),
 	}

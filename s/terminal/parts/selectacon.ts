@@ -1,5 +1,4 @@
 
-import {ev} from "@benev/slate"
 import {Vec2, Vec3} from "@benev/toolbox"
 
 import {Tiler} from "./tiler.js"
@@ -7,8 +6,8 @@ import {World} from "./world.js"
 import {Assets} from "./assets.js"
 import {Pointing} from "./types.js"
 import {Rosters} from "./rosters.js"
+import {ref} from "../../tools/ref.js"
 import {Agent} from "../../logic/agent.js"
-import {Capsule} from "../../tools/capsule.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {Tile, UnitKind} from "../../logic/state.js"
 
@@ -29,8 +28,8 @@ export type RosterCell = {
 export type Cell = TileCell | RosterCell
 
 export class Selectacon {
-	hover = new Capsule<Cell | null>(null)
-	selection = new Capsule<Cell | null>(null)
+	hover = ref<Cell | null>(null, {dedupe: true})
+	selection = ref<Cell | null>(null, {dedupe: true})
 
 	#trashbin = new Trashbin()
 

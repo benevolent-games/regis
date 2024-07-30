@@ -22,27 +22,30 @@ export function handlePrimaryClick(options: {
 			// a roster unit is selected
 			if (selection.kind === "roster") {
 				const happened = planner.planSpawn({
+					kind: "spawn",
 					place: cell.place,
 					unitKind: selection.unitKind,
 				})
-				if (happened)
-					planner.executePlan()
+				// if (happened)
+				// 	planner.executePlan()
 			}
 
 			// a tile is selected
 			else if (selection.kind === "tile") {
 				const happened = planner.doTheFirstValidThing([
 					() => planner.planAttack({
+						kind: "attack",
 						source: selection.place,
 						target: cell.place,
 					}),
 					() => planner.planMovement({
+						kind: "movement",
 						source: selection.place,
 						target: cell.place,
 					}),
 				])
-				if (happened)
-					planner.executePlan()
+				// if (happened)
+				// 	planner.executePlan()
 			}
 		}
 	}

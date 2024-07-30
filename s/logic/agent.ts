@@ -1,12 +1,25 @@
 
-import {AgentState, FullTeamInfo, UnitKind} from "./state.js"
+import {ref, Ref} from "../tools/ref.js"
 import {TilesHelper} from "./helpers/tiles.js"
 import {UnitsHelper} from "./helpers/units.js"
 import {BoundaryHelper} from "./helpers/boundary.js"
 import {CoordinatorHelper} from "./helpers/coordinator.js"
+import {AgentState, FullTeamInfo, UnitKind} from "./state.js"
 
 export class Agent {
-	constructor(public state: AgentState) {}
+	stateRef: Ref<AgentState>
+
+	constructor(state: AgentState) {
+		this.stateRef = ref(state)
+	}
+
+	get state() {
+		return this.stateRef.value
+	}
+
+	set state(value: AgentState) {
+		this.stateRef.value = value
+	}
 
 	get boundary() { return new BoundaryHelper(this.state.initial.board) }
 	get coordinator() { return new CoordinatorHelper(this.state.initial.board) }

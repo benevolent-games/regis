@@ -3,37 +3,20 @@ import {Vec2} from "@benev/toolbox"
 import {TransformNode} from "@babylonjs/core"
 
 import {Assets} from "./assets.js"
-import {Agent} from "../../logic/agent.js"
 import {Selectacon} from "./selectacon.js"
+import {Choice} from "../../logic/state.js"
+import {PreviewAgent} from "./preview-agent.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {SubmitTurnFn} from "../../logic/arbiter.js"
-import {Choice, Incident} from "../../logic/state.js"
 import {propose} from "../../logic/routines/aspects/propose.js"
-
-function createBlankTurn(): Incident.Turn {
-	return {
-		kind: "turn",
-		spawns: [],
-		attacks: [],
-		movements: [],
-		investments: [],
-	}
-}
 
 export class Planner {
 	#rendertrash = new Trashbin()
 	#plannertrash = new Trashbin()
 
-	plan = createBlankTurn()
-
-	dispose() {
-		this.#rendertrash.dispose()
-		this.#plannertrash.dispose()
-	}
-
 	constructor(private options: {
-			agent: Agent
 			assets: Assets
+			agent: PreviewAgent
 			selectacon: Selectacon
 			submitTurn: SubmitTurnFn
 		}) {
@@ -63,6 +46,7 @@ export class Planner {
 			if (selection.kind === "roster") {
 				Array.from(agent.tiles.list())
 					.filter(({place}) => !!propose(agent).spawn({
+						kind: "spawn",
 						place,
 						unitKind: selection.unitKind,
 					}))
@@ -75,6 +59,7 @@ export class Planner {
 			if (selection.kind === "tile") {
 				Array.from(agent.tiles.list())
 					.filter(({place}) => !!propose(agent).movement({
+						kind: "movement",
 						source: selection.place,
 						target: place,
 					}))
@@ -86,24 +71,26 @@ export class Planner {
 	}
 
 	planSpawn(choice: Choice.Spawn) {
-		console.log("plan spawn")
-		if (propose(this.options.agent).spawn(choice)) {
-			console.log("big proppa")
-			this.plan.spawns.push(choice)
+		const {agent} = this.options
+		if (propose(agent).spawn(choice)) {
+			agent.addChoice(choice)
+			return true
+		}
+		return false
+	}
+
+	planMovement(choice: Choice.Movement) {
+		console.log("plan movement")
+		const {agent} = this.options
+		if (propose(this.options.agent).movement(choice)) {
+			console.log("proposed movement")
+			agent.addChoice(choice)
 			return true
 		}
 		return false
 	}
 
 	planAttack(choice: Choice.Attack) {
-		return false
-	}
-
-	planMovement(choice: Choice.Movement) {
-		if (propose(this.options.agent).movement(choice)) {
-			this.plan.movements.push(choice)
-			return true
-		}
 		return false
 	}
 
@@ -121,8 +108,16 @@ export class Planner {
 	}
 
 	executePlan() {
-		this.options.submitTurn(this.plan)
-		this.plan = createBlankTurn()
+		this.options.submitTurn({
+			kind: "turn",
+			choices: this.options.agent.choices,
+		})
+		this.options.agent.clearChoices()
+	}
+
+	dispose() {
+		this.#rendertrash.dispose()
+		this.#plannertrash.dispose()
 	}
 }
 

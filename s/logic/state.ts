@@ -54,31 +54,47 @@ export function defaultGameConfig(): GameConfig {
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
+/** all possible perspectives on a game, the server is concerned with this */
 export type GameStates = {
 	arbiter: ArbiterState
 	agents: AgentState[]
 }
 
-// full uncensored view of of the game at one point in time
+/** full uncensored view of of the game at one point in time */
 export type ArbiterState = {
 	initial: GameInitial
 	units: Unit[]
 	teams: FullTeamInfo[]
 	context: GameContext
+	reminders: Reminders
 }
 
-// view of the game which might be censored
+/** a potentially-censored view of the game (for fog-of-war) */
 export type AgentState = {
 	initial: GameInitial
 	units: Unit[]
 	teams: (FullTeamInfo | LimitedTeamInfo)[]
 	context: GameContext
+	reminders: Reminders
 }
 
+/** current situation that the game is in */
 export type GameContext = {
 	currentTurn: number
 	winner: null | Incident.Conclusion
 }
+
+/** what happened in the previous turn (may be censored for fog-of-war) */
+export type Reminders = {
+	choices: Choice.Any[]
+	kills: {
+		unitKind: UnitKind
+		place: Vec2
+	}[]
+}
+
+export type ChoiceActuators = {[P in Choice.Any["kind"]]: (choice: any) => void}
+export const choiceActuators = <X extends ChoiceActuators>(fns: X) => fns
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -97,6 +113,10 @@ export type FullTeamInfo = {
 	name: string
 	resources: number
 	investments: Investment[]
+}
+
+export function isFullTeamInfo(team: FullTeamInfo | LimitedTeamInfo): team is FullTeamInfo {
+	return "resources" in team
 }
 
 export type Roster = Record<UnitKind, number>
@@ -140,21 +160,34 @@ export namespace Claim {
 
 export namespace Choice {
 	export type Spawn = {
+		kind: "spawn"
 		unitKind: UnitKind
 		place: Vec2
 	}
 
 	export type Movement = {
+		kind: "movement"
 		source: Vec2
 		target: Vec2
 	}
 
 	export type Attack = {
+		kind: "attack"
 		source: Vec2
 		target: Vec2
 	}
 
-	export type Investment = Vec2
+	export type Investment = {
+		kind: "investment"
+		place: Vec2
+	}
+
+	export type Any = (
+		| Spawn
+		| Movement
+		| Attack
+		| Investment
+	)
 }
 
 /////////////////////////////////////////////////
@@ -163,16 +196,13 @@ export namespace Choice {
 export namespace Incident {
 	export type Turn = {
 		kind: "turn"
-		spawns: Choice.Spawn[]
-		attacks: Choice.Attack[]
-		movements: Choice.Movement[]
-		investments: Choice.Investment[]
+		choices: Choice.Any[]
 	}
 
 	export type Conclusion = {
 		kind: "conclusion"
 		winner: number
-		reason: "time" | "conquest"
+		reason: "time" | "conquest" | "surrender"
 	}
 
 	export type Any = Turn | Conclusion

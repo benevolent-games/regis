@@ -2,7 +2,7 @@
 import {clone} from "@benev/slate"
 
 import {Agent} from "./agent.js"
-import {Capsule} from "../tools/capsule.js"
+import {Ref, ref} from "../tools/ref.js"
 import {compute} from "./routines/compute.js"
 import {asciiMap} from "./ascii/ascii-map.js"
 import {defaultGameConfig, defaultRoster, GameHistory, GameStates, Incident} from "./state.js"
@@ -11,7 +11,7 @@ export type SubmitTurnFn = (incident: Incident.Turn) => void
 
 export class Arbiter {
 	history: GameHistory
-	states: Capsule<GameStates>
+	states: Ref<GameStates>
 
 	constructor(ascii: string) {
 		const {board, units} = asciiMap(ascii)
@@ -27,7 +27,7 @@ export class Arbiter {
 				],
 			},
 		}
-		this.states = new Capsule(compute(this.history))
+		this.states = ref(compute(this.history))
 	}
 
 	makeAgent(teamId: null | number) {
@@ -50,7 +50,7 @@ export class Arbiter {
 
 	#commit(history: GameHistory) {
 		this.history = history
-		this.states.set(compute(this.history), true)
+		this.states.value = compute(this.history)
 	}
 }
 
