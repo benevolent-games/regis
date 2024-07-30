@@ -1,8 +1,8 @@
 
 import {clone} from "@benev/slate"
-import {pubsub} from "@benev/toolbox"
 
 import {Agent} from "./agent.js"
+import {Capsule} from "../tools/capsule.js"
 import {compute} from "./routines/compute.js"
 import {asciiMap} from "./ascii/ascii-map.js"
 import {defaultGameConfig, defaultRoster, GameHistory, GameStates, Incident} from "./state.js"
@@ -11,9 +11,7 @@ export type SubmitTurnFn = (incident: Incident.Turn) => void
 
 export class Arbiter {
 	history: GameHistory
-
-	states: GameStates
-	onStateChange = pubsub()
+	states: Capsule<GameStates>
 
 	constructor(ascii: string) {
 		const {board, units} = asciiMap(ascii)
@@ -29,33 +27,30 @@ export class Arbiter {
 				],
 			},
 		}
-		this.states = this.#commit(this.history)
+		this.states = new Capsule(compute(this.history))
 	}
 
 	makeAgent(teamId: null | number) {
 		const getState = () => {
 			return teamId === null
-				? this.states.arbiter
-				: this.states.agents[teamId]
+				? this.states.value.arbiter
+				: this.states.value.agents[teamId]
 		}
 		const agent = new Agent(getState())
 		const update = () => { agent.state = getState() }
-		this.onStateChange(update)
+		this.states.on(update)
 		return agent
 	}
 
-	actuate: SubmitTurnFn = incident => {
+	submitTurn: SubmitTurnFn = turn => {
 		const newHistory = clone(this.history)
-		newHistory.chronicle.push(incident)
+		newHistory.chronicle.push(turn)
 		this.#commit(newHistory)
 	}
 
 	#commit(history: GameHistory) {
-		const states = compute(this.history)
 		this.history = history
-		this.states = states
-		this.onStateChange.publish()
-		return states
+		this.states.set(compute(this.history), true)
 	}
 }
 

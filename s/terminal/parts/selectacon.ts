@@ -42,22 +42,8 @@ export class Selectacon {
 			world: World
 		}) {
 
-		this.#trashbin.disposer(ev(options.world.canvas, {
-			pointerdown: (event: PointerEvent) => {
-				if (event.button === 0)
-					this.selection.value = this.pick(event)
-			},
-			pointermove: (event: PointerEvent) => {
-				this.hover.value = this.pick(event)
-			},
-		}))
-
 		this.#trashbin.disposer(this.hover.on(() => this.render()))
 		this.#trashbin.disposer(this.selection.on(() => this.render()))
-	}
-
-	performSelection(p: Pointing | null) {
-		this.selection.value = p ? this.pick(p) : null
 	}
 
 	performHover(p: Pointing | null) {

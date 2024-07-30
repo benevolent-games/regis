@@ -3,7 +3,7 @@ import {Vec2} from "@benev/toolbox"
 import {Agent} from "../../agent.js"
 import {pathfind} from "./pathfinding.js"
 
-export function getValidPath({
+export function calculateMovement({
 		agent,
 		teamId,
 		source,
@@ -13,7 +13,7 @@ export function getValidPath({
 		teamId: number,
 		source: Vec2,
 		target: Vec2,
-	}): Vec2[] | null {
+	}) {
 
 	const unit = agent.units.at(source)
 
@@ -28,9 +28,15 @@ export function getValidPath({
 	const {verticality} = archetype.move
 	const path = pathfind({agent, verticality, source, target})
 
-	if (path && path.length <= archetype.move.range)
-		return path
-	else
-		return null
+	return (path && path.length <= archetype.move.range)
+		? {
+			unit,
+			path,
+			source,
+			target,
+			verticality,
+			move: archetype.move,
+		}
+		: null
 }
 

@@ -1,7 +1,7 @@
 
 import {Pointing} from "./types.js"
 import {Planner} from "./planner.js"
-import {Cell, Selectacon} from "./selectacon.js"
+import {Selectacon} from "./selectacon.js"
 
 export function handlePrimaryClick(options: {
 		planner: Planner
@@ -12,9 +12,6 @@ export function handlePrimaryClick(options: {
 	const {planner, pointing, selectacon} = options
 	const selection = selectacon.selection.value
 	const cell = selectacon.pick(pointing)
-	const setSelection = (cell: Cell | null) => {
-		selectacon.selection.value = cell
-	}
 
 	// clicked a tile cell
 	if (cell?.kind === "tile") {
@@ -24,16 +21,17 @@ export function handlePrimaryClick(options: {
 
 			// a roster unit is selected
 			if (selection.kind === "roster") {
-				planner.planSpawn({
+				const happened = planner.planSpawn({
 					place: cell.place,
 					unitKind: selection.unitKind,
 				})
-				setSelection(cell)
+				if (happened)
+					planner.executePlan()
 			}
 
 			// a tile is selected
 			else if (selection.kind === "tile") {
-				planner.doTheFirstValidThing([
+				const happened = planner.doTheFirstValidThing([
 					() => planner.planAttack({
 						source: selection.place,
 						target: cell.place,
@@ -43,24 +41,12 @@ export function handlePrimaryClick(options: {
 						target: cell.place,
 					}),
 				])
-				setSelection(cell)
+				if (happened)
+					planner.executePlan()
 			}
 		}
-
-		// nothing is currently selected
-		else {
-			setSelection(cell)
-		}
 	}
 
-	// clicked a roster unit
-	else if (cell?.kind === "roster") {
-		setSelection(cell)
-	}
-
-	// clicked nothing
-	else {
-		setSelection(null)
-	}
+	selectacon.selection.value = cell
 }
 

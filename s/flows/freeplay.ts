@@ -6,9 +6,9 @@ import {makeGameTerminal} from "../terminal/terminal.js"
 export async function freeplayFlow() {
 	const arbiter = new Arbiter(mapPool.bridge)
 	const agent = arbiter.makeAgent(null)
-	const terminal = await makeGameTerminal(agent, arbiter.actuate)
+	const terminal = await makeGameTerminal(agent, arbiter.submitTurn)
 
-	arbiter.onStateChange(terminal.render)
+	arbiter.states.on(terminal.render)
 
 	return {
 		world: terminal.world,

@@ -1,14 +1,14 @@
 
+import {Vec2} from "@benev/toolbox"
+import {TransformNode} from "@babylonjs/core"
+
 import {Assets} from "./assets.js"
 import {Agent} from "../../logic/agent.js"
 import {Selectacon} from "./selectacon.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {SubmitTurnFn} from "../../logic/arbiter.js"
 import {Choice, Incident} from "../../logic/state.js"
-import {isValidSpawnPlace} from "../../logic/routines/aspects/spawning.js"
-import { getValidPath } from "../../logic/routines/aspects/movement.js"
-import { TransformNode } from "@babylonjs/core"
-import { Vec2 } from "@benev/toolbox"
+import {propose} from "../../logic/routines/aspects/propose.js"
 
 function createBlankTurn(): Incident.Turn {
 	return {
@@ -54,47 +54,44 @@ export class Planner {
 
 	render() {
 		this.#rendertrash.dispose()
-
 		const {agent, selectacon, assets} = this.options
 		const selection = selectacon.selection.value
-		const teamId = agent.state.context.currentTurn
 
 		if (selection) {
 
 			// render spawning liberties
 			if (selection.kind === "roster") {
-				for (const {place} of agent.tiles.list()) {
-					if (isValidSpawnPlace(agent, teamId, place)) {
+				Array.from(agent.tiles.list())
+					.filter(({place}) => !!propose(agent).spawn({
+						place,
+						unitKind: selection.unitKind,
+					}))
+					.forEach(({place}) => {
 						this.#spawn(assets.indicators.liberty, place)
-					}
-				}
+					})
 			}
 
 			// render movement liberties
 			if (selection.kind === "tile") {
-				for (const {place} of agent.tiles.list()) {
-					const path = getValidPath({
-						agent,
-						teamId,
+				Array.from(agent.tiles.list())
+					.filter(({place}) => !!propose(agent).movement({
 						source: selection.place,
 						target: place,
-					})
-					if (path)
+					}))
+					.forEach(({place}) => {
 						this.#spawn(assets.indicators.liberty, place)
-				}
+					})
 			}
 		}
 	}
 
 	planSpawn(choice: Choice.Spawn) {
-		const {agent} = this.options
-		const teamId = agent.state.context.currentTurn
-
-		if (isValidSpawnPlace(agent, teamId, choice.place)) {
+		console.log("plan spawn")
+		if (propose(this.options.agent).spawn(choice)) {
+			console.log("big proppa")
 			this.plan.spawns.push(choice)
 			return true
 		}
-
 		return false
 	}
 
@@ -103,6 +100,10 @@ export class Planner {
 	}
 
 	planMovement(choice: Choice.Movement) {
+		if (propose(this.options.agent).movement(choice)) {
+			this.plan.movements.push(choice)
+			return true
+		}
 		return false
 	}
 

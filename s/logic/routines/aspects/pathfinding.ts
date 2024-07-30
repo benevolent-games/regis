@@ -94,10 +94,18 @@ function getNextValidSteps(
 	) {
 
 	return getCardinalNeighbors(agent, placeA)
+
+		// vertically compatible
 		.filter(placeB => {
 			const tileA = agent.tiles.at(placeA)
 			const tileB = agent.tiles.at(placeB)
 			return isVerticallyCompatible(verticality, tileA, tileB)
+		})
+
+		// is vacant
+		.filter(placeB => {
+			const unit = agent.units.at(placeB)
+			return !unit
 		})
 }
 

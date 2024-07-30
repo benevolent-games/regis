@@ -1,5 +1,6 @@
 
 import {vec2, Vec2} from "@benev/toolbox"
+
 import {Agent} from "../../agent.js"
 import {getCardinalNeighbors} from "./navigation.js"
 

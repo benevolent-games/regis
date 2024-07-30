@@ -4,8 +4,8 @@ import {clone} from "@benev/slate"
 import {Agent} from "../agent.js"
 import {purchase} from "./aspects/money.js"
 import {nextTurn} from "./aspects/turns.js"
+import {propose} from "./aspects/propose.js"
 import {visionForTeam} from "./aspects/vision.js"
-import {isValidSpawnPlace} from "./aspects/spawning.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
 import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
 
@@ -49,25 +49,31 @@ export function compute(original: GameHistory): GameStates {
 		if (incident.kind === "turn") {
 
 			// spawns
-			for (const spawn of incident.spawns) {
-				const {unitKind, place} = spawn
-				const validPlace = isValidSpawnPlace(agent, teamId, place)
-				const {cost} = state.initial.config.unitArchetypes[unitKind]
+			for (const choice of incident.spawns) {
+				const possible = propose(agent).spawn(choice)
+				if (possible) {
+					purchase(state, teamId, possible.cost)
+					agent.units.add({
+						kind: choice.unitKind,
+						place: choice.place,
+						team: teamId,
+						damage: 0,
+					})
+				}
+				else throw new Error("invalid spawn")
+			}
 
-				if (!validPlace)
-					throw new Error(`invalid spawnpoint`)
-
-				if (!cost)
-					throw new Error(`unit kind "${unitKind}" has null cost`)
-
-				purchase(state, teamId, cost)
+			// movements
+			for (const choice of incident.movements) {
+				const possible = propose(agent).movement(choice)
+				if (possible) {
+					possible.unit.place = choice.target
+				}
+				else throw new Error("invalid movement")
 			}
 
 			// attacks
 			for (const attack of incident.attacks) {}
-
-			// movements
-			for (const movement of incident.movements) {}
 
 			// investments
 			for (const investment of incident.investments) {}
