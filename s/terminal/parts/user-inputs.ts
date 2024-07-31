@@ -5,8 +5,8 @@ import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
 import {World} from "./world.js"
 import {Planner} from "./planner.js"
 import {CameraRig} from "./camera-rig.js"
-import {Agent} from "../../logic/agent.js"
 import {Selectacon} from "./selectacon.js"
+import {PreviewAgent} from "./preview-agent.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {DragQueen} from "../../tools/drag-queen.js"
 import {handlePrimaryClick} from "./handle-primary-click.js"
@@ -17,14 +17,14 @@ export class UserInputs {
 	dispose = this.#trashbin.dispose
 
 	constructor(private options: {
-			agent: Agent
+			agent: PreviewAgent
 			world: World
 			planner: Planner
 			cameraRig: CameraRig
 			selectacon: Selectacon
 		}) {
 
-		const {cameraRig} = options
+		const {agent, cameraRig} = options
 		const {canvas} = options.world
 		const dr = this.#trashbin.disposer
 
@@ -33,6 +33,15 @@ export class UserInputs {
 		dr(ev(canvas, this.middleMouse.events))
 		dr(ev(document, {contextmenu: (e: Event) => e.preventDefault()}))
 		dr(ev(canvas, {wheel: cameraRig.orbitcam.wheel}))
+		dr(ev(canvas, {wheel: cameraRig.orbitcam.wheel}))
+
+		// ctrl+z wipe turn plan
+		dr(ev(window, {
+			keydown: (event: KeyboardEvent) => {
+				if (event.code === "KeyZ" && event.ctrlKey)
+					agent.reset()
+			},
+		}))
 	}
 
 	leftMouse = new DragQueen({

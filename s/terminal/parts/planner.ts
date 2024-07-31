@@ -9,13 +9,14 @@ import {PreviewAgent} from "./preview-agent.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {SubmitTurnFn} from "../../logic/arbiter.js"
 
+/** interface for the user to sketch a plan for their turn */
 export class Planner {
 	#planbin = new Trashbin()
 	#renderbin = new Trashbin()
 
 	constructor(private options: {
 			assets: Assets
-			agent: PreviewAgent
+			agent: PreviewAgent // uses a preview agent instead of just an agent
 			selectacon: Selectacon
 			submitTurn: SubmitTurnFn
 		}) {
@@ -114,7 +115,7 @@ export class Planner {
 			kind: "turn",
 			choices: this.options.agent.choices,
 		})
-		this.options.agent.clearChoices()
+		this.options.agent.reset()
 	}
 
 	dispose() {

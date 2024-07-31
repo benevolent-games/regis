@@ -12,7 +12,8 @@ export type Proposition = ReturnType<typeof propose>
 
 export function propose(agent: Agent) {
 	const teamId = agent.state.context.currentTurn
-	const unitTracking = new Map<string, {alreadyActed: boolean}>()
+	const unitFreedom = new UnitFreedom()
+	const rerender = () => agent.stateRef.publish()
 
 	return choiceFns({
 
@@ -25,13 +26,16 @@ export function propose(agent: Agent) {
 				? {
 					commit() {
 						subtractResources(agent.state, teamId, cost)
+						const id = mintId()
+						unitFreedom.set(id, false)
 						agent.units.add({
-							id: mintId(),
+							id,
 							kind: choice.unitKind,
 							place: choice.place,
 							team: teamId,
 							damage: 0,
 						})
+						rerender()
 					},
 				}
 				: null
@@ -48,21 +52,16 @@ export function propose(agent: Agent) {
 			if (!calculation)
 				return null
 
-			const track = mapGuarantee(
-				unitTracking,
-				calculation.unit.id,
-				() => ({alreadyActed: false}),
-			)
-
-			if (track.alreadyActed)
+			if (!unitFreedom.get(calculation.unit.id))
 				return null
 
 			return {
 				...choice,
 				...calculation,
 				commit() {
-					track.alreadyActed = true
+					unitFreedom.set(calculation.unit.id, false)
 					calculation.unit.place = choice.target
+					rerender()
 				},
 			}
 		},
@@ -71,5 +70,24 @@ export function propose(agent: Agent) {
 
 		investment(choice: Choice.Investment) {},
 	})
+}
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+class UnitFreedom {
+	#map = new Map<string, {freedom: boolean}>()
+
+	#obtain(id: string) {
+		return mapGuarantee(this.#map, id, () => ({freedom: true}))
+	}
+
+	get(id: string) {
+		return this.#obtain(id).freedom
+	}
+
+	set(id: string, freedom: boolean) {
+		this.#obtain(id).freedom = freedom
+	}
 }
 

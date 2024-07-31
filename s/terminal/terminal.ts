@@ -19,9 +19,10 @@ export async function makeGameTerminal(baseAgent: Agent, submitTurn: SubmitTurnF
 	const dr = trashbin.disposer
 	const {dispose} = trashbin
 
-	const agent = d(new PreviewAgent(baseAgent))
-	const {world, assets} = d(await makeBasicVisuals())
+	const agent = new PreviewAgent(baseAgent)
+	dr(baseAgent.stateRef.on(() => agent.reset()))
 
+	const {world, assets} = d(await makeBasicVisuals())
 	d(assets.board.border())
 
 	const cameraRig = d(new CameraRig({world}))
