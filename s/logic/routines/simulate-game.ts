@@ -1,8 +1,9 @@
 
 import {clone} from "@benev/slate"
 
+import {Agent} from "../agent.js"
 import {nextTurn} from "./aspects/turns.js"
-import {simulateTurn} from "./simulate-turn.js"
+import {propose} from "./aspects/propose.js"
 import {visionForTeam} from "./aspects/vision.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
 import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
@@ -46,7 +47,10 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 
 		// process a turn
 		case "turn":
-			simulateTurn(state, incident)
+			const agent = new Agent(state)
+			const choices = propose(agent)
+			for (const choice of incident.choices)
+				choices[choice.kind](choice as any)?.commit()
 			nextTurn(state)
 			break
 
