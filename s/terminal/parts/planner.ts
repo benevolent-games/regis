@@ -80,10 +80,8 @@ export class Planner {
 	}
 
 	planMovement(choice: Choice.Movement) {
-		console.log("plan movement")
 		const {agent} = this.options
 		if (propose(this.options.agent).movement(choice)) {
-			console.log("proposed movement")
 			agent.addChoice(choice)
 			return true
 		}

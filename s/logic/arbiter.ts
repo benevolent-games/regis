@@ -3,8 +3,8 @@ import {clone} from "@benev/slate"
 
 import {Agent} from "./agent.js"
 import {Ref, ref} from "../tools/ref.js"
-import {compute} from "./routines/compute.js"
 import {asciiMap} from "./ascii/ascii-map.js"
+import {simulateGame} from "./routines/simulate-game.js"
 import {defaultGameConfig, defaultRoster, GameHistory, GameStates, Incident} from "./state.js"
 
 export type SubmitTurnFn = (incident: Incident.Turn) => void
@@ -27,7 +27,7 @@ export class Arbiter {
 				],
 			},
 		}
-		this.states = ref(compute(this.history))
+		this.states = ref(clone(simulateGame(this.history)))
 	}
 
 	makeAgent(teamId: null | number) {
@@ -50,7 +50,7 @@ export class Arbiter {
 
 	#commit(history: GameHistory) {
 		this.history = history
-		this.states.value = compute(this.history)
+		this.states.value = clone(simulateGame(this.history))
 	}
 }
 

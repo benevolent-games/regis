@@ -2,18 +2,37 @@
 import {Agent} from "../agent.js"
 import {purchase} from "./aspects/money.js"
 import {propose} from "./aspects/propose.js"
-import {AgentState, Choice, choiceActuators} from "../state.js"
+import {AgentState, Choice, choiceActuators, UnitKind} from "../state.js"
 
-export function applyTurn(state: AgentState, turn: {choices: Choice.Any[]}) {
-	console.log("APPLY TURN", turn.choices)
+export function simulateTurn(state: AgentState, turn: {choices: Choice.Any[]}) {
+	const limits = new TurnLimits(state)
 	for (const choice of turn.choices)
-		choices(state)[choice.kind](choice as any)
+		choices(state, limits)[choice.kind](choice as any)
 }
 
 /////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////
 
-function choices(state: AgentState) {
+type UnitLimits = {
+	moved: boolean
+	attacked: boolean
+}
+
+class TurnLimits {
+	units: Map<UnitKind, UnitLimits>
+
+	constructor(state: AgentState) {
+		this.units = new Map(Object
+			.entries(state.initial.config.unitArchetypes)
+			.map(([unitKind]) => [unitKind as UnitKind, {
+				moved: false,
+				attacked: false,
+			}])
+		)
+	}
+}
+
+function choices(state: AgentState, limits: TurnLimits) {
 	const agent = new Agent(state)
 	const teamId = state.context.currentTurn
 
@@ -33,10 +52,8 @@ function choices(state: AgentState) {
 		},
 
 		movement(choice: Choice.Movement) {
-			console.log("apply movement choice")
 			const possible = propose(agent).movement(choice)
 			if (possible) {
-				console.log("moved", possible.unit.kind)
 				possible.unit.place = choice.target
 			}
 			else throw new Error("invalid movement")

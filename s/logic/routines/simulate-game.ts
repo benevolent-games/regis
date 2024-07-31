@@ -1,8 +1,8 @@
 
 import {clone} from "@benev/slate"
 
-import {applyTurn} from "./patch.js"
 import {nextTurn} from "./aspects/turns.js"
+import {simulateTurn} from "./simulate-turn.js"
 import {visionForTeam} from "./aspects/vision.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
 import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
@@ -18,8 +18,7 @@ import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
  * for each turn, we add a historical event -- then we simply recompute the
  * game state again.
  */
-export function compute(original: GameHistory): GameStates {
-	const {initial, chronicle} = clone(original)
+export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 
 	// establish the authoritative state for the game,
 	// the arbiter "knows all"
@@ -43,23 +42,24 @@ export function compute(original: GameHistory): GameStates {
 
 	// we churn through every event in the game history,
 	// updating the arbiter state as we go along
-	for (const incident of chronicle) {
+	for (const incident of chronicle) switch (incident.kind) {
 
 		// process a turn
-		if (incident.kind === "turn") {
-			applyTurn(state, incident)
+		case "turn":
+			simulateTurn(state, incident)
 			nextTurn(state)
-		}
+			break
 
 		// the game has ended
-		else if (incident.kind === "conclusion")
+		case "conclusion":
 			state.context.winner = incident
+			break
 
-		else
+		default:
 			throw new Error(`unknown incident kind`)
 	}
 
-	// finally, we return the final result states
+	// finally, we return the result states
 	return {
 		arbiter: state,
 		agents: state.teams.map((_, teamId) => {

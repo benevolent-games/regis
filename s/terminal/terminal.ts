@@ -35,7 +35,6 @@ export async function makeGameTerminal(baseAgent: Agent, submitTurn: SubmitTurnF
 	d(new UserInputs({agent, world, planner, selectacon, cameraRig}))
 
 	function render() {
-		console.log("RERENDER")
 		tiler.render()
 		rosters.render()
 		selectacon.render()
