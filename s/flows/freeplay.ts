@@ -8,7 +8,21 @@ export async function freeplayFlow() {
 	const agent = arbiter.makeAgent(null)
 
 	const terminal = await makeGameTerminal(agent, arbiter.submitTurn)
-	arbiter.states.on(terminal.render)
+	arbiter.statesRef.on(terminal.render)
+
+	function printReport() {
+		const states = arbiter.statesRef.value
+		const {currentTurn} = states.arbiter.context
+		const [team1, team2] = states.arbiter.teams
+
+		if (currentTurn === 0)
+			console.log(`[[ ${team1.name} +${team1.resources} ]]   ${team2.name} +${team2.resources}`)
+		else
+			console.log(`   ${team1.name} +${team1.resources}   [[ ${team2.name} +${team2.resources} ]]`)
+	}
+
+	printReport()
+	arbiter.statesRef.on(printReport)
 
 	return {
 		world: terminal.world,

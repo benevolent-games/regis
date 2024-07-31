@@ -10,12 +10,12 @@ import {defaultGameConfig, defaultRoster, GameHistory, GameStates, Incident} fro
 export type SubmitTurnFn = (incident: Incident.Turn) => void
 
 export class Arbiter {
-	history: GameHistory
-	states: Ref<GameStates>
+	historyRef: Ref<GameHistory>
+	statesRef: Ref<GameStates>
 
 	constructor(ascii: string) {
 		const {board, units} = asciiMap(ascii)
-		this.history = {
+		this.historyRef = ref<GameHistory>({
 			chronicle: [],
 			initial: {
 				board,
@@ -26,31 +26,31 @@ export class Arbiter {
 					{name: "Orange", roster: defaultRoster()},
 				],
 			},
-		}
-		this.states = ref(clone(simulateGame(this.history)))
+		})
+		this.statesRef = ref(clone(simulateGame(this.historyRef.value)))
 	}
 
 	makeAgent(teamId: null | number) {
 		const getState = () => {
 			return teamId === null
-				? this.states.value.arbiter
-				: this.states.value.agents[teamId]
+				? this.statesRef.value.arbiter
+				: this.statesRef.value.agents[teamId]
 		}
 		const agent = new Agent(getState())
 		const update = () => { agent.state = getState() }
-		this.states.on(update)
+		this.statesRef.on(update)
 		return agent
 	}
 
 	submitTurn: SubmitTurnFn = turn => {
-		const newHistory = clone(this.history)
+		const newHistory = clone(this.historyRef.value)
 		newHistory.chronicle.push(turn)
 		this.#commit(newHistory)
 	}
 
 	#commit(history: GameHistory) {
-		this.history = history
-		this.states.value = clone(simulateGame(this.history))
+		this.historyRef.value = history
+		this.statesRef.value = clone(simulateGame(this.historyRef.value))
 	}
 }
 

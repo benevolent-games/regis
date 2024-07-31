@@ -23,7 +23,7 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 
 	// establish the authoritative state for the game,
 	// the arbiter "knows all"
-	const state: ArbiterState = {
+	const state: ArbiterState = clone({
 		initial,
 		units: initial.units,
 		context: {
@@ -39,7 +39,7 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 			choices: [],
 			kills: [],
 		},
-	}
+	})
 
 	// we churn through every event in the game history,
 	// updating the arbiter state as we go along
@@ -49,8 +49,11 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 		case "turn":
 			const agent = new Agent(state)
 			const choices = propose(agent)
-			for (const choice of incident.choices)
-				choices[choice.kind](choice as any)?.commit()
+			for (const choice of incident.choices) {
+				const report = choices[choice.kind](choice as any)
+				if (report) report.commit()
+				else throw new Error("invalid turn choice")
+			}
 			nextTurn(state)
 			break
 
@@ -68,7 +71,7 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 		arbiter: state,
 		agents: state.teams.map((_, teamId) => {
 			const vision = visionForTeam(state, teamId)
-			return clone({
+			return {
 				initial: state.initial,
 				context: state.context,
 				units: censorUnits(state.units, vision),
@@ -77,7 +80,7 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 					choices: [],
 					kills: [],
 				},
-			})
+			}
 		}),
 	}
 }
