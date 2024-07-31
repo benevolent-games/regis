@@ -22,7 +22,8 @@
 		"devlinks-toolbox": "rm -rf node_modules/@benev/toolbox && ln -s \"$(realpath ../toolbox)\" node_modules/@benev/toolbox",
 		"devlinks-slate": "rm -rf node_modules/@benev/slate && ln -s \"$(realpath ../slate)\" node_modules/@benev/slate",
 		"test": "exit 0",
-		"test-watch": "chokidar \"x/**/*.js\" -c \"clear && npm test\""
+		"test-watch": "chokidar \"x/**/*.js\" -c \"clear && npm test\"",
+		"count": "find s -path '*/_archive' -prune -o -name '*.ts' -exec wc -l {} +"
 	},
 	"dependencies": {
 		"@babylonjs/core": "^7.14.0",
