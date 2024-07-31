@@ -24,7 +24,7 @@ export class UserInputs {
 			selectacon: Selectacon
 		}) {
 
-		const {agent, cameraRig} = options
+		const {agent, planner, cameraRig} = options
 		const {canvas} = options.world
 		const dr = this.#trashbin.disposer
 
@@ -40,6 +40,13 @@ export class UserInputs {
 			keydown: (event: KeyboardEvent) => {
 				if (event.code === "KeyZ" && event.ctrlKey)
 					agent.reset()
+			},
+		}))
+
+		dr(ev(window, {
+			keydown: (event: KeyboardEvent) => {
+				if (event.code === "Space")
+					planner.executePlan()
 			},
 		}))
 	}
