@@ -6,17 +6,19 @@ import {Agent} from "../../logic/agent.js"
 import {Choice} from "../../logic/state.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {simulateTurn} from "../../logic/routines/simulate-turn.js"
+import {propose, Proposition} from "../../logic/routines/aspects/propose.js"
 
 export class PreviewAgent extends Agent {
 	readonly #bin = new Trashbin()
 	readonly #choices = ref<Choice.Any[]>([])
 
+	proposition: Proposition
+
 	constructor(public baseAgent: Agent) {
 		super(clone(baseAgent.state))
 		this.#bin.disposer(baseAgent.stateRef.on(() => this.#update()))
-		this.#bin.disposer(this.#choices.on(() => {
-			this.#update()
-		}))
+		this.#bin.disposer(this.#choices.on(() => this.#update()))
+		this.proposition = propose(this)
 	}
 
 	get choices() {
@@ -29,6 +31,7 @@ export class PreviewAgent extends Agent {
 
 	clearChoices() {
 		this.#choices.value = []
+		this.proposition = propose(this)
 	}
 
 	#update() {

@@ -9,6 +9,10 @@ export class UnitsHelper {
 		return this.state.find(unit => vec2.equal(unit.place, place))
 	}
 
+	get(id: string) {
+		return this.state.find(unit => unit.id === id)
+	}
+
 	require(place: Vec2) {
 		const unit = this.at(place)
 		if (!unit)

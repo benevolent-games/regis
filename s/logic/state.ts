@@ -93,8 +93,8 @@ export type Reminders = {
 	}[]
 }
 
-export type ChoiceActuators = {[P in Choice.Any["kind"]]: (choice: any) => void}
-export const choiceActuators = <X extends ChoiceActuators>(fns: X) => fns
+export type ChoiceFns = {[P in Choice.Any["kind"]]: (choice: any) => void}
+export const choiceFns = <X extends ChoiceFns>(fns: X) => fns
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -115,7 +115,9 @@ export type FullTeamInfo = {
 	investments: Investment[]
 }
 
-export function isFullTeamInfo(team: FullTeamInfo | LimitedTeamInfo): team is FullTeamInfo {
+export type TeamInfo = LimitedTeamInfo | FullTeamInfo
+
+export function isFullTeamInfo(team: TeamInfo): team is FullTeamInfo {
 	return "resources" in team
 }
 
@@ -248,6 +250,7 @@ export function makePlainBoardState(): BoardState {
 /////////////////////////////////////////////////
 
 export type Unit = {
+	id: string
 	place: Vec2
 	kind: UnitKind
 	team: null | number

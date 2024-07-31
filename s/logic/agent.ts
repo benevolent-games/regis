@@ -30,6 +30,10 @@ export class Agent {
 		return this.state.initial.config.unitArchetypes[unitKind]
 	}
 
+	get currentTeam() {
+		return this.state.teams.at(this.state.context.currentTurn)!
+	}
+
 	get fullTeams() {
 		const teams: {teamId: number, team: FullTeamInfo}[] = []
 		this.state.teams.forEach((team, teamId) => {

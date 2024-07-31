@@ -8,11 +8,10 @@ import {Choice} from "../../logic/state.js"
 import {PreviewAgent} from "./preview-agent.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {SubmitTurnFn} from "../../logic/arbiter.js"
-import {propose} from "../../logic/routines/aspects/propose.js"
 
 export class Planner {
-	#rendertrash = new Trashbin()
-	#plannertrash = new Trashbin()
+	#planbin = new Trashbin()
+	#renderbin = new Trashbin()
 
 	constructor(private options: {
 			assets: Assets
@@ -21,7 +20,7 @@ export class Planner {
 			submitTurn: SubmitTurnFn
 		}) {
 
-		this.#plannertrash.disposer(
+		this.#planbin.disposer(
 			options.selectacon.selection.on(() => this.render())
 		)
 	}
@@ -31,21 +30,23 @@ export class Planner {
 		const instance = fn()
 		const position = agent.coordinator.toPosition(place)
 		instance.position.set(...position)
-		this.#rendertrash.disposable(instance)
+		this.#renderbin.disposable(instance)
 		return instance
 	}
 
 	render() {
-		this.#rendertrash.dispose()
+		this.#renderbin.dispose()
 		const {agent, selectacon, assets} = this.options
+		const {proposition} = agent
 		const selection = selectacon.selection.value
 
 		if (selection) {
 
 			// render spawning liberties
-			if (selection.kind === "roster") {
-				Array.from(agent.tiles.list())
-					.filter(({place}) => !!propose(agent).spawn({
+			if (selection.kind === "roster")
+				Array
+					.from(agent.tiles.list())
+					.filter(({place}) => !!proposition.spawn({
 						kind: "spawn",
 						place,
 						unitKind: selection.unitKind,
@@ -53,12 +54,12 @@ export class Planner {
 					.forEach(({place}) => {
 						this.#spawn(assets.indicators.liberty, place)
 					})
-			}
 
 			// render movement liberties
-			if (selection.kind === "tile") {
-				Array.from(agent.tiles.list())
-					.filter(({place}) => !!propose(agent).movement({
+			if (selection.kind === "tile")
+				Array
+					.from(agent.tiles.list())
+					.filter(({place}) => !!proposition.movement({
 						kind: "movement",
 						source: selection.place,
 						target: place,
@@ -66,13 +67,14 @@ export class Planner {
 					.forEach(({place}) => {
 						this.#spawn(assets.indicators.liberty, place)
 					})
-			}
 		}
 	}
 
 	planSpawn(choice: Choice.Spawn) {
 		const {agent} = this.options
-		if (propose(agent).spawn(choice)) {
+		const report = agent.proposition.spawn(choice)
+		if (report) {
+			report.commit()
 			agent.addChoice(choice)
 			return true
 		}
@@ -81,7 +83,9 @@ export class Planner {
 
 	planMovement(choice: Choice.Movement) {
 		const {agent} = this.options
-		if (propose(this.options.agent).movement(choice)) {
+		const report = agent.proposition.movement(choice)
+		if (report) {
+			report.commit()
 			agent.addChoice(choice)
 			return true
 		}
@@ -114,8 +118,8 @@ export class Planner {
 	}
 
 	dispose() {
-		this.#rendertrash.dispose()
-		this.#plannertrash.dispose()
+		this.#renderbin.dispose()
+		this.#planbin.dispose()
 	}
 }
 

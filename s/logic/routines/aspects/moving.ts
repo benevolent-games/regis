@@ -1,5 +1,5 @@
 
-import {Vec2} from "@benev/toolbox"
+import {vec2, Vec2} from "@benev/toolbox"
 import {Agent} from "../../agent.js"
 import {pathfind} from "./pathfinding.js"
 
@@ -14,6 +14,9 @@ export function calculateMovement({
 		source: Vec2,
 		target: Vec2,
 	}) {
+
+	if (vec2.equal(source, target))
+		return null
 
 	const unit = agent.units.at(source)
 
