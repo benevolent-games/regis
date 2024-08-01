@@ -30,9 +30,5 @@ export class UnitsHelper {
 			throw new Error("cannot insert unit, place already occupied")
 		this.state.push(unit)
 	}
-
-	delete(place: Vec2) {
-		this.state = this.state.filter(unit => !vec2.equal(unit.place, place))
-	}
 }
 

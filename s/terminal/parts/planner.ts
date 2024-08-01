@@ -85,10 +85,7 @@ export class Planner {
 
 	executePlan() {
 		const {agent, submitTurn} = this.options
-		submitTurn({
-			kind: "turn",
-			choices: agent.choices,
-		})
+		submitTurn({kind: "turn", choices: agent.choices})
 		agent.reset()
 	}
 

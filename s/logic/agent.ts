@@ -26,6 +26,11 @@ export class Agent {
 	get tiles() { return new TilesHelper(this.state.initial.board) }
 	get units() { return new UnitsHelper(this.state.units) }
 
+	deleteUnit(id: string) {
+		this.state.units = this.state.units.filter(unit => unit.id !== id)
+		this.stateRef.publish()
+	}
+
 	archetype(unitKind: UnitKind) {
 		return this.state.initial.config.unitArchetypes[unitKind]
 	}

@@ -7,6 +7,7 @@ import {isValidSpawnPlace} from "./spawning.js"
 import {mintId} from "../../../tools/mint-id.js"
 import {Choice, ChoiceKind} from "../../state.js"
 import {canAfford, subtractResources} from "./money.js"
+import {applyDamage, attackReport} from "./attack-report.js"
 
 export type Proposition = ReturnType<typeof propose>
 
@@ -26,7 +27,7 @@ export function propose(agent: Agent) {
 					commit() {
 						subtractResources(agent.state, teamId, cost)
 						const id = mintId()
-						unitFreedom.set(id, false)
+						unitFreedom.revokeFreedom(id)
 						agent.units.add({
 							id,
 							kind: choice.unitKind,
@@ -51,14 +52,14 @@ export function propose(agent: Agent) {
 			if (!calculation)
 				return null
 
-			if (!unitFreedom.get(calculation.unit.id))
+			if (!unitFreedom.hasFreedom(calculation.unit.id))
 				return null
 
 			return {
 				...choice,
 				...calculation,
 				commit() {
-					unitFreedom.set(calculation.unit.id, false)
+					unitFreedom.revokeFreedom(calculation.unit.id)
 					calculation.unit.place = choice.target
 					rerender()
 				},
@@ -66,10 +67,22 @@ export function propose(agent: Agent) {
 		},
 
 		attack(choice: Choice.Attack) {
+			const report = attackReport(agent, teamId, choice)
+			if (report) {
+				if (!unitFreedom.hasFreedom(report.sourceUnit.id))
+					return null
+				return {
+					...report,
+					commit() {
+						const {targetUnit, attack} = report
+						unitFreedom.revokeFreedom(report.sourceUnit.id)
+						const lethal = applyDamage(agent, targetUnit, attack.damage)
+						if (lethal)
+							agent.deleteUnit(targetUnit.id)
+					},
+				}
+			}
 			return null
-			// return {
-			// 	commit() {},
-			// }
 		},
 
 		investment(choice: Choice.Investment) {
@@ -91,12 +104,12 @@ class UnitFreedom {
 		return mapGuarantee(this.#map, id, () => ({freedom: true}))
 	}
 
-	get(id: string) {
+	hasFreedom(id: string) {
 		return this.#obtain(id).freedom
 	}
 
-	set(id: string, freedom: boolean) {
-		this.#obtain(id).freedom = freedom
+	revokeFreedom(id: string) {
+		this.#obtain(id).freedom = false
 	}
 }
 

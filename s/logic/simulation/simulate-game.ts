@@ -48,9 +48,9 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 		// process a turn
 		case "turn":
 			const agent = new Agent(state)
-			const choices = propose(agent)
+			const proposition = propose(agent)
 			for (const choice of incident.choices) {
-				const report = choices[choice.kind](choice as any)
+				const report = proposition[choice.kind](choice as any)
 				if (report) report.commit()
 				else throw new Error("invalid turn choice")
 			}
