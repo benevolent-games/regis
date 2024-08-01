@@ -4,7 +4,7 @@ import {clone} from "@benev/slate"
 import {Agent} from "./agent.js"
 import {Ref, ref} from "../tools/ref.js"
 import {asciiMap} from "./ascii/ascii-map.js"
-import {simulateGame} from "./routines/simulate-game.js"
+import {simulateGame} from "./simulation/simulate-game.js"
 import {defaultGameConfig, defaultRoster, GameHistory, GameStates, Incident} from "./state.js"
 
 export type SubmitTurnFn = (incident: Incident.Turn) => void
