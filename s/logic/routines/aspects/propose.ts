@@ -5,7 +5,7 @@ import {Agent} from "../../agent.js"
 import {calculateMovement} from "./moving.js"
 import {isValidSpawnPlace} from "./spawning.js"
 import {mintId} from "../../../tools/mint-id.js"
-import {Choice, choiceFns} from "../../state.js"
+import {Choice, ChoiceKind} from "../../state.js"
 import {canAfford, subtractResources} from "./money.js"
 
 export type Proposition = ReturnType<typeof propose>
@@ -14,8 +14,7 @@ export function propose(agent: Agent) {
 	const teamId = agent.state.context.currentTurn
 	const unitFreedom = new UnitFreedom()
 	const rerender = () => agent.stateRef.publish()
-
-	return choiceFns({
+	return ({
 
 		spawn(choice: Choice.Spawn) {
 			const {cost} = agent.state.initial.config.unitArchetypes[choice.unitKind]
@@ -66,10 +65,18 @@ export function propose(agent: Agent) {
 			}
 		},
 
-		attack(choice: Choice.Attack) {},
+		attack(choice: Choice.Attack) {
+			return {
+				commit() {},
+			}
+		},
 
-		investment(choice: Choice.Investment) {},
-	})
+		investment(choice: Choice.Investment) {
+			return {
+				commit() {},
+			}
+		},
+	}) satisfies Record<ChoiceKind, any>
 }
 
 ////////////////////////////////////////////////

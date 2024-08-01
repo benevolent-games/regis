@@ -2,6 +2,7 @@
 import {Pointing} from "./types.js"
 import {Planner} from "./planner.js"
 import {Selectacon} from "./selectacon.js"
+import {doFirstValidThing} from "../../tools/do-first-valid-thing.js"
 
 export function handlePrimaryClick(options: {
 		planner: Planner
@@ -21,31 +22,27 @@ export function handlePrimaryClick(options: {
 
 			// a roster unit is selected
 			if (selection.kind === "roster") {
-				const happened = planner.planSpawn({
+				planner.attempt({
 					kind: "spawn",
 					place: cell.place,
 					unitKind: selection.unitKind,
 				})
-				// if (happened)
-				// 	planner.executePlan()
 			}
 
 			// a tile is selected
 			else if (selection.kind === "tile") {
-				const happened = planner.doTheFirstValidThing([
-					() => planner.planAttack({
+				doFirstValidThing([
+					() => planner.attempt({
 						kind: "attack",
 						source: selection.place,
 						target: cell.place,
 					}),
-					() => planner.planMovement({
+					() => planner.attempt({
 						kind: "movement",
 						source: selection.place,
 						target: cell.place,
 					}),
 				])
-				// if (happened)
-				// 	planner.executePlan()
 			}
 		}
 	}

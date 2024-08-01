@@ -71,51 +71,24 @@ export class Planner {
 		}
 	}
 
-	planSpawn(choice: Choice.Spawn) {
+	attempt(choice: Choice.Any) {
 		const {agent} = this.options
-		const report = agent.proposition.spawn(choice)
+		const fn = agent.proposition[choice.kind] as any
+		const report = fn(choice)
 		if (report) {
 			report.commit()
-			agent.addChoice(choice)
 			return true
-		}
-		return false
-	}
-
-	planMovement(choice: Choice.Movement) {
-		const {agent} = this.options
-		const report = agent.proposition.movement(choice)
-		if (report) {
-			report.commit()
-			agent.addChoice(choice)
-			return true
-		}
-		return false
-	}
-
-	planAttack(choice: Choice.Attack) {
-		return false
-	}
-
-	planInvestment(choice: Choice.Investment) {
-		return false
-	}
-
-	doTheFirstValidThing(fns: (() => boolean)[]) {
-		for (const fn of fns) {
-			const result = fn()
-			if (result)
-				return result
 		}
 		return false
 	}
 
 	executePlan() {
-		this.options.submitTurn({
+		const {agent, submitTurn} = this.options
+		submitTurn({
 			kind: "turn",
-			choices: this.options.agent.choices,
+			choices: agent.choices,
 		})
-		this.options.agent.reset()
+		agent.reset()
 	}
 
 	dispose() {

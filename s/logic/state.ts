@@ -93,8 +93,7 @@ export type Reminders = {
 	}[]
 }
 
-export type ChoiceFns = {[P in Choice.Any["kind"]]: (choice: any) => void}
-export const choiceFns = <X extends ChoiceFns>(fns: X) => fns
+export type ChoiceKind = Choice.Any["kind"]
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
