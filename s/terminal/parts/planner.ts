@@ -44,7 +44,7 @@ export class Planner {
 		if (selection) {
 
 			// render spawning liberties
-			if (selection.kind === "roster")
+			if (selection.kind === "roster" && selection.teamId === agent.currentTurn)
 				Array
 					.from(agent.tiles.list())
 					.filter(({place}) => !!proposition.spawn({
@@ -76,6 +76,7 @@ export class Planner {
 		const fn = agent.proposition[choice.kind] as any
 		const report = fn(choice)
 		if (report) {
+			agent.addChoice(choice)
 			report.commit()
 			return true
 		}

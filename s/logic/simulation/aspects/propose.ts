@@ -66,15 +66,17 @@ export function propose(agent: Agent) {
 		},
 
 		attack(choice: Choice.Attack) {
-			return {
-				commit() {},
-			}
+			return null
+			// return {
+			// 	commit() {},
+			// }
 		},
 
 		investment(choice: Choice.Investment) {
-			return {
-				commit() {},
-			}
+			return null
+			// return {
+			// 	commit() {},
+			// }
 		},
 	}) satisfies Record<ChoiceKind, any>
 }

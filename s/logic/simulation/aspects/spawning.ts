@@ -3,18 +3,28 @@ import {vec2, Vec2} from "@benev/toolbox"
 
 import {Agent} from "../../agent.js"
 import {getCardinalNeighbors} from "./navigation.js"
+import {isVerticallyCompatible} from "./verticality.js"
 
 export function isValidSpawnPlace(agent: Agent, teamId: number, place: Vec2) {
+
+	// loop over every unit on the board
 	return [...agent.units.list()]
 
 		// filter for current team
 		.filter(unit => unit.team === teamId)
 
-		// unit is royalty
-		.filter(unit => agent.archetype(unit.kind).royalty)
-
-		// get neighbors
-		.flatMap(unit => getCardinalNeighbors(agent, unit.place))
+		// get all verticallty-compatbile neighbors to the unit
+		.flatMap(unit => {
+			const {spawning} = agent.archetype(unit.kind)
+			const neighbors = getCardinalNeighbors(agent, unit.place)
+			return (spawning)
+				? neighbors.filter(neighbor => isVerticallyCompatible(
+					spawning.verticality,
+					agent.tiles.at(unit.place),
+					agent.tiles.at(neighbor),
+				))
+				: []
+		})
 
 		// filter for vacancies
 		.filter(neighbor => !agent.units.at(neighbor))

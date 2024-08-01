@@ -2,9 +2,9 @@
 import {ref, Ref} from "../tools/ref.js"
 import {TilesHelper} from "./helpers/tiles.js"
 import {UnitsHelper} from "./helpers/units.js"
+import {AgentState, UnitKind} from "./state.js"
 import {BoundaryHelper} from "./helpers/boundary.js"
 import {CoordinatorHelper} from "./helpers/coordinator.js"
-import {AgentState, FullTeamInfo, UnitKind} from "./state.js"
 
 export class Agent {
 	stateRef: Ref<AgentState>
@@ -34,13 +34,8 @@ export class Agent {
 		return this.state.teams.at(this.state.context.currentTurn)!
 	}
 
-	get fullTeams() {
-		const teams: {teamId: number, team: FullTeamInfo}[] = []
-		this.state.teams.forEach((team, teamId) => {
-			if ("resources" in team)
-				teams.push({teamId, team})
-		})
-		return teams
+	get currentTurn() {
+		return this.state.context.currentTurn
 	}
 }
 

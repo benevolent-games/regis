@@ -271,8 +271,10 @@ export const verticality = {
 export type UnitArchetype = {
 	cost: null | number
 	health: null | number
-	royalty: boolean
 	stakeholder: boolean
+	spawning: null | {
+		verticality: VerticalCapability
+	}
 	vision: null | {
 		range: number
 		verticality: VerticalCapability
@@ -304,8 +306,8 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	obstacle: {
 		cost: null,
 		health: 8,
-		royalty: false,
 		stakeholder: false,
+		spawning: null,
 		vision: null,
 		move: null,
 		attack: null,
@@ -314,8 +316,10 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	king: {
 		cost: null,
 		health: 4,
-		royalty: true,
 		stakeholder: false,
+		spawning: {
+			verticality: verticality.flat,
+		},
 		vision: {
 			range: 2,
 			verticality: verticality.downwards,
@@ -330,8 +334,10 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	queen: {
 		cost: 12,
 		health: 3,
-		royalty: true,
 		stakeholder: false,
+		spawning: {
+			verticality: verticality.flat,
+		},
 		vision: {
 			range: 2,
 			verticality: verticality.everywhere,
@@ -346,8 +352,8 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	bishop: {
 		cost: 12,
 		health: 3,
-		royalty: false,
 		stakeholder: false,
+		spawning: null,
 		vision: {
 			range: 2,
 			verticality: verticality.downwards,
@@ -366,8 +372,8 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	knight: {
 		cost: 6,
 		health: 3,
-		royalty: false,
 		stakeholder: false,
+		spawning: null,
 		vision: {
 			range: 2,
 			verticality: verticality.downwards,
@@ -386,8 +392,8 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	rook: {
 		cost: 10,
 		health: 5,
-		royalty: false,
 		stakeholder: false,
+		spawning: null,
 		vision: {
 			range: 1,
 			verticality: verticality.downwards,
@@ -406,8 +412,8 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	pawn: {
 		cost: 4,
 		health: 2,
-		royalty: false,
 		stakeholder: false,
+		spawning: null,
 		vision: {
 			range: 1,
 			verticality: verticality.downwards,

@@ -36,14 +36,15 @@ export async function makeGameTerminal(baseAgent: Agent, submitTurn: SubmitTurnF
 	d(new UserInputs({agent, world, planner, selectacon, cameraRig}))
 
 	function render() {
-		tiler.render()
 		rosters.render()
 		selectacon.render()
 		units.render()
 		planner.render()
 	}
 
+	tiler.render()
 	render()
+
 	world.gameloop.start()
 	dr(agent.stateRef.on(render))
 
