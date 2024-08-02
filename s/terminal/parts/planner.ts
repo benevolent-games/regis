@@ -4,26 +4,37 @@ import {TransformNode} from "@babylonjs/core"
 
 import {Assets} from "./assets.js"
 import {Selectacon} from "./selectacon.js"
+import {Agent} from "../../logic/agent.js"
 import {Choice} from "../../logic/state.js"
-import {PreviewAgent} from "./preview-agent.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {SubmitTurnFn} from "../../logic/arbiter.js"
+import {Proposer} from "../../logic/simulation/proposer.js"
 
 /** interface for the user to sketch a plan for their turn */
 export class Planner {
 	#planbin = new Trashbin()
 	#renderbin = new Trashbin()
 
+	proposer: Proposer
+	choices: Choice.Any[] = []
+
 	constructor(private options: {
+			agent: Agent
 			assets: Assets
-			agent: PreviewAgent // uses a preview agent instead of just an agent
 			selectacon: Selectacon
 			submitTurn: SubmitTurnFn
 		}) {
 
+		this.proposer = new Proposer(options.agent)
+
 		this.#planbin.disposer(
 			options.selectacon.selection.on(() => this.render())
 		)
+	}
+
+	reset() {
+		this.proposer = new Proposer(this.options.agent)
+		this.choices = []
 	}
 
 	#spawn(fn: () => TransformNode, place: Vec2) {
@@ -37,8 +48,8 @@ export class Planner {
 
 	render() {
 		this.#renderbin.dispose()
+		const {proposer} = this
 		const {agent, selectacon, assets} = this.options
-		const {proposer} = agent
 		const selection = selectacon.selection.value
 
 		if (selection) {
@@ -75,10 +86,10 @@ export class Planner {
 		const {agent} = this.options
 		if (agent.conclusion)
 			return false
-		const fn = agent.proposer.choosers[choice.kind] as any
+		const fn = this.proposer.choosers[choice.kind] as any
 		const report = fn(choice)
 		if (report) {
-			agent.addChoice(choice)
+			this.choices.push(choice)
 			report.commit()
 			return true
 		}
@@ -86,9 +97,8 @@ export class Planner {
 	}
 
 	executePlan() {
-		const {agent, submitTurn} = this.options
-		submitTurn({choices: agent.choices})
-		agent.reset()
+		this.options.submitTurn({choices: this.choices})
+		this.reset()
 	}
 
 	dispose() {

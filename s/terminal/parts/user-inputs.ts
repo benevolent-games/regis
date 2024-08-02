@@ -6,7 +6,7 @@ import {World} from "./world.js"
 import {Planner} from "./planner.js"
 import {CameraRig} from "./camera-rig.js"
 import {Selectacon} from "./selectacon.js"
-import {PreviewAgent} from "./preview-agent.js"
+import {Agent} from "../../logic/agent.js"
 import {Trashbin} from "../../tools/trashbin.js"
 import {DragQueen} from "../../tools/drag-queen.js"
 import {handlePrimaryClick} from "./handle-primary-click.js"
@@ -17,14 +17,15 @@ export class UserInputs {
 	dispose = this.#trashbin.dispose
 
 	constructor(private options: {
-			agent: PreviewAgent
+			agent: Agent
 			world: World
 			planner: Planner
 			cameraRig: CameraRig
 			selectacon: Selectacon
+			resetPreview: () => void
 		}) {
 
-		const {agent, planner, cameraRig} = options
+		const {planner, cameraRig, resetPreview} = options
 		const {canvas} = options.world
 		const dr = this.#trashbin.disposer
 
@@ -38,8 +39,9 @@ export class UserInputs {
 		// ctrl+z wipe turn plan
 		dr(ev(window, {
 			keydown: (event: KeyboardEvent) => {
-				if (event.code === "KeyZ" && event.ctrlKey)
-					agent.reset()
+				if (event.code === "KeyZ" && event.ctrlKey) {
+					resetPreview()
+				}
 			},
 		}))
 
