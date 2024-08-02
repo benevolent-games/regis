@@ -6,7 +6,7 @@ import {loop2d, Vec2} from "@benev/toolbox"
 
 export type GameHistory = {
 	initial: GameInitial
-	chronicle: Incident.Any[]
+	chronicle: Turn[]
 }
 
 export type GameInitial = {
@@ -81,7 +81,7 @@ export type AgentState = {
 /** current situation that the game is in */
 export type GameContext = {
 	currentTurn: number
-	winner: null | Incident.Conclusion
+	conclusion: null | Conclusion
 }
 
 /** what happened in the previous turn (may be censored for fog-of-war) */
@@ -194,19 +194,14 @@ export namespace Choice {
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
-export namespace Incident {
-	export type Turn = {
-		kind: "turn"
-		choices: Choice.Any[]
-	}
+export type Conclusion = {
+	kind: "conclusion"
+	winner: number
+	reason: "time" | "conquest" | "surrender"
+}
 
-	export type Conclusion = {
-		kind: "conclusion"
-		winner: number
-		reason: "time" | "conquest" | "surrender"
-	}
-
-	export type Any = Turn | Conclusion
+export type Turn = {
+	choices: Choice.Any[]
 }
 
 /////////////////////////////////////////////////

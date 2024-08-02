@@ -19,6 +19,14 @@ export async function freeplayFlow() {
 			console.log(`[[ ${team1.name} +${team1.resources} ]]   ${team2.name} +${team2.resources}`)
 		else
 			console.log(`   ${team1.name} +${team1.resources}   [[ ${team2.name} +${team2.resources} ]]`)
+
+		if (agent.conclusion) {
+			const {winner} = agent.conclusion
+			const winnerName = states.arbiter.teams.at(winner)!.name
+			console.log(`=============================`)
+			console.log(`GAME OVER! ${winnerName} wins`)
+			console.log(`=============================`)
+		}
 	}
 
 	printReport()

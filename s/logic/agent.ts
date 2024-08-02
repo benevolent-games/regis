@@ -42,5 +42,9 @@ export class Agent {
 	get currentTurn() {
 		return this.state.context.currentTurn
 	}
+
+	get conclusion() {
+		return this.state.context.conclusion
+	}
 }
 

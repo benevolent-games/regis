@@ -2,10 +2,10 @@
 import {clone} from "@benev/slate"
 
 import {Agent} from "../agent.js"
-import {nextTurn} from "./aspects/turns.js"
 import {propose} from "./aspects/propose.js"
 import {visionForTeam} from "./aspects/vision.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
+import {awardIncome, processWinByConquest, nextTurn} from "./aspects/turns.js"
 import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
 
 /**
@@ -28,7 +28,7 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 		units: initial.units,
 		context: {
 			currentTurn: 0,
-			winner: null,
+			conclusion: null,
 		},
 		teams: initial.teams.map((team): FullTeamInfo => ({
 			name: team.name,
@@ -43,27 +43,25 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 
 	// we churn through every event in the game history,
 	// updating the arbiter state as we go along
-	for (const incident of chronicle) switch (incident.kind) {
+	for (const turn of chronicle) {
+		const agent = new Agent(state)
+		const proposition = propose(agent)
 
-		// process a turn
-		case "turn":
-			const agent = new Agent(state)
-			const proposition = propose(agent)
-			for (const choice of incident.choices) {
-				const report = proposition[choice.kind](choice as any)
-				if (report) report.commit()
-				else throw new Error("invalid turn choice")
-			}
+		for (const choice of turn.choices) {
+			const report = proposition[choice.kind](choice as any)
+			if (report) report.commit()
+			else throw new Error("invalid turn choice")
+		}
+
+		const gameOver = processWinByConquest(state)
+
+		if (gameOver) {
+			break
+		}
+		else {
 			nextTurn(state)
-			break
-
-		// the game has ended
-		case "conclusion":
-			state.context.winner = incident
-			break
-
-		default:
-			throw new Error(`unknown incident kind`)
+			awardIncome(state)
+		}
 	}
 
 	// finally, we return the result states

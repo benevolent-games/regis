@@ -73,6 +73,8 @@ export class Planner {
 
 	attempt(choice: Choice.Any) {
 		const {agent} = this.options
+		if (agent.conclusion)
+			return false
 		const fn = agent.proposition[choice.kind] as any
 		const report = fn(choice)
 		if (report) {
@@ -85,7 +87,7 @@ export class Planner {
 
 	executePlan() {
 		const {agent, submitTurn} = this.options
-		submitTurn({kind: "turn", choices: agent.choices})
+		submitTurn({choices: agent.choices})
 		agent.reset()
 	}
 
