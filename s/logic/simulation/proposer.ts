@@ -1,12 +1,12 @@
 
-import {Agent} from "../../agent.js"
-import {UnitFreedom} from "./unit-freedom.js"
-import {calculateMovement} from "./moving.js"
-import {isValidSpawnPlace} from "./spawning.js"
-import {mintId} from "../../../tools/mint-id.js"
-import {Choice, ChoiceKind} from "../../state.js"
-import {canAfford, subtractResources} from "./money.js"
-import {applyDamage, attackReport} from "./attack-report.js"
+import {Agent} from "../agent.js"
+import {mintId} from "../../tools/mint-id.js"
+import {Choice, ChoiceKind} from "../state.js"
+import {UnitFreedom} from "./aspects/unit-freedom.js"
+import {calculateMovement} from "./aspects/moving.js"
+import {isValidSpawnPlace} from "./aspects/spawning.js"
+import {canAfford, subtractResources} from "./aspects/money.js"
+import {applyDamage, attackReport} from "./aspects/attack-report.js"
 
 export class Proposer {
 	unitFreedom = new UnitFreedom()

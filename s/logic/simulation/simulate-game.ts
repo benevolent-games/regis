@@ -2,7 +2,7 @@
 import {clone} from "@benev/slate"
 
 import {Agent} from "../agent.js"
-import {Proposer} from "./aspects/propose.js"
+import {Proposer} from "./proposer.js"
 import {visionForTeam} from "./aspects/vision.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
 import {awardIncome, processWinByConquest, nextTurn} from "./aspects/turns.js"

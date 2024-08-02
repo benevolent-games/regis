@@ -4,7 +4,7 @@ import {clone} from "@benev/slate"
 import {ref} from "../../tools/ref.js"
 import {Agent} from "../../logic/agent.js"
 import {Choice} from "../../logic/state.js"
-import {Proposer} from "../../logic/simulation/aspects/propose.js"
+import {Proposer} from "../../logic/simulation/proposer.js"
 
 /** helps us preview the effects of a proposed turn */
 export class PreviewAgent extends Agent {
