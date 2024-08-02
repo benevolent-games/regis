@@ -2,7 +2,7 @@
 import {clone} from "@benev/slate"
 
 import {Agent} from "../agent.js"
-import {propose} from "./aspects/propose.js"
+import {Proposer} from "./aspects/propose.js"
 import {visionForTeam} from "./aspects/vision.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
 import {awardIncome, processWinByConquest, nextTurn} from "./aspects/turns.js"
@@ -45,10 +45,10 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 	// updating the arbiter state as we go along
 	for (const turn of chronicle) {
 		const agent = new Agent(state)
-		const proposition = propose(agent)
+		const proposer = new Proposer(agent)
 
 		for (const choice of turn.choices) {
-			const report = proposition[choice.kind](choice as any)
+			const report = proposer.choosers[choice.kind](choice as any)
 			if (report) report.commit()
 			else throw new Error("invalid turn choice")
 		}

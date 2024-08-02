@@ -38,7 +38,7 @@ export class Planner {
 	render() {
 		this.#renderbin.dispose()
 		const {agent, selectacon, assets} = this.options
-		const {proposition} = agent
+		const {proposer} = agent
 		const selection = selectacon.selection.value
 
 		if (selection) {
@@ -47,7 +47,7 @@ export class Planner {
 			if (selection.kind === "roster" && selection.teamId === agent.currentTurn)
 				Array
 					.from(agent.tiles.list())
-					.filter(({place}) => !!proposition.spawn({
+					.filter(({place}) => !!proposer.choosers.spawn({
 						kind: "spawn",
 						place,
 						unitKind: selection.unitKind,
@@ -60,7 +60,7 @@ export class Planner {
 			if (selection.kind === "tile")
 				Array
 					.from(agent.tiles.list())
-					.filter(({place}) => !!proposition.movement({
+					.filter(({place}) => !!proposer.choosers.movement({
 						kind: "movement",
 						source: selection.place,
 						target: place,
@@ -75,7 +75,7 @@ export class Planner {
 		const {agent} = this.options
 		if (agent.conclusion)
 			return false
-		const fn = agent.proposition[choice.kind] as any
+		const fn = agent.proposer.choosers[choice.kind] as any
 		const report = fn(choice)
 		if (report) {
 			agent.addChoice(choice)
