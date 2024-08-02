@@ -9,25 +9,25 @@
 
 ### logic and game simulation
 
-- **`state.ts`**
+- **state.ts**
   - all the types that describes the state of a game.
-- **`ascii-map.ts`**
+- **ascii-map.ts**
   - for now, without a map editor, we use a funny-looking ascii text format to describe map layouts.
   - see `map-pool.ts` for our little collection of handmade ascii format map designs.
-- **`arbiter.ts`**
+- **arbiter.ts**
   - the "brain" that simulates and runs a game.
   - has a method to create new agents.
   - accepts an ascii-map to initialize the board.
-- **`agent.ts`**
+- **agent.ts**
   - a "view" into the state of a game. this view may or may not be censored for fog-of-war, thus maybe providing a limited view into the state of the game.
   - has lots of handy methods for querying and even manipulating game state.
-- **`simulate-game.ts`**
+- **simulate-game.ts**
   - the function which actually runs the simulation of the game.
   - the game's architecture is fundamentally *event-sourced*
     - the source-of-truth is a `history` which is comprised of an `initial` game state, and a `chronicle` of gameplay events (turns)
     - the `simulateGame` function's job is to compute a whole new game state, from the given history.
   - each time a player submits a new turn, the arbiter merely adds that turn to the history's chronicle, and then uses `simulateGame` again to recompute the "current" game state, from scratch.
-- **`proposer.ts`**
+- **proposer.ts**
   - this is an interesting and nuanced part.
   - so, each turn contains an array of player "choices". a choice is like "move this unit from here to there", or "attack from here to there"..
   - the `Proposer` provides `chooser` functions which let you "ask" whether a choice would be valid or not.
@@ -41,15 +41,15 @@
 
 ### user interface to play the game
 
-- **`freeplay.ts`**
+- **freeplay.ts**
   - run the game in-browser, locally.
   - creates a local simulation where the user controls both players.
-- **`terminal.ts`**
+- **terminal.ts**
   - a terminal allows a player to play the game.
   - it does not run the simulation. it's merely a "dumb terminal".
   - provides 3d visualization of the game.
   - provides the user interface for submitting turns to the simulation.
-- **`planner.ts`**
+- **planner.ts**
   - renders indicators about valid potential choices to the user.
   - allows the user to queue up their choices to build their turn, and submit that turn.
 
