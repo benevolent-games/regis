@@ -31,6 +31,7 @@
 		"@benev/slate": "^0.2.0-5",
 		"@benev/toolbox": "^0.6.0-14",
 		"es-module-shims": "^1.10.0",
+		"renraku": "^0.1.0",
 		"zx": "^8.1.4"
 	},
 	"devDependencies": {
