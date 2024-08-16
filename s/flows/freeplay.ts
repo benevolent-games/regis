@@ -1,5 +1,5 @@
 
-import * as mapPool from "../map-pool.js"
+import {mapPool} from "../map-pool.js"
 import {Arbiter} from "../logic/arbiter.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 
