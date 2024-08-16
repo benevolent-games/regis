@@ -1,5 +1,5 @@
 
-import {randomMap} from "./director.js"
+import {randomMap} from "../../map-pool.js"
 import {Arbiter} from "../../logic/arbiter.js"
 import {Clientside} from "../apis/clientside.js"
 
