@@ -5,16 +5,21 @@ import {IdCounter} from "../tools/id-counter.js"
 import {Matchmaker} from "./parts/matchmaker.js"
 import {makeServerside} from "./apis/serverside.js"
 
+export type Client = {
+	clientside: Clientside
+	closeConnection: () => void
+}
+
 export class Director {
 	gaming = new Gaming()
 	matchmaker = new Matchmaker()
-	clients = new Map<number, Clientside>()
+	clients = new Map<number, Client>()
 
 	#clientIdCounter = new IdCounter()
 
-	acceptClient(clientside: Clientside) {
+	acceptClient(clientside: Clientside, closeConnection: () => void) {
 		const clientId = this.#clientIdCounter.next()
-		this.clients.set(clientId, clientside)
+		this.clients.set(clientId, {clientside, closeConnection})
 		const serverside = makeServerside(this, clientId)
 		return {serverside, clientId}
 	}
@@ -35,8 +40,11 @@ export class Director {
 			await Promise.all(
 				game.pair
 					.map(clientId => this.clients.get(clientId))
-					.filter(clientside => !!clientside)
-					.map(clientside => clientside.matchFinish())
+					.filter(client => !!client)
+					.map(client => {
+						client.clientside.matchFinish()
+						client.closeConnection()
+					})
 			)
 		}
 	}

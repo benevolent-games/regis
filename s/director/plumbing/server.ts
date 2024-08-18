@@ -12,7 +12,7 @@ export const makeDirectorServer = () => {
 		acceptConnection: connection => {
 			const interval = setInterval(() => connection.ping(), 3_000)
 			const clientside = remote<Clientside>(connection.remoteEndpoint)
-			const {serverside} = director.acceptClient(clientside)
+			const {serverside} = director.acceptClient(clientside, connection.close)
 			return {
 				closed: () => clearInterval(interval),
 				localEndpoint: expose(() => serverside),

@@ -22,8 +22,8 @@ export function makeServerside(
 				const [gameId] = gaming.newGame(pair)
 
 				for (const clientId of pair) {
-					const clientside = governor.clients.get(clientId)!
-					clientside.matchStart(gameId)
+					const client = governor.clients.get(clientId)!
+					client.clientside.matchStart(gameId)
 				}
 			}
 		},
