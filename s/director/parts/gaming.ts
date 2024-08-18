@@ -2,6 +2,7 @@
 import {Pair} from "./matchmaker.js"
 import {randomMap} from "../../map-pool.js"
 import {Arbiter} from "../../logic/arbiter.js"
+import {GameCounting} from "./game-counting.js"
 import {IdCounter} from "../../tools/id-counter.js"
 
 export class Game {
@@ -12,6 +13,11 @@ export class Game {
 export class Gaming {
 	games = new Map<number, Game>
 	#idCounter = new IdCounter()
+	#gameCounting = new GameCounting()
+
+	get gamesInLastHour() {
+		return this.#gameCounting.gamesInLastHour
+	}
 
 	newGame(originalPair: Pair) {
 
@@ -25,6 +31,8 @@ export class Gaming {
 		const game = new Game(pair)
 
 		this.games.set(gameId, game)
+		this.#gameCounting.count()
+
 		return [gameId, game] as [number, Game]
 	}
 

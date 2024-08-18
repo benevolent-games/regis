@@ -10,11 +10,14 @@ export const makeDirectorServer = () => {
 
 	return new WebSocketServer({
 		acceptConnection: connection => {
-			const interval = setInterval(() => connection.ping(), 3_000)
+			const pingingInterval = setInterval(() => connection.ping(), 3_000)
 			const clientside = remote<Clientside>(connection.remoteEndpoint)
-			const {serverside} = director.acceptClient(clientside, connection.close)
+			const {clientId, serverside} = director.acceptClient(clientside, connection.close)
 			return {
-				closed: () => clearInterval(interval),
+				closed: () => {
+					clearInterval(pingingInterval)
+					director.goodbyeClient(clientId)
+				},
 				localEndpoint: expose(() => serverside),
 			}
 		},

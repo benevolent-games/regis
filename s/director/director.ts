@@ -10,12 +10,26 @@ export type Client = {
 	closeConnection: () => void
 }
 
+export type WorldStats = {
+	games: number
+	players: number
+	gamesInLastHour: number
+}
+
 export class Director {
 	gaming = new Gaming()
 	matchmaker = new Matchmaker()
 	clients = new Map<number, Client>()
 
 	#clientIdCounter = new IdCounter()
+
+	get worldStats(): WorldStats {
+		return {
+			games: this.gaming.games.size,
+			players: this.clients.size,
+			gamesInLastHour: this.gaming.gamesInLastHour,
+		}
+	}
 
 	acceptClient(clientside: Clientside, closeConnection: () => void) {
 		const clientId = this.#clientIdCounter.next()
@@ -29,20 +43,20 @@ export class Director {
 		const result = this.gaming.findGameWithClient(clientId)
 		if (result) {
 			const [gameId] = result
-			await this.#endMatch(gameId)
+			await this.#endGame(gameId)
 		}
 	}
 
-	async #endMatch(matchId: number) {
-		const game = this.gaming.games.get(matchId)
+	async #endGame(gameId: number) {
+		const game = this.gaming.games.get(gameId)
 		if (game) {
-			this.gaming.games.delete(matchId)
+			this.gaming.games.delete(gameId)
 			await Promise.all(
 				game.pair
 					.map(clientId => this.clients.get(clientId))
 					.filter(client => !!client)
 					.map(client => {
-						client.clientside.matchFinish()
+						client.clientside.gameEnd()
 						client.closeConnection()
 					})
 			)

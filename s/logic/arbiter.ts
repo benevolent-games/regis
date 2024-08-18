@@ -48,6 +48,10 @@ export class Arbiter {
 		this.#commit(newHistory)
 	}
 
+	getAgentState(teamId: number) {
+		return this.statesRef.value.agents.at(teamId)!
+	}
+
 	#commit(history: GameHistory) {
 		this.historyRef.value = history
 		this.statesRef.value = clone(simulateGame(this.historyRef.value))
