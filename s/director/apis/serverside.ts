@@ -1,25 +1,34 @@
 
-import {api} from "renraku"
-import {Clientside} from "./clientside.js"
-import {Matchmaker} from "../parts/matching.js"
+import {fns} from "renraku"
+import {Director} from "../director.js"
 
 export type Serverside = {
 	joinQueue(): Promise<void>
 	submitTurn(): Promise<void>
 }
 
-export function makeServersideApi(
-		matchmaker: Matchmaker,
-		clientside: Clientside,
+export function makeServerside(
+		governor: Director,
+		clientId: number,
 	) {
-	return api((): Serverside => ({
+
+	const {matchmaker, gaming} = governor
+
+	return fns({
 		async joinQueue() {
-			matchmaker.queue.add(clientside)
-			for (const {id, match} of matchmaker.makeMatches())
-				match.pair
-					.forEach(c => c.matchStart(id))
+			matchmaker.queue.add(clientId)
+
+			for (const pair of matchmaker.extractPairs()) {
+				const {gameId} = gaming.newGame(pair)
+
+				for (const clientId of pair) {
+					const clientside = governor.clients.get(clientId)!
+					clientside.matchStart(gameId)
+				}
+			}
 		},
+
 		async submitTurn() {},
-	}))
+	})
 }
 

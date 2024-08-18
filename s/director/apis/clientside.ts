@@ -1,5 +1,5 @@
 
-import {api} from "renraku"
+import {fns} from "renraku"
 import {Serverside} from "./serverside.js"
 
 export type Clientside = {
@@ -8,14 +8,17 @@ export type Clientside = {
 	matchUpdate(): Promise<void>
 }
 
-export function makeClientsideApi(
-		machinery: any,
+export function makeClientside(
 		serverside: Serverside,
-	) {
-	return api((): Clientside => ({
+		machinery: any,
+	): Clientside {
+
+	return fns({
 		async matchStart(id: number) {},
+
 		async matchUpdate() {},
+
 		async matchFinish() {},
-	}))
+	})
 }
 
