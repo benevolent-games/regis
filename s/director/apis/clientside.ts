@@ -9,7 +9,7 @@ export type Clientside = {
 }
 
 export function makeClientside(
-		serverside: Serverside,
+		getServerside: () => Serverside,
 		machinery: any,
 	): Clientside {
 

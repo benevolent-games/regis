@@ -22,7 +22,7 @@
 		"devlinks-toolbox": "rm -rf node_modules/@benev/toolbox && ln -s \"$(realpath ../toolbox)\" node_modules/@benev/toolbox",
 		"devlinks-slate": "rm -rf node_modules/@benev/slate && ln -s \"$(realpath ../slate)\" node_modules/@benev/slate",
 		"devlinks-renraku": "rm -rf node_modules/renraku && ln -s \"$(realpath ../../renraku)\" node_modules/renraku",
-		"test": "exit 0",
+		"test": "cynic node x/tests.test.js",
 		"test-watch": "chokidar \"x/**/*.js\" -c \"clear && npm test\"",
 		"count": "find s -path '*/_archive' -prune -o -name '*.ts' -exec wc -l {} +"
 	},

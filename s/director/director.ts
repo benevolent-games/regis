@@ -28,8 +28,6 @@ export class Director {
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////
-
 	async #endMatch(matchId: number) {
 		const game = this.gaming.games.get(matchId)
 		if (game) {

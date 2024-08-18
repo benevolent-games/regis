@@ -6,14 +6,16 @@ export class Matchmaker {
 
 	;*extractPairs() {
 		let previous: number | null = null
-		for (const client of this.queue) {
-			if (previous) {
-				const pair = [previous, client] as [number, number]
+
+		for (const current of this.queue) {
+			if (previous !== null) {
+				const pair = [previous, current] as [number, number]
 				this.queue.delete(previous)
-				this.queue.delete(client)
+				this.queue.delete(current)
 				previous = null
 				yield pair
 			}
+			previous = current
 		}
 	}
 }

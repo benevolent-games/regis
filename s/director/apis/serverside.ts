@@ -19,7 +19,7 @@ export function makeServerside(
 			matchmaker.queue.add(clientId)
 
 			for (const pair of matchmaker.extractPairs()) {
-				const {gameId} = gaming.newGame(pair)
+				const [gameId] = gaming.newGame(pair)
 
 				for (const clientId of pair) {
 					const clientside = governor.clients.get(clientId)!

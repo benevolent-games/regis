@@ -10,7 +10,7 @@ export async function makeDirectorClient(url: string) {
 	const {socket, remote: serverside} = await webSocketRemote<Serverside>({
 		url,
 		getLocalEndpoint: remote => expose(
-			() => makeClientside(remote, machinery)
+			() => makeClientside(() => remote, machinery)
 		),
 	})
 
