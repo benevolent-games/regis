@@ -4,6 +4,8 @@ import {expose, webSocketRemote} from "renraku"
 import {Serverside} from "../apis/serverside.js"
 import {makeClientside} from "../apis/clientside.js"
 
+export type DirectorClient = Awaited<ReturnType<typeof makeDirectorClient>>
+
 export async function makeDirectorClient(url: string) {
 	const machinery = {}
 
@@ -15,5 +17,11 @@ export async function makeDirectorClient(url: string) {
 	})
 
 	return {socket, serverside}
+}
+
+export class DirectorConnector {
+	retryDelay = 5_000
+
+	constructor(public url: string) {}
 }
 

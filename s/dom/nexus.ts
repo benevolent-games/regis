@@ -1,11 +1,6 @@
 
-import {Nexus, Context, signal} from "@benev/slate"
+import {Nexus} from "@benev/slate"
+import {GameContext} from "./game-context.js"
 
-import {theme} from "./theme.js"
-import {InputMethod} from "./utils/input-method.js"
-
-export const nexus = new Nexus(new class extends Context {
-	theme = theme
-	inputMethod = signal<InputMethod>("none")
-})
+export const nexus = new Nexus(new GameContext())
 

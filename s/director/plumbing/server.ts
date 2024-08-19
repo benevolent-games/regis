@@ -1,26 +1,32 @@
 
-import {expose, remote} from "renraku"
-import {WebSocketServer} from "renraku/x/node.js"
+import "@benev/slate/x/node.js"
+import {expose, PrettyLogger, remote} from "renraku"
+import {deathWithDignity, WebSocketServer} from "renraku/x/node.js"
 
 import {Director} from "../director.js"
 import {Clientside} from "../apis/clientside.js"
 
-export const makeDirectorServer = () => {
-	const director = new Director()
+const logger = new PrettyLogger()
 
-	return new WebSocketServer({
-		acceptConnection: connection => {
-			const pingingInterval = setInterval(() => connection.ping(), 3_000)
-			const clientside = remote<Clientside>(connection.remoteEndpoint)
-			const {clientId, serverside} = director.acceptClient(clientside, connection.close)
-			return {
-				closed: () => {
-					clearInterval(pingingInterval)
-					director.goodbyeClient(clientId)
-				},
-				localEndpoint: expose(() => serverside),
-			}
-		},
-	})
-}
+deathWithDignity({logger})
+
+const director = new Director()
+
+const server = new WebSocketServer({
+	logger,
+	acceptConnection: connection => {
+		const pingingInterval = setInterval(() => connection.ping(), 3_000)
+		const clientside = remote<Clientside>(connection.remoteEndpoint)
+		const {clientId, serverside} = director.acceptClient(clientside, connection.close)
+		return {
+			closed: () => {
+				clearInterval(pingingInterval)
+				director.goodbyeClient(clientId)
+			},
+			localEndpoint: expose(() => serverside),
+		}
+	},
+})
+
+server.listen(8000, () => console.log("director server running.."))
 
