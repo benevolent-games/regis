@@ -1,20 +1,53 @@
 
+import {css, html, loading, interval} from "@benev/slate"
+
 import {nexus} from "../../nexus.js"
-import {css, html, loading} from "@benev/slate"
+import {wherefor} from "../../../tools/wherefor.js"
+import type {WorldStats} from "../../../director/director.js"
 
 export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 	use.name("main-menu")
 	use.styles(styles)
 
+	const route = use.signal<keyof typeof pages>("/")
+	const worldStats = use.signal<WorldStats | null>(null)
+
+	use.mount(() => interval(1, async() => {
+		if (use.context.directorClient.isReady()) {
+			const directorClient = use.context.directorClient.payload
+			worldStats.value = await directorClient.serverside.getWorldStats()
+		}
+	}))
+
+	const pages = {
+		"/": () => html`
+			<button @click=${() => route.value = "/multiplayer"}>multiplayer</button>
+			<button @click=${o.goEditor}>map editor</button>
+			<button @click=${o.goIntro}>exit</button>
+		`,
+
+		"/multiplayer": () => MultiplayerMenuView({
+			goBack: () => route.value = "/",
+		}),
+	}
+
 	return html`
-		<h1>main menu</h1>
-		<button @click=${o.goIntro}>exit</button>
-		<button @click=${o.goEditor}>map editor</button>
-		${loading.binary(use.context.directorClient, client => html`
-			connected
+		<h1>regis</h1>
+		<div class=page>
+			${pages[route.value]()}
+		</div>
+		${wherefor(worldStats.value, stats => html`
+			<ul>
+				<li>games: ${stats.games}</li>
+				<li>players: ${stats.players}</li>
+				<li>${stats.gamesInLastHour} games/hour</li>
+			</ul>
 		`)}
+		${loading.binary(use.context.directorClient, () => html`connected`)}
 	`
 })
+
+/////////////////////////////////////////
 
 type Options = {
 	goIntro: () => void
@@ -22,4 +55,57 @@ type Options = {
 }
 
 const styles = css``
+
+/////////////////////////////////////////
+
+export const MultiplayerMenuView = nexus.lightView(use => (o: {
+		goBack: () => void
+	}) => {
+
+	use.name("multiplayer-menu")
+	const inQueue = use.op<boolean>()
+
+	use.once(() => {
+		inQueue.setReady(false)
+	})
+
+	use.mount(() => use.context.connectivity.connectionLost(() => {
+		inQueue.setReady(false)
+	}))
+
+	const backButton = html`
+		<button @click=${o.goBack}>back</button>
+	`
+
+	if (!use.context.directorClient.payload)
+		return html`
+			<p>not connected</p>
+			${backButton}
+		`
+
+	const {serverside} = use.context.directorClient.payload
+
+	function startMatchmaking() {
+		inQueue.load(async() => {
+			await serverside.matchmaking.joinQueue()
+			return true
+		})
+	}
+
+	function stopMatchmaking() {
+		inQueue.load(async() => {
+			await serverside.matchmaking.leaveQueue()
+			return false
+		})
+	}
+
+	return html`
+		${loading.binary(inQueue, queued => queued ? html`
+			<button @click=${stopMatchmaking}>stop matchmaking</button>
+		` : html`
+			<button @click=${startMatchmaking}>start matchmaking</button>
+		`)}
+		${backButton}
+	`
+})
 

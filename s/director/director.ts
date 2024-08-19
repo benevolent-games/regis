@@ -39,7 +39,11 @@ export class Director {
 	}
 
 	async goodbyeClient(clientId: number) {
+
+		// remove from matchmaking queue
 		this.matchmaker.queue.delete(clientId)
+
+		// end any game they're associated with
 		const result = this.gaming.findGameWithClient(clientId)
 		if (result) {
 			const [gameId] = result
@@ -56,8 +60,7 @@ export class Director {
 					.map(clientId => this.clients.get(clientId))
 					.filter(client => !!client)
 					.map(client => {
-						client.clientside.gameEnd()
-						client.closeConnection()
+						client.clientside.game.end()
 					})
 			)
 		}

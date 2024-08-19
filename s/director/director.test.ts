@@ -22,17 +22,17 @@ export default <Suite>{
 
 		let started = false
 
-		client1.clientside.gameStart = (() => {
-			const {gameStart: matchStart} = client1.clientside
-			return async id  => {
+		client1.clientside.game.start = (() => {
+			const {start} = client1.clientside.game
+			return async inputs => {
 				started = true
-				return await matchStart(id)
+				return await start(inputs)
 			}
 		})()
 
 		await Promise.all([
-			client1.serverside.joinQueue(),
-			client2.serverside.joinQueue(),
+			client1.serverside.matchmaking.joinQueue(),
+			client2.serverside.matchmaking.joinQueue(),
 		])
 
 		expect(started).ok()

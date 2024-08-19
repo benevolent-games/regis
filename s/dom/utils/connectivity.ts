@@ -1,5 +1,5 @@
 
-import {OpSignal} from "@benev/slate"
+import {OpSignal, pubsub} from "@benev/slate"
 import {DirectorClient, makeDirectorClient} from "../../director/plumbing/client.js"
 
 const retryDelay = 10_000
@@ -7,6 +7,7 @@ const url = `//${window.location.hostname}:8000/`
 
 export class Connectivity {
 	stayConnected = true
+	connectionLost = pubsub<[]>()
 
 	constructor(public directorClient: OpSignal<DirectorClient>) {}
 
@@ -16,10 +17,9 @@ export class Connectivity {
 	}
 
 	#scheduleRetry() {
-		if (this.stayConnected) {
-			this.directorClient.setError("disconnected")
+		this.directorClient.setError("disconnected")
+		if (this.stayConnected)
 			setTimeout(() => this.connect(), this.randomizedDelay)
-		}
 	}
 
 	async connect() {
@@ -27,8 +27,12 @@ export class Connectivity {
 			const client = await this.directorClient.load(
 				() => makeDirectorClient(url)
 			)
-			client.socket.addEventListener("close", () => this.#scheduleRetry())
-			client.socket.addEventListener("error", () => this.#scheduleRetry())
+			const lost = () => {
+				this.#scheduleRetry()
+				this.connectionLost.publish()
+			}
+			client.socket.addEventListener("close", lost)
+			client.socket.addEventListener("error", lost)
 		}
 		catch (error) {
 			this.#scheduleRetry()
