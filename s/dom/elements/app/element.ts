@@ -44,22 +44,22 @@ export const GameApp = nexus.lightComponent(use => {
 					dispose: () => {},
 					template: () => MainMenuView([{
 						goIntro: () => goExhibit.intro(),
-						goEditor: () => {}, // goExhibit.mapEditor(),
+						goFreeplay: () => goExhibit.freeplay(),
+						goMultiplayer: () => goExhibit.multiplayer(),
 					}]),
 				}
 			}),
 
-			// mapEditor: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
-			// 	const {EditorCore} = await import("../../../game/editor/core.js")
-			// 	const {MapEditorView} = await import("../../views/exhibits/map-editor.js")
-			// 	const editorCore = await EditorCore.load(window)
-			// 	return {
-			// 		dispose: () => editorCore.dispose(),
-			// 		template: () => MapEditorView([editorCore]),
-			// 	}
-			// }),
+			freeplay: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
+				const {freeplayFlow} = await import("../../../flows/freeplay.js")
+				const {world, dispose} = await freeplayFlow()
+				return {
+					dispose,
+					template: () => GameplayView([world]),
+				}
+			}),
 
-			gameplay: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
+			multiplayer: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
 				const {freeplayFlow} = await import("../../../flows/freeplay.js")
 				const {world, dispose} = await freeplayFlow()
 				return {
@@ -69,8 +69,8 @@ export const GameApp = nexus.lightComponent(use => {
 			}),
 		}
 
-		// // TODO remove hack to skip menus
-		// goExhibit.gameplay()
+		// // hack skip to freeplay
+		// goExhibit.freeplay()
 
 		return orchestrator
 	})

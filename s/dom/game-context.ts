@@ -1,16 +1,15 @@
 
-import {Context, signal, signals} from "@benev/slate"
+import {Context, signal} from "@benev/slate"
 
 import {theme} from "./theme.js"
 import {InputMethod} from "./utils/input-method.js"
 import {Connectivity} from "../net/connectivity.js"
-import {DirectorClient} from "../director/plumbing/client.js"
+import {MatchmakingLiaison} from "../net/matchmaking-liaison.js"
 
 export class GameContext extends Context {
 	theme = theme
 	inputMethod = signal<InputMethod>("none")
-
-	directorClient = signals.op<DirectorClient>()
-	connectivity = new Connectivity(this.directorClient)
+	connectivity = new Connectivity()
+	matchmaking = new MatchmakingLiaison(this.connectivity)
 }
 
