@@ -1,7 +1,17 @@
 
-export function wherefor<X, R>(x: X | undefined | null, fn: (x: X) => R) {
-	return (x === undefined || x === null)
-		? undefined
-		: fn(x)
-}
-
+// import {Signal} from "@benev/slate"
+//
+// export function wherefor<X, R>(
+// 		x: X | undefined | null | Signal<X | undefined | null>,
+// 		fn: (x: X) => R,
+// 	) {
+//
+// 	const y = x instanceof Signal
+// 		? x.value
+// 		: x
+//
+// 	return (y === undefined || y === null)
+// 		? undefined
+// 		: fn(y)
+// }
+//

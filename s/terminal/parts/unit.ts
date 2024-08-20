@@ -1,7 +1,8 @@
 
+import {Trashbin} from "@benev/slate"
+
 import {Assets} from "./assets.js"
 import {Agent} from "../../logic/agent.js"
-import {Trashbin} from "../../tools/trashbin.js"
 
 export function makeUnitVisuals(agent: Agent, assets: Assets) {
 	const trashbin = new Trashbin()

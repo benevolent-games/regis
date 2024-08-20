@@ -1,12 +1,12 @@
 
 import {Vec2} from "@benev/toolbox"
+import {Trashbin} from "@benev/slate"
 import {TransformNode} from "@babylonjs/core"
 
 import {Assets} from "./assets.js"
 import {Selectacon} from "./selectacon.js"
 import {Agent} from "../../logic/agent.js"
 import {Choice} from "../../logic/state.js"
-import {Trashbin} from "../../tools/trashbin.js"
 import {SubmitTurnFn} from "../../logic/arbiter.js"
 import {Proposer} from "../../logic/simulation/proposer.js"
 

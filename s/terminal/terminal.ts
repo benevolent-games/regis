@@ -1,10 +1,11 @@
 
+import {Trashbin} from "@benev/slate"
+
 import {Tiler} from "./parts/tiler.js"
 import {Agent} from "../logic/agent.js"
 import {Rosters} from "./parts/rosters.js"
 import {Planner} from "./parts/planner.js"
 import {Hovering} from "./parts/hovering.js"
-import {Trashbin} from "../tools/trashbin.js"
 import {CameraRig} from "./parts/camera-rig.js"
 import {makeUnitVisuals} from "./parts/unit.js"
 import {Selectacon} from "./parts/selectacon.js"

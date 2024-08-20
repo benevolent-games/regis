@@ -1,5 +1,6 @@
 
-import {ref, Ref} from "../tools/ref.js"
+import {ref, Ref} from "@benev/slate"
+
 import {TilesHelper} from "./helpers/tiles.js"
 import {UnitsHelper} from "./helpers/units.js"
 import {AgentState, UnitKind} from "./state.js"

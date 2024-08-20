@@ -1,4 +1,5 @@
 
+import {Trashbin} from "@benev/slate"
 import {TransformNode} from "@babylonjs/core"
 import {babyloid, Prop, Vec2} from "@benev/toolbox"
 
@@ -6,7 +7,6 @@ import {World} from "./world.js"
 import {Assets} from "./assets.js"
 import {Tile} from "../../logic/state.js"
 import {Agent} from "../../logic/agent.js"
-import {Trashbin} from "../../tools/trashbin.js"
 
 export type TilePlacement = {
 	place: Vec2

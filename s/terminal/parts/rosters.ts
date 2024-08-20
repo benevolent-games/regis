@@ -1,4 +1,5 @@
 
+import {Trashbin} from "@benev/slate"
 import {AbstractMesh, MeshBuilder, TransformNode} from "@babylonjs/core"
 import {assert_babylon_quaternion, Meshoid, vec3, Vec3} from "@benev/toolbox"
 
@@ -7,7 +8,6 @@ import {Assets} from "./assets.js"
 import {Agent} from "../../logic/agent.js"
 import {constants} from "../../constants.js"
 import {UnitKind} from "../../logic/state.js"
-import {Trashbin} from "../../tools/trashbin.js"
 
 export type RosterPlacement = {
 	mesh: Meshoid

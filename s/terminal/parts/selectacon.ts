@@ -1,14 +1,13 @@
 
 import {Vec2, Vec3} from "@benev/toolbox"
+import {ref, Trashbin} from "@benev/slate"
 
 import {Tiler} from "./tiler.js"
 import {World} from "./world.js"
 import {Assets} from "./assets.js"
 import {Pointing} from "./types.js"
 import {Rosters} from "./rosters.js"
-import {ref} from "../../tools/ref.js"
 import {Agent} from "../../logic/agent.js"
-import {Trashbin} from "../../tools/trashbin.js"
 import {Tile, UnitKind} from "../../logic/state.js"
 
 export type TileCell = {

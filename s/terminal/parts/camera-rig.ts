@@ -1,9 +1,9 @@
 
 import {scalar} from "@benev/toolbox"
+import {Trashbin} from "@benev/slate"
 
 import {World} from "./world.js"
 import {Orbitcam} from "./orbitcam.js"
-import {Trashbin} from "../../tools/trashbin.js"
 
 const {degrees} = scalar.radians.from
 

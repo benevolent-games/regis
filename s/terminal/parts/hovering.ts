@@ -1,9 +1,9 @@
 
-import {ev} from "@benev/slate"
-import {Pointing} from "./types.js"
+import {ev, Trashbin} from "@benev/slate"
+
 import {World} from "./world.js"
+import {Pointing} from "./types.js"
 import {Selectacon} from "./selectacon.js"
-import {Trashbin} from "../../tools/trashbin.js"
 
 export class Hovering {
 	#last: Pointing | null = null

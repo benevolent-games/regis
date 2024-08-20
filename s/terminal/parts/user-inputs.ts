@@ -1,5 +1,5 @@
 
-import {ev, Pipe} from "@benev/slate"
+import {ev, Pipe, Trashbin} from "@benev/slate"
 import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
 
 import {World} from "./world.js"
@@ -7,7 +7,6 @@ import {Planner} from "./planner.js"
 import {CameraRig} from "./camera-rig.js"
 import {Selectacon} from "./selectacon.js"
 import {Agent} from "../../logic/agent.js"
-import {Trashbin} from "../../tools/trashbin.js"
 import {DragQueen} from "../../tools/drag-queen.js"
 import {handlePrimaryClick} from "./handle-primary-click.js"
 
