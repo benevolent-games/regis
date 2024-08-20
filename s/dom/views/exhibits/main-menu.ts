@@ -1,5 +1,5 @@
 
-import {css, html, loading, interval} from "@benev/slate"
+import {css, html, loading} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
 import {wherefor} from "../../../tools/wherefor.js"
@@ -11,13 +11,32 @@ export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 
 	const route = use.signal<keyof typeof pages>("/")
 	const worldStats = use.signal<WorldStats | null>(null)
+	const ping = use.signal<number | null>(null)
 
-	use.mount(() => interval(1, async() => {
-		if (use.context.directorClient.isReady()) {
-			const directorClient = use.context.directorClient.payload
-			worldStats.value = await directorClient.serverside.getWorldStats()
+	use.mount(() => {
+		let disabled = false
+
+		async function query() {
+			if (disabled)
+				return undefined
+
+			if (use.context.directorClient.isReady()) {
+				const directorClient = use.context.directorClient.payload
+				const start = Date.now()
+				worldStats.value = await directorClient.serverside.getWorldStats()
+				ping.value = Date.now() - start
+			}
+
+			setTimeout(query, 5_000)
 		}
-	}))
+
+		query()
+
+		return () => {
+			disabled = true
+			ping.value = null
+		}
+	})
 
 	const pages = {
 		"/": () => html`
@@ -41,6 +60,7 @@ export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 				<li>games: ${stats.games}</li>
 				<li>players: ${stats.players}</li>
 				<li>${stats.gamesInLastHour} games/hour</li>
+				<li>ping: ${ping} ms</li>
 			</ul>
 		`)}
 		${loading.binary(use.context.directorClient, () => html`connected`)}

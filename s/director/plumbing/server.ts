@@ -1,32 +1,41 @@
 
 import "@benev/slate/x/node.js"
-import {expose, PrettyLogger, remote} from "renraku"
+import {errorString, expose, PrettyLogger, remote} from "renraku"
 import {deathWithDignity, WebSocketServer} from "renraku/x/node.js"
 
 import {Director} from "../director.js"
 import {Clientside} from "../apis/clientside.js"
 
+const port = 8000
 const logger = new PrettyLogger()
-
+const onError = (error: any) => logger.error(errorString(error))
 deathWithDignity({logger})
 
 const director = new Director()
 
 const server = new WebSocketServer({
-	logger,
+	onError,
+	timeout: 20_000,
 	acceptConnection: connection => {
 		const pingingInterval = setInterval(() => connection.ping(), 3_000)
 		const clientside = remote<Clientside>(connection.remoteEndpoint)
-		const {clientId, serverside} = director.acceptClient(clientside, connection.close)
+		const client = director.acceptClient(clientside, connection.close)
+		logger.log(`🧔 client appears {${client.clientId}}`)
 		return {
+			localEndpoint: expose(() => client.serverside, {
+				onError,
+				onInvocation: request => {
+					logger.log(`  🔔 {${client.clientId}} [${"id" in request ? request.id : ""}] ${request.method}`)
+				},
+			}),
 			closed: () => {
 				clearInterval(pingingInterval)
-				director.goodbyeClient(clientId)
+				client.disconnected()
+				logger.log(`💀 client leaves {${client.clientId}}`)
 			},
-			localEndpoint: expose(() => serverside),
 		}
 	},
 })
 
-server.listen(8000, () => console.log("director server running.."))
+server.listen(port, () => console.log(`🤖 director server on port ${port}..\n`))
 

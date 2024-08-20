@@ -35,10 +35,11 @@ export class Director {
 		const clientId = this.#clientIdCounter.next()
 		this.clients.set(clientId, {clientside, closeConnection})
 		const serverside = makeServerside(this, clientId)
-		return {serverside, clientId}
+		const disconnected = () => this.#handleDisconnected(clientId)
+		return {serverside, clientId, disconnected}
 	}
 
-	async goodbyeClient(clientId: number) {
+	async #handleDisconnected(clientId: number) {
 
 		// remove from matchmaking queue
 		this.matchmaker.queue.delete(clientId)
@@ -49,6 +50,11 @@ export class Director {
 			const [gameId] = result
 			await this.#endGame(gameId)
 		}
+
+		// remove client from map
+		const client = this.clients.get(clientId)
+		if (client)
+			this.clients.delete(clientId)
 	}
 
 	async #endGame(gameId: number) {
