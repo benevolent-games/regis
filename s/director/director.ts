@@ -10,26 +10,12 @@ export type Client = {
 	closeConnection: () => void
 }
 
-export type WorldStats = {
-	games: number
-	players: number
-	gamesInLastHour: number
-}
-
 export class Director {
 	gaming = new Gaming()
 	matchmaker = new Matchmaker()
 	clients = new Map<number, Client>()
 
 	#clientIdCounter = new IdCounter()
-
-	get worldStats(): WorldStats {
-		return {
-			games: this.gaming.games.size,
-			players: this.clients.size,
-			gamesInLastHour: this.gaming.gamesInLastHour,
-		}
-	}
 
 	acceptClient(clientside: Clientside, closeConnection: () => void) {
 		const clientId = this.#clientIdCounter.next()
@@ -48,7 +34,7 @@ export class Director {
 		const result = this.gaming.findGameWithClient(clientId)
 		if (result) {
 			const [gameId] = result
-			await this.#endGame(gameId)
+			await this.endGame(gameId)
 		}
 
 		// remove client from map
@@ -57,7 +43,7 @@ export class Director {
 			this.clients.delete(clientId)
 	}
 
-	async #endGame(gameId: number) {
+	async endGame(gameId: number) {
 		const game = this.gaming.games.get(gameId)
 		if (game) {
 			this.gaming.games.delete(gameId)

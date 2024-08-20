@@ -3,14 +3,14 @@ import {css, html, loading} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
 import {wherefor} from "../../../tools/wherefor.js"
-import type {WorldStats} from "../../../director/director.js"
+import type {RegularReport} from "../../../director/types.js"
 
 export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 	use.name("main-menu")
 	use.styles(styles)
 
 	const route = use.signal<keyof typeof pages>("/")
-	const worldStats = use.signal<WorldStats | null>(null)
+	const worldStats = use.signal<RegularReport | null>(null)
 	const ping = use.signal<number | null>(null)
 
 	use.mount(() => {
@@ -23,7 +23,7 @@ export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 			if (use.context.directorClient.isReady()) {
 				const directorClient = use.context.directorClient.payload
 				const start = Date.now()
-				worldStats.value = await directorClient.serverside.getWorldStats()
+				worldStats.value = await directorClient.serverside.report()
 				ping.value = Date.now() - start
 			}
 
@@ -55,11 +55,12 @@ export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 		<div class=page>
 			${pages[route.value]()}
 		</div>
-		${wherefor(worldStats.value, stats => html`
+		${wherefor(worldStats.value, ({worldStats, clientStatus}) => html`
 			<ul>
-				<li>games: ${stats.games}</li>
-				<li>players: ${stats.players}</li>
-				<li>${stats.gamesInLastHour} games/hour</li>
+				<li>status: ${clientStatus}</li>
+				<li>games: ${worldStats.games}</li>
+				<li>players: ${worldStats.players}</li>
+				<li>${worldStats.gamesInLastHour} games/hour</li>
 				<li>ping: ${ping} ms</li>
 			</ul>
 		`)}
