@@ -2,6 +2,7 @@
 import {fns, notify} from "renraku"
 import {Game} from "../parts/gaming.js"
 import {Director} from "../director.js"
+import {noop} from "../../tools/noop.js"
 import {ClientId, RegularReport} from "../types.js"
 import {AgentState, Turn} from "../../logic/state.js"
 
@@ -65,7 +66,7 @@ export function makeServerside(
 					game.pair.forEach((clientId, teamId) => {
 						const client = director.clients.get(clientId)!
 						const agentState = game.arbiter.statesRef.value.agents.at(teamId)!
-						client.clientside.game.start[notify]({gameId, teamId, agentState})
+						client.clientside.game.start({gameId, teamId, agentState}).catch(noop)
 						session = {game, gameId, teamId}
 					})
 				}
@@ -84,7 +85,7 @@ export function makeServerside(
 				game.pair.forEach((clientId, teamId) => {
 					const client = director.clients.get(clientId)!
 					const agentState = game.arbiter.getAgentState(teamId)
-					client.clientside.game.update({agentState})
+					client.clientside.game.update[notify]({agentState})
 				})
 
 				return game.arbiter.getAgentState(teamId)

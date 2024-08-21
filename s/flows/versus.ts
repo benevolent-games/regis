@@ -22,6 +22,8 @@ export async function versusFlow({
 	const agent = new Agent(data.agentState)
 	const connection = connectivity.connection.payload
 
+	console.log("versus", data)
+
 	if (!connection) {
 		exit()
 		return null
@@ -37,6 +39,7 @@ export async function versusFlow({
 	}))
 
 	dr(connectivity.machinery.onGameUpdate(data => {
+		console.log("game update!")
 		agent.state = data.agentState
 	}))
 

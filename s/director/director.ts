@@ -50,10 +50,7 @@ export class Director {
 				game.pair
 					.map(clientId => this.clients.get(clientId))
 					.filter(client => !!client)
-					.map(client => {
-						console.log("sending game end to a client")
-						return client.clientside.game.end()
-					})
+					.map(client => client.clientside.game.end())
 			)
 		}
 	}
