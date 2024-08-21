@@ -27,10 +27,22 @@ export async function versusFlow({
 		return null
 	}
 
-	connectivity.onDisconnected(exit)
+	dr(connectivity.onDisconnected(() => {
+		console.log("versus received disconnect")
+		exit()
+	}))
+
+	dr(connectivity.machinery.onGameStart((data) => {
+		console.log("versus got CONFUSING onGameStart", data)
+	}))
 
 	dr(connectivity.machinery.onGameUpdate(data => {
 		agent.state = data.agentState
+	}))
+
+	dr(connectivity.machinery.onGameEnd(() => {
+		console.log("versus got onGameEnd")
+		exit()
 	}))
 
 	const terminal = await makeGameTerminal(

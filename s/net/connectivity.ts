@@ -50,6 +50,7 @@ export class Connectivity {
 					console.log("connection lost")
 					this.#scheduleReconnect()
 					this.connection.setReady(null)
+					this.onDisconnected.publish()
 				}
 				client.socket.addEventListener("close", lost)
 				client.socket.addEventListener("error", lost)

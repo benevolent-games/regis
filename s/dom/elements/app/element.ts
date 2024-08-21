@@ -41,6 +41,7 @@ export const GameApp = nexus.lightComponent(use => {
 			}),
 
 			mainMenu: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
+				console.log("nav to main menu")
 				return {
 					dispose: () => {},
 					template: () => MainMenuView([{

@@ -36,6 +36,7 @@ export function makeClientside(
 				machinery.onGameUpdate.publish(data)
 			},
 			async end() {
+				console.log("END RECEIVED")
 				machinery.onGameEnd.publish()
 			},
 		},
