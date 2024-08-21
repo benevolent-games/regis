@@ -1,6 +1,6 @@
 
-import {Op, OpSignal, opSignal, reactor, signals} from "@benev/slate"
 import {Connectivity} from "./connectivity.js"
+import {Op, opSignal, reactor, Trashbin} from "@benev/slate"
 
 export namespace MatchmakingSituation {
 	export type Disconnected = {
@@ -21,15 +21,19 @@ export namespace MatchmakingSituation {
 }
 
 export class MatchmakingLiaison {
+	#trashbin = new Trashbin()
+
 	state = opSignal<"unqueued" | "queued">()
 	situation = opSignal<MatchmakingSituation.Any>()
 
 	constructor(public connectivity: Connectivity) {
-		this.state.setReady("unqueued")
-		connectivity.onConnected(() => this.state.setReady("unqueued"))
-		connectivity.onDisconnected(() => this.state.setReady("unqueued"))
+		const {disposer: dr} = this.#trashbin
 
-		reactor.reaction(() => {
+		this.state.setReady("unqueued")
+		dr(connectivity.onConnected(() => this.state.setReady("unqueued")))
+		dr(connectivity.onDisconnected(() => this.state.setReady("unqueued")))
+
+		dr(reactor.reaction(() => {
 			this.situation.value = (() => {
 				const connection = this.connectivity.connection.payload
 
@@ -42,13 +46,17 @@ export class MatchmakingLiaison {
 						: {kind: "unqueued", startMatchmaking: async() => this.#startMatchmaking()}
 				})
 			})()
-		})
+		}))
 	}
 
 	async bail() {
 		const situation = this.situation.payload
 		if (situation && situation.kind === "queued")
 			await situation.cancelMatchmaking()
+	}
+
+	dispose() {
+		this.#trashbin.dispose()
 	}
 
 	#requirements() {

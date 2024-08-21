@@ -2,29 +2,36 @@
 import {fns} from "renraku"
 import {Serverside} from "./serverside.js"
 import {AgentState} from "../../logic/state.js"
+import {ClientMachinery} from "../plumbing/machinery.js"
+
+export type GameStartData = {
+	gameId: number
+	teamId: number
+	agentState: AgentState
+}
+
+export type GameUpdateData = {
+	agentState: AgentState
+}
 
 export type Clientside = {
 	game: {
-		start(inputs: {
-			gameId: number
-			teamId: number
-			agentState: AgentState
-		}): Promise<void>
-		update(inputs: {
-			agentState: AgentState
-		}): Promise<void>
+		start(data: GameStartData): Promise<void>
+		update(data: GameUpdateData): Promise<void>
 		end(): Promise<void>
 	}
 }
 
 export function makeClientside(
 		getServerside: () => Serverside,
-		machinery: any,
+		machinery: ClientMachinery,
 	) {
 
 	return fns<Clientside>({
 		game: {
-			async start() {},
+			async start(data) {
+				machinery.onMultiplayerGameStart.publish(data)
+			},
 			async update() {},
 			async end() {},
 		},

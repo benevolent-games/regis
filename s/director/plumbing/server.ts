@@ -6,7 +6,9 @@ import {deathWithDignity, WebSocketServer} from "renraku/x/node.js"
 import {Director} from "../director.js"
 import {Clientside} from "../apis/clientside.js"
 
+const host = "0.0.0.0"
 const port = 8000
+
 const logger = new PrettyLogger()
 const onError = (error: any) => logger.error(errorString(error))
 deathWithDignity({logger})
@@ -37,5 +39,5 @@ const server = new WebSocketServer({
 	},
 })
 
-server.listen(port, () => console.log(`🤖 director server on port ${port}..\n`))
+server.listen(port, host, () => console.log(`🤖 director server on port ${port}..\n`))
 

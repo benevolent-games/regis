@@ -2,12 +2,13 @@
 import {Suite, expect} from "cynic"
 import {Director} from "./director.js"
 import {makeClientside} from "./apis/clientside.js"
+import {ClientMachinery} from "./plumbing/machinery.js"
 
 export function testSituation() {
 	const director = new Director()
 	return {
 		newClient() {
-			const clientside = makeClientside(() => serverside, {})
+			const clientside = makeClientside(() => serverside, new ClientMachinery())
 			const {serverside} = director.acceptClient(clientside, () => {})
 			return {clientside, serverside}
 		},

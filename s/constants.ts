@@ -15,5 +15,10 @@ export const constants = {
 		height: 1,
 		verticalOffset: -1,
 	},
+	net: {
+		timeout: 10_000,
+		reconnectDelay: 10_000,
+		reportingDelay: 5_000,
+	},
 }
 

@@ -1,12 +1,12 @@
 
 import {opSignal, pubsub} from "@benev/slate"
 
+import {constants} from "../constants.js"
 import {randomize} from "../tools/randomize.js"
 import {RegularReport} from "../director/types.js"
 import {Serverside} from "../director/apis/serverside.js"
 import {makeDirectorClient} from "../director/plumbing/client.js"
 
-const retryDelay = 10_000
 const url = `//${window.location.hostname}:8000/`
 
 export type Connection = {
@@ -34,7 +34,7 @@ export class Connectivity {
 	}
 
 	#scheduleReconnect() {
-		setTimeout(() => this.connect(), randomize(retryDelay))
+		setTimeout(() => this.connect(), randomize(constants.net.reconnectDelay))
 	}
 
 	async connect() {
@@ -46,6 +46,7 @@ export class Connectivity {
 				const lost = () => {
 					console.log("connection lost")
 					this.#scheduleReconnect()
+					this.connection.setReady(null)
 				}
 				client.socket.addEventListener("close", lost)
 				client.socket.addEventListener("error", lost)
@@ -79,52 +80,7 @@ export class Connectivity {
 
 	async repeatedReporting() {
 		await this.queryReport()
-		setTimeout(() => this.repeatedReporting(), 5_000)
+		setTimeout(() => this.repeatedReporting(), constants.net.reportingDelay)
 	}
 }
 
-// export class Connectivity {
-// 	stayConnected = true
-// 	connectionLost = pubsub<[]>()
-// 	connectionEstablished = pubsub<[]>()
-//
-// 	reporting: Reporting
-//
-// 	get isConnected() {
-// 		return !!this.directorClient.payload && !!this.reporting.info.value
-// 	}
-//
-// 	constructor(public directorClient: OpSignal<DirectorClient>) {
-// 		this.reporting = new Reporting(this)
-// 		this.connect()
-// 	}
-//
-// 	#scheduleRetry() {
-// 		this.directorClient.setError("disconnected")
-// 		if (this.stayConnected)
-// 			setTimeout(() => this.connect(), randomize(retryDelay))
-// 	}
-//
-// 	async connect() {
-// 		try {
-// 			console.log("attempt connect")
-// 			const client = await this.directorClient.load(
-// 				() => makeDirectorClient(url)
-// 			)
-// 			console.log("connection established")
-// 			this.connectionEstablished.publish()
-// 			const lost = () => {
-// 				console.log("connection lost")
-// 				this.#scheduleRetry()
-// 				this.connectionLost.publish()
-// 			}
-// 			client.socket.addEventListener("close", lost)
-// 			client.socket.addEventListener("error", lost)
-// 		}
-// 		catch (error) {
-// 			console.log("connection attempt failed")
-// 			this.#scheduleRetry()
-// 		}
-// 	}
-// }
-//
