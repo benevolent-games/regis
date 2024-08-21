@@ -19,7 +19,6 @@ export const blankMap = `
 
 export const mapPool = {
 
-
 	bridge: `
 		#b   #$♟  #    =^   =^%  =^   #    #$♕
 		#    #♚   #a   .    .    .    #♖   #
