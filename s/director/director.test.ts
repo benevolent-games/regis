@@ -34,18 +34,17 @@ export default <Suite>{
 			}
 		})()
 
-		await Promise.all([
-			client1.serverside.matchmaking.joinQueue(),
-			client2.serverside.matchmaking.joinQueue(),
-		])
+		await client1.serverside.matchmaking.joinQueue(),
+		expect((await client1.serverside.report()).clientStatus).equals("queued")
 
+		await client2.serverside.matchmaking.joinQueue(),
 		expect(started).ok()
 
 		const {worldStats, clientStatus} = await client1.serverside.report()
 		expect(worldStats.games).equals(1)
 		expect(worldStats.players).equals(2)
 		expect(worldStats.gamesInLastHour).equals(1)
-		expect(clientStatus).equals("queued")
+		expect(clientStatus).equals("gaming")
 	},
 }
 
