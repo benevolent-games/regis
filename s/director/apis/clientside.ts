@@ -30,7 +30,7 @@ export function makeClientside(
 	return fns<Clientside>({
 		game: {
 			async start(data) {
-				machinery.onMultiplayerGameStart.publish(data)
+				machinery.onGameStart.publish(data)
 			},
 			async update() {},
 			async end() {},

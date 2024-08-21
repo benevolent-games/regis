@@ -1,8 +1,9 @@
 
 import {pubsub} from "@benev/slate"
-import {GameStartData} from "../apis/clientside.js"
+import {GameStartData, GameUpdateData} from "../apis/clientside.js"
 
 export class ClientMachinery {
-	onMultiplayerGameStart = pubsub<[GameStartData]>()
+	onGameStart = pubsub<[GameStartData]>()
+	onGameUpdate = pubsub<[GameUpdateData]>()
 }
 

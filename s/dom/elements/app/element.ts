@@ -1,12 +1,13 @@
 
 import {html} from "@benev/slate"
-import {Orchestrator, orchestratorStyles, OrchestratorView} from "@benev/toolbox/x/ui/orchestrator/exports.js"
+import {Orchestrator, orchestratorStyles, OrchestratorView} from "@benev/toolbox"
 
 import {nexus} from "../../nexus.js"
 import {GameplayView} from "../../views/exhibits/gameplay.js"
 import {detectInputMethod} from "../../utils/input-method.js"
 import {MainMenuView} from "../../views/exhibits/main-menu.js"
 import {IntroPageView} from "../../views/exhibits/intro-page.js"
+import {GameStartData} from "../../../director/apis/clientside.js"
 import {LogoSplashView} from "../../views/loading-screens/logo-splash.js"
 
 export const GameApp = nexus.lightComponent(use => {
@@ -45,7 +46,7 @@ export const GameApp = nexus.lightComponent(use => {
 					template: () => MainMenuView([{
 						goIntro: () => goExhibit.intro(),
 						goFreeplay: () => goExhibit.freeplay(),
-						goMultiplayer: () => goExhibit.multiplayer(),
+						goMultiplayer: (data: GameStartData) => goExhibit.versus(data),
 					}]),
 				}
 			}),
@@ -59,9 +60,10 @@ export const GameApp = nexus.lightComponent(use => {
 				}
 			}),
 
-			multiplayer: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
-				const {freeplayFlow} = await import("../../../flows/freeplay.js")
-				const {world, dispose} = await freeplayFlow()
+			versus: orchestrator.makeNavFn(loadscreens.logoSplash, async(data: GameStartData) => {
+				const {connectivity} = use.context
+				const {versusFlow} = await import("../../../flows/versus.js")
+				const {world, dispose} = await versusFlow({data, connectivity})
 				return {
 					dispose,
 					template: () => GameplayView([world]),

@@ -19,6 +19,6 @@ export async function makeDirectorClient(url: string) {
 		),
 	})
 
-	return {socket, serverside}
+	return {socket, serverside, machinery}
 }
 

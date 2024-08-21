@@ -5,6 +5,7 @@ import {constants} from "../constants.js"
 import {randomize} from "../tools/randomize.js"
 import {RegularReport} from "../director/types.js"
 import {Serverside} from "../director/apis/serverside.js"
+import {ClientMachinery} from "../director/plumbing/machinery.js"
 import {makeDirectorClient} from "../director/plumbing/client.js"
 
 const url = `//${window.location.hostname}:8000/`
@@ -12,6 +13,7 @@ const url = `//${window.location.hostname}:8000/`
 export type Connection = {
 	socket: WebSocket
 	serverside: Serverside
+	machinery: ClientMachinery
 	ping: number
 	report: RegularReport
 }
