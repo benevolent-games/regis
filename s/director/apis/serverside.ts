@@ -1,5 +1,5 @@
 
-import {fns} from "renraku"
+import {fns, notify} from "renraku"
 import {Game} from "../parts/gaming.js"
 import {Director} from "../director.js"
 import {ClientId, RegularReport} from "../types.js"
@@ -65,7 +65,7 @@ export function makeServerside(
 					game.pair.forEach((clientId, teamId) => {
 						const client = director.clients.get(clientId)!
 						const agentState = game.arbiter.statesRef.value.agents.at(teamId)!
-						client.clientside.game.start({gameId, teamId, agentState})
+						client.clientside.game.start[notify]({gameId, teamId, agentState})
 						session = {game, gameId, teamId}
 					})
 				}
@@ -92,7 +92,7 @@ export function makeServerside(
 
 			async abandon() {
 				const {gameId} = requireSession()
-				director.endGame(gameId)
+				await director.endGame(gameId)
 			},
 		},
 	})

@@ -8,18 +8,20 @@ import {MatchmakingLiaison} from "../../../net/matchmaking-liaison.js"
 type Options = {
 	goIntro: () => void
 	goFreeplay: () => void
-	goMultiplayer: (data: GameStartData) => void
+	goVersus: (data: GameStartData) => void
 }
 
 export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 	use.name("main-menu")
 	use.styles(styles)
+	const {connectivity} = use.context
 
 	const matchmaking = use.init(() => {
-		const matchmaking = new MatchmakingLiaison(use.context.connectivity)
+		const matchmaking = new MatchmakingLiaison(connectivity)
 		return [matchmaking, () => matchmaking.dispose()]
 	})
 
+	use.mount(() => connectivity.machinery.onGameStart(data => o.goVersus(data)))
 	use.mount(() => () => matchmaking.bail())
 
 	return html`

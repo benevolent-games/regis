@@ -9,18 +9,27 @@ import {GameStartData} from "../director/apis/clientside.js"
 export async function versusFlow({
 		data,
 		connectivity,
+		exit,
 	}: {
 		data: GameStartData
 		connectivity: Connectivity
+		exit: () => void
 	}) {
 
 	const trashbin = new Trashbin()
 	const dr = trashbin.disposer
 
 	const agent = new Agent(data.agentState)
-	const connection = connectivity.connection.payload!
+	const connection = connectivity.connection.payload
 
-	dr(connection.machinery.onGameUpdate(data => {
+	if (!connection) {
+		exit()
+		return null
+	}
+
+	connectivity.onDisconnected(exit)
+
+	dr(connectivity.machinery.onGameUpdate(data => {
 		agent.state = data.agentState
 	}))
 

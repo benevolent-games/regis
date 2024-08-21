@@ -13,7 +13,6 @@ const url = `//${window.location.hostname}:8000/`
 export type Connection = {
 	socket: WebSocket
 	serverside: Serverside
-	machinery: ClientMachinery
 	ping: number
 	report: RegularReport
 }
@@ -30,6 +29,8 @@ export class Connectivity {
 	onConnected = pubsub<[Connection]>()
 	onDisconnected = pubsub()
 
+	machinery = new ClientMachinery()
+
 	constructor() {
 		this.connect()
 		this.repeatedReporting()
@@ -43,7 +44,7 @@ export class Connectivity {
 		console.log("attempt connect")
 		const connection = await this.connection.load(async() => {
 			try {
-				const client = await makeDirectorClient(url)
+				const client = await makeDirectorClient(url, this.machinery)
 				const info = await queryReport(client.serverside)
 				const lost = () => {
 					console.log("connection lost")

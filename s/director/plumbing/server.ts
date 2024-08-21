@@ -4,6 +4,7 @@ import {errorString, expose, PrettyLogger, remote} from "renraku"
 import {deathWithDignity, WebSocketServer} from "renraku/x/node.js"
 
 import {Director} from "../director.js"
+import {constants} from "../../constants.js"
 import {Clientside} from "../apis/clientside.js"
 
 const host = "0.0.0.0"
@@ -17,7 +18,7 @@ const director = new Director()
 
 const server = new WebSocketServer({
 	onError,
-	timeout: 20_000,
+	timeout: constants.net.timeout,
 	acceptConnection: connection => {
 		const pingingInterval = setInterval(() => connection.ping(), 3_000)
 		const clientside = remote<Clientside>(connection.remoteEndpoint)

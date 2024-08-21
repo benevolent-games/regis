@@ -46,7 +46,7 @@ export const GameApp = nexus.lightComponent(use => {
 					template: () => MainMenuView([{
 						goIntro: () => goExhibit.intro(),
 						goFreeplay: () => goExhibit.freeplay(),
-						goMultiplayer: (data: GameStartData) => goExhibit.versus(data),
+						goVersus: (data: GameStartData) => goExhibit.versus(data),
 					}]),
 				}
 			}),
@@ -63,11 +63,18 @@ export const GameApp = nexus.lightComponent(use => {
 			versus: orchestrator.makeNavFn(loadscreens.logoSplash, async(data: GameStartData) => {
 				const {connectivity} = use.context
 				const {versusFlow} = await import("../../../flows/versus.js")
-				const {world, dispose} = await versusFlow({data, connectivity})
-				return {
-					dispose,
-					template: () => GameplayView([world]),
-				}
+				const flow = await versusFlow({
+					data,
+					connectivity,
+					exit: () => goExhibit.mainMenu(),
+				})
+				if (flow)
+					return {
+						dispose: flow.dispose,
+						template: () => GameplayView([flow.world]),
+					}
+				else
+					return {template: () => null, dispose: () => {}}
 			}),
 		}
 

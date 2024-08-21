@@ -23,8 +23,8 @@ export type Clientside = {
 }
 
 export function makeClientside(
-		getServerside: () => Serverside,
 		machinery: ClientMachinery,
+		getServerside: () => Serverside,
 	) {
 
 	return fns<Clientside>({
@@ -32,8 +32,12 @@ export function makeClientside(
 			async start(data) {
 				machinery.onGameStart.publish(data)
 			},
-			async update() {},
-			async end() {},
+			async update(data) {
+				machinery.onGameUpdate.publish(data)
+			},
+			async end() {
+				machinery.onGameEnd.publish()
+			},
 		},
 	})
 }
