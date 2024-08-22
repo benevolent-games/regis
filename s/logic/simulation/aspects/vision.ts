@@ -9,8 +9,14 @@ import {isVerticallyCompatible} from "./verticality.js"
 // vision is related to fog-of-war
 //
 
+export function omniscience(state: AgentState, _teamId: number) {
+	const agent = new Agent(state)
+	return [...agent.tiles.list()].map(t => t.place)
+}
+
 export function visionForTeam(state: AgentState, teamId: number) {
 	const agent = new Agent(state)
+
 	const visionArray: Vec2[] = []
 
 	function exists(place: Vec2) {
@@ -28,15 +34,15 @@ export function visionForTeam(state: AgentState, teamId: number) {
 
 		if (isFriendly) {
 			add(unit.place)
+
 			if (vision) {
 				const unitTile = agent.tiles.at(unit.place)
+
 				getNearby(agent, unit.place, vision.range)
 					.filter(({tile}) => isVerticallyCompatible(vision.verticality, unitTile, tile))
 					.forEach(({place}) => add(place))
 			}
 		}
 	}
-
-	return visionArray
 }
 

@@ -3,11 +3,11 @@ import {clone} from "@benev/slate"
 
 import {Agent} from "../agent.js"
 import {Proposer} from "./proposer.js"
-import {visionForTeam} from "./aspects/vision.js"
+import {omniscience} from "./aspects/vision.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
+import {TurnTracker} from "../../terminal/parts/turn-tracker.js"
 import {awardIncome, processWinByConquest, nextTurn} from "./aspects/turns.js"
 import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
-import { TurnTracker } from "../../terminal/parts/turn-tracker.js"
 
 /**
  * compute the state of the game.
@@ -70,7 +70,7 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 	return {
 		arbiter: state,
 		agents: state.teams.map((_, teamId) => {
-			const vision = visionForTeam(state, teamId)
+			const vision = omniscience(state, teamId)
 			return {
 				initial: state.initial,
 				context: state.context,
