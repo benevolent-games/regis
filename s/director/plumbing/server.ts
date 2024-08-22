@@ -1,6 +1,6 @@
 
 import "@benev/slate/x/node.js"
-import {errorString, expose, PrettyLogger, remote} from "renraku"
+import {expose, PrettyLogger, remote, errstring, remoteErrstring} from "renraku"
 import {deathWithDignity, WebSocketServer} from "renraku/x/node.js"
 
 import {Director} from "../director.js"
@@ -11,30 +11,38 @@ const host = "0.0.0.0"
 const port = 8000
 
 const logger = new PrettyLogger()
-const onError = (error: any) => logger.error(errorString(error))
 deathWithDignity({logger})
 
 const director = new Director()
 
 const server = new WebSocketServer({
-	onError,
+	onError: error => logger.error(errstring(error)),
 	timeout: constants.net.timeout,
 	acceptConnection: connection => {
 		const pingingInterval = setInterval(() => connection.ping(), 3_000)
 		const clientside = remote<Clientside>(connection.remoteEndpoint)
 		const client = director.acceptClient(clientside, connection.close)
-		logger.log(`🧔 client appears {${client.clientId}}`)
+		logger.log(`🧔 [${client.clientId}] connected`)
 		return {
 			localEndpoint: expose(() => client.serverside, {
-				onError,
+				onError: (error, id, method) => {
+					logger.error(remoteErrstring(error, id, method))
+				},
 				onInvocation: request => {
-					logger.log(`  🔔 {${client.clientId}} [${"id" in request ? request.id : ""}] ${request.method}`)
+					logger.log([
+						`🔔`,
+						`[${client.clientId}]`,
+						"id" in request
+							? `#${request.id}`
+							: null,
+						`${request.method}()`
+					].filter(part => !!part).join(" "))
 				},
 			}),
 			closed: () => {
 				clearInterval(pingingInterval)
 				client.disconnected()
-				logger.log(`💀 client leaves {${client.clientId}}`)
+				logger.log(`💀 [${client.clientId}] disconnected`)
 			},
 		}
 	},

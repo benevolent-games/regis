@@ -1,5 +1,5 @@
 
-import {fns, notify} from "renraku"
+import {fns} from "renraku"
 import {Game} from "../parts/gaming.js"
 import {Director} from "../director.js"
 import {noop} from "../../tools/noop.js"
@@ -18,21 +18,21 @@ export type Serverside = {
 	}
 }
 
-type Session = {
-	game: Game
-	gameId: number
-	teamId: number
-}
+// type Session = {
+// 	game: Game
+// 	gameId: number
+// 	teamId: number
+// }
 
 export function makeServerside(
 		director: Director,
 		clientId: ClientId,
 	) {
 
-	let session: Session | null = null
 	const {matchmaker, gaming} = director
 
 	function requireSession() {
+		const session = director.gaming.queryForClient(clientId)
 		if (!session)
 			throw new Error("no valid session")
 		return session
@@ -67,7 +67,6 @@ export function makeServerside(
 						const client = director.clients.get(clientId)!
 						const agentState = game.arbiter.statesRef.value.agents.at(teamId)!
 						client.clientside.game.start({gameId, teamId, agentState}).catch(noop)
-						session = {game, gameId, teamId}
 					})
 				}
 			},
@@ -85,7 +84,7 @@ export function makeServerside(
 				game.pair.forEach((clientId, teamId) => {
 					const client = director.clients.get(clientId)!
 					const agentState = game.arbiter.getAgentState(teamId)
-					client.clientside.game.update[notify]({agentState})
+					client.clientside.game.update({agentState}).catch(noop)
 				})
 
 				return game.arbiter.getAgentState(teamId)

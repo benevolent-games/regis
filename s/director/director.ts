@@ -35,11 +35,9 @@ export class Director {
 		this.matchmaker.queue.delete(clientId)
 
 		// end any game they're associated with
-		const result = this.gaming.findGameWithClient(clientId)
-		if (result) {
-			const [gameId] = result
-			await this.endGame(gameId)
-		}
+		const result = this.gaming.queryForClient(clientId)
+		if (result)
+			await this.endGame(result.gameId)
 	}
 
 	async endGame(gameId: number) {

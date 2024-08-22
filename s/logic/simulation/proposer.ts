@@ -6,12 +6,16 @@ import {UnitFreedom} from "./aspects/unit-freedom.js"
 import {calculateMovement} from "./aspects/moving.js"
 import {isValidSpawnPlace} from "./aspects/spawning.js"
 import {canAfford, subtractResources} from "./aspects/money.js"
+import {TurnTracker} from "../../terminal/parts/turn-tracker.js"
 import {applyDamage, attackReport} from "./aspects/attack-report.js"
 
 export class Proposer {
 	unitFreedom = new UnitFreedom()
 
-	constructor(private agent: Agent) {}
+	constructor(
+		private agent: Agent,
+		private turnTracker: TurnTracker,
+	) {}
 
 	#rerender() {
 		this.agent.stateRef.publish()
@@ -19,12 +23,13 @@ export class Proposer {
 
 	choosers = {
 		spawn: (choice: Choice.Spawn) => {
-			const {agent} = this
+			const {agent, turnTracker} = this
 			const {cost} = agent.state.initial.config.unitArchetypes[choice.unitKind]
+			const myTeam = turnTracker.ourTurn
 			const buyable = cost !== null
 			const affordable = canAfford(agent.currentTeam, cost)
 			const valid = isValidSpawnPlace(agent, agent.currentTurn, choice.place)
-			return (buyable && affordable && valid)
+			return (myTeam && buyable && affordable && valid)
 				? {
 					commit: () => {
 						subtractResources(agent.state, agent.currentTurn, cost)
@@ -44,7 +49,7 @@ export class Proposer {
 		},
 
 		movement: (choice: Choice.Movement) => {
-			const {agent, unitFreedom} = this
+			const {agent, unitFreedom, turnTracker} = this
 			const teamId = this.agent.currentTurn
 			const calculation = calculateMovement({
 				agent,
@@ -52,6 +57,9 @@ export class Proposer {
 				source: choice.source,
 				target: choice.target,
 			})
+
+			if (!turnTracker.ourTurn)
+				return null
 
 			if (!calculation)
 				return null
@@ -71,11 +79,15 @@ export class Proposer {
 		},
 
 		attack: (choice: Choice.Attack) => {
-			const {agent, unitFreedom} = this
+			const {agent, unitFreedom, turnTracker} = this
 			const report = attackReport(agent, agent.currentTurn, choice)
 			if (report) {
 				if (!unitFreedom.hasFreedom(report.sourceUnit.id))
 					return null
+
+				if (!turnTracker.ourTurn)
+					return null
+
 				return {
 					...report,
 					commit: () => {

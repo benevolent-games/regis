@@ -7,6 +7,7 @@ import {Assets} from "./assets.js"
 import {Selectacon} from "./selectacon.js"
 import {Agent} from "../../logic/agent.js"
 import {Choice} from "../../logic/state.js"
+import {TurnTracker} from "./turn-tracker.js"
 import {SubmitTurnFn} from "../../logic/arbiter.js"
 import {Proposer} from "../../logic/simulation/proposer.js"
 
@@ -22,10 +23,11 @@ export class Planner {
 			agent: Agent
 			assets: Assets
 			selectacon: Selectacon
+			turnTracker: TurnTracker
 			submitTurn: SubmitTurnFn
 		}) {
 
-		this.proposer = new Proposer(options.agent)
+		this.proposer = new Proposer(options.agent, options.turnTracker)
 
 		this.#planbin.disposer(
 			options.selectacon.selection.on(() => this.render())
@@ -33,7 +35,7 @@ export class Planner {
 	}
 
 	reset() {
-		this.proposer = new Proposer(this.options.agent)
+		this.proposer = new Proposer(this.options.agent, this.options.turnTracker)
 		this.choices = []
 	}
 

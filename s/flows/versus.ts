@@ -50,9 +50,10 @@ export async function versusFlow({
 
 	const terminal = await makeGameTerminal(
 		agent,
+		[data.teamId],
 		turn => connectivity
 			.connection.payload?.serverside
-			.game.submitTurn(turn)
+			.game.submitTurn(turn),
 	)
 
 	return {

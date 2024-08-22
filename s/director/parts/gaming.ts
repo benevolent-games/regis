@@ -1,5 +1,6 @@
 
 import {Pair} from "./matchmaker.js"
+import {ClientId} from "../types.js"
 import {randomMap} from "../../map-pool.js"
 import {Arbiter} from "../../logic/arbiter.js"
 import {GameCounting} from "./game-counting.js"
@@ -34,6 +35,21 @@ export class Gaming {
 		this.#gameCounting.count()
 
 		return [gameId, game] as [number, Game]
+	}
+
+	queryForClient(clientId: ClientId) {
+		for (const [gameId, game] of this.games) {
+			const pairing = game.pair.map((id, teamId) => ({id, teamId}))
+			for (const {id, teamId} of pairing) {
+				if (id === clientId)
+					return {
+						gameId,
+						clientId,
+						teamId,
+						game,
+					}
+			}
+		}
 	}
 
 	findGameWithClient(clientId: number) {

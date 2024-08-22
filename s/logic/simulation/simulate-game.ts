@@ -7,6 +7,7 @@ import {visionForTeam} from "./aspects/vision.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
 import {awardIncome, processWinByConquest, nextTurn} from "./aspects/turns.js"
 import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
+import { TurnTracker } from "../../terminal/parts/turn-tracker.js"
 
 /**
  * compute the state of the game.
@@ -45,7 +46,8 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 	// updating the arbiter state as we go along
 	for (const turn of chronicle) {
 		const agent = new Agent(state)
-		const proposer = new Proposer(agent)
+		const teamControl = [agent.currentTurn]
+		const proposer = new Proposer(agent, new TurnTracker({agent, teamControl}))
 
 		for (const choice of turn.choices) {
 			const report = proposer.choosers[choice.kind](choice as any)

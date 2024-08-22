@@ -7,7 +7,7 @@ export async function freeplayFlow() {
 	const arbiter = new Arbiter(mapPool.bridge)
 	const agent = arbiter.makeAgent(null)
 
-	const terminal = await makeGameTerminal(agent, arbiter.submitTurn)
+	const terminal = await makeGameTerminal(agent, [0, 1], arbiter.submitTurn)
 	arbiter.statesRef.on(terminal.render)
 
 	function printReport() {
