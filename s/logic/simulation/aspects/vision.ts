@@ -9,12 +9,12 @@ import {isVerticallyCompatible} from "./verticality.js"
 // vision is related to fog-of-war
 //
 
-export function omniscience(state: AgentState, _teamId: number) {
+export function universalVision(state: AgentState, _teamId: number) {
 	const agent = new Agent(state)
 	return [...agent.tiles.list()].map(t => t.place)
 }
 
-export function visionForTeam(state: AgentState, teamId: number) {
+export function limitedVision(state: AgentState, teamId: number) {
 	const agent = new Agent(state)
 
 	const visionArray: Vec2[] = []
@@ -44,5 +44,7 @@ export function visionForTeam(state: AgentState, teamId: number) {
 			}
 		}
 	}
+
+	return visionArray
 }
 

@@ -7,6 +7,7 @@ import {Planner} from "./planner.js"
 import {CameraRig} from "./camera-rig.js"
 import {Selectacon} from "./selectacon.js"
 import {Agent} from "../../logic/agent.js"
+import {TurnTracker} from "./turn-tracker.js"
 import {DragQueen} from "../../tools/drag-queen.js"
 import {handlePrimaryClick} from "./handle-primary-click.js"
 
@@ -21,6 +22,7 @@ export class UserInputs {
 			planner: Planner
 			cameraRig: CameraRig
 			selectacon: Selectacon
+			turnTracker: TurnTracker
 			resetPreview: () => void
 		}) {
 
@@ -46,7 +48,7 @@ export class UserInputs {
 
 		dr(ev(window, {
 			keydown: (event: KeyboardEvent) => {
-				if (event.code === "Space")
+				if (event.code === "Space" && this.options.turnTracker.ourTurn)
 					planner.executePlan()
 			},
 		}))

@@ -47,7 +47,7 @@ export async function makeGameTerminal(
 	const turnTracker = new TurnTracker({agent, teamControl})
 	const planner = d(new Planner({agent, assets, selectacon, turnTracker, submitTurn}))
 	d(new Hovering({world, selectacon}))
-	d(new UserInputs({agent, world, planner, selectacon, cameraRig, resetPreview}))
+	d(new UserInputs({agent, world, planner, selectacon, cameraRig, turnTracker, resetPreview}))
 
 	function render() {
 		rosters.render()
