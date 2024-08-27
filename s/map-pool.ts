@@ -1,6 +1,6 @@
 
 export function randomMap() {
-	return {name: "override", ascii: mapPool.battlements}
+	// return {name: "override", ascii: mapPool.battlements}
 
 	const maplist = Object.entries(mapPool)
 	const index = Math.floor(Math.random() * maplist.length)
