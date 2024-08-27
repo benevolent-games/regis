@@ -3,17 +3,16 @@ import {string} from "@benev/turtle"
 import {defaultGameConfig} from "./logic/data.js"
 
 const config = defaultGameConfig()
-const archetypes = config.unitArchetypes
 
 export default string`
 
-## the pillars of strategy
+## the five pillars of strategy
 
-- **maneuvers** — the tactics of conducting battles
-- **composition** — choosing which kinds army units to deploy
-- **investment** — ability to sacrifice the short-term for the long-term
-- **defender's advantage** — a buffer for hedging your bets
-- **fog-of-war** — hidden information provides opportunity for deception
+1. **maneuvers** — the tactics of conducting battles
+2. **composition** — choosing which kinds army units to deploy
+3. **investment** — ability to sacrifice the short-term for the long-term
+4. **defender's advantage** — a buffer for hedging your bets
+5. **fog-of-war** — hidden information provides opportunity for deception
 
 chess doesn't have all of these.  
 regis does, and it's playable with a standard chess set.  
@@ -31,16 +30,19 @@ regis does, and it's playable with a standard chess set.
 	- you start with some resource points
 	- you gain resource points as income each turn
 	- you can spend resources to spawn units or stake claims
-- **multiple actions per turn**
-	- for each of your units, you can choose one action per turn
+- **one action per unit per turn**
+	- ie, you can move like five pawns during one of your turns
 	- ie, you can tell your knight to attack, or move, but not both simultaneously
 	- you click around to issue orders for your turn
-	- you can press ctrl+z to cancel your orders and try again
-	- you press spacebar to execute your turn
+	- you can press \`ctrl+z\` to cancel your orders and try again
+	- you press \`spacebar\` to execute your turn
 - **units**
 	- units appear as standard chess pieces (kings, queens, bishops, knights, rooks, and pawns)
 	- but they operate more like rts units than chess pieces
 	- they have health points, some have ranged attacks, etc
+- **spawning units**
+	- you can spawn units near your king
+	- each unit costs a different amount to spawn
 - **fog-of-war**
 	- this works like in rts games
 	- units have different vision ranges that will reveal enemy units

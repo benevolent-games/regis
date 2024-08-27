@@ -39,7 +39,7 @@
 	},
 	"devDependencies": {
 		"@benev/batch": "^0.0.0",
-		"@benev/turtle": "^0.6.0-7",
+		"@benev/turtle": "^0.6.0-8",
 		"@types/markdown-it": "^14.1.2",
 		"chokidar": "^3.6.0",
 		"chokidar-cli": "^3.0.0",
