@@ -72,8 +72,9 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 	return {
 		arbiter: state,
 		agents: state.teams.map((_, teamId) => {
-			// const vision = universalVision(state, teamId)
-			const vision = limitedVision(state, teamId)
+			const vision = chronicle.length === 0
+				? universalVision(state)
+				: limitedVision(state, teamId)
 			return {
 				initial: state.initial,
 				context: state.context,

@@ -9,7 +9,7 @@ import {isVerticallyCompatible} from "./verticality.js"
 // vision is related to fog-of-war
 //
 
-export function universalVision(state: AgentState, _teamId: number) {
+export function universalVision(state: AgentState) {
 	const agent = new Agent(state)
 	return [...agent.tiles.list()].map(t => t.place)
 }
