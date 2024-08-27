@@ -5,9 +5,10 @@ import {Agent} from "../logic/agent.js"
 import {Connectivity} from "../net/connectivity.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 import {GameStartData} from "../director/apis/clientside.js"
+import { printReport } from "./utils/print-report.js"
 
 export async function versusFlow({
-		data,
+		data: startData,
 		connectivity,
 		exit,
 	}: {
@@ -19,10 +20,11 @@ export async function versusFlow({
 	const trashbin = new Trashbin()
 	const dr = trashbin.disposer
 
-	const agent = new Agent(data.agentState)
+	const agent = new Agent(startData.agentState)
 	const connection = connectivity.connection.payload
 
-	console.log("versus", data)
+	console.log("versus", startData)
+	printReport(agent, startData.teamId)
 
 	if (!connection) {
 		exit()
@@ -39,8 +41,8 @@ export async function versusFlow({
 	}))
 
 	dr(connectivity.machinery.onGameUpdate(data => {
-		console.log("game update!")
 		agent.state = data.agentState
+		printReport(agent, startData.teamId)
 	}))
 
 	dr(connectivity.machinery.onGameEnd(() => {
@@ -50,7 +52,7 @@ export async function versusFlow({
 
 	const terminal = await makeGameTerminal(
 		agent,
-		[data.teamId],
+		[startData.teamId],
 		turn => connectivity
 			.connection.payload?.serverside
 			.game.submitTurn(turn),

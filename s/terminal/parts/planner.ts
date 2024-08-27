@@ -52,10 +52,10 @@ export class Planner {
 	render() {
 		this.#renderbin.dispose()
 		const {proposer} = this
-		const {agent, selectacon, assets} = this.options
+		const {turnTracker, agent, selectacon, assets} = this.options
 		const selection = selectacon.selection.value
 
-		if (selection) {
+		if (turnTracker.ourTurn && selection) {
 
 			// render spawning liberties
 			if (selection.kind === "roster" && selection.teamId === agent.currentTurn)

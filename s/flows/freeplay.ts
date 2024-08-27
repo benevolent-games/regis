@@ -1,6 +1,7 @@
 
 import {mapPool} from "../map-pool.js"
 import {Arbiter} from "../logic/arbiter.js"
+import {printReport} from "./utils/print-report.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 
 export async function freeplayFlow() {
@@ -11,30 +12,11 @@ export async function freeplayFlow() {
 
 	arbiter.statesRef.on(states => {
 		agent.state = states.agents.at(states.arbiter.context.currentTurn)!
-		printReport()
+		printReport(agent, agent.currentTurn)
 		terminal.render()
 	})
 
-	function printReport() {
-		const states = arbiter.statesRef.value
-		const {currentTurn} = states.arbiter.context
-		const [team1, team2] = states.arbiter.teams
-
-		if (currentTurn === 0)
-			console.log(`[[ ${team1.name} +${team1.resources} ]]   ${team2.name} +${team2.resources}`)
-		else
-			console.log(`   ${team1.name} +${team1.resources}   [[ ${team2.name} +${team2.resources} ]]`)
-
-		if (agent.conclusion) {
-			const {winner} = agent.conclusion
-			const winnerName = states.arbiter.teams.at(winner)!.name
-			console.log(`=============================`)
-			console.log(`GAME OVER! ${winnerName} wins`)
-			console.log(`=============================`)
-		}
-	}
-
-	printReport()
+	printReport(agent, agent.currentTurn)
 
 	return {
 		world: terminal.world,

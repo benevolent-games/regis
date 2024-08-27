@@ -4,13 +4,12 @@ import {Vec2} from "@benev/toolbox"
 import {Agent} from "../agent.js"
 import {mintId} from "../../tools/mint-id.js"
 import {Choice, ChoiceKind} from "../state.js"
+import {isValidStep} from "./aspects/navigation.js"
 import {UnitFreedom} from "./aspects/unit-freedom.js"
-import {calculateMovement} from "./aspects/moving.js"
 import {isValidSpawnPlace} from "./aspects/spawning.js"
 import {canAfford, subtractResources} from "./aspects/money.js"
 import {TurnTracker} from "../../terminal/parts/turn-tracker.js"
 import {applyDamage, attackReport} from "./aspects/attack-report.js"
-import { isValidStep } from "./aspects/navigation.js"
 
 export class Proposer {
 	unitFreedom = new UnitFreedom()
