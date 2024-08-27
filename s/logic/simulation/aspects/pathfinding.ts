@@ -3,7 +3,7 @@ import {vec2, Vec2} from "@benev/toolbox"
 
 import {Agent} from "../../agent.js"
 import {VerticalCapability} from "../../state.js"
-import {getCardinalNeighbors} from "./navigation.js"
+import {getCardinalNeighbors, isValidStep} from "./navigation.js"
 import {isVerticallyCompatible} from "./verticality.js"
 
 export type PathfindOptions = {
@@ -94,18 +94,6 @@ function getNextValidSteps(
 	) {
 
 	return getCardinalNeighbors(agent, placeA)
-
-		// vertically compatible
-		.filter(placeB => {
-			const tileA = agent.tiles.at(placeA)
-			const tileB = agent.tiles.at(placeB)
-			return isVerticallyCompatible(verticality, tileA, tileB)
-		})
-
-		// is vacant
-		.filter(placeB => {
-			const unit = agent.units.at(placeB)
-			return !unit
-		})
+		.filter(placeB => isValidStep(agent, verticality, placeA, placeB))
 }
 

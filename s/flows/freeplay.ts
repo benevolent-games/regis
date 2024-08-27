@@ -8,7 +8,12 @@ export async function freeplayFlow() {
 	const agent = arbiter.makeAgent(null)
 
 	const terminal = await makeGameTerminal(agent, [0, 1], arbiter.submitTurn)
-	arbiter.statesRef.on(terminal.render)
+
+	arbiter.statesRef.on(states => {
+		agent.state = states.agents.at(states.arbiter.context.currentTurn)!
+		printReport()
+		terminal.render()
+	})
 
 	function printReport() {
 		const states = arbiter.statesRef.value
@@ -30,7 +35,6 @@ export async function freeplayFlow() {
 	}
 
 	printReport()
-	arbiter.statesRef.on(printReport)
 
 	return {
 		world: terminal.world,

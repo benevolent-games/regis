@@ -10,6 +10,7 @@ import {Choice} from "../../logic/state.js"
 import {TurnTracker} from "./turn-tracker.js"
 import {SubmitTurnFn} from "../../logic/arbiter.js"
 import {Proposer} from "../../logic/simulation/proposer.js"
+import {calculateMovement} from "../../logic/simulation/aspects/moving.js"
 
 /** interface for the user to sketch a plan for their turn */
 export class Planner {
@@ -70,17 +71,21 @@ export class Planner {
 					})
 
 			// render movement liberties
-			if (selection.kind === "tile")
-				Array
-					.from(agent.tiles.list())
-					.filter(({place}) => !!proposer.choosers.movement({
-						kind: "movement",
-						source: selection.place,
-						target: place,
-					}))
-					.forEach(({place}) => {
-						this.#spawn(assets.indicators.liberty, place)
-					})
+			if (selection.kind === "tile") {
+				const unit = agent.units.at(selection.place)
+				if (unit && proposer.unitFreedom.hasFreedom(unit.id))
+					Array
+						.from(agent.tiles.list())
+						.filter(({place}) => calculateMovement({
+							agent,
+							teamId: agent.currentTurn,
+							source: selection.place,
+							target: place,
+						}))
+						.forEach(({place}) => {
+							this.#spawn(assets.indicators.liberty, place)
+						})
+			}
 		}
 	}
 

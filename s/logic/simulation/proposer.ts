@@ -1,4 +1,6 @@
 
+import {Vec2} from "@benev/toolbox"
+
 import {Agent} from "../agent.js"
 import {mintId} from "../../tools/mint-id.js"
 import {Choice, ChoiceKind} from "../state.js"
@@ -8,6 +10,7 @@ import {isValidSpawnPlace} from "./aspects/spawning.js"
 import {canAfford, subtractResources} from "./aspects/money.js"
 import {TurnTracker} from "../../terminal/parts/turn-tracker.js"
 import {applyDamage, attackReport} from "./aspects/attack-report.js"
+import { isValidStep } from "./aspects/navigation.js"
 
 export class Proposer {
 	unitFreedom = new UnitFreedom()
@@ -58,29 +61,37 @@ export class Proposer {
 
 		movement: (choice: Choice.Movement) => {
 			const {agent, unitFreedom, turnTracker} = this
-			const teamId = this.agent.currentTurn
-			const calculation = calculateMovement({
-				agent,
-				teamId,
-				source: choice.source,
-				target: choice.target,
-			})
 
 			if (!turnTracker.ourTurn)
 				return null
 
-			if (!calculation)
+			const unit = agent.units.at(choice.source)
+			if (!unit)
 				return null
 
-			if (!unitFreedom.hasFreedom(calculation.unit.id))
+			const {move} = agent.archetype(unit.kind)
+			if (!move)
+				return null
+
+			let lastStep = choice.source
+
+			for (const step of choice.path) {
+				const placeA = lastStep
+				const placeB = step
+				if (isValidStep(agent, move.verticality, placeA, placeB))
+					lastStep = placeB
+				else
+					break
+			}
+
+			if (!unitFreedom.hasFreedom(unit.id))
 				return null
 
 			return {
 				...choice,
-				...calculation,
 				commit: () => {
-					unitFreedom.revokeFreedom(calculation.unit.id)
-					calculation.unit.place = choice.target
+					unitFreedom.revokeFreedom(unit.id)
+					unit.place = lastStep
 					this.#rerender()
 				},
 			}

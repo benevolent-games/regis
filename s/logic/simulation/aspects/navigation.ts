@@ -1,6 +1,8 @@
 
 import {Agent} from "../../agent.js"
 import {vec2, Vec2} from "@benev/toolbox"
+import {VerticalCapability} from "../../state.js"
+import {isVerticallyCompatible} from "./verticality.js"
 
 export function getCardinalNeighbors(agent: Agent, place: Vec2) {
 	return cardinals
@@ -35,6 +37,24 @@ export function isWithinRange(range: number, a: Vec2, b: Vec2) {
 	return (
 		(distanceX <= range) &&
 		(distanceY <= range)
+	)
+}
+
+export function isValidStep(
+		agent: Agent,
+		verticality: VerticalCapability,
+		placeA: Vec2,
+		placeB: Vec2,
+	) {
+	const tileA = agent.tiles.at(placeA)
+	const tileB = agent.tiles.at(placeB)
+	const isVacant = !agent.units.at(placeB)
+	const isCardinalNeighbor = getCardinalNeighbors(agent, placeA)
+		.some(neighbor => vec2.equal(neighbor, placeB))
+	return (
+		isVacant &&
+		isCardinalNeighbor &&
+		isVerticallyCompatible(verticality, tileA, tileB)
 	)
 }
 

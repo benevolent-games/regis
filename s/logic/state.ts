@@ -137,7 +137,7 @@ export namespace Choice {
 	export type Movement = {
 		kind: "movement"
 		source: Vec2
-		target: Vec2
+		path: Vec2[]
 	}
 
 	export type Attack = {
