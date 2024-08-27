@@ -5,12 +5,21 @@
 	box-sizing: border-box;
 }
 
+:root {
+	color-scheme: dark;
+}
+
 html, body {
 	font-size: 16px;
 	height: 100%;
 	background: #111;
 	color: #fffc;
 	font-family: sans-serif;
+}
+
+body {
+	scrollbar-gutter: stable;
+	scrollbar-width: thin;
 }
 
 game-app {
@@ -27,6 +36,32 @@ game-app {
 	.loading, .exhibit {
 		position: absolute;
 		inset: 0;
+	}
+}
+
+game-app :is(header, article) {
+	padding: 2em;
+	max-width: 42em;
+	margin: 0 auto;
+
+	& > * + * {
+		margin-top: 0.66em;
+
+		&:is(h1, h2, h3, h4, h5, h6) {
+			margin-top: 1.5em;
+		}
+	}
+
+	& :is(ol, ul) {
+		padding-left: 1.5em;
+	}
+
+	& > :is(ol, ul) > li + li {
+		margin-top: 0.4em;
+	}
+
+	& h1 {
+		font-size: 2em;
 	}
 }
 

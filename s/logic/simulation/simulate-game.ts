@@ -31,9 +31,11 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 			currentTurn: 0,
 			conclusion: null,
 		},
-		teams: initial.teams.map((team): FullTeamInfo => ({
+		teams: initial.teams.map((team, teamIndex): FullTeamInfo => ({
 			name: team.name,
-			resources: initial.config.startingResources,
+			resources: initial.config.startingResources + (
+				teamIndex * initial.config.universalBasicIncome
+			),
 			investments: [],
 		})),
 		reminders: {

@@ -2,6 +2,7 @@
 import {html} from "@benev/slate"
 import {Orchestrator, orchestratorStyles, OrchestratorView} from "@benev/toolbox"
 
+import styles from "./styles.js"
 import {nexus} from "../../nexus.js"
 import {GameplayView} from "../../views/exhibits/gameplay.js"
 import {detectInputMethod} from "../../utils/input-method.js"
@@ -10,7 +11,8 @@ import {IntroPageView} from "../../views/exhibits/intro-page.js"
 import {GameStartData} from "../../../director/apis/clientside.js"
 import {LogoSplashView} from "../../views/loading-screens/logo-splash.js"
 
-export const GameApp = nexus.lightComponent(use => {
+export const GameApp = nexus.shadowComponent(use => {
+	use.styles(styles)
 
 	use.mount(
 		detectInputMethod(document, use.context.inputMethod)
@@ -19,9 +21,9 @@ export const GameApp = nexus.lightComponent(use => {
 	const orchestrator = use.once(() => {
 		const intro = Orchestrator.makeExhibit({
 			dispose: () => {},
-			template: () => IntroPageView([{
+			template: () => IntroPageView({
 				goMainMenu: () => goExhibit.mainMenu()
-			}]),
+			}),
 		})
 
 		const orchestrator = new Orchestrator({
