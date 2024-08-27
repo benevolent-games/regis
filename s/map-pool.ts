@@ -1,6 +1,6 @@
 
 export function randomMap() {
-	// return {name: "override", ascii: mapPool.basin2}
+	return {name: "override", ascii: mapPool.battlements}
 
 	const maplist = Object.entries(mapPool)
 	const index = Math.floor(Math.random() * maplist.length)
@@ -20,6 +20,17 @@ export const blankMap = `
 `
 
 export const mapPool = {
+
+	// blankMap: `
+	// 	.    .    .    .    .    .    .    .
+	// 	.    .    .    .    .    .    .    .
+	// 	.    .    .    .    .    .    .    .
+	// 	.    .    .    .    .    .    .    .
+	// 	.    .    .    .    .    .    .    .
+	// 	.    .    .    .    .    .    .    .
+	// 	.    .    .    .    .    .    .    .
+	// 	.    .    .    .    .    .    .    .
+	// `,
 
 	// bridgePreset: `
 	// 	#b   #$♟  #    =^   =^%  =^   #    #$♕
@@ -96,6 +107,61 @@ export const mapPool = {
 		.^r  .    .    .    =^   =    .^   .
 		.^k  .♔   .    .    .    #    .    .
 		=    .^$  .^a  .    .    .%   .    .^$
+	`,
+
+	catwalk: `
+		x    x    x    x    x    x    x    x
+		=    =    =^   #    .    .    .♔   x
+		.^   .^   .    #    .    .    .    x
+		.    .    .    #    .    .    .    x
+		.    .    .    #    .    .    .    x
+		.    .    .    #    .    .    .    x
+		.    .    .    #    .    .^   .^   x
+		.♚   .    .    #    =^   =    =    x
+	`,
+
+	canal: `
+		=    =    .^   .    .    #^   =    =♚
+		=    =    .^   .    .    #    =    =$
+		=    =    #    .    .    #^   =    =
+		=    #^   #^   .    .    #    =    =
+		=    =    #    .    .    #^   #^   =
+		=    =    #^   .    .    #    =    =
+		=$   =    #    .    .    .^   =    =
+		=♔   =    #^   .    .    .^   =    =
+	`,
+
+	slanted: `
+		=$   =    .^   =    =$   .    .    .♚
+		=    =    .^   =    =    .    .    .$
+		.    .    .    .    .    .    .    .
+		.    =    =    .    .    =    =    .
+		.    =    =    .    .    =    =    .
+		.    .    .    .    .    .    .    .
+		.$   .    .    =    =    .^   =    =
+		.♔   .    .    =$   =    .^   =    =$
+	`,
+
+	finlayson: `
+		.    .    .    .    .    .    .    .♚
+		.    .^   .^   .^   .^   .^   .    .$
+		.    .^   =    =^   =    =    .^   .
+		.    .^   =^   #    #$   =    .^   .
+		.    .^   =    #$   #    =^   .^   .
+		.    .^   =    =    =^   =    .^   .
+		.$   .    .^   .^   .^   .^   .^   .
+		.♔   .    .    .    .    .    .    .
+	`,
+
+	battlements: `
+		.$   .    .    .♚   .    .    .    .$
+		.^   .    .    .^   .    .^   .    .^
+		=    .    .    =    .    =    .    =
+		=    .    .    .    .    .    .    .
+		.    .    .    .    .    .    .    =
+		=    .    =    .    =    .    .    =
+		.^   .    .^   .    .^   .    .    .^
+		.$   .    .    .    .♔   .    .    .$
 	`,
 
 } satisfies Record<string, string>
