@@ -83,7 +83,11 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			range: 2,
 			verticality: verticality.flat,
 		},
-		attack: null,
+		attack: {
+			damage: 1,
+			range: 1,
+			verticality: verticality.flat,
+		},
 	},
 
 	pawn: {
