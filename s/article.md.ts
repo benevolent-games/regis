@@ -1,6 +1,6 @@
 
 import {string} from "@benev/turtle"
-import {defaultGameConfig} from "./logic/state.js"
+import {defaultGameConfig} from "./logic/data.js"
 
 const config = defaultGameConfig()
 const archetypes = config.unitArchetypes
@@ -55,6 +55,20 @@ regis does, and it's playable with a standard chess set.
 	- you pay a staking cost when you move a pawn onto a claim
 	- different claim types have different staking costs
 	- if you move your pawn off the claim, you lose it; re-staking will cost you again
+- **upgrading resource claims**
+	- resource claims come in three levels:
+		- level 1: you gain +1 resource per turn
+		- level 2: you gain +2 resource per turn
+		- level 3: you gain +3 resource per turn
+	- you can *upgrade* a resource tile by clicking on it and pressing the upgrade button
+		- each upgrade has a different cost
+		- upgrading costs more than staking a different resource claim, making it cheaper to spread your investments over a larger area (which is harder to defend)
+
+## current game configuration
+
+\`\`\`json
+${JSON.stringify(config, null, "\t")}
+\`\`\`
 
 `
 

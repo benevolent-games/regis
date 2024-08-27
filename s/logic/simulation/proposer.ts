@@ -24,12 +24,20 @@ export class Proposer {
 	choosers = {
 		spawn: (choice: Choice.Spawn) => {
 			const {agent, turnTracker} = this
-			const {cost} = agent.state.initial.config.unitArchetypes[choice.unitKind]
+			const {config} = agent.state.initial
+			const {cost} = config.unitArchetypes[choice.unitKind]
 			const myTeam = turnTracker.ourTurn
 			const buyable = cost !== null
 			const affordable = canAfford(agent.currentTeam, cost)
 			const valid = isValidSpawnPlace(agent, agent.currentTurn, choice.place)
-			return (myTeam && buyable && affordable && valid)
+			const howManyAlready = [...agent.units.list()]
+				.filter(unit => unit.team === agent.currentTurn)
+				.filter(unit => unit.kind === choice.unitKind)
+				.length
+			const {roster} = config.teams.at(agent.currentTurn)!
+			const remainingRosterCount = roster[choice.unitKind] - howManyAlready
+			const availableInRoster = remainingRosterCount > 0
+			return (myTeam && buyable && affordable && availableInRoster && valid)
 				? {
 					commit: () => {
 						subtractResources(agent.state, agent.currentTurn, cost)

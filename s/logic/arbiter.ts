@@ -3,8 +3,9 @@ import {clone, Ref, ref} from "@benev/slate"
 
 import {Agent} from "./agent.js"
 import {asciiMap} from "./ascii/ascii-map.js"
+import {GameHistory, GameStates, Turn} from "./state.js"
+import {defaultGameConfig, defaultRoster} from "./data.js"
 import {simulateGame} from "./simulation/simulate-game.js"
-import {defaultGameConfig, defaultRoster, GameHistory, GameStates, Turn} from "./state.js"
 
 export type SubmitTurnFn = (turn: Turn) => void
 
@@ -20,10 +21,6 @@ export class Arbiter {
 				board,
 				units,
 				config: defaultGameConfig(),
-				teams: [
-					{name: "Blue", roster: defaultRoster()},
-					{name: "Orange", roster: defaultRoster()},
-				],
 			},
 		})
 		this.statesRef = ref(clone(simulateGame(this.historyRef.value)))

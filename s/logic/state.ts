@@ -1,4 +1,5 @@
 
+import {UnitArchetypes} from "./data.js"
 import {loop2d, Vec2} from "@benev/toolbox"
 
 /////////////////////////////////////////////////
@@ -10,7 +11,6 @@ export type GameHistory = {
 }
 
 export type GameInitial = {
-	teams: InitialTeamInfo[]
 	board: BoardState
 	units: Unit[]
 	config: GameConfig
@@ -20,34 +20,14 @@ export type GameConfig = {
 	startingResources: number
 	universalBasicIncome: number
 	unitArchetypes: UnitArchetypes
+	teams: InitialTeamInfo[]
 	costs: {
-		investing: [number, number]
+		resourceUpgrade: number
 		staking: {
 			resource: number
 			watchtower: number
 			tech: Record<keyof Claim.Tech, number>
 		}
-	}
-}
-
-export function defaultGameConfig(): GameConfig {
-	return {
-		startingResources: 8,
-		universalBasicIncome: 2,
-		unitArchetypes: defaultUnitArchetypes(),
-		costs: {
-			investing: [12, 18],
-			staking: {
-				resource: 4,
-				watchtower: 0,
-				tech: {
-					knight: 4,
-					rook: 6,
-					bishop: 6,
-					queen: 6,
-				},
-			},
-		},
 	}
 }
 
@@ -121,18 +101,6 @@ export function isFullTeamInfo(team: TeamInfo): team is FullTeamInfo {
 }
 
 export type Roster = Record<UnitKind, number>
-
-export function defaultRoster(): Roster {
-	return {
-		obstacle: 0,
-		king: 1,
-		queen: 1,
-		bishop: 2,
-		knight: 2,
-		rook: 2,
-		pawn: 8,
-	}
-}
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -256,13 +224,6 @@ export type VerticalCapability = {
 	below: boolean
 }
 
-export const verticality = {
-	flat: {above: false, below: false},
-	downwards: {above: false, below: true},
-	upwards: {above: true, below: false},
-	everywhere: {above: true, below: true},
-} satisfies Record<string, VerticalCapability>
-
 export type UnitArchetype = {
 	cost: null | number
 	health: null | number
@@ -294,134 +255,4 @@ export type UnitKind = (
 	| "rook"
 	| "pawn"
 )
-
-export type UnitArchetypes = Record<UnitKind, UnitArchetype>
-
-export const defaultUnitArchetypes = (): UnitArchetypes => ({
-	obstacle: {
-		cost: null,
-		health: 8,
-		stakeholder: false,
-		spawning: null,
-		vision: null,
-		move: null,
-		attack: null,
-	},
-
-	king: {
-		cost: null,
-		health: 4,
-		stakeholder: false,
-		spawning: {
-			verticality: verticality.flat,
-		},
-		vision: {
-			range: 2,
-			verticality: verticality.downwards,
-		},
-		move: {
-			range: 2,
-			verticality: verticality.flat,
-		},
-		attack: null,
-	},
-
-	queen: {
-		cost: 12,
-		health: 3,
-		stakeholder: false,
-		spawning: {
-			verticality: verticality.flat,
-		},
-		vision: {
-			range: 2,
-			verticality: verticality.everywhere,
-		},
-		move: {
-			range: 2,
-			verticality: verticality.flat,
-		},
-		attack: null,
-	},
-
-	bishop: {
-		cost: 12,
-		health: 3,
-		stakeholder: false,
-		spawning: null,
-		vision: {
-			range: 2,
-			verticality: verticality.downwards,
-		},
-		move: {
-			range: 2,
-			verticality: verticality.flat,
-		},
-		attack: {
-			damage: 2,
-			range: 2,
-			verticality: verticality.everywhere,
-		},
-	},
-
-	knight: {
-		cost: 6,
-		health: 3,
-		stakeholder: false,
-		spawning: null,
-		vision: {
-			range: 2,
-			verticality: verticality.downwards,
-		},
-		move: {
-			range: 3,
-			verticality: verticality.flat,
-		},
-		attack: {
-			damage: 1,
-			range: 1,
-			verticality: verticality.flat,
-		},
-	},
-
-	rook: {
-		cost: 10,
-		health: 5,
-		stakeholder: false,
-		spawning: null,
-		vision: {
-			range: 1,
-			verticality: verticality.downwards,
-		},
-		move: {
-			range: 1,
-			verticality: verticality.flat,
-		},
-		attack: {
-			damage: 2,
-			range: 1,
-			verticality: verticality.everywhere,
-		},
-	},
-
-	pawn: {
-		cost: 4,
-		health: 2,
-		stakeholder: false,
-		spawning: null,
-		vision: {
-			range: 1,
-			verticality: verticality.downwards,
-		},
-		move: {
-			range: 2,
-			verticality: verticality.flat,
-		},
-		attack: {
-			damage: 1,
-			range: 1,
-			verticality: verticality.flat,
-		},
-	},
-})
 

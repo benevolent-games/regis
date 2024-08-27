@@ -6,14 +6,14 @@ export function nextTurn(state: ArbiterState) {
 	const {context, initial} = state
 	context.currentTurn += 1
 
-	if (context.currentTurn > (initial.teams.length - 1))
+	if (context.currentTurn > (initial.config.teams.length - 1))
 		context.currentTurn = 0
 }
 
 export function processWinByConquest(state: ArbiterState) {
 	const agent = new Agent(state)
 
-	const teamsStillStanding = state.initial.teams
+	const teamsStillStanding = state.initial.config.teams
 		.map((team, teamId) => ({team, teamId}))
 		.filter(({teamId}) => [...agent.units.list()]
 			.some(unit => unit.team === teamId && unit.kind === "king"))
