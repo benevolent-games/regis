@@ -13,8 +13,8 @@ export function isVerticallyCompatible(allow: VerticalCapability, a: Tile, b: Ti
 	const report = verticalCompatibilityReport(a, b)
 	return (
 		(report.withinHalfStep) ||
-		(allow.above && report.above && report.withinFullStep) ||
-		(allow.below && report.below && report.withinFullStep)
+		(allow.above && report.above) ||
+		(allow.below && report.below)
 	)
 }
 
