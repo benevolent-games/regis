@@ -1,11 +1,11 @@
 
-import {mapPool} from "../map-pool.js"
+import {randomMap} from "../map-pool.js"
 import {Arbiter} from "../logic/arbiter.js"
 import {printReport} from "./utils/print-report.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 
 export async function freeplayFlow() {
-	const arbiter = new Arbiter(mapPool.bridge)
+	const arbiter = new Arbiter(randomMap().ascii)
 	const agent = arbiter.makeAgent(null)
 
 	const terminal = await makeGameTerminal(agent, [0, 1], arbiter.submitTurn)

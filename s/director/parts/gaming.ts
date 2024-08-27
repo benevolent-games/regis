@@ -1,14 +1,13 @@
 
 import {Pair} from "./matchmaker.js"
 import {ClientId} from "../types.js"
+import {randomMap} from "../../map-pool.js"
 import {Arbiter} from "../../logic/arbiter.js"
 import {GameCounting} from "./game-counting.js"
 import {IdCounter} from "../../tools/id-counter.js"
-import {mapPool, randomMap} from "../../map-pool.js"
 
 export class Game {
 	arbiter = new Arbiter(randomMap().ascii)
-	// arbiter = new Arbiter(mapPool.basin)
 	constructor(public pair: Pair) {}
 }
 

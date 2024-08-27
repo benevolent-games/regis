@@ -62,11 +62,14 @@ export class Tiler {
 		}
 
 		function renderTile(tile: Tile, place: Vec2) {
+			if (tile.elevation < 1)
+				return null
+
 			if (tile.step) {
 				spawnBlock(place, tile.elevation)
 				spawnStep(place, tile.elevation + 1)
 			}
-			else if (tile.elevation > 0) {
+			else {
 				spawnBlock(place, tile.elevation)
 			}
 
@@ -80,7 +83,6 @@ export class Tiler {
 
 		for (const {tile, place} of agent.tiles.list())
 			renderTile(tile, place)
-
 	}
 
 	dispose() {

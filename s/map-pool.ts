@@ -1,5 +1,7 @@
 
 export function randomMap() {
+	// return {name: "override", ascii: mapPool.basin2}
+
 	const maplist = Object.entries(mapPool)
 	const index = Math.floor(Math.random() * maplist.length)
 	const [name, ascii] = maplist[index]
@@ -66,7 +68,7 @@ export const mapPool = {
 	basin2: `
 		#^a  #^$  #    x    x    #    #^$  #^a
 		#^k  #♔   #    x    x    #    #♚   #^k
-		#^r  #    #    x    x    #    #    #^r
+		#^r  #    #    .    .    #    #    #^r
 		#    #    #    .    .    #    #    #
 		=^   =    .^   .    .    .^   =    =^
 		=    =    #    .    .    #    =    =
