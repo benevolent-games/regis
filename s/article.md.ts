@@ -9,8 +9,6 @@ export default string`
 
 ## the pillars of strategy
 
-we think great strategical war games should include:
-
 - **maneuvers** — the tactics of conducting battles
 - **composition** — choosing which kinds army units to deploy
 - **investment** — ability to sacrifice the short-term for the long-term
@@ -47,6 +45,7 @@ regis does, and it's playable with a standard chess set.
 	- this works like in rts games
 	- units have different vision ranges that will reveal enemy units
 	- most units cannot see up cliffs (thus providing an advantage for ranged units on high ground)
+	- this is the only game mechanic that you cannot replicate on a real physical chess board in person
 - **staking claims**
 	- some tiles are marked with one or more claims
 	- resource claims offer more income each turn
@@ -63,6 +62,7 @@ regis does, and it's playable with a standard chess set.
 	- you can *upgrade* a resource tile by clicking on it and pressing the upgrade button
 		- each upgrade has a different cost
 		- upgrading costs more than staking a different resource claim, making it cheaper to spread your investments over a larger area (which is harder to defend)
+
 
 ## current game configuration
 
