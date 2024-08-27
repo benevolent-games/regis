@@ -2,11 +2,11 @@
 import {Vec2} from "@benev/toolbox"
 
 import {glyphs} from "./glyphs.js"
+import {mintId} from "../../tools/mint-id.js"
 import {TilesHelper} from "../helpers/tiles.js"
 import {UnitsHelper} from "../helpers/units.js"
 import {defaultClaims} from "./default-claims.js"
 import {makePlainBoardState, UnitKind} from "../state.js"
-import { mintId } from "../../tools/mint-id.js"
 
 export function asciiMap(ascii: string) {
 	const board = new TilesHelper(makePlainBoardState())
@@ -35,6 +35,7 @@ export function asciiMap(ascii: string) {
 			//
 
 			zoop(glyphs.terrain.step, () => tile.step = true)
+			zoop(glyphs.terrain.elevation.zero, () => tile.elevation = 0)
 			zoop(glyphs.terrain.elevation.one, () => tile.elevation = 1)
 			zoop(glyphs.terrain.elevation.two, () => tile.elevation = 2)
 			zoop(glyphs.terrain.elevation.three, () => tile.elevation = 3)

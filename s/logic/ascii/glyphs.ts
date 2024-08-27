@@ -3,7 +3,7 @@ export const glyphs = {
 	terrain: {
 		step: "^",
 		elevation: {
-			zero: ",",
+			zero: "x",
 			one: ".",
 			two: "=",
 			three: "#",

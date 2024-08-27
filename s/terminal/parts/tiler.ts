@@ -66,7 +66,7 @@ export class Tiler {
 				spawnBlock(place, tile.elevation)
 				spawnStep(place, tile.elevation + 1)
 			}
-			else {
+			else if (tile.elevation > 0) {
 				spawnBlock(place, tile.elevation)
 			}
 
