@@ -5,12 +5,10 @@ import {pathfind} from "./pathfinding.js"
 
 export function calculateMovement({
 		agent,
-		teamId,
 		source,
 		target,
 	}: {
 		agent: Agent,
-		teamId: number,
 		source: Vec2,
 		target: Vec2,
 	}) {
@@ -19,8 +17,7 @@ export function calculateMovement({
 		return null
 
 	const unit = agent.units.at(source)
-
-	if (unit?.team !== teamId)
+	if (!unit)
 		return null
 
 	const archetype = agent.archetype(unit.kind)

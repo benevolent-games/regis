@@ -55,10 +55,14 @@ export class Planner {
 		const {turnTracker, agent, selectacon, assets} = this.options
 		const selection = selectacon.selection.value
 
-		if (turnTracker.ourTurn && selection) {
+		if (selection) {
 
 			// render spawning liberties
-			if (selection.kind === "roster" && selection.teamId === agent.currentTurn)
+			if (
+					turnTracker.ourTurn &&
+					selection.kind === "roster" &&
+					selection.teamId === agent.currentTurn
+				)
 				Array
 					.from(agent.tiles.list())
 					.filter(({place}) => !!proposer.choosers.spawn({
@@ -67,7 +71,7 @@ export class Planner {
 						unitKind: selection.unitKind,
 					}))
 					.forEach(({place}) => {
-						this.#spawn(assets.indicators.liberty, place)
+						this.#spawn(assets.indicators.libertyAction, place)
 					})
 
 			// render movement liberties
@@ -76,18 +80,21 @@ export class Planner {
 				if (unit) {
 					const archetype = agent.archetype(unit.kind)
 					const {canMove} = proposer.unitFreedom.report(unit.id, archetype)
-					if (unit && canMove)
+					if (canMove) {
 						Array
 							.from(agent.tiles.list())
 							.filter(({place}) => calculateMovement({
 								agent,
-								teamId: agent.currentTurn,
 								source: selection.place,
 								target: place,
 							}))
 							.forEach(({place}) => {
-								this.#spawn(assets.indicators.liberty, place)
+								if (turnTracker.canControlUnit(unit.id))
+									this.#spawn(assets.indicators.libertyAction, place)
+								else
+									this.#spawn(assets.indicators.libertyPattern, place)
 							})
+					}
 				}
 			}
 		}

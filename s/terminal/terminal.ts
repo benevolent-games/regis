@@ -12,8 +12,8 @@ import {Selectacon} from "./parts/selectacon.js"
 import {SubmitTurnFn} from "../logic/arbiter.js"
 import {UserInputs} from "./parts/user-inputs.js"
 import {makeBasicVisuals} from "./parts/basics.js"
+import {TurnTracker} from "./parts/turn-tracker.js"
 import {setupPreviewAgent} from "./parts/preview-agent.js"
-import { TurnTracker } from "./parts/turn-tracker.js"
 
 export async function makeGameTerminal(
 

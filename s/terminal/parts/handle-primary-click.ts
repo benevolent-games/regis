@@ -3,17 +3,19 @@ import {Pointing} from "./types.js"
 import {Planner} from "./planner.js"
 import {Selectacon} from "./selectacon.js"
 import {Agent} from "../../logic/agent.js"
+import {TurnTracker} from "./turn-tracker.js"
 import {doFirstValidThing} from "../../tools/do-first-valid-thing.js"
 import {calculateMovement} from "../../logic/simulation/aspects/moving.js"
 
 export function handlePrimaryClick(options: {
-		agent: Agent,
+		agent: Agent
 		planner: Planner
 		pointing: Pointing
 		selectacon: Selectacon
+		turnTracker: TurnTracker
 	}) {
 
-	const {agent, planner, pointing, selectacon} = options
+	const {agent, planner, pointing, selectacon, turnTracker} = options
 	const selection = selectacon.selection.value
 	const cell = selectacon.pick(pointing)
 
@@ -40,12 +42,20 @@ export function handlePrimaryClick(options: {
 						target: cell.place,
 					}),
 					() => {
+						const unit = agent.units.at(selection.place)
+						if (!unit)
+							return false
+
+						const allowed = turnTracker.canControlUnit(unit.id)
+						if (!allowed)
+							return false
+
 						const movement = calculateMovement({
 							agent,
-							teamId: agent.currentTurn,
 							source: selection.place,
 							target: cell.place,
 						})
+
 						if (movement)
 							return planner.attempt({
 								kind: "movement",

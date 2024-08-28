@@ -69,7 +69,8 @@ export class UnitsGlb extends Glb {
 export class IndicatorsGlb extends Glb {
 	selection = () => this.instance(`indicator-selected`)
 	hover = (teamId: number) => this.instance(`indicator-hover-team${teamId + 1}`)
-	liberty = () => this.instance(`indicator-liberty`)
+	libertyPattern = () => this.instance(`indicator-liberty-pattern`)
+	libertyAction = () => this.instance(`indicator-liberty-action`)
 	attack = () => this.instance(`indicator-attack`)
 }
 
