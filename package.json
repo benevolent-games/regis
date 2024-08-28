@@ -28,17 +28,17 @@
 		"count": "find s -path '*/_archive' -prune -o -name '*.ts' -exec wc -l {} +"
 	},
 	"dependencies": {
-		"@babylonjs/core": "^7.22.4",
-		"@babylonjs/loaders": "^7.22.4",
-		"@benev/slate": "^0.2.0-7",
-		"@benev/toolbox": "^0.6.0-16",
+		"@babylonjs/core": "^7.22.5",
+		"@babylonjs/loaders": "^7.22.5",
+		"@benev/slate": "^0.2.0",
+		"@benev/toolbox": "^0.6.1",
 		"es-module-shims": "^1.10.0",
 		"markdown-it": "^14.1.0",
 		"renraku": "^0.2.0-2",
 		"zx": "^8.1.4"
 	},
 	"devDependencies": {
-		"@benev/batch": "^0.0.0",
+		"@benev/batch": "^0.0.1",
 		"@benev/turtle": "^0.6.0-8",
 		"@types/markdown-it": "^14.1.2",
 		"chokidar": "^3.6.0",
