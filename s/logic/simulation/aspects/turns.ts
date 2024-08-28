@@ -33,7 +33,7 @@ export function processWinByConquest(state: ArbiterState) {
 
 export function awardIncome(state: ArbiterState) {
 	const {universalBasicIncome} = state.initial.config
-	for (const team of state.teams)
-		team.resources += universalBasicIncome
+	const team = state.teams.at(state.context.currentTurn)!
+	team.resources += universalBasicIncome
 }
 
