@@ -228,6 +228,7 @@ export type UnitArchetype = {
 	cost: null | number
 	health: null | number
 	stakeholder: boolean
+	actionCap: number
 	spawning: null | {
 		verticality: VerticalCapability
 	}
@@ -236,10 +237,12 @@ export type UnitArchetype = {
 		verticality: VerticalCapability
 	}
 	move: null | {
+		cap: number
 		range: number
 		verticality: VerticalCapability
 	}
 	attack: null | {
+		cap: number
 		damage: number
 		range: number
 		verticality: VerticalCapability

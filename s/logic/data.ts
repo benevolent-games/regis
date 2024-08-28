@@ -61,6 +61,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	obstacle: {
 		cost: null,
 		health: 5,
+		actionCap: 0,
 		stakeholder: false,
 		spawning: null,
 		vision: null,
@@ -71,6 +72,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	king: {
 		cost: null,
 		health: 5,
+		actionCap: 2,
 		stakeholder: false,
 		spawning: {
 			verticality: verticality.flat,
@@ -80,10 +82,12 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			verticality: verticality.downwards,
 		},
 		move: {
+			cap: 1,
 			range: 2,
 			verticality: verticality.flat,
 		},
 		attack: {
+			cap: 1,
 			damage: 1,
 			range: 1,
 			verticality: verticality.flat,
@@ -93,6 +97,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	pawn: {
 		cost: 4,
 		health: 3,
+		actionCap: 2,
 		stakeholder: false,
 		spawning: null,
 		vision: {
@@ -100,10 +105,12 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			verticality: verticality.downwards,
 		},
 		move: {
+			cap: 1,
 			range: 2,
 			verticality: verticality.flat,
 		},
 		attack: {
+			cap: 1,
 			damage: 1,
 			range: 1,
 			verticality: verticality.flat,
@@ -113,6 +120,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	knight: {
 		cost: 7,
 		health: 3,
+		actionCap: 2,
 		stakeholder: false,
 		spawning: null,
 		vision: {
@@ -120,10 +128,12 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			verticality: verticality.downwards,
 		},
 		move: {
+			cap: 1,
 			range: 3,
 			verticality: verticality.flat,
 		},
 		attack: {
+			cap: 1,
 			damage: 2,
 			range: 1,
 			verticality: verticality.flat,
@@ -133,6 +143,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	rook: {
 		cost: 9,
 		health: 5,
+		actionCap: 1,
 		stakeholder: false,
 		spawning: null,
 		vision: {
@@ -140,10 +151,12 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			verticality: verticality.downwards,
 		},
 		move: {
+			cap: 1,
 			range: 1,
 			verticality: verticality.flat,
 		},
 		attack: {
+			cap: 1,
 			damage: 2,
 			range: 1,
 			verticality: verticality.everywhere,
@@ -153,6 +166,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	bishop: {
 		cost: 12,
 		health: 3,
+		actionCap: 1,
 		stakeholder: false,
 		spawning: null,
 		vision: {
@@ -160,10 +174,12 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			verticality: verticality.downwards,
 		},
 		move: {
+			cap: 1,
 			range: 2,
 			verticality: verticality.flat,
 		},
 		attack: {
+			cap: 1,
 			damage: 1,
 			range: 2,
 			verticality: verticality.everywhere,
@@ -173,6 +189,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	queen: {
 		cost: 12,
 		health: 3,
+		actionCap: 1,
 		stakeholder: false,
 		spawning: {
 			verticality: verticality.flat,
@@ -182,6 +199,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			verticality: verticality.everywhere,
 		},
 		move: {
+			cap: 1,
 			range: 2,
 			verticality: verticality.flat,
 		},

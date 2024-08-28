@@ -5,14 +5,14 @@ import {Agent} from "../agent.js"
 import {mintId} from "../../tools/mint-id.js"
 import {Choice, ChoiceKind} from "../state.js"
 import {isValidStep} from "./aspects/navigation.js"
-import {UnitFreedom} from "./aspects/unit-freedom.js"
+import {UnitFreedom2} from "./aspects/unit-freedom.js"
 import {isValidSpawnPlace} from "./aspects/spawning.js"
 import {canAfford, subtractResources} from "./aspects/money.js"
 import {TurnTracker} from "../../terminal/parts/turn-tracker.js"
 import {applyDamage, attackReport} from "./aspects/attack-report.js"
 
 export class Proposer {
-	unitFreedom = new UnitFreedom()
+	unitFreedom = new UnitFreedom2()
 
 	constructor(
 		private agent: Agent,
@@ -44,7 +44,7 @@ export class Proposer {
 					commit: () => {
 						subtractResources(agent.state, agent.currentTurn, cost)
 						const id = mintId()
-						this.unitFreedom.revokeFreedom(id)
+						this.unitFreedom.countSpawning(id)
 						agent.units.add({
 							id,
 							kind: choice.unitKind,
@@ -68,8 +68,12 @@ export class Proposer {
 			if (!unit)
 				return null
 
-			const {move} = agent.archetype(unit.kind)
-			if (!move)
+			const archetype = agent.archetype(unit.kind)
+			if (!archetype.move)
+				return null
+
+			const {canMove} = unitFreedom.report(unit.id, archetype)
+			if (!canMove)
 				return null
 
 			let lastStep = choice.source
@@ -77,19 +81,16 @@ export class Proposer {
 			for (const step of choice.path) {
 				const placeA = lastStep
 				const placeB = step
-				if (isValidStep(agent, move.verticality, placeA, placeB))
+				if (isValidStep(agent, archetype.move.verticality, placeA, placeB))
 					lastStep = placeB
 				else
 					break
 			}
 
-			if (!unitFreedom.hasFreedom(unit.id))
-				return null
-
 			return {
 				...choice,
 				commit: () => {
-					unitFreedom.revokeFreedom(unit.id)
+					unitFreedom.countMove(unit.id)
 					unit.place = lastStep
 					this.#rerender()
 				},
@@ -100,7 +101,10 @@ export class Proposer {
 			const {agent, unitFreedom, turnTracker} = this
 			const report = attackReport(agent, agent.currentTurn, choice)
 			if (report) {
-				if (!unitFreedom.hasFreedom(report.sourceUnit.id))
+				const archetype = agent.archetype(report.sourceUnit.kind)
+				const {canAttack} = unitFreedom.report(report.sourceUnit.id, archetype)
+
+				if (!canAttack)
 					return null
 
 				if (!turnTracker.ourTurn)
@@ -110,7 +114,7 @@ export class Proposer {
 					...report,
 					commit: () => {
 						const {targetUnit, attack} = report
-						unitFreedom.revokeFreedom(report.sourceUnit.id)
+						unitFreedom.countAttack(report.sourceUnit.id)
 						const lethal = applyDamage(agent, targetUnit, attack.damage)
 						if (lethal)
 							agent.deleteUnit(targetUnit.id)

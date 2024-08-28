@@ -73,18 +73,22 @@ export class Planner {
 			// render movement liberties
 			if (selection.kind === "tile") {
 				const unit = agent.units.at(selection.place)
-				if (unit && proposer.unitFreedom.hasFreedom(unit.id))
-					Array
-						.from(agent.tiles.list())
-						.filter(({place}) => calculateMovement({
-							agent,
-							teamId: agent.currentTurn,
-							source: selection.place,
-							target: place,
-						}))
-						.forEach(({place}) => {
-							this.#spawn(assets.indicators.liberty, place)
-						})
+				if (unit) {
+					const archetype = agent.archetype(unit.kind)
+					const {canMove} = proposer.unitFreedom.report(unit.id, archetype)
+					if (unit && canMove)
+						Array
+							.from(agent.tiles.list())
+							.filter(({place}) => calculateMovement({
+								agent,
+								teamId: agent.currentTurn,
+								source: selection.place,
+								target: place,
+							}))
+							.forEach(({place}) => {
+								this.#spawn(assets.indicators.liberty, place)
+							})
+				}
 			}
 		}
 	}
