@@ -6,8 +6,8 @@ export const constants = {
 		envmap: "/assets/studiolights.env",
 		assets: {
 			board: "/assets/glbs/board-dark.glb",
-			units: "/assets/glbs/units-dark.glb",
-			indicators: "/assets/glbs/indicators-standard6.glb",
+			units: "/assets/glbs/units-dark1.glb",
+			indicators: "/assets/glbs/indicators-standard8.glb",
 		} satisfies AssetUrls,
 	},
 	block: {
