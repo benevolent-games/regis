@@ -1,8 +1,10 @@
 
 import {Agent} from "../../agent.js"
+import {AttackDenial} from "./denials.js"
 import {Choice, Unit} from "../../state.js"
 import {isWithinRange} from "./navigation.js"
 import {isVerticallyCompatible} from "./verticality.js"
+import {boardCoords} from "../../../tools/board-coords.js"
 
 export function attackReport(
 		agent: Agent,
@@ -11,29 +13,34 @@ export function attackReport(
 	) {
 
 	const sourceUnit = agent.units.at(source)
+	if (!sourceUnit)
+		return new AttackDenial(`no source unit at ${boardCoords(source)}`)
+
 	const targetUnit = agent.units.at(target)
-	if (!sourceUnit || !targetUnit)
-		return null
+	if (!targetUnit)
+		return new AttackDenial(`no target unit at ${boardCoords(target)}`)
 
 	const sourceIsFriendly = sourceUnit.team === teamId
-	const targetIsEnemy = targetUnit.team !== teamId
+	if (!sourceIsFriendly)
+		return new AttackDenial(`source unit is not friendly`)
 
-	if (!sourceIsFriendly || !targetIsEnemy)
-		return null
+	const targetIsEnemy = targetUnit.team !== teamId
+	if (!targetIsEnemy)
+		return new AttackDenial(`target unit is not an enemy`)
 
 	const {attack} = agent.archetype(sourceUnit.kind)
 	if (!attack)
-		return null
+		return new AttackDenial(`unit archetype "${sourceUnit.kind}" not configured with attack capability`)
 
 	if (!isWithinRange(attack.range, source, target))
-		return null
+		return new AttackDenial(`out of range`)
 
 	if (!isVerticallyCompatible(
 			attack.verticality,
 			agent.tiles.at(source),
 			agent.tiles.at(target),
 		))
-		return null
+		return new AttackDenial(`not vertically allowable`)
 
 	return {
 		attack,

@@ -28,7 +28,7 @@ export class Planner {
 			submitTurn: SubmitTurnFn
 		}) {
 
-		this.proposer = new Proposer(options.agent, options.turnTracker)
+		this.proposer = new Proposer(options.agent)
 
 		this.#planbin.disposer(
 			options.selectacon.selection.on(() => this.render())
@@ -36,7 +36,7 @@ export class Planner {
 	}
 
 	reset() {
-		this.proposer = new Proposer(this.options.agent, this.options.turnTracker)
+		this.proposer = new Proposer(this.options.agent)
 		this.choices = []
 	}
 
@@ -65,7 +65,7 @@ export class Planner {
 				)
 				Array
 					.from(agent.tiles.list())
-					.filter(({place}) => !!proposer.choosers.spawn({
+					.filter(({place}) => !!proposer.propose.spawn({
 						kind: "spawn",
 						place,
 						unitKind: selection.unitKind,
@@ -104,7 +104,7 @@ export class Planner {
 		const {agent} = this.options
 		if (agent.conclusion)
 			return false
-		const fn = this.proposer.choosers[choice.kind] as any
+		const fn = this.proposer.propose[choice.kind] as any
 		const report = fn(choice)
 		if (report) {
 			this.choices.push(choice)

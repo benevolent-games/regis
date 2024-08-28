@@ -3,8 +3,8 @@ import {clone} from "@benev/slate"
 
 import {Agent} from "../agent.js"
 import {Proposer} from "./proposer.js"
+import {Denial} from "./aspects/denials.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
-import {TurnTracker} from "../../terminal/parts/turn-tracker.js"
 import {limitedVision, universalVision} from "./aspects/vision.js"
 import {awardIncome, processWinByConquest, nextTurn} from "./aspects/turns.js"
 import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
@@ -46,13 +46,14 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 	// updating the arbiter state as we go along
 	for (const turn of chronicle) {
 		const agent = new Agent(state)
-		const teamControl = [agent.currentTurn]
-		const proposer = new Proposer(agent, new TurnTracker({agent, teamControl}))
+		const proposer = new Proposer(agent)
 
 		for (const choice of turn.choices) {
-			const report = proposer.choosers[choice.kind](choice as any)
-			if (report) report.commit()
-			else throw new Error("invalid turn choice")
+			const report = proposer.propose[choice.kind](choice as any)
+			if (report instanceof Denial)
+				console.error("🚨", report.reason)
+			else
+				report.commit()
 		}
 
 		const gameOver = processWinByConquest(state)

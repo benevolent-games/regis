@@ -26,36 +26,38 @@ export function handlePrimaryClick(options: {
 		if (selection) {
 
 			// a roster unit is selected
-			if (selection.kind === "roster")
+			if (selection.kind === "roster" && selection.teamId === agent.currentTurn) {
 				planner.attempt({
 					kind: "spawn",
 					place: cell.place,
 					unitKind: selection.unitKind,
 				})
+			}
 
 			// a tile is selected
-			else if (selection.kind === "tile")
+			else if (selection.kind === "tile") {
+				const sourceUnit = agent.units.at(selection.place)
+
+				if (!sourceUnit)
+					return false
+
+				if (!turnTracker.canControlUnit(sourceUnit.id))
+					return false
+
 				doFirstValidThing([
-					() => planner.attempt({
-						kind: "attack",
-						source: selection.place,
-						target: cell.place,
-					}),
 					() => {
-						const unit = agent.units.at(selection.place)
-						if (!unit)
-							return false
-
-						const allowed = turnTracker.canControlUnit(unit.id)
-						if (!allowed)
-							return false
-
+						return planner.attempt({
+							kind: "attack",
+							source: selection.place,
+							target: cell.place,
+						})
+					},
+					() => {
 						const movement = calculateMovement({
 							agent,
 							source: selection.place,
 							target: cell.place,
 						})
-
 						if (movement)
 							return planner.attempt({
 								kind: "movement",
@@ -66,6 +68,7 @@ export function handlePrimaryClick(options: {
 							return false
 					},
 				])
+			}
 		}
 	}
 

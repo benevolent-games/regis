@@ -2,9 +2,9 @@
 import {clone, Ref, ref} from "@benev/slate"
 
 import {Agent} from "./agent.js"
+import {defaultGameConfig} from "./data.js"
 import {asciiMap} from "./ascii/ascii-map.js"
 import {GameHistory, GameStates, Turn} from "./state.js"
-import {defaultGameConfig, defaultRoster} from "./data.js"
 import {simulateGame} from "./simulation/simulate-game.js"
 
 export type SubmitTurnFn = (turn: Turn) => void
