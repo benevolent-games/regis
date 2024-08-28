@@ -3,7 +3,7 @@ import {Agent} from "../../logic/agent.js"
 import {FullTeamInfo} from "../../logic/state.js"
 
 export function printReport(agent: Agent, teamId: number) {
-	const {currentTeamId, currentTeam} = agent
+	const {activeTeamIndex: currentTeamId, activeTeam: currentTeam} = agent
 	const ourTurn = currentTeamId === teamId
 	const ourTeam = agent.state.teams.at(teamId)! as FullTeamInfo
 
@@ -16,7 +16,7 @@ export function printReport(agent: Agent, teamId: number) {
 	}
 
 	if (agent.conclusion) {
-		const {winner} = agent.conclusion
+		const {winningTeamIndex: winner} = agent.conclusion
 		const victory = teamId === winner
 		if (victory) {
 			console.log(`==========`)

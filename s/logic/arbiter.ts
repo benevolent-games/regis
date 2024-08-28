@@ -6,6 +6,7 @@ import {defaultGameConfig} from "./data.js"
 import {asciiMap} from "./ascii/ascii-map.js"
 import {GameHistory, GameStates, Turn} from "./state.js"
 import {simulateGame} from "./simulation/simulate-game.js"
+import { activeTeamIndex } from "./simulation/aspects/turns.js"
 
 export type SubmitTurnFn = (turn: Turn) => void
 
@@ -16,7 +17,7 @@ export class Arbiter {
 	constructor(ascii: string) {
 		const {board, units} = asciiMap(ascii)
 		this.historyRef = ref<GameHistory>({
-			chronicle: [],
+			turns: [],
 			initial: {
 				board,
 				units,
@@ -40,12 +41,16 @@ export class Arbiter {
 
 	submitTurn: SubmitTurnFn = turn => {
 		const newHistory = clone(this.historyRef.value)
-		newHistory.chronicle.push(turn)
+		newHistory.turns.push(turn)
 		this.#commit(newHistory)
 	}
 
 	getAgentState(teamId: number) {
 		return this.statesRef.value.agents.at(teamId)!
+	}
+
+	get activeTeamIndex() {
+		return activeTeamIndex(this.statesRef.value.arbiter)
 	}
 
 	#commit(history: GameHistory) {

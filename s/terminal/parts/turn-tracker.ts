@@ -9,7 +9,11 @@ export class TurnTracker {
 
 	get ourTurn() {
 		const {agent, teamControl} = this.options
-		return teamControl.includes(agent.currentTeamId)
+		return teamControl.includes(agent.activeTeamIndex)
+	}
+
+	canControlTeam(teamIndex: number) {
+		return this.options.teamControl.includes(teamIndex)
 	}
 
 	canControlUnit(unitId: string) {

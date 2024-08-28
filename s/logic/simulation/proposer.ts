@@ -23,6 +23,19 @@ export class Proposer {
 		this.agent.stateRef.publish()
 	}
 
+	p2 = {
+		spawn: (choice: Choice.Spawn) => ({
+
+			// is the active team allowed to perform this action?
+			teamAllowed: true,
+
+			// check if this move is viable
+			denial: null,
+
+			commit() {},
+		}),
+	}
+
 	propose = {
 		spawn: (choice: Choice.Spawn) => {
 			const {agent} = this
@@ -30,13 +43,13 @@ export class Proposer {
 			const {config} = agent.state.initial
 			const {cost} = config.unitArchetypes[unitKind]
 			const buyable = cost !== null
-			const affordable = canAfford(agent.currentTeam, cost)
-			const validPlace = isValidSpawnPlace(agent, agent.currentTeamId, choice.place)
+			const affordable = canAfford(agent.activeTeam, cost)
+			const validPlace = isValidSpawnPlace(agent, agent.activeTeamIndex, choice.place)
 			const howManyAlready = [...agent.units.list()]
-				.filter(unit => unit.team === agent.currentTeamId)
+				.filter(unit => unit.team === agent.activeTeamIndex)
 				.filter(unit => unit.kind === choice.unitKind)
 				.length
-			const {roster} = config.teams.at(agent.currentTeamId)!
+			const {roster} = config.teams.at(agent.activeTeamIndex)!
 			const remainingRosterCount = roster[choice.unitKind] - howManyAlready
 			const availableInRoster = remainingRosterCount > 0
 
@@ -54,14 +67,14 @@ export class Proposer {
 
 			return {
 				commit: () => {
-					subtractResources(agent.state, agent.currentTeamId, cost)
+					subtractResources(agent.state, agent.activeTeamIndex, cost)
 					const id = mintId()
 					this.unitFreedom.countSpawning(id)
 					agent.units.add({
 						id,
 						kind: choice.unitKind,
 						place: choice.place,
-						team: agent.currentTeamId,
+						team: agent.activeTeamIndex,
 						damage: 0,
 					})
 					this.#rerender()
@@ -108,7 +121,7 @@ export class Proposer {
 		attack: (choice: Choice.Attack) => {
 			const {agent, unitFreedom} = this
 
-			const report = attackReport(agent, agent.currentTeamId, choice)
+			const report = attackReport(agent, choice)
 			if (report instanceof Denial)
 				return report
 

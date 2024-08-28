@@ -26,7 +26,7 @@ export function handlePrimaryClick(options: {
 		if (selection) {
 
 			// a roster unit is selected
-			if (selection.kind === "roster" && selection.teamId === agent.currentTeamId) {
+			if (selection.kind === "roster" && selection.teamId === agent.activeTeamIndex) {
 				planner.attempt({
 					kind: "spawn",
 					place: cell.place,

@@ -6,6 +6,7 @@ import {UnitsHelper} from "./helpers/units.js"
 import {AgentState, UnitKind} from "./state.js"
 import {BoundaryHelper} from "./helpers/boundary.js"
 import {CoordinatorHelper} from "./helpers/coordinator.js"
+import { activeTeamIndex } from "./simulation/aspects/turns.js"
 
 export class Agent {
 	stateRef: Ref<AgentState>
@@ -36,12 +37,12 @@ export class Agent {
 		return this.state.initial.config.unitArchetypes[unitKind]
 	}
 
-	get currentTeam() {
-		return this.state.teams.at(this.state.context.currentTurn)!
+	get activeTeam() {
+		return this.state.teams.at(this.activeTeamIndex)!
 	}
 
-	get currentTeamId() {
-		return this.state.context.currentTurn
+	get activeTeamIndex() {
+		return activeTeamIndex(this.state)
 	}
 
 	get conclusion() {

@@ -6,7 +6,7 @@ import {Proposer} from "./proposer.js"
 import {Denial} from "./aspects/denials.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
 import {limitedVision, universalVision} from "./aspects/vision.js"
-import {awardIncome, processWinByConquest, nextTurn} from "./aspects/turns.js"
+import {awardIncomeToActiveTeam, processWinByConquest} from "./aspects/turns.js"
 import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
 
 /**
@@ -20,7 +20,7 @@ import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
  * for each turn, we add a historical event -- then we simply recompute the
  * game state again.
  */
-export function simulateGame({initial, chronicle}: GameHistory): GameStates {
+export function simulateGame({initial, turns: chronicle}: GameHistory): GameStates {
 
 	// establish the authoritative state for the game,
 	// the arbiter "knows all"
@@ -28,7 +28,7 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 		initial,
 		units: initial.units,
 		context: {
-			currentTurn: 0,
+			turnIndex: 0,
 			conclusion: null,
 		},
 		teams: initial.config.teams.map((team): FullTeamInfo => ({
@@ -62,8 +62,8 @@ export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 			break
 		}
 		else {
-			nextTurn(state)
-			awardIncome(state)
+			state.context.turnIndex += 1
+			awardIncomeToActiveTeam(state)
 		}
 	}
 

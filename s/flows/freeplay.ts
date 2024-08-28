@@ -11,12 +11,12 @@ export async function freeplayFlow() {
 	const terminal = await makeGameTerminal(agent, [0, 1], arbiter.submitTurn)
 
 	arbiter.statesRef.on(states => {
-		agent.state = states.agents.at(states.arbiter.context.currentTurn)!
-		printReport(agent, agent.currentTeamId)
+		agent.state = states.agents.at(arbiter.activeTeamIndex)!
+		printReport(agent, agent.activeTeamIndex)
 		terminal.render()
 	})
 
-	printReport(agent, agent.currentTeamId)
+	printReport(agent, agent.activeTeamIndex)
 
 	return {
 		world: terminal.world,

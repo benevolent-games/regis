@@ -8,7 +8,6 @@ import {boardCoords} from "../../../tools/board-coords.js"
 
 export function attackReport(
 		agent: Agent,
-		teamId: number,
 		{source, target}: Choice.Attack,
 	) {
 
@@ -20,13 +19,9 @@ export function attackReport(
 	if (!targetUnit)
 		return new AttackDenial(`no target unit at ${boardCoords(target)}`)
 
-	const sourceIsFriendly = sourceUnit.team === teamId
-	if (!sourceIsFriendly)
-		return new AttackDenial(`source unit is not friendly`)
-
-	const targetIsEnemy = targetUnit.team !== teamId
-	if (!targetIsEnemy)
-		return new AttackDenial(`target unit is not an enemy`)
+	const hostile = sourceUnit.team !== targetUnit.team
+	if (!hostile)
+		return new AttackDenial(`friendly fire`)
 
 	const {attack} = agent.archetype(sourceUnit.kind)
 	if (!attack)

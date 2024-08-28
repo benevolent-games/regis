@@ -7,7 +7,7 @@ import {loop2d, Vec2} from "@benev/toolbox"
 
 export type GameHistory = {
 	initial: GameInitial
-	chronicle: Turn[]
+	turns: Turn[]
 }
 
 export type GameInitial = {
@@ -60,7 +60,7 @@ export type AgentState = {
 
 /** current situation that the game is in */
 export type GameContext = {
-	currentTurn: number
+	turnIndex: number
 	conclusion: null | Conclusion
 }
 
@@ -164,7 +164,7 @@ export namespace Choice {
 
 export type Conclusion = {
 	kind: "conclusion"
-	winner: number
+	winningTeamIndex: number
 	reason: "time" | "conquest" | "surrender"
 }
 

@@ -59,21 +59,24 @@ export class Planner {
 		if (selection) {
 
 			// render spawning liberties
-			if (
-					turnTracker.ourTurn &&
-					selection.kind === "roster" &&
-					selection.teamId === agent.currentTeamId
-				)
+			if (selection.kind === "roster") {
 				Array
 					.from(agent.tiles.list())
-					.filter(({place}) => !!proposer.propose.spawn({
-						kind: "spawn",
-						place,
-						unitKind: selection.unitKind,
-					}))
-					.forEach(({place}) => {
-						this.#spawn(assets.indicators.libertyAction, place)
+					.filter(({place}) => {
+						const report = proposer.propose.spawn({
+							kind: "spawn",
+							place,
+							unitKind: selection.unitKind,
+						})
+						return !(report instanceof Denial)
 					})
+					.forEach(({place}) => {
+						if (turnTracker.canControlTeam(selection.teamId))
+							this.#spawn(assets.indicators.libertyAction, place)
+						else
+							this.#spawn(assets.indicators.libertyPattern, place)
+					})
+			}
 
 			// render movement liberties
 			if (selection.kind === "tile") {

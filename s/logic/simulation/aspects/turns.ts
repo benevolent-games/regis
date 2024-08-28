@@ -1,13 +1,12 @@
 
 import {Agent} from "../../agent.js"
-import {ArbiterState} from "../../state.js"
+import {AgentState, ArbiterState} from "../../state.js"
 
-export function nextTurn(state: ArbiterState) {
-	const {context, initial} = state
-	context.currentTurn += 1
-
-	if (context.currentTurn > (initial.config.teams.length - 1))
-		context.currentTurn = 0
+export function activeTeamIndex({
+		context: {turnIndex},
+		initial: {config: {teams}},
+	}: AgentState) {
+	return turnIndex % teams.length
 }
 
 export function processWinByConquest(state: ArbiterState) {
@@ -23,7 +22,7 @@ export function processWinByConquest(state: ArbiterState) {
 		state.context.conclusion = {
 			kind: "conclusion",
 			reason: "conquest",
-			winner: winner.teamId,
+			winningTeamIndex: winner.teamId,
 		}
 		return true
 	}
@@ -31,9 +30,9 @@ export function processWinByConquest(state: ArbiterState) {
 	return false
 }
 
-export function awardIncome(state: ArbiterState) {
+export function awardIncomeToActiveTeam(state: ArbiterState) {
 	const {universalBasicIncome} = state.initial.config
-	const team = state.teams.at(state.context.currentTurn)!
+	const team = state.teams.at(activeTeamIndex(state))!
 	team.resources += universalBasicIncome
 }
 
