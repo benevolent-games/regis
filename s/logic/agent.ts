@@ -40,7 +40,7 @@ export class Agent {
 		return this.state.teams.at(this.state.context.currentTurn)!
 	}
 
-	get currentTurn() {
+	get currentTeamId() {
 		return this.state.context.currentTurn
 	}
 

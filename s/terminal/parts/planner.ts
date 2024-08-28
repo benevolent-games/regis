@@ -10,6 +10,7 @@ import {Choice} from "../../logic/state.js"
 import {TurnTracker} from "./turn-tracker.js"
 import {SubmitTurnFn} from "../../logic/arbiter.js"
 import {Proposer} from "../../logic/simulation/proposer.js"
+import {Denial} from "../../logic/simulation/aspects/denials.js"
 import {calculateMovement} from "../../logic/simulation/aspects/moving.js"
 
 /** interface for the user to sketch a plan for their turn */
@@ -61,7 +62,7 @@ export class Planner {
 			if (
 					turnTracker.ourTurn &&
 					selection.kind === "roster" &&
-					selection.teamId === agent.currentTurn
+					selection.teamId === agent.currentTeamId
 				)
 				Array
 					.from(agent.tiles.list())
@@ -104,14 +105,15 @@ export class Planner {
 		const {agent} = this.options
 		if (agent.conclusion)
 			return false
+
 		const fn = this.proposer.propose[choice.kind] as any
 		const report = fn(choice)
-		if (report) {
-			this.choices.push(choice)
-			report.commit()
-			return true
-		}
-		return false
+		if (report instanceof Denial)
+			return false
+
+		this.choices.push(choice)
+		report.commit()
+		return true
 	}
 
 	executePlan() {

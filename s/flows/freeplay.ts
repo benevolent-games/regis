@@ -12,11 +12,11 @@ export async function freeplayFlow() {
 
 	arbiter.statesRef.on(states => {
 		agent.state = states.agents.at(states.arbiter.context.currentTurn)!
-		printReport(agent, agent.currentTurn)
+		printReport(agent, agent.currentTeamId)
 		terminal.render()
 	})
 
-	printReport(agent, agent.currentTurn)
+	printReport(agent, agent.currentTeamId)
 
 	return {
 		world: terminal.world,

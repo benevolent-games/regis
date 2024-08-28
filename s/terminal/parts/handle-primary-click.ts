@@ -26,7 +26,7 @@ export function handlePrimaryClick(options: {
 		if (selection) {
 
 			// a roster unit is selected
-			if (selection.kind === "roster" && selection.teamId === agent.currentTurn) {
+			if (selection.kind === "roster" && selection.teamId === agent.currentTeamId) {
 				planner.attempt({
 					kind: "spawn",
 					place: cell.place,
@@ -37,15 +37,15 @@ export function handlePrimaryClick(options: {
 			// a tile is selected
 			else if (selection.kind === "tile") {
 				const sourceUnit = agent.units.at(selection.place)
-
-				if (!sourceUnit)
-					return false
-
-				if (!turnTracker.canControlUnit(sourceUnit.id))
-					return false
+				const sourceUnitIsControllable = (
+					sourceUnit &&
+					turnTracker.canControlUnit(sourceUnit.id)
+				)
 
 				doFirstValidThing([
 					() => {
+						if (!sourceUnitIsControllable)
+							return false
 						return planner.attempt({
 							kind: "attack",
 							source: selection.place,
@@ -53,6 +53,8 @@ export function handlePrimaryClick(options: {
 						})
 					},
 					() => {
+						if (!sourceUnitIsControllable)
+							return false
 						const movement = calculateMovement({
 							agent,
 							source: selection.place,

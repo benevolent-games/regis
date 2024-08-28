@@ -3,8 +3,8 @@ import {Agent} from "../../logic/agent.js"
 import {FullTeamInfo} from "../../logic/state.js"
 
 export function printReport(agent: Agent, teamId: number) {
-	const {currentTurn, currentTeam} = agent
-	const ourTurn = currentTurn === teamId
+	const {currentTeamId, currentTeam} = agent
+	const ourTurn = currentTeamId === teamId
 	const ourTeam = agent.state.teams.at(teamId)! as FullTeamInfo
 
 	if (ourTurn) {

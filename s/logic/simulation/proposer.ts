@@ -31,12 +31,12 @@ export class Proposer {
 			const {cost} = config.unitArchetypes[unitKind]
 			const buyable = cost !== null
 			const affordable = canAfford(agent.currentTeam, cost)
-			const validPlace = isValidSpawnPlace(agent, agent.currentTurn, choice.place)
+			const validPlace = isValidSpawnPlace(agent, agent.currentTeamId, choice.place)
 			const howManyAlready = [...agent.units.list()]
-				.filter(unit => unit.team === agent.currentTurn)
+				.filter(unit => unit.team === agent.currentTeamId)
 				.filter(unit => unit.kind === choice.unitKind)
 				.length
-			const {roster} = config.teams.at(agent.currentTurn)!
+			const {roster} = config.teams.at(agent.currentTeamId)!
 			const remainingRosterCount = roster[choice.unitKind] - howManyAlready
 			const availableInRoster = remainingRosterCount > 0
 
@@ -54,14 +54,14 @@ export class Proposer {
 
 			return {
 				commit: () => {
-					subtractResources(agent.state, agent.currentTurn, cost)
+					subtractResources(agent.state, agent.currentTeamId, cost)
 					const id = mintId()
 					this.unitFreedom.countSpawning(id)
 					agent.units.add({
 						id,
 						kind: choice.unitKind,
 						place: choice.place,
-						team: agent.currentTurn,
+						team: agent.currentTeamId,
 						damage: 0,
 					})
 					this.#rerender()
@@ -108,7 +108,7 @@ export class Proposer {
 		attack: (choice: Choice.Attack) => {
 			const {agent, unitFreedom} = this
 
-			const report = attackReport(agent, agent.currentTurn, choice)
+			const report = attackReport(agent, agent.currentTeamId, choice)
 			if (report instanceof Denial)
 				return report
 
