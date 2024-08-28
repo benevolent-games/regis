@@ -48,7 +48,7 @@ regis does, and it's playable with a standard chess set.
 	- units have different vision ranges that will reveal enemy units
 	- most units cannot see up cliffs (thus providing an advantage for ranged units on high ground)
 	- this is the only game mechanic that you cannot replicate on a real physical chess board in person
-- **staking claims**
+- ~~**staking claims**~~ *\`coming soon\`*
 	- some tiles are marked with one or more claims
 	- resource claims offer more income each turn
 	- tech claims offer to unlock unit types
@@ -56,7 +56,7 @@ regis does, and it's playable with a standard chess set.
 	- you pay a staking cost when you move a pawn onto a claim
 	- different claim types have different staking costs
 	- if you move your pawn off the claim, you lose it; re-staking will cost you again
-- **upgrading resource claims**
+- ~~**upgrading resource claims**~~ *\`coming soon\`*
 	- resource claims come in three levels:
 		- level 1: you gain +1 resource per turn
 		- level 2: you gain +2 resource per turn
