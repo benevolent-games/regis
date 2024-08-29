@@ -6,24 +6,13 @@ import {calculateMovement} from "../../../logic/simulation/aspects/moving.js"
 import {Denial, SoftDenial} from "../../../logic/simulation/aspects/denials.js"
 
 export const considerMovement = considerationFn(
-	({agent, assets, freedom, proposers, instance, commit}) =>
+	({agent, assets, proposers, instance, commit}) =>
 	(source: Vec2, target: Vec2) => {
 
 	const nope: ConsiderationResult = {
 		indicate: undefined,
 		actuate: undefined,
 	}
-
-	const unit = agent.units.at(source)
-
-	if (!unit)
-		return nope
-
-	const archetype = agent.archetype(unit.kind)
-	const {canMove} = freedom.report(unit.id, archetype)
-
-	if (!canMove)
-		return nope
 
 	const movement = calculateMovement({agent, source, target})
 
