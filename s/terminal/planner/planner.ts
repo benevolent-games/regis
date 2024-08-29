@@ -3,10 +3,11 @@ import {Trashbin} from "@benev/slate"
 
 import {noop} from "../../tools/noop.js"
 import {Choice} from "../../logic/state.js"
-import {InstanceFn, PlannerOptions} from "./types.js"
+import {ConsiderationResult, InstanceFn, PlannerOptions} from "./types.js"
 import {UnitFreedom} from "../../logic/simulation/aspects/unit-freedom.js"
 import {Considerations, makeConsiderations} from "./make-considerations.js"
 import {makeProposers, Proposers} from "../../logic/simulation/proposer/make-proposers.js"
+import { doFirstValidThing } from "../../tools/do-first-valid-thing.js"
 
 export class Planner {
 	proposers: Proposers
@@ -75,6 +76,7 @@ export class Planner {
 
 	render() {
 		this.#renderbin.dispose()
+		const {considerations} = this
 		const {agent, selectacon} = this.options
 		const selection = selectacon.selection.value
 
@@ -83,19 +85,33 @@ export class Planner {
 			// render spawning liberties
 			if (selection.kind === "roster") {
 				for (const {place} of agent.tiles.list()) {
-					const {indicate = noop} = this.considerations.spawn(place, selection.unitKind)
-					indicate()
+					spawnIndicator(considerations.spawn(place, selection.unitKind)),
 				}
 			}
 
-			// render movement liberties
 			if (selection.kind === "tile") {
 				for (const {place} of agent.tiles.list()) {
-					const {indicate = noop} = this.considerations.movement(selection.place, place)
-					indicate()
+					const source = selection.place
+					const target = place
+					doFirstValidThing([
+
+						// spawn attack indicators
+						() => spawnIndicator(considerations.attack(source, target)),
+
+						// spawn movement indicators
+						() => spawnIndicator(considerations.movement(source, target)),
+					])
 				}
 			}
 		}
 	}
+}
+
+function spawnIndicator({indicate}: ConsiderationResult) {
+	if (indicate) {
+		indicate()
+		return true
+	}
+	return false
 }
 

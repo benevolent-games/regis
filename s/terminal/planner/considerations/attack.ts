@@ -1,17 +1,12 @@
 
 import {Vec2} from "@benev/toolbox"
+import {considerationFn} from "../types.js"
 import {Choice} from "../../../logic/state.js"
-import {considerationFn, ConsiderationResult} from "../types.js"
 import {Denial, SoftDenial} from "../../../logic/simulation/aspects/denials.js"
 
 export const considerAttack = considerationFn(
-	({agent, assets, proposers, instance, commit}) =>
+	({assets, proposers, instance, commit}) =>
 	(source: Vec2, target: Vec2) => {
-
-	const nope: ConsiderationResult = {
-		indicate: undefined,
-		actuate: undefined,
-	}
 
 	const choice: Choice.Attack = {
 		kind: "attack",
@@ -27,7 +22,10 @@ export const considerAttack = considerationFn(
 			actuate: undefined,
 		}
 	else if (proposal instanceof Denial)
-		return nope
+		return {
+			indicate: undefined,
+			actuate: undefined,
+		}
 	else
 		return {
 			indicate: () => instance(assets.indicators.attack, target),
