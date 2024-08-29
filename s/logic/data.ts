@@ -60,7 +60,7 @@ export type UnitArchetypes = Record<UnitKind, UnitArchetype>
 export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	obstacle: {
 		cost: null,
-		health: 5,
+		health: 10,
 		actionCap: 0,
 		stakeholder: false,
 		spawning: null,
@@ -101,7 +101,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		stakeholder: false,
 		spawning: null,
 		vision: {
-			range: 1,
+			range: 2,
 			verticality: verticality.downwards,
 		},
 		move: {
@@ -129,7 +129,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		},
 		move: {
 			cap: 1,
-			range: 3,
+			range: 2,
 			verticality: verticality.flat,
 		},
 		attack: {
@@ -141,7 +141,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	},
 
 	rook: {
-		cost: 9,
+		cost: 7,
 		health: 5,
 		actionCap: 1,
 		stakeholder: false,
@@ -164,7 +164,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	},
 
 	bishop: {
-		cost: 12,
+		cost: 7,
 		health: 3,
 		actionCap: 1,
 		stakeholder: false,
@@ -175,7 +175,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		},
 		move: {
 			cap: 1,
-			range: 2,
+			range: 1,
 			verticality: verticality.flat,
 		},
 		attack: {
@@ -187,7 +187,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	},
 
 	queen: {
-		cost: 12,
+		cost: 9,
 		health: 3,
 		actionCap: 1,
 		stakeholder: false,
@@ -200,7 +200,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		},
 		move: {
 			cap: 1,
-			range: 2,
+			range: 3,
 			verticality: verticality.flat,
 		},
 		attack: null,
