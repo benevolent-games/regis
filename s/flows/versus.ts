@@ -2,11 +2,11 @@
 import {Trashbin} from "@benev/slate"
 
 import {Agent} from "../logic/agent.js"
+import {printReport} from "./utils/print-report.js"
 import {Connectivity} from "../net/connectivity.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 import {GameStartData} from "../director/apis/clientside.js"
-import { printReport } from "./utils/print-report.js"
-import { TurnTracker } from "../logic/simulation/aspects/turn-tracker.js"
+import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 
 export async function versusFlow({
 		data: startData,
