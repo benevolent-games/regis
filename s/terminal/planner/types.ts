@@ -1,7 +1,4 @@
 
-import {Vec2} from "@benev/toolbox"
-import {TransformNode} from "@babylonjs/core"
-
 import {Assets} from "../parts/assets.js"
 import {Agent} from "../../logic/agent.js"
 import {Choice} from "../../logic/state.js"
@@ -21,10 +18,7 @@ export type PlannerOptions = {
 export type ConsiderationOptions = {
 	proposers: Proposers
 	commit: (choice: Choice.Any) => void
-	instance: InstanceFn
 } & PlannerOptions
-
-export type InstanceFn = (fn: () => TransformNode, place: Vec2) => void
 
 export type ConsiderationFn = (
 	(options: ConsiderationOptions) =>
@@ -36,8 +30,10 @@ export function considerationFn<F extends ConsiderationFn>(fn: F) {
 	return fn
 }
 
+export type Indicate = undefined | "pattern" | "action"
+
 export type ConsiderationResult = {
-	indicate: undefined | (() => void)
+	indicate: Indicate
 	actuate: undefined | (() => void)
 }
 

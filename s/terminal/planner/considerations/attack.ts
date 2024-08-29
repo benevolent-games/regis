@@ -5,7 +5,7 @@ import {Choice} from "../../../logic/state.js"
 import {Denial, SoftDenial} from "../../../logic/simulation/aspects/denials.js"
 
 export const considerAttack = considerationFn(
-	({assets, proposers, instance, commit}) =>
+	({proposers, commit}) =>
 	(source: Vec2, target: Vec2) => {
 
 	const choice: Choice.Attack = {
@@ -18,7 +18,7 @@ export const considerAttack = considerationFn(
 
 	if (proposal instanceof SoftDenial)
 		return {
-			indicate: () => instance(assets.indicators.attack, target),
+			indicate: "pattern",
 			actuate: undefined,
 		}
 	else if (proposal instanceof Denial)
@@ -28,7 +28,7 @@ export const considerAttack = considerationFn(
 		}
 	else
 		return {
-			indicate: () => instance(assets.indicators.attack, target),
+			indicate: "action",
 			actuate: () => {
 				proposal()
 				commit(choice)

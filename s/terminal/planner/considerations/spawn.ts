@@ -5,7 +5,7 @@ import {Choice, UnitKind} from "../../../logic/state.js"
 import {Denial, SoftDenial} from "../../../logic/simulation/aspects/denials.js"
 
 export const considerSpawn = considerationFn(
-	({assets, proposers, instance, commit}) =>
+	({proposers, commit}) =>
 	(place: Vec2, unitKind: UnitKind) => {
 
 	const choice: Choice.Spawn = {
@@ -18,7 +18,7 @@ export const considerSpawn = considerationFn(
 
 	if (proposal instanceof SoftDenial)
 		return {
-			indicate: () => instance(assets.indicators.libertyPattern, place),
+			indicate: "pattern",
 			actuate: undefined,
 		}
 	else if (proposal instanceof Denial)
@@ -28,7 +28,7 @@ export const considerSpawn = considerationFn(
 		}
 	else
 		return {
-			indicate: () => instance(assets.indicators.libertyAction, place),
+			indicate: "action",
 			actuate: () => {
 				proposal()
 				commit(choice)

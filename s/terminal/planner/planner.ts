@@ -1,13 +1,14 @@
 
+import {Vec2} from "@benev/toolbox"
 import {Trashbin} from "@benev/slate"
+import {TransformNode} from "@babylonjs/core"
 
-import {noop} from "../../tools/noop.js"
 import {Choice} from "../../logic/state.js"
-import {ConsiderationResult, InstanceFn, PlannerOptions} from "./types.js"
+import {ConsiderationResult, PlannerOptions} from "./types.js"
+import {doFirstValidThing} from "../../tools/do-first-valid-thing.js"
 import {UnitFreedom} from "../../logic/simulation/aspects/unit-freedom.js"
 import {Considerations, makeConsiderations} from "./make-considerations.js"
 import {makeProposers, Proposers} from "../../logic/simulation/proposer/make-proposers.js"
-import { doFirstValidThing } from "../../tools/do-first-valid-thing.js"
 
 export class Planner {
 	proposers: Proposers
@@ -31,7 +32,6 @@ export class Planner {
 			plannerOptions: options,
 			proposers: this.proposers,
 			commit: this.#commit,
-			instance: this.#instance,
 		})
 
 		this.#planbin.disposer(
@@ -39,7 +39,7 @@ export class Planner {
 		)
 	}
 
-	#instance: InstanceFn = (fn, place) => {
+	#instance(fn: () => TransformNode, place: Vec2) {
 		const {agent} = this.options
 		const instance = fn()
 		const position = agent.coordinator.toPosition(place)
@@ -77,7 +77,8 @@ export class Planner {
 	render() {
 		this.#renderbin.dispose()
 		const {considerations} = this
-		const {agent, selectacon} = this.options
+		const {agent, assets, selectacon} = this.options
+		const {indicators} = assets
 		const selection = selectacon.selection.value
 
 		if (selection) {
@@ -85,7 +86,10 @@ export class Planner {
 			// render spawning liberties
 			if (selection.kind === "roster") {
 				for (const {place} of agent.tiles.list()) {
-					spawnIndicator(considerations.spawn(place, selection.unitKind)),
+					spawnIndicator(considerations.spawn(place, selection.unitKind), {
+						action: () => this.#instance(indicators.libertyAction, place),
+						pattern: () => this.#instance(indicators.libertyPattern, place),
+					})
 				}
 			}
 
@@ -96,10 +100,16 @@ export class Planner {
 					doFirstValidThing([
 
 						// spawn attack indicators
-						() => spawnIndicator(considerations.attack(source, target)),
+						() => spawnIndicator(considerations.attack(source, target), {
+							action: () => this.#instance(indicators.attackAction, place),
+							pattern: () => this.#instance(indicators.attackPattern, place),
+						}),
 
 						// spawn movement indicators
-						() => spawnIndicator(considerations.movement(source, target)),
+						() => spawnIndicator(considerations.movement(source, target), {
+							action: () => this.#instance(indicators.libertyAction, place),
+							pattern: () => this.#instance(indicators.libertyPattern, place),
+						}),
 					])
 				}
 			}
@@ -107,9 +117,12 @@ export class Planner {
 	}
 }
 
-function spawnIndicator({indicate}: ConsiderationResult) {
+function spawnIndicator({indicate}: ConsiderationResult, actors: {
+		pattern: () => void
+		action: () => void
+	}) {
 	if (indicate) {
-		indicate()
+		actors[indicate]()
 		return true
 	}
 	return false

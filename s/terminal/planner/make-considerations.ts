@@ -4,14 +4,13 @@ import {considerSpawn} from "./considerations/spawn.js"
 import {considerAttack} from "./considerations/attack.js"
 import {considerMovement} from "./considerations/movement.js"
 import {Proposers} from "../../logic/simulation/proposer/make-proposers.js"
-import {ConsiderationOptions, InstanceFn, PlannerOptions} from "./types.js"
+import {ConsiderationOptions, PlannerOptions} from "./types.js"
 
 export type Considerations = ReturnType<typeof makeConsiderations>
 
 export function makeConsiderations(setup: {
 		proposers: Proposers
 		plannerOptions: PlannerOptions
-		instance: InstanceFn
 		commit: (choice: Choice.Any) => void
 	}) {
 

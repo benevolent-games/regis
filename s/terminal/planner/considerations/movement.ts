@@ -6,7 +6,7 @@ import {calculateMovement} from "../../../logic/simulation/aspects/moving.js"
 import {Denial, SoftDenial} from "../../../logic/simulation/aspects/denials.js"
 
 export const considerMovement = considerationFn(
-	({agent, assets, proposers, instance, commit}) =>
+	({agent, proposers, commit}) =>
 	(source: Vec2, target: Vec2) => {
 
 	const nope: ConsiderationResult = {
@@ -29,14 +29,14 @@ export const considerMovement = considerationFn(
 
 	if (proposal instanceof SoftDenial)
 		return {
-			indicate: () => instance(assets.indicators.libertyPattern, target),
+			indicate: "pattern",
 			actuate: undefined,
 		}
 	else if (proposal instanceof Denial)
 		return nope
 	else
 		return {
-			indicate: () => instance(assets.indicators.libertyAction, target),
+			indicate: "action",
 			actuate: () => {
 				proposal()
 				commit(choice)
