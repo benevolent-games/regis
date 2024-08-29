@@ -1,10 +1,10 @@
 
 import {Pointing} from "./types.js"
-import {Planner} from "./planner.js"
+import {noop} from "../../tools/noop.js"
 import {Selectacon} from "./selectacon.js"
 import {Agent} from "../../logic/agent.js"
+import {Planner} from "../planner/planner.js"
 import {doFirstValidThing} from "../../tools/do-first-valid-thing.js"
-import {calculateMovement} from "../../logic/simulation/aspects/moving.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 
 export function handlePrimaryClick(options: {
@@ -16,64 +16,69 @@ export function handlePrimaryClick(options: {
 	}) {
 
 	const {agent, planner, pointing, selectacon, turnTracker} = options
-	const selection = selectacon.selection.value
-	const cell = selectacon.pick(pointing)
+	const alreadySelected = selectacon.selection.value
+	const clickedCell = selectacon.pick(pointing)
 
 	// clicked a tile cell
-	if (cell?.kind === "tile") {
+	if (clickedCell?.kind === "tile") {
 
-		// there is currently something selected
-		if (selection) {
+		// there is something previously selected
+		if (alreadySelected) {
 
-			// a roster unit is selected
-			if (selection.kind === "roster" && selection.teamId === agent.activeTeamIndex) {
-				planner.attempt({
-					kind: "spawn",
-					place: cell.place,
-					unitKind: selection.unitKind,
-				})
+			// a roster unit is already selected
+			if (alreadySelected.kind === "roster" && alreadySelected.teamId === agent.activeTeamIndex) {
+				const {actuate = noop} = planner.consider.spawn(clickedCell.place, alreadySelected.unitKind)
+				actuate()
 			}
 
 			// a tile is selected
-			else if (selection.kind === "tile") {
-				const sourceUnit = agent.units.at(selection.place)
-				const sourceUnitIsControllable = (
-					sourceUnit &&
-					turnTracker.teamIndex === sourceUnit.team
-				)
+			else if (alreadySelected.kind === "tile") {
+				// const sourceUnit = agent.units.at(alreadySelected.place)
+				// const sourceUnitIsControllable = (
+				// 	sourceUnit &&
+				// 	turnTracker.teamIndex === sourceUnit.team
+				// )
 
 				doFirstValidThing([
+					// () => {
+					// 	// const {commit = noop} = planner.consider.attack(clickedCell.place, alreadySelected.unitKind)
+					//
+					// 	if (!sourceUnitIsControllable)
+					// 		return false
+					// 	return planner.attempt({
+					// 		kind: "attack",
+					// 		source: alreadySelected.place,
+					// 		target: clickedCell.place,
+					// 	})
+					// },
 					() => {
-						if (!sourceUnitIsControllable)
+						const {actuate} = planner.consider.movement(alreadySelected.place, clickedCell.place)
+						if (!actuate)
 							return false
-						return planner.attempt({
-							kind: "attack",
-							source: selection.place,
-							target: cell.place,
-						})
-					},
-					() => {
-						if (!sourceUnitIsControllable)
-							return false
-						const movement = calculateMovement({
-							agent,
-							source: selection.place,
-							target: cell.place,
-						})
-						if (movement)
-							return planner.attempt({
-								kind: "movement",
-								source: selection.place,
-								path: movement.path,
-							})
-						else
-							return false
+						actuate()
+						return true
+
+						// if (!sourceUnitIsControllable)
+						// 	return false
+						// const movement = calculateMovement({
+						// 	agent,
+						// 	source: alreadySelected.place,
+						// 	target: clickedCell.place,
+						// })
+						// if (movement)
+						// 	return planner.attempt({
+						// 		kind: "movement",
+						// 		source: alreadySelected.place,
+						// 		path: movement.path,
+						// 	})
+						// else
+						// 	return false
 					},
 				])
 			}
 		}
 	}
 
-	selectacon.selection.value = cell
+	selectacon.selection.value = clickedCell
 }
 

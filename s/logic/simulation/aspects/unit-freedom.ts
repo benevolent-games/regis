@@ -2,22 +2,6 @@
 import {mapGuarantee} from "@benev/slate"
 import {UnitArchetype} from "../../state.js"
 
-// export class UnitFreedom {
-// 	#map = new Map<string, {freedom: boolean}>()
-//
-// 	#obtain(id: string) {
-// 		return mapGuarantee(this.#map, id, () => ({freedom: true}))
-// 	}
-//
-// 	hasFreedom(id: string) {
-// 		return this.#obtain(id).freedom
-// 	}
-//
-// 	revokeFreedom(id: string) {
-// 		this.#obtain(id).freedom = false
-// 	}
-// }
-
 export type ActionRecord = {
 	moves: number
 	attacks: number
@@ -30,7 +14,7 @@ export type FreedomReport = {
 	canAttack: boolean
 }
 
-export class UnitFreedom2 {
+export class UnitFreedom {
 	#map = new Map<string, ActionRecord>()
 
 	constructor() {}
@@ -67,6 +51,10 @@ export class UnitFreedom2 {
 	countSpawning(id: string) {
 		const record = this.#obtain(id)
 		record.spawning = true
+	}
+
+	clear() {
+		this.#map.clear()
 	}
 }
 
