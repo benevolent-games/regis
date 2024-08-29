@@ -3,7 +3,7 @@ import {proposerFn} from "../types.js"
 import {Choice} from "../../../state.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
 import {applyDamage, attackReport} from "../../aspects/attack-report.js"
-import {Denial, MovementDenial, WrongTeamDenial} from "../../aspects/denials.js"
+import {Denial, GameOverDenial, MovementDenial, WrongTeamDenial} from "../../aspects/denials.js"
 
 export const proposeAttack = proposerFn(
 	({agent, freedom, turnTracker}) =>
@@ -21,6 +21,9 @@ export const proposeAttack = proposerFn(
 
 	if (!turnTracker.ourTurn || turnTracker.teamIndex !== report.sourceUnit.team)
 		return new WrongTeamDenial()
+
+	if (agent.conclusion)
+		return new GameOverDenial()
 
 	return () => {
 		const {targetUnit, attack} = report

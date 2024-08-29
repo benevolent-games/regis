@@ -3,7 +3,7 @@ import {proposerFn} from "../types.js"
 import {Choice} from "../../../state.js"
 import {isValidStep} from "../../aspects/navigation.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
-import {MovementDenial, WrongTeamDenial} from "../../aspects/denials.js"
+import {GameOverDenial, MovementDenial, WrongTeamDenial} from "../../aspects/denials.js"
 
 export const proposeMovement = proposerFn(
 	({agent, freedom, turnTracker}) =>
@@ -23,6 +23,9 @@ export const proposeMovement = proposerFn(
 
 	if (!turnTracker.ourTurn || turnTracker.teamIndex !== unit.team)
 		return new WrongTeamDenial()
+
+	if (agent.conclusion)
+		return new GameOverDenial()
 
 	let lastStep = choice.source
 

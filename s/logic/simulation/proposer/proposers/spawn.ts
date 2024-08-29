@@ -5,7 +5,7 @@ import {mintId} from "../../../../tools/mint-id.js"
 import {isValidSpawnPlace} from "../../aspects/spawning.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
 import {canAfford, subtractResources} from "../../aspects/money.js"
-import {SpawnDenial, WrongTeamDenial} from "../../aspects/denials.js"
+import {GameOverDenial, SpawnDenial, WrongTeamDenial} from "../../aspects/denials.js"
 
 export const proposeSpawn = proposerFn(
 	({agent, freedom, turnTracker}) =>
@@ -42,6 +42,9 @@ export const proposeSpawn = proposerFn(
 
 	if (!turnTracker.ourTurn)
 		return new WrongTeamDenial()
+
+	if (agent.conclusion)
+		return new GameOverDenial()
 
 	return () => {
 		subtractResources(agent.state, agent.activeTeamIndex, cost)
