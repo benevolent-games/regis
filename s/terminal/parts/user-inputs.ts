@@ -7,9 +7,9 @@ import {Planner} from "./planner.js"
 import {CameraRig} from "./camera-rig.js"
 import {Selectacon} from "./selectacon.js"
 import {Agent} from "../../logic/agent.js"
-import {TurnTracker} from "./turn-tracker.js"
 import {DragQueen} from "../../tools/drag-queen.js"
 import {handlePrimaryClick} from "./handle-primary-click.js"
+import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 
 export class UserInputs {
 	#trashbin = new Trashbin()

@@ -27,3 +27,9 @@ export class InvestmentDenial extends Denial {
 	}
 }
 
+export class WrongTeamDenial extends Denial {
+	constructor(public teamIndex: number) {
+		super(`wrong team: this user cannot control team ${teamIndex}`)
+	}
+}
+

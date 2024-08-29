@@ -4,6 +4,7 @@ import {clone} from "@benev/slate"
 import {Agent} from "../agent.js"
 import {Proposer} from "./proposer.js"
 import {Denial} from "./aspects/denials.js"
+import {TurnTracker} from "./aspects/turn-tracker.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
 import {limitedVision, universalVision} from "./aspects/vision.js"
 import {awardIncomeToActiveTeam, processWinByConquest} from "./aspects/turns.js"
@@ -46,7 +47,8 @@ export function simulateGame({initial, turns: chronicle}: GameHistory): GameStat
 	// updating the arbiter state as we go along
 	for (const turn of chronicle) {
 		const agent = new Agent(state)
-		const proposer = new Proposer(agent)
+		const turnTracker = new TurnTracker(agent, [agent.activeTeamIndex])
+		const proposer = new Proposer(agent, turnTracker)
 
 		for (const choice of turn.choices) {
 			const report = proposer.propose[choice.kind](choice as any)

@@ -1,44 +1,33 @@
 
-import {Vec2} from "@benev/toolbox"
-
 import {Agent} from "../agent.js"
 import {mintId} from "../../tools/mint-id.js"
 import {Choice, ChoiceKind} from "../state.js"
+import {Proposal} from "./aspects/proposal.js"
 import {isValidStep} from "./aspects/navigation.js"
+import {TurnTracker} from "./aspects/turn-tracker.js"
 import {UnitFreedom2} from "./aspects/unit-freedom.js"
 import {isValidSpawnPlace} from "./aspects/spawning.js"
 import {boardCoords} from "../../tools/board-coords.js"
 import {canAfford, subtractResources} from "./aspects/money.js"
 import {applyDamage, attackReport} from "./aspects/attack-report.js"
-import {Denial, InvestmentDenial, MovementDenial, SpawnDenial} from "./aspects/denials.js"
+import {Denial, InvestmentDenial, MovementDenial, SpawnDenial, WrongTeamDenial} from "./aspects/denials.js"
 
 export class Proposer {
 	unitFreedom = new UnitFreedom2()
 
 	constructor(
 		private agent: Agent,
+		private turnTracker: TurnTracker,
 	) {}
 
 	#rerender() {
 		this.agent.stateRef.publish()
 	}
 
-	p2 = {
-		spawn: (choice: Choice.Spawn) => ({
-
-			// is the active team allowed to perform this action?
-			teamAllowed: true,
-
-			// check if this move is viable
-			denial: null,
-
-			commit() {},
-		}),
-	}
-
 	propose = {
+
 		spawn: (choice: Choice.Spawn) => {
-			const {agent} = this
+			const {agent, turnTracker} = this
 			const {unitKind} = choice
 			const {config} = agent.state.initial
 			const {cost} = config.unitArchetypes[unitKind]
@@ -65,6 +54,9 @@ export class Proposer {
 			if (!validPlace)
 				return new SpawnDenial(`invalid spawn place ${boardCoords(choice.place)}`)
 
+			if (!turnTracker.ourTurn)
+				return new WrongTeamDenial(agent.activeTeamIndex)
+
 			return {
 				commit: () => {
 					subtractResources(agent.state, agent.activeTeamIndex, cost)
@@ -78,12 +70,12 @@ export class Proposer {
 						damage: 0,
 					})
 					this.#rerender()
-				},
+				}
 			}
 		},
 
 		movement: (choice: Choice.Movement) => {
-			const {agent, unitFreedom} = this
+			const {agent, turnTracker, unitFreedom} = this
 
 			const unit = agent.units.at(choice.source)
 			if (!unit)
@@ -97,12 +89,16 @@ export class Proposer {
 			if (!canMove)
 				return new MovementDenial(`unit "${unit.kind}" at ${boardCoords(choice.source)} does not have freedom to move`)
 
+			if (!turnTracker.ourTurn)
+				return new WrongTeamDenial(agent.activeTeamIndex)
+
 			let lastStep = choice.source
 
 			for (const step of choice.path) {
 				const placeA = lastStep
 				const placeB = step
-				if (isValidStep(agent, archetype.move.verticality, placeA, placeB))
+				const {verticality} = archetype.move
+				if (isValidStep(agent, verticality, placeA, placeB))
 					lastStep = placeB
 				else
 					break
@@ -119,7 +115,7 @@ export class Proposer {
 		},
 
 		attack: (choice: Choice.Attack) => {
-			const {agent, unitFreedom} = this
+			const {agent, turnTracker, unitFreedom} = this
 
 			const report = attackReport(agent, choice)
 			if (report instanceof Denial)
@@ -130,6 +126,9 @@ export class Proposer {
 			const {canAttack} = unitFreedom.report(report.sourceUnit.id, archetype)
 			if (!canAttack)
 				return new MovementDenial(`unit "${report.sourceUnit.kind}" at ${boardCoords(choice.source)} does not have freedom to attack`)
+
+			if (!turnTracker.ourTurn)
+				return new WrongTeamDenial(agent.activeTeamIndex)
 
 			return {
 				...report,
@@ -144,11 +143,9 @@ export class Proposer {
 		},
 
 		investment: (choice: Choice.Investment) => {
-			return new InvestmentDenial(`investment not implemented`)
-			// return {
-			// 	commit() {},
-			// }
+			return new InvestmentDenial(`todo investment not yet implemented`)
 		},
-	} satisfies Record<ChoiceKind, any>
+
+	} satisfies Record<ChoiceKind, (...args: any[]) => Proposal>
 }
 

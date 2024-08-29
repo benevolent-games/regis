@@ -3,9 +3,9 @@ import {Pointing} from "./types.js"
 import {Planner} from "./planner.js"
 import {Selectacon} from "./selectacon.js"
 import {Agent} from "../../logic/agent.js"
-import {TurnTracker} from "./turn-tracker.js"
 import {doFirstValidThing} from "../../tools/do-first-valid-thing.js"
 import {calculateMovement} from "../../logic/simulation/aspects/moving.js"
+import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 
 export function handlePrimaryClick(options: {
 		agent: Agent

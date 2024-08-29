@@ -7,10 +7,10 @@ import {Assets} from "./assets.js"
 import {Selectacon} from "./selectacon.js"
 import {Agent} from "../../logic/agent.js"
 import {Choice} from "../../logic/state.js"
-import {TurnTracker} from "./turn-tracker.js"
 import {SubmitTurnFn} from "../../logic/arbiter.js"
 import {Proposer} from "../../logic/simulation/proposer.js"
-import {Denial} from "../../logic/simulation/aspects/denials.js"
+import {Denial, WrongTeamDenial} from "../../logic/simulation/aspects/denials.js"
+import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 import {calculateMovement} from "../../logic/simulation/aspects/moving.js"
 
 /** interface for the user to sketch a plan for their turn */
@@ -29,7 +29,8 @@ export class Planner {
 			submitTurn: SubmitTurnFn
 		}) {
 
-		this.proposer = new Proposer(options.agent)
+		const {agent, turnTracker} = this.options
+		this.proposer = new Proposer(agent, turnTracker)
 
 		this.#planbin.disposer(
 			options.selectacon.selection.on(() => this.render())
@@ -37,7 +38,8 @@ export class Planner {
 	}
 
 	reset() {
-		this.proposer = new Proposer(this.options.agent)
+		const {agent, turnTracker} = this.options
+		this.proposer = new Proposer(agent, turnTracker)
 		this.choices = []
 	}
 
@@ -53,29 +55,24 @@ export class Planner {
 	render() {
 		this.#renderbin.dispose()
 		const {proposer} = this
-		const {turnTracker, agent, selectacon, assets} = this.options
+		const {agent, selectacon, assets} = this.options
 		const selection = selectacon.selection.value
 
 		if (selection) {
 
 			// render spawning liberties
 			if (selection.kind === "roster") {
-				Array
-					.from(agent.tiles.list())
-					.filter(({place}) => {
-						const report = proposer.propose.spawn({
-							kind: "spawn",
-							place,
-							unitKind: selection.unitKind,
-						})
-						return !(report instanceof Denial)
+				for (const {place} of agent.tiles.list()) {
+					const report = proposer.propose.spawn({
+						kind: "spawn",
+						place,
+						unitKind: selection.unitKind,
 					})
-					.forEach(({place}) => {
-						if (turnTracker.canControlTeam(selection.teamId))
-							this.#spawn(assets.indicators.libertyAction, place)
-						else
-							this.#spawn(assets.indicators.libertyPattern, place)
-					})
+					if (report instanceof WrongTeamDenial)
+						this.#spawn(assets.indicators.libertyPattern, place)
+					else if (!(report instanceof Denial))
+						this.#spawn(assets.indicators.libertyAction, place)
+				}
 			}
 
 			// render movement liberties
@@ -85,19 +82,24 @@ export class Planner {
 					const archetype = agent.archetype(unit.kind)
 					const {canMove} = proposer.unitFreedom.report(unit.id, archetype)
 					if (canMove) {
-						Array
-							.from(agent.tiles.list())
-							.filter(({place}) => calculateMovement({
+						for (const {place} of agent.tiles.list()) {
+							const movement = calculateMovement({
 								agent,
 								source: selection.place,
 								target: place,
-							}))
-							.forEach(({place}) => {
-								if (turnTracker.canControlUnit(unit.id))
-									this.#spawn(assets.indicators.libertyAction, place)
-								else
-									this.#spawn(assets.indicators.libertyPattern, place)
 							})
+							if (movement) {
+								const report = proposer.propose.movement({
+									kind: "movement",
+									source: movement.source,
+									path: movement.path,
+								})
+								if (report instanceof WrongTeamDenial)
+									this.#spawn(assets.indicators.libertyPattern, place)
+								else if (!(report instanceof Denial))
+									this.#spawn(assets.indicators.libertyAction, place)
+							}
+						}
 					}
 				}
 			}
