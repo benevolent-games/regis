@@ -35,7 +35,7 @@
 		"es-module-shims": "^1.10.0",
 		"markdown-it": "^14.1.0",
 		"renraku": "^0.2.0-2",
-		"zx": "^8.1.4"
+		"zx": "^8.1.5"
 	},
 	"devDependencies": {
 		"@benev/batch": "^0.0.1",
