@@ -55,7 +55,7 @@ export class Proposer {
 				return new SpawnDenial(`invalid spawn place ${boardCoords(choice.place)}`)
 
 			if (!turnTracker.ourTurn)
-				return new WrongTeamDenial(agent.activeTeamIndex)
+				return new WrongTeamDenial()
 
 			return {
 				commit: () => {
@@ -89,8 +89,8 @@ export class Proposer {
 			if (!canMove)
 				return new MovementDenial(`unit "${unit.kind}" at ${boardCoords(choice.source)} does not have freedom to move`)
 
-			if (!turnTracker.ourTurn)
-				return new WrongTeamDenial(agent.activeTeamIndex)
+			if (turnTracker.teamIndex !== unit.team)
+				return new WrongTeamDenial()
 
 			let lastStep = choice.source
 
@@ -127,8 +127,8 @@ export class Proposer {
 			if (!canAttack)
 				return new MovementDenial(`unit "${report.sourceUnit.kind}" at ${boardCoords(choice.source)} does not have freedom to attack`)
 
-			if (!turnTracker.ourTurn)
-				return new WrongTeamDenial(agent.activeTeamIndex)
+			if (turnTracker.teamIndex !== report.sourceUnit.team)
+				return new WrongTeamDenial()
 
 			return {
 				...report,

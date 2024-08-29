@@ -6,6 +6,7 @@ import {Connectivity} from "../net/connectivity.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 import {GameStartData} from "../director/apis/clientside.js"
 import { printReport } from "./utils/print-report.js"
+import { TurnTracker } from "../logic/simulation/aspects/turn-tracker.js"
 
 export async function versusFlow({
 		data: startData,
@@ -50,9 +51,11 @@ export async function versusFlow({
 		exit()
 	}))
 
+	const turnTracker = new TurnTracker(agent, startData.teamId)
+
 	const terminal = await makeGameTerminal(
 		agent,
-		[startData.teamId],
+		turnTracker,
 		turn => connectivity
 			.connection.payload?.serverside
 			.game.submitTurn(turn),

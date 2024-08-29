@@ -9,9 +9,9 @@ import {Agent} from "../../logic/agent.js"
 import {Choice} from "../../logic/state.js"
 import {SubmitTurnFn} from "../../logic/arbiter.js"
 import {Proposer} from "../../logic/simulation/proposer.js"
-import {Denial, WrongTeamDenial} from "../../logic/simulation/aspects/denials.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 import {calculateMovement} from "../../logic/simulation/aspects/moving.js"
+import {Denial, WrongTeamDenial} from "../../logic/simulation/aspects/denials.js"
 
 /** interface for the user to sketch a plan for their turn */
 export class Planner {

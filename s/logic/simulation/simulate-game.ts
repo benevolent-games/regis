@@ -47,7 +47,7 @@ export function simulateGame({initial, turns: chronicle}: GameHistory): GameStat
 	// updating the arbiter state as we go along
 	for (const turn of chronicle) {
 		const agent = new Agent(state)
-		const turnTracker = new TurnTracker(agent, [agent.activeTeamIndex])
+		const turnTracker = new TurnTracker(agent, agent.activeTeamIndex)
 		const proposer = new Proposer(agent, turnTracker)
 
 		for (const choice of turn.choices) {

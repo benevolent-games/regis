@@ -13,15 +13,15 @@ import {SubmitTurnFn} from "../logic/arbiter.js"
 import {UserInputs} from "./parts/user-inputs.js"
 import {makeBasicVisuals} from "./parts/basics.js"
 import {setupPreviewAgent} from "./parts/preview-agent.js"
-import { TurnTracker } from "../logic/simulation/aspects/turn-tracker.js"
+import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 
 export async function makeGameTerminal(
 
 		// actual state from the arbiter
 		baseAgent: Agent,
 
-		// which teams this terminal can control
-		teamControl: number[],
+		// tracking which team we can play as
+		turnTracker: TurnTracker,
 
 		// submit the player's turn to the arbiter
 		submitTurn: SubmitTurnFn,
@@ -44,7 +44,6 @@ export async function makeGameTerminal(
 	const selectacon = d(new Selectacon({agent, world, assets, tiler, rosters}))
 	const units = d(makeUnitVisuals(agent, assets))
 
-	const turnTracker = new TurnTracker(agent, teamControl)
 	const planner = d(new Planner({agent, assets, selectacon, turnTracker, submitTurn}))
 	d(new Hovering({world, selectacon}))
 	d(new UserInputs({agent, world, planner, selectacon, cameraRig, turnTracker, resetPreview}))

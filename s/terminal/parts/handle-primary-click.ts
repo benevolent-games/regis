@@ -39,7 +39,7 @@ export function handlePrimaryClick(options: {
 				const sourceUnit = agent.units.at(selection.place)
 				const sourceUnitIsControllable = (
 					sourceUnit &&
-					turnTracker.canControlUnit(sourceUnit.id)
+					turnTracker.teamIndex === sourceUnit.team
 				)
 
 				doFirstValidThing([
