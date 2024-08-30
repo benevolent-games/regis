@@ -59,6 +59,8 @@ export class UnitsGlb extends Glb {
 			: (teamId + 1).toString()
 	}
 
+	ring = () => this.instance("ring")
+
 	unit = new Map<UnitKind, (teamId: null | number) => TransformNode>()
 		.set("obstacle", () => this.themeGlb.obstacle())
 		.set("king", teamId => this.instance(`unit-team${this.#team(teamId)}-king`))

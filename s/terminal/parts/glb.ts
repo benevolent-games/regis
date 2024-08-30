@@ -23,7 +23,9 @@ export class Glb {
 	instancer(name: string) {
 		const prop = this.props.get(name)
 		if (!prop) throw new Error(`prop "${name}" not found`)
-		return () => prop.instantiateHierarchy() as TransformNode
+		return () => prop.instantiateHierarchy(undefined, undefined, (source, clone) => {
+			clone.name = source.name
+		}) as TransformNode
 	}
 
 	instance(name: string) {

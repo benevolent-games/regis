@@ -8,11 +8,11 @@ import {Hovering} from "./parts/hovering.js"
 import {Planner} from "./planner/planner.js"
 import {Claimery} from "./parts/claimery.js"
 import {CameraRig} from "./parts/camera-rig.js"
-import {makeUnitVisuals} from "./parts/unit.js"
 import {Selectacon} from "./parts/selectacon.js"
 import {SubmitTurnFn} from "../logic/arbiter.js"
 import {UserInputs} from "./parts/user-inputs.js"
 import {makeBasicVisuals} from "./parts/basics.js"
+import {UnitVisuals} from "./parts/unit-visuals.js"
 import {setupPreviewAgent} from "./parts/preview-agent.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 
@@ -43,7 +43,7 @@ export async function makeGameTerminal(
 	const tiler = d(new Tiler({agent, world, assets}))
 	const rosters = d(new Rosters({agent, world, assets}))
 	const selectacon = d(new Selectacon({agent, world, assets, tiler, rosters}))
-	const units = d(makeUnitVisuals(agent, assets))
+	const unitVisuals = d(new UnitVisuals(agent, assets))
 	const claimery = d(new Claimery({agent, assets}))
 
 	const planner = d(new Planner({agent, assets, selectacon, turnTracker, submitTurn}))
@@ -55,7 +55,7 @@ export async function makeGameTerminal(
 	function render() {
 		rosters.render()
 		selectacon.render()
-		units.render()
+		unitVisuals.render()
 		planner.render()
 		claimery.render()
 	}
