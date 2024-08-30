@@ -4,6 +4,7 @@ import {Trashbin} from "@benev/slate"
 import {TransformNode} from "@babylonjs/core"
 
 import {Choice} from "../../logic/state.js"
+import {Cell, TileCell} from "../parts/selectacon.js"
 import {ConsiderationResult, PlannerOptions} from "./types.js"
 import {doFirstValidThing} from "../../tools/do-first-valid-thing.js"
 import {UnitFreedom} from "../../logic/simulation/aspects/unit-freedom.js"
@@ -15,7 +16,6 @@ export class Planner {
 	choices: Choice.Any[] = []
 	considerations: Considerations
 
-	#planbin = new Trashbin()
 	#renderbin = new Trashbin()
 	#freedom = new UnitFreedom()
 
@@ -33,10 +33,6 @@ export class Planner {
 			proposers: this.proposers,
 			commit: this.#commit,
 		})
-
-		this.#planbin.disposer(
-			options.selectacon.selection.on(() => this.render())
-		)
 	}
 
 	#instance(fn: () => TransformNode, place: Vec2) {
@@ -71,53 +67,79 @@ export class Planner {
 
 	dispose() {
 		this.#renderbin.dispose()
-		this.#planbin.dispose()
 	}
 
 	render() {
 		this.#renderbin.dispose()
-		const {considerations} = this
 		const {agent, assets, selectacon} = this.options
 		const {indicators} = assets
-		const selection = selectacon.selection.value
+		const selected = selectacon.selection.value
 
-		if (selection) {
-
-			// render spawning liberties
-			if (selection.kind === "roster") {
-				for (const {place} of agent.tiles.list()) {
-					spawnIndicator(considerations.spawn(place, selection.unitKind), {
-						action: () => this.#instance(indicators.libertyAction, place),
-						pattern: () => this.#instance(indicators.libertyPattern, place),
-					})
-				}
+		for (const {place, tile} of agent.tiles.list()) {
+			const target: TileCell = {
+				tile,
+				place,
+				kind: "tile",
+				position: agent.coordinator.toPosition(place),
 			}
 
-			if (selection.kind === "tile") {
-				for (const {place} of agent.tiles.list()) {
-					const source = selection.place
-					const target = place
-					doFirstValidThing([
+			this.navigateActionSpace({
+				target,
+				selected,
+				on: {
+					spawn: considered => makeIndicator(considered, {
+						action: () => this.#instance(indicators.libertyAction, place),
+						pattern: () => this.#instance(indicators.libertyPattern, place),
+					}),
+					attack: considered => makeIndicator(considered, {
+						action: () => this.#instance(indicators.attackAction, place),
+						pattern: () => this.#instance(indicators.attackPattern, place),
+					}),
+					movement: considered => makeIndicator(considered, {
+						action: () => this.#instance(indicators.libertyAction, place),
+						pattern: () => this.#instance(indicators.libertyPattern, place),
+					}),
+				},
+			})
+		}
+	}
 
-						// spawn attack indicators
-						() => spawnIndicator(considerations.attack(source, target), {
-							action: () => this.#instance(indicators.attackAction, place),
-							pattern: () => this.#instance(indicators.attackPattern, place),
-						}),
+	navigateActionSpace({target, selected, on}: {
+			target: Cell | null
+			selected: Cell | null
+			on: {
+				spawn: (r: ConsiderationResult) => boolean
+				attack: (r: ConsiderationResult) => boolean
+				movement: (r: ConsiderationResult) => boolean
+			}
+		}) {
 
-						// spawn movement indicators
-						() => spawnIndicator(considerations.movement(source, target), {
-							action: () => this.#instance(indicators.libertyAction, place),
-							pattern: () => this.#instance(indicators.libertyPattern, place),
-						}),
-					])
-				}
+		const {agent} = this.options
+		const {considerations} = this
+
+		// focusing on a tile cell
+		if (target?.kind === "tile") {
+
+			// roster unit is already selected
+			if (
+				selected &&
+				selected.kind === "roster" &&
+				selected.teamId === agent.activeTeamIndex) {
+					on.spawn(considerations.spawn(target.place, selected.unitKind))
+			}
+
+			// a tile is already selected
+			else if (selected && selected.kind === "tile") {
+				doFirstValidThing([
+					() => on.attack(considerations.attack(selected.place, target.place)),
+					() => on.movement(considerations.movement(selected.place, target.place)),
+				])
 			}
 		}
 	}
 }
 
-function spawnIndicator({indicate}: ConsiderationResult, actors: {
+function makeIndicator({indicate}: ConsiderationResult, actors: {
 		pattern: () => void
 		action: () => void
 	}) {

@@ -48,6 +48,8 @@ export async function makeGameTerminal(
 	d(new Hovering({world, selectacon}))
 	d(new UserInputs({agent, world, planner, selectacon, cameraRig, turnTracker, resetPreview}))
 
+	dr(selectacon.selection.on(() => planner.render()))
+
 	function render() {
 		rosters.render()
 		selectacon.render()

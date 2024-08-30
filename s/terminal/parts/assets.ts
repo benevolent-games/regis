@@ -21,6 +21,9 @@ export class Assets {
 		const boardGlb = new BoardGlb(boardContainer)
 		const unitsGlb = new UnitsGlb(unitsContainer, boardGlb)
 		const indicatorsGlb = new IndicatorsGlb(indicatorsContainer)
+
+		console.log("INDICATORS", [...indicatorsGlb.props.keys()])
+
 		return new this(boardGlb, unitsGlb, indicatorsGlb)
 	}
 
