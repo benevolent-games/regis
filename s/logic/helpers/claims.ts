@@ -3,7 +3,7 @@ import {Vec2, vec2} from "@benev/toolbox"
 
 import {TilesHelper} from "./tiles.js"
 import {UnitsHelper} from "./units.js"
-import {AgentState, Claim, TileClaim} from "../state.js"
+import {AgentState, Claim, TechKind, TileClaim} from "../state.js"
 
 export class ClaimsHelper {
 	constructor(
@@ -24,6 +24,25 @@ export class ClaimsHelper {
 			return null
 
 		return unit
+	}
+
+	getStakingCost(place: Vec2) {
+		const {initial: {config}} = this.state
+		const {claim} = this.tiles.at(place)
+		let cost = 0
+
+		if (claim.tech)
+			for (const [key, value] of Object.entries(claim.tech))
+				if (value)
+					cost += config.costs.staking.tech[key as TechKind]
+
+		if (claim.resource)
+			cost += config.costs.staking.resource
+
+		if (claim.watchtower)
+			cost += config.costs.staking.watchtower
+
+		return cost
 	}
 
 	determineResourceClaimLevel(place: Vec2, resource: Claim.Resource) {
@@ -60,9 +79,7 @@ export class ClaimsHelper {
 			knight: false,
 			rook: false,
 			bishop: false,
-
-			// TODO unhack this
-			queen: true,
+			queen: false,
 		}
 
 		for (const {claim} of this.getStakedClaims(teamIndex)) {
@@ -70,7 +87,7 @@ export class ClaimsHelper {
 				continue
 			for (const [key, value] of Object.entries(claim.tech)) {
 				if (value)
-					tech[key as keyof Claim.Tech] = true
+					tech[key as TechKind] = true
 			}
 		}
 

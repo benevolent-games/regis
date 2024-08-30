@@ -12,23 +12,21 @@ export const proposeSpawn = proposerFn(
 
 	const {unitKind} = choice
 	const {config} = agent.state.initial
-	const {cost} = config.unitArchetypes[unitKind]
-
+	const {cost: unitCost} = config.unitArchetypes[unitKind]
+	const stakingCost = agent.claims.getStakingCost(choice.place)
 	const teamIndex = agent.activeTeamIndex
-	const buyable = cost !== null
-	const affordable = canAfford(agent.activeTeam, cost)
-	const validPlace = isValidSpawnPlace(agent, teamIndex, choice.place)
 
+	const buyable = unitCost !== null
+	const tech = agent.claims.getTech(teamIndex)
+
+	const validPlace = isValidSpawnPlace(agent, teamIndex, choice.place)
 	const howManyAlready = [...agent.units.list()]
 		.filter(unit => unit.team === teamIndex)
 		.filter(unit => unit.kind === choice.unitKind)
 		.length
-
 	const {roster} = config.teams.at(teamIndex)!
 	const remainingRosterCount = roster[choice.unitKind] - howManyAlready
 	const availableInRoster = remainingRosterCount > 0
-
-	const tech = agent.claims.getTech(teamIndex)
 
 	if (unitKind in tech && !tech[unitKind as keyof Claim.Tech])
 		return new SpawnDenial(`unit kind "${unitKind}" is not unlocked`)
@@ -36,8 +34,11 @@ export const proposeSpawn = proposerFn(
 	if (!buyable)
 		return new SpawnDenial(`unit kind "${unitKind}" is not for sale`)
 
+	const cost = unitCost + stakingCost
+	const affordable = canAfford(agent.activeTeam, cost)
+
 	if (!affordable)
-		return new SpawnDenial(`cannot afford "${unitKind}"`)
+		return new SpawnDenial(`cannot afford "${unitKind}" at cost of ${cost}`)
 
 	if (!availableInRoster)
 		return new SpawnDenial(`"${unitKind}" not available in roster`)

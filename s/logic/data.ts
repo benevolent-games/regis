@@ -3,25 +3,20 @@ import {GameConfig, InitialTeamInfo, Roster, UnitArchetype, UnitKind, VerticalCa
 
 export function defaultGameConfig(): GameConfig {
 	const unitArchetypes = defaultUnitArchetypes()
-	const resourceStakingCost = 4
 	return {
 		startingResources: 8,
 		universalBasicIncome: 2,
 		teams: defaultTeams(),
 		costs: {
-			investment: Math.floor(
-				resourceStakingCost + (
-					1.5 * (unitArchetypes.pawn.cost ?? 0)
-				)
-			),
+			investment: 10,
 			staking: {
-				resource: resourceStakingCost,
+				resource: 4,
 				watchtower: 0,
 				tech: {
-					knight: (unitArchetypes.knight.cost ?? 0),
-					rook: (unitArchetypes.rook.cost ?? 0),
-					bishop: (unitArchetypes.bishop.cost ?? 0),
-					queen: (unitArchetypes.queen.cost ?? 0),
+					knight: 4,
+					rook: 4,
+					bishop: 4,
+					queen: 4,
 				},
 			},
 		},

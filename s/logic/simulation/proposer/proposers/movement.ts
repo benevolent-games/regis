@@ -4,6 +4,8 @@ import {Choice} from "../../../state.js"
 import {isValidStep} from "../../aspects/navigation.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
 import {GameOverDenial, MovementDenial, WrongTeamDenial} from "../../aspects/denials.js"
+import { vec2 } from "@benev/toolbox"
+import { subtractResources } from "../../aspects/money.js"
 
 export const proposeMovement = proposerFn(
 	({agent, freedom, turnTracker}) =>
@@ -20,6 +22,9 @@ export const proposeMovement = proposerFn(
 	const {canMove} = freedom.report(unit.id, archetype)
 	if (!canMove)
 		return new MovementDenial(`unit "${unit.kind}" at ${boardCoords(choice.source)} does not have freedom to move`)
+
+	const destination = [...choice.path].pop()!
+	const destinationStakingCost = agent.claims.getStakingCost(destination)
 
 	if (!turnTracker.ourTurn || turnTracker.teamIndex !== unit.team)
 		return new WrongTeamDenial()
@@ -39,8 +44,21 @@ export const proposeMovement = proposerFn(
 			break
 	}
 
+	const hasMoved = !vec2.equal(lastStep, choice.source)
+	const interrupted = !vec2.equal(lastStep, destination)
+	if (hasMoved && interrupted) {
+		const lastStepStakingCost = agent.claims.getStakingCost(lastStep)
+		if (lastStepStakingCost > 0)
+			return new MovementDenial(`interrupted movement landed on a pricey claim, cancelled whole movement (this is rare)`)
+	}
+
+	const cost = (hasMoved && !interrupted)
+		? destinationStakingCost
+		: 0
+
 	return () => {
 		freedom.countMove(unit.id)
+		subtractResources(agent.state, agent.activeTeamIndex, cost)
 		unit.place = lastStep
 	}
 })

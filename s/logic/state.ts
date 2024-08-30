@@ -33,7 +33,7 @@ export type GameConfig = {
 		staking: {
 			resource: number
 			watchtower: number
-			tech: Record<keyof Claim.Tech, number>
+			tech: Record<TechKind, number>
 		}
 	}
 }
@@ -113,6 +113,13 @@ export type Roster = Record<UnitKind, number>
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
+export type TechKind = (
+	| "knight"
+	| "rook"
+	| "bishop"
+	| "queen"
+)
+
 export type Investment = {
 	place: Vec2
 	count: number
@@ -124,12 +131,7 @@ export namespace Claim {
 		startingLevel: 1 | 2 | 3
 	}
 	export type Watchtower = {}
-	export type Tech = {
-		knight: boolean
-		rook: boolean
-		bishop: boolean
-		queen: boolean
-	}
+	export type Tech = Record<TechKind, boolean>
 }
 
 /////////////////////////////////////////////////
