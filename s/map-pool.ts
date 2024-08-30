@@ -1,6 +1,6 @@
 
 export function randomMap(): MapData {
-	// return {name: "override", ascii: mapPool.pontifex}
+	return {name: "pontifex", ...mapPool.pontifex}
 
 	const maplist = Object.entries(mapPool)
 	const index = Math.floor(Math.random() * maplist.length)
@@ -280,14 +280,14 @@ export const mapPool = {
 	pontifex: {
 		author: "chase",
 		ascii: `
-			=$   =    .^   #    =    =    =k   =♚^
-			=A   =    .^   .^   =    =    =    =$
-			.^   .^   .    .    #    #    =    =r
-			#    .^   .    .    .    #    =    =
-			=    =    #    .    .    .    .^   #
-			=r   =    #    #    .    .    .^   .^
-			=$   =    =    =    .^   .^   =    =A
-			=♔^  =k   =    =    #    .^   =    =$
+			=$$  =    .^   #    =    =q   =k   =$♚^
+			=b   =    .^   .^   =    =    =    =r
+			.^   .^   .    .    #    #    =    =$
+			#    .^   .    .    .*   #    =    =
+			=    =    #    .*   .    .    .^   #
+			=$   =    #    #    .    .    .^   .^
+			=r   =    =    =    .^   .^   =    =b
+			=$♔^ =k   =q   =    #    .^   =    =$$
 		`,
 	},
 
