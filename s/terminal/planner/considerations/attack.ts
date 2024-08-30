@@ -5,13 +5,22 @@ import {Choice} from "../../../logic/state.js"
 import {Denial, SoftDenial} from "../../../logic/simulation/aspects/denials.js"
 
 export const considerAttack = considerationFn(
-	({proposers, commit}) =>
+	({agent, proposers, commit}) =>
 	(source: Vec2, target: Vec2) => {
+
+	const attacker = agent.units.at(source)
+	const victim = agent.units.at(target)
+
+	if (!attacker || !victim)
+		return {
+			indicate: undefined,
+			actuate: undefined,
+		}
 
 	const choice: Choice.Attack = {
 		kind: "attack",
-		source,
-		target,
+		attackerId: attacker.id,
+		victimId: victim.id,
 	}
 
 	const proposal = proposers.attack(choice)

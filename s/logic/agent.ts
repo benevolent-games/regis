@@ -6,7 +6,7 @@ import {UnitsHelper} from "./helpers/units.js"
 import {AgentState, UnitKind} from "./state.js"
 import {BoundaryHelper} from "./helpers/boundary.js"
 import {CoordinatorHelper} from "./helpers/coordinator.js"
-import { activeTeamIndex } from "./simulation/aspects/turns.js"
+import {activeTeamIndex} from "./simulation/aspects/turns.js"
 
 export class Agent {
 	stateRef: Ref<AgentState>
@@ -28,7 +28,13 @@ export class Agent {
 	get tiles() { return new TilesHelper(this.state.initial.board) }
 	get units() { return new UnitsHelper(this.state.units) }
 
-	deleteUnit(id: string) {
+	grabId() {
+		const id = this.state.context.nextId
+		this.state.context.nextId += 1
+		return id
+	}
+
+	deleteUnit(id: number) {
 		this.state.units = this.state.units.filter(unit => unit.id !== id)
 		this.stateRef.publish()
 	}

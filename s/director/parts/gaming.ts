@@ -7,7 +7,7 @@ import {GameCounting} from "./game-counting.js"
 import {IdCounter} from "../../tools/id-counter.js"
 
 export class Game {
-	arbiter = new Arbiter(randomMap().ascii)
+	arbiter = new Arbiter({map: randomMap()})
 	constructor(public pair: Pair) {}
 }
 

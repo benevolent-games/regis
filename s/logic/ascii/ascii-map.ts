@@ -2,13 +2,13 @@
 import {Vec2} from "@benev/toolbox"
 
 import {glyphs} from "./glyphs.js"
-import {mintId} from "../../tools/mint-id.js"
 import {TilesHelper} from "../helpers/tiles.js"
 import {UnitsHelper} from "../helpers/units.js"
 import {defaultClaims} from "./default-claims.js"
 import {makePlainBoardState, UnitKind} from "../state.js"
 
 export function asciiMap(ascii: string) {
+	let id = 0
 	const board = new TilesHelper(makePlainBoardState())
 	const units = new UnitsHelper([])
 
@@ -60,7 +60,7 @@ export function asciiMap(ascii: string) {
 
 			function makeUnit(kind: UnitKind, team: null | number, place: Vec2) {
 				return () => units.add({
-					id: mintId(),
+					id: id++,
 					kind,
 					team,
 					place,
@@ -87,6 +87,7 @@ export function asciiMap(ascii: string) {
 	})
 
 	return {
+		id,
 		board: board.state,
 		units: units.state,
 	}

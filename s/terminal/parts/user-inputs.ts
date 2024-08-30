@@ -48,7 +48,8 @@ export class UserInputs {
 
 		dr(ev(window, {
 			keydown: (event: KeyboardEvent) => {
-				if (event.code === "Space" && this.options.turnTracker.ourTurn)
+				const {turnTracker, agent} = this.options
+				if (event.code === "Space" && !agent.conclusion && turnTracker.ourTurn)
 					planner.executePlan()
 			},
 		}))

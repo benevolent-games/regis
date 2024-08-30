@@ -1,7 +1,6 @@
 
 import {proposerFn} from "../types.js"
 import {Choice} from "../../../state.js"
-import {mintId} from "../../../../tools/mint-id.js"
 import {isValidSpawnPlace} from "../../aspects/spawning.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
 import {canAfford, subtractResources} from "../../aspects/money.js"
@@ -48,7 +47,7 @@ export const proposeSpawn = proposerFn(
 
 	return () => {
 		subtractResources(agent.state, agent.activeTeamIndex, cost)
-		const id = mintId()
+		const id = agent.grabId()
 		freedom.countSpawning(id)
 		agent.units.add({
 			id,

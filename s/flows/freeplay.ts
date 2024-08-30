@@ -6,7 +6,7 @@ import {makeGameTerminal} from "../terminal/terminal.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 
 export async function freeplayFlow() {
-	const arbiter = new Arbiter(randomMap().ascii)
+	const arbiter = new Arbiter({map: randomMap()})
 	const agent = arbiter.makeAgent(null)
 	const turnTracker = new TurnTracker(agent, agent.activeTeamIndex)
 

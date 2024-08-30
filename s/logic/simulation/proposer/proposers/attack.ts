@@ -13,24 +13,24 @@ export const proposeAttack = proposerFn(
 	if (report instanceof Denial)
 		return report
 
-	const archetype = agent.archetype(report.sourceUnit.kind)
+	const {attack, victim, attacker} = report
+	const archetype = agent.archetype(attacker.kind)
 
-	const {canAttack} = freedom.report(report.sourceUnit.id, archetype)
+	const {canAttack} = freedom.report(attacker.id, archetype)
 	if (!canAttack)
-		return new MovementDenial(`unit "${report.sourceUnit.kind}" at ${boardCoords(choice.source)} does not have freedom to attack`)
+		return new MovementDenial(`unit "${attacker.kind}" at ${boardCoords(attacker.place)} does not have freedom to attack`)
 
-	if (!turnTracker.ourTurn || turnTracker.teamIndex !== report.sourceUnit.team)
+	if (!turnTracker.ourTurn || turnTracker.teamIndex !== attacker.team)
 		return new WrongTeamDenial()
 
 	if (agent.conclusion)
 		return new GameOverDenial()
 
 	return () => {
-		const {targetUnit, attack} = report
-		freedom.countAttack(report.sourceUnit.id)
-		const lethal = applyDamage(agent, targetUnit, attack.damage)
+		freedom.countAttack(attacker.id)
+		const lethal = applyDamage(agent, victim, attack.damage)
 		if (lethal)
-			agent.deleteUnit(targetUnit.id)
+			agent.deleteUnit(victim.id)
 	}
 })
 

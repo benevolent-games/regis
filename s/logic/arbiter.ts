@@ -6,7 +6,7 @@ import {defaultGameConfig} from "./data.js"
 import {asciiMap} from "./ascii/ascii-map.js"
 import {GameHistory, GameStates, Turn} from "./state.js"
 import {simulateGame} from "./simulation/simulate-game.js"
-import { activeTeamIndex } from "./simulation/aspects/turns.js"
+import {activeTeamIndex} from "./simulation/aspects/turns.js"
 
 export type SubmitTurnFn = (turn: Turn) => void
 
@@ -14,14 +14,25 @@ export class Arbiter {
 	historyRef: Ref<GameHistory>
 	statesRef: Ref<GameStates>
 
-	constructor(ascii: string) {
-		const {board, units} = asciiMap(ascii)
+	constructor({map}: {
+			map: {
+				name: string
+				author: string
+				ascii: string
+			}
+		}) {
+		const {board, units, id} = asciiMap(map.ascii)
 		this.historyRef = ref<GameHistory>({
 			turns: [],
 			initial: {
+				id,
 				board,
 				units,
 				config: defaultGameConfig(),
+				mapMeta: {
+					name: map.name,
+					author: map.author,
+				},
 			},
 		})
 		this.statesRef = ref(clone(simulateGame(this.historyRef.value)))
@@ -40,6 +51,11 @@ export class Arbiter {
 	}
 
 	submitTurn: SubmitTurnFn = turn => {
+		const {conclusion} = this.statesRef.value.arbiter.context
+		if (conclusion) {
+			console.error("user submitted turn after game already ended")
+			return
+		}
 		const newHistory = clone(this.historyRef.value)
 		newHistory.turns.push(turn)
 		this.#commit(newHistory)

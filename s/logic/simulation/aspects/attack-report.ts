@@ -4,44 +4,45 @@ import {AttackDenial} from "./denials.js"
 import {Choice, Unit} from "../../state.js"
 import {isWithinRange} from "./navigation.js"
 import {isVerticallyCompatible} from "./verticality.js"
-import {boardCoords} from "../../../tools/board-coords.js"
 
 export function attackReport(
 		agent: Agent,
-		{source, target}: Choice.Attack,
+		choice: Choice.Attack,
 	) {
 
-	const sourceUnit = agent.units.at(source)
-	if (!sourceUnit)
-		return new AttackDenial(`no source unit at ${boardCoords(source)}`)
+	const victim = agent.units.get(choice.victimId)
+	if (!victim)
+		return new AttackDenial(`victim ${choice.victimId} not found`)
 
-	const targetUnit = agent.units.at(target)
-	if (!targetUnit)
-		return new AttackDenial(`no target unit at ${boardCoords(target)}`)
+	const attacker = agent.units.get(choice.attackerId)
+	if (!attacker) {
+		console.log([...agent.units.list()])
+		return new AttackDenial(`attacker ${choice.attackerId} not found`)
+	}
 
-	const hostile = sourceUnit.team !== targetUnit.team
+	const hostile = attacker.team !== victim.team
 	if (!hostile)
 		return new AttackDenial(`friendly fire`)
 
-	const {attack} = agent.archetype(sourceUnit.kind)
+	const {attack} = agent.archetype(attacker.kind)
 	if (!attack)
-		return new AttackDenial(`unit archetype "${sourceUnit.kind}" not configured with attack capability`)
+		return new AttackDenial(`unit archetype "${attacker.kind}" not configured with attack capability`)
 
-	if (!isWithinRange(attack.range, source, target))
+	if (!isWithinRange(attack.range, attacker.place, victim.place))
 		return new AttackDenial(`out of range`)
 
 	if (!isVerticallyCompatible(
 			attack.verticality,
-			agent.tiles.at(source),
-			agent.tiles.at(target),
+			agent.tiles.at(attacker.place),
+			agent.tiles.at(victim.place),
 		))
 		return new AttackDenial(`not vertically allowable`)
 
 	return {
 		attack,
-		sourceUnit,
-		targetUnit,
-		isKill: wouldThisBeLethal(agent, targetUnit, attack.damage),
+		attacker,
+		victim,
+		isKill: wouldThisBeLethal(agent, victim, attack.damage),
 	}
 }
 

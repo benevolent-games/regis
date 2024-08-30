@@ -39,25 +39,25 @@ export class GameOverDenial extends SoftDenial {
 //
 
 export class SpawnDenial extends HardDenial {
-	constructor(public reason: string) {
+	constructor(reason: string) {
 		super(`spawn denied: ${reason}`)
 	}
 }
 
 export class MovementDenial extends HardDenial {
-	constructor(public reason: string) {
+	constructor(reason: string) {
 		super(`movement denied: ${reason}`)
 	}
 }
 
 export class AttackDenial extends HardDenial {
-	constructor(public reason: string) {
+	constructor(reason: string) {
 		super(`attack denied: ${reason}`)
 	}
 }
 
 export class InvestmentDenial extends HardDenial {
-	constructor(public reason: string) {
+	constructor(reason: string) {
 		super(`investment denied: ${reason}`)
 	}
 }

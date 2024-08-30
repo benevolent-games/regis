@@ -8,8 +8,8 @@ import {UnitFreedom} from "./aspects/unit-freedom.js"
 import {makeProposers} from "./proposer/make-proposers.js"
 import {censorTeam, censorUnits} from "./aspects/censorship.js"
 import {limitedVision, universalVision} from "./aspects/vision.js"
-import {awardIncomeToActiveTeam, processWinByConquest} from "./aspects/turns.js"
 import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
+import {awardIncomeToActiveTeam, processWinByConquest} from "./aspects/turns.js"
 
 /**
  * compute the state of the game.
@@ -22,7 +22,7 @@ import {ArbiterState, FullTeamInfo, GameHistory, GameStates} from "../state.js"
  * for each turn, we add a historical event -- then we simply recompute the
  * game state again.
  */
-export function simulateGame({initial, turns: chronicle}: GameHistory): GameStates {
+export function simulateGame({initial, turns}: GameHistory): GameStates {
 
 	// establish the authoritative state for the game,
 	// the arbiter "knows all"
@@ -30,6 +30,7 @@ export function simulateGame({initial, turns: chronicle}: GameHistory): GameStat
 		initial,
 		units: initial.units,
 		context: {
+			nextId: initial.id,
 			turnIndex: 0,
 			conclusion: null,
 		},
@@ -46,7 +47,7 @@ export function simulateGame({initial, turns: chronicle}: GameHistory): GameStat
 
 	// we churn through every event in the game history,
 	// updating the arbiter state as we go along
-	for (const turn of chronicle) {
+	for (const turn of turns) {
 		const agent = new Agent(state)
 		const turnTracker = new TurnTracker(agent, agent.activeTeamIndex)
 		const proposers = makeProposers({
@@ -65,9 +66,8 @@ export function simulateGame({initial, turns: chronicle}: GameHistory): GameStat
 
 		const gameOver = processWinByConquest(state)
 
-		if (gameOver) {
+		if (gameOver)
 			break
-		}
 		else {
 			state.context.turnIndex += 1
 			awardIncomeToActiveTeam(state)
@@ -78,7 +78,7 @@ export function simulateGame({initial, turns: chronicle}: GameHistory): GameStat
 	return {
 		arbiter: state,
 		agents: state.teams.map((_, teamId) => {
-			const vision = chronicle.length === 0
+			const vision = turns.length === 0
 				? universalVision(state)
 				: limitedVision(state, teamId)
 			return {

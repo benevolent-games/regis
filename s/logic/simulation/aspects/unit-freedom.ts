@@ -15,11 +15,11 @@ export type FreedomReport = {
 }
 
 export class UnitFreedom {
-	#map = new Map<string, ActionRecord>()
+	#map = new Map<number, ActionRecord>()
 
 	constructor() {}
 
-	#obtain(id: string) {
+	#obtain(id: number) {
 		return mapGuarantee(this.#map, id, () => ({
 			moves: 0,
 			attacks: 0,
@@ -27,7 +27,7 @@ export class UnitFreedom {
 		}))
 	}
 
-	report(id: string, archetype: UnitArchetype): FreedomReport {
+	report(id: number, archetype: UnitArchetype): FreedomReport {
 		const {moves, attacks, spawning} = this.#obtain(id)
 		const sum = moves + attacks
 		const action = !spawning && sum < archetype.actionCap
@@ -38,17 +38,17 @@ export class UnitFreedom {
 		}
 	}
 
-	countMove(id: string) {
+	countMove(id: number) {
 		const record = this.#obtain(id)
 		record.moves += 1
 	}
 
-	countAttack(id: string) {
+	countAttack(id: number) {
 		const record = this.#obtain(id)
 		record.attacks += 1
 	}
 
-	countSpawning(id: string) {
+	countSpawning(id: number) {
 		const record = this.#obtain(id)
 		record.spawning = true
 	}

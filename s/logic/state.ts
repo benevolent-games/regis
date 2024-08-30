@@ -11,9 +11,16 @@ export type GameHistory = {
 }
 
 export type GameInitial = {
+	id: number
 	board: BoardState
 	units: Unit[]
 	config: GameConfig
+	mapMeta: MapMeta
+}
+
+export type MapMeta = {
+	name: string
+	author: string
 }
 
 export type GameConfig = {
@@ -60,6 +67,7 @@ export type AgentState = {
 
 /** current situation that the game is in */
 export type GameContext = {
+	nextId: number
 	turnIndex: number
 	conclusion: null | Conclusion
 }
@@ -142,8 +150,8 @@ export namespace Choice {
 
 	export type Attack = {
 		kind: "attack"
-		source: Vec2
-		target: Vec2
+		attackerId: number
+		victimId: number
 	}
 
 	export type Investment = {
@@ -212,7 +220,7 @@ export function makePlainBoardState(): BoardState {
 /////////////////////////////////////////////////
 
 export type Unit = {
-	id: string
+	id: number
 	place: Vec2
 	kind: UnitKind
 	team: null | number
