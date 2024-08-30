@@ -7,7 +7,7 @@ export const constants = {
 		assets: {
 			board: "/assets/glbs/board-dark.glb",
 			units: "/assets/glbs/units-dark1.glb",
-			indicators: "/assets/glbs/indicators-standard8.glb",
+			indicators: "/assets/glbs/indicators-standard11.glb",
 		} satisfies AssetUrls,
 	},
 	block: {
