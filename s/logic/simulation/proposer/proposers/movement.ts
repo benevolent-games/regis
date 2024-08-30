@@ -1,11 +1,11 @@
 
+import {vec2} from "@benev/toolbox"
 import {proposerFn} from "../types.js"
 import {Choice} from "../../../state.js"
 import {isValidStep} from "../../aspects/navigation.js"
+import {canAfford, subtractResources} from "../../aspects/money.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
 import {GameOverDenial, MovementDenial, WrongTeamDenial} from "../../aspects/denials.js"
-import { vec2 } from "@benev/toolbox"
-import { subtractResources } from "../../aspects/money.js"
 
 export const proposeMovement = proposerFn(
 	({agent, freedom, turnTracker}) =>
@@ -44,17 +44,23 @@ export const proposeMovement = proposerFn(
 			break
 	}
 
-	const hasMoved = !vec2.equal(lastStep, choice.source)
-	const interrupted = !vec2.equal(lastStep, destination)
-	if (hasMoved && interrupted) {
-		const lastStepStakingCost = agent.claims.getStakingCost(lastStep)
-		if (lastStepStakingCost > 0)
-			return new MovementDenial(`interrupted movement landed on a pricey claim, cancelled whole movement (this is rare)`)
+	let cost = 0
+
+	if (archetype.stakeholder) {
+		const hasMoved = !vec2.equal(lastStep, choice.source)
+		const interrupted = !vec2.equal(lastStep, destination)
+		if (hasMoved && interrupted) {
+			const lastStepStakingCost = agent.claims.getStakingCost(lastStep)
+			if (lastStepStakingCost > 0)
+				return new MovementDenial(`interrupted movement landed on a pricey claim, cancelled whole movement (this is rare)`)
+		}
+
+		if (hasMoved && !interrupted)
+			cost += destinationStakingCost
 	}
 
-	const cost = (hasMoved && !interrupted)
-		? destinationStakingCost
-		: 0
+	if (!canAfford(agent.activeTeam, cost))
+		return new MovementDenial(`cannot afford movement, staking cost too high`)
 
 	return () => {
 		freedom.countMove(unit.id)

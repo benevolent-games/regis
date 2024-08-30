@@ -12,9 +12,12 @@ export const proposeSpawn = proposerFn(
 
 	const {unitKind} = choice
 	const {config} = agent.state.initial
-	const {cost: unitCost} = config.unitArchetypes[unitKind]
-	const stakingCost = agent.claims.getStakingCost(choice.place)
+	const {cost: unitCost, stakeholder} = config.unitArchetypes[unitKind]
 	const teamIndex = agent.activeTeamIndex
+
+	const stakingCost = stakeholder
+		? agent.claims.getStakingCost(choice.place)
+		: 0
 
 	const buyable = unitCost !== null
 	const tech = agent.claims.getTech(teamIndex)

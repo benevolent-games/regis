@@ -9,10 +9,14 @@ export function canAfford(team: TeamInfo, cost: number | null): team is FullTeam
 
 export function subtractResources(state: AgentState, teamId: number, cost: number) {
 	const team = state.teams.at(teamId)!
-	if (canAfford(team, cost)) {
+
+	if ("resources" in team)
 		team.resources -= cost
-		return true
-	}
-	return false
+
+	// if (canAfford(team, cost)) {
+	// 	team.resources -= cost
+	// 	return true
+	// }
+	// return false
 }
 
