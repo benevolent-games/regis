@@ -12,13 +12,27 @@ export class ClaimsHelper {
 		private units: UnitsHelper,
 	) {}
 
+	getStakeholder(place: Vec2) {
+		const {state, units} = this
+
+		const unit = units.at(place)
+		if (!unit)
+			return null
+
+		const {stakeholder} = state.initial.config.unitArchetypes[unit.kind]
+		if (!stakeholder)
+			return null
+
+		return unit
+	}
+
 	determineResourceClaimLevel(place: Vec2, resource: Claim.Resource) {
 		const investment = this.state.investments.find(i => vec2.equal(i.place, place))
 		return resource.startingLevel + (investment?.count ?? 0)
 	}
 
 	getTeamIncomes() {
-		const {state, tiles, units} = this
+		const {state, tiles} = this
 
 		return state.initial.config.teams.map((_, teamIndex) => {
 			let income = state.initial.config.universalBasicIncome
@@ -27,12 +41,8 @@ export class ClaimsHelper {
 				if (!tile.claim.resource)
 					continue
 
-				const unit = units.at(place)
-				if (!(unit && unit.team === teamIndex))
-					continue
-
-				const {stakeholder} = state.initial.config.unitArchetypes[unit.kind]
-				if (!stakeholder)
+				const stakeholder = this.getStakeholder(place)
+				if (stakeholder?.team !== teamIndex)
 					continue
 
 				const level = this.determineResourceClaimLevel(place, tile.claim.resource)

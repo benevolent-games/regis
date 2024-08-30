@@ -6,6 +6,7 @@ import {Agent} from "../logic/agent.js"
 import {Rosters} from "./parts/rosters.js"
 import {Hovering} from "./parts/hovering.js"
 import {Planner} from "./planner/planner.js"
+import {Claimery} from "./parts/claimery.js"
 import {CameraRig} from "./parts/camera-rig.js"
 import {makeUnitVisuals} from "./parts/unit.js"
 import {Selectacon} from "./parts/selectacon.js"
@@ -14,7 +15,6 @@ import {UserInputs} from "./parts/user-inputs.js"
 import {makeBasicVisuals} from "./parts/basics.js"
 import {setupPreviewAgent} from "./parts/preview-agent.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
-import { Claimery } from "./parts/claimery.js"
 
 export async function makeGameTerminal(
 

@@ -15,6 +15,7 @@ export class Claimery {
 	}) {}
 
 	render() {
+		this.dispose()
 		const {agent, assets: {indicators}} = this.options
 		const d = this.#renderbin.disposable
 
@@ -28,25 +29,27 @@ export class Claimery {
 			const {resource, tech, watchtower} = tile.claim
 			const position = agent.coordinator.toPosition(place)
 
+			const staked = !!agent.claims.getStakeholder(place)
+
 			if (resource) {
 				const level = agent.claims.determineResourceClaimLevel(place, resource)
-				emplace(indicators.claims.resource(level), position)
+				emplace(indicators.claims.resource(level, staked), position)
 			}
 
 			if (watchtower)
-				emplace(indicators.claims.watchtower(), position)
+				emplace(indicators.claims.watchtower(staked), position)
 
 			if (tech?.knight)
-				emplace(indicators.claims.knight(), position)
+				emplace(indicators.claims.knight(staked), position)
 
 			if (tech?.rook)
-				emplace(indicators.claims.rook(), position)
+				emplace(indicators.claims.rook(staked), position)
 
 			if (tech?.bishop)
-				emplace(indicators.claims.bishop(), position)
+				emplace(indicators.claims.bishop(staked), position)
 
 			if (tech?.queen)
-				emplace(indicators.claims.queen(), position)
+				emplace(indicators.claims.queen(staked), position)
 		}
 	}
 
