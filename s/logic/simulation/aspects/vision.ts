@@ -45,6 +45,15 @@ export function limitedVision(state: AgentState, teamId: number) {
 		}
 	}
 
+	for (const {place, claim: {watchtower}} of agent.claims.getStakedClaims(teamId)) {
+		if (watchtower) {
+			const watchtowerTile = agent.tiles.at(place)
+			getNearby(agent, place, watchtower.range)
+				.filter(({tile}) => isVerticallyCompatible(watchtower.verticality, watchtowerTile, tile))
+				.forEach(({place}) => add(place))
+		}
+	}
+
 	return visionArray
 }
 

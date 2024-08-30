@@ -130,7 +130,10 @@ export namespace Claim {
 		stockpile: number
 		startingLevel: 1 | 2 | 3
 	}
-	export type Watchtower = {}
+	export type Watchtower = {
+		range: number
+		verticality: VerticalCapability
+	}
 	export type Tech = Record<TechKind, boolean>
 }
 
