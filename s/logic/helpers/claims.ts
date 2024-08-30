@@ -3,7 +3,7 @@ import {Vec2, vec2} from "@benev/toolbox"
 
 import {TilesHelper} from "./tiles.js"
 import {UnitsHelper} from "./units.js"
-import {AgentState, Claim} from "../state.js"
+import {AgentState, Claim, TileClaim} from "../state.js"
 
 export class ClaimsHelper {
 	constructor(
@@ -31,26 +31,65 @@ export class ClaimsHelper {
 		return resource.startingLevel + (investment?.count ?? 0)
 	}
 
-	getTeamIncomes() {
-		const {state, tiles} = this
+	getStakedClaims(teamIndex: number) {
+		const {tiles} = this
 
-		return state.initial.config.teams.map((_, teamIndex) => {
-			let income = state.initial.config.universalBasicIncome
-
-			for (const {place, tile} of tiles.list()) {
-				if (!tile.claim.resource)
-					continue
+		return Array.from(tiles.list())
+			.map(({place, tile}) => {
+				if (!tile.claim)
+					return null
 
 				const stakeholder = this.getStakeholder(place)
-				if (stakeholder?.team !== teamIndex)
-					continue
+				if (!stakeholder)
+					return null
 
-				const level = this.determineResourceClaimLevel(place, tile.claim.resource)
-				income += level
+				if (stakeholder.team !== teamIndex)
+					return null
+
+				return {
+					place,
+					stakeholder,
+					claim: tile.claim,
+				}
+			})
+			.filter(c => !!c)
+	}
+
+	getTech(teamIndex: number) {
+		const tech: Claim.Tech = {
+			knight: false,
+			rook: false,
+			bishop: false,
+
+			// TODO unhack this
+			queen: true,
+		}
+
+		for (const {claim} of this.getStakedClaims(teamIndex)) {
+			if (!claim.tech)
+				continue
+			for (const [key, value] of Object.entries(claim.tech)) {
+				if (value)
+					tech[key as keyof Claim.Tech] = true
 			}
+		}
 
-			return income
-		})
+		return tech
+	}
+
+	getIncome(teamIndex: number) {
+		const {state} = this
+		let income = state.initial.config.universalBasicIncome
+
+		for (const {claim, place} of this.getStakedClaims(teamIndex)) {
+			if (!claim.resource)
+				continue
+
+			const level = this.determineResourceClaimLevel(place, claim.resource)
+			income += level
+		}
+
+		return income
 	}
 }
 

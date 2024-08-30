@@ -1,6 +1,6 @@
 
 import {proposerFn} from "../types.js"
-import {Choice} from "../../../state.js"
+import {Choice, Claim} from "../../../state.js"
 import {isValidSpawnPlace} from "../../aspects/spawning.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
 import {canAfford, subtractResources} from "../../aspects/money.js"
@@ -14,18 +14,24 @@ export const proposeSpawn = proposerFn(
 	const {config} = agent.state.initial
 	const {cost} = config.unitArchetypes[unitKind]
 
+	const teamIndex = agent.activeTeamIndex
 	const buyable = cost !== null
 	const affordable = canAfford(agent.activeTeam, cost)
-	const validPlace = isValidSpawnPlace(agent, agent.activeTeamIndex, choice.place)
+	const validPlace = isValidSpawnPlace(agent, teamIndex, choice.place)
 
 	const howManyAlready = [...agent.units.list()]
-		.filter(unit => unit.team === agent.activeTeamIndex)
+		.filter(unit => unit.team === teamIndex)
 		.filter(unit => unit.kind === choice.unitKind)
 		.length
 
-	const {roster} = config.teams.at(agent.activeTeamIndex)!
+	const {roster} = config.teams.at(teamIndex)!
 	const remainingRosterCount = roster[choice.unitKind] - howManyAlready
 	const availableInRoster = remainingRosterCount > 0
+
+	const tech = agent.claims.getTech(teamIndex)
+
+	if (unitKind in tech && !tech[unitKind as keyof Claim.Tech])
+		return new SpawnDenial(`unit kind "${unitKind}" is not unlocked`)
 
 	if (!buyable)
 		return new SpawnDenial(`unit kind "${unitKind}" is not for sale`)
@@ -46,14 +52,14 @@ export const proposeSpawn = proposerFn(
 		return new GameOverDenial()
 
 	return () => {
-		subtractResources(agent.state, agent.activeTeamIndex, cost)
+		subtractResources(agent.state, teamIndex, cost)
 		const id = agent.grabId()
 		freedom.countSpawning(id)
 		agent.units.add({
 			id,
 			kind: choice.unitKind,
 			place: choice.place,
-			team: agent.activeTeamIndex,
+			team: teamIndex,
 			damage: 0,
 		})
 	}

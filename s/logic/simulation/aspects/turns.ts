@@ -33,7 +33,7 @@ export function processWinByConquest(state: ArbiterState) {
 export function awardIncomeToActiveTeam(state: ArbiterState) {
 	const agent = new Agent(state)
 	const teamIndex = activeTeamIndex(state)
-	const income = agent.claims.getTeamIncomes().at(teamIndex)!
+	const income = agent.claims.getIncome(teamIndex)
 	const team = state.teams.at(teamIndex)!
 	team.resources += income
 }
