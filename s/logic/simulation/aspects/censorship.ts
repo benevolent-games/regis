@@ -13,7 +13,6 @@ export function censorUnits(units: Unit[], vision: Vec2[]) {
 export function censorTeam(team: FullTeamInfo): LimitedTeamInfo {
 	return {
 		name: team.name,
-		investments: [],
 	}
 }
 

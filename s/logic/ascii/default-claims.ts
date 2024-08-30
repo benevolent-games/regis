@@ -9,17 +9,10 @@ const basetech: Claim.Tech = {
 }
 
 export const defaultClaims = {
-	resource: (tile: Tile) => {
+	resource: (tile: Tile, level: 1 | 2 | 3) => {
 		tile.claim.resource = {
-			stockpile: 100,
-			startsWithInvestments: 0,
-		}
-	},
-
-	goldResource: (tile: Tile) => {
-		tile.claim.resource = {
-			stockpile: 100,
-			startsWithInvestments: 2,
+			startingLevel: level,
+			stockpile: 60,
 		}
 	},
 

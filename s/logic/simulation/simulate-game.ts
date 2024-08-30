@@ -37,8 +37,8 @@ export function simulateGame({initial, turns}: GameHistory): GameStates {
 		teams: initial.config.teams.map((team): FullTeamInfo => ({
 			name: team.name,
 			resources: initial.config.startingResources,
-			investments: [],
 		})),
+		investments: [],
 		reminders: {
 			choices: [],
 			kills: [],
@@ -86,6 +86,7 @@ export function simulateGame({initial, turns}: GameHistory): GameStates {
 				context: state.context,
 				units: censorUnits(state.units, vision),
 				teams: state.teams.map((team, id) => id === teamId ? team : censorTeam(team)),
+				investments: state.investments,
 				reminders: {
 					choices: [],
 					kills: [],

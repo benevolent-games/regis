@@ -7,6 +7,7 @@ import {AgentState, UnitKind} from "./state.js"
 import {BoundaryHelper} from "./helpers/boundary.js"
 import {CoordinatorHelper} from "./helpers/coordinator.js"
 import {activeTeamIndex} from "./simulation/aspects/turns.js"
+import { ClaimsHelper } from "./helpers/claims.js"
 
 export class Agent {
 	stateRef: Ref<AgentState>
@@ -27,6 +28,7 @@ export class Agent {
 	get coordinator() { return new CoordinatorHelper(this.state.initial.board) }
 	get tiles() { return new TilesHelper(this.state.initial.board) }
 	get units() { return new UnitsHelper(this.state.units) }
+	get claims() { return new ClaimsHelper(this.state, this.tiles, this.units) }
 
 	grabId() {
 		const id = this.state.context.nextId

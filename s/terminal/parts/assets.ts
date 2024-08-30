@@ -76,5 +76,17 @@ export class IndicatorsGlb extends Glb {
 	libertyAction = () => this.instance(`liberty-action`)
 	attackPattern = () => this.instance(`attack-pattern`)
 	attackAction = () => this.instance(`attack-action`)
+	claims = {
+		resource: (level: number, on = false) => this.instance(`resource${level}-${onOff(on)}`),
+		knight: (on = false) => this.instance(`knight-${onOff(on)}`),
+		rook: (on = false) => this.instance(`rook-${onOff(on)}`),
+		bishop: (on = false) => this.instance(`bishop-${onOff(on)}`),
+		queen: (on = false) => this.instance(`queen-${onOff(on)}`),
+		watchtower: (on = false) => this.instance(`watchtower-${onOff(on)}`),
+	}
+}
+
+function onOff(on: boolean) {
+	return on ? "on" : "off"
 }
 

@@ -31,8 +31,10 @@ export function processWinByConquest(state: ArbiterState) {
 }
 
 export function awardIncomeToActiveTeam(state: ArbiterState) {
-	const {universalBasicIncome} = state.initial.config
-	const team = state.teams.at(activeTeamIndex(state))!
-	team.resources += universalBasicIncome
+	const agent = new Agent(state)
+	const teamIndex = activeTeamIndex(state)
+	const income = agent.claims.getTeamIncomes().at(teamIndex)!
+	const team = state.teams.at(teamIndex)!
+	team.resources += income
 }
 

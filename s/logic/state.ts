@@ -29,7 +29,7 @@ export type GameConfig = {
 	unitArchetypes: UnitArchetypes
 	teams: InitialTeamInfo[]
 	costs: {
-		resourceUpgrade: number
+		investment: number
 		staking: {
 			resource: number
 			watchtower: number
@@ -52,6 +52,7 @@ export type ArbiterState = {
 	initial: GameInitial
 	units: Unit[]
 	teams: FullTeamInfo[]
+	investments: Investment[]
 	context: GameContext
 	reminders: Reminders
 }
@@ -61,6 +62,7 @@ export type AgentState = {
 	initial: GameInitial
 	units: Unit[]
 	teams: (FullTeamInfo | LimitedTeamInfo)[]
+	investments: Investment[]
 	context: GameContext
 	reminders: Reminders
 }
@@ -93,13 +95,11 @@ export type InitialTeamInfo = {
 
 export type LimitedTeamInfo = {
 	name: string
-	investments: Investment[]
 }
 
 export type FullTeamInfo = {
 	name: string
 	resources: number
-	investments: Investment[]
 }
 
 export type TeamInfo = LimitedTeamInfo | FullTeamInfo
@@ -121,7 +121,7 @@ export type Investment = {
 export namespace Claim {
 	export type Resource = {
 		stockpile: number
-		startsWithInvestments: number
+		startingLevel: 1 | 2 | 3
 	}
 	export type Watchtower = {}
 	export type Tech = {
@@ -192,9 +192,9 @@ export type Tile = {
 }
 
 export type TileClaim = {
-	resource: null | Claim.Resource
-	watchtower: null | Claim.Watchtower
-	tech: null | Claim.Tech
+	resource: Claim.Resource | null
+	watchtower: Claim.Watchtower | null
+	tech: Claim.Tech | null
 }
 
 export type BoardState = {

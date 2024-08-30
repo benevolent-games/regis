@@ -44,8 +44,8 @@ export function asciiMap(ascii: string) {
 			// claims
 			//
 
-			zoop(glyphs.claims.resource, () => defaultClaims.resource(tile))
-			zoop(glyphs.claims.goldResource, () => defaultClaims.goldResource(tile))
+			zoop(glyphs.claims.resource, () => defaultClaims.resource(tile, 1))
+			zoop(glyphs.claims.goldResource, () => defaultClaims.resource(tile, 2))
 			zoop(glyphs.claims.watchtower, () => defaultClaims.watchtower(tile))
 			zoop(glyphs.claims.techKnight, () => defaultClaims.techKnight(tile))
 			zoop(glyphs.claims.techRook, () => defaultClaims.techRook(tile))

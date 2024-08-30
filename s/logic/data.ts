@@ -9,9 +9,9 @@ export function defaultGameConfig(): GameConfig {
 		universalBasicIncome: 2,
 		teams: defaultTeams(),
 		costs: {
-			resourceUpgrade: Math.floor(
-				1.5 * (
-					(unitArchetypes.pawn.cost ?? 0) + resourceStakingCost
+			investment: Math.floor(
+				resourceStakingCost + (
+					1.5 * (unitArchetypes.pawn.cost ?? 0)
 				)
 			),
 			staking: {
@@ -31,8 +31,8 @@ export function defaultGameConfig(): GameConfig {
 
 export function defaultTeams(): InitialTeamInfo[] {
 	return [
-		{name: "Blue", roster: defaultRoster()},
-		{name: "Orange", roster: defaultRoster()},
+		{name: "White", roster: defaultRoster()},
+		{name: "Black", roster: defaultRoster()},
 	]
 }
 
@@ -98,7 +98,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		cost: 4,
 		health: 3,
 		actionCap: 2,
-		stakeholder: false,
+		stakeholder: true,
 		spawning: null,
 		vision: {
 			range: 2,

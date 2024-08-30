@@ -14,6 +14,7 @@ import {UserInputs} from "./parts/user-inputs.js"
 import {makeBasicVisuals} from "./parts/basics.js"
 import {setupPreviewAgent} from "./parts/preview-agent.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
+import { Claimery } from "./parts/claimery.js"
 
 export async function makeGameTerminal(
 
@@ -43,6 +44,7 @@ export async function makeGameTerminal(
 	const rosters = d(new Rosters({agent, world, assets}))
 	const selectacon = d(new Selectacon({agent, world, assets, tiler, rosters}))
 	const units = d(makeUnitVisuals(agent, assets))
+	const claimery = d(new Claimery({agent, assets}))
 
 	const planner = d(new Planner({agent, assets, selectacon, turnTracker, submitTurn}))
 	d(new Hovering({world, selectacon}))
@@ -55,6 +57,7 @@ export async function makeGameTerminal(
 		selectacon.render()
 		units.render()
 		planner.render()
+		claimery.render()
 	}
 
 	tiler.render()
