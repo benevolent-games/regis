@@ -1,4 +1,5 @@
 
+import {Pointing} from "./types.js"
 import {ArcRotateCamera, Scene, Vector3} from "@babylonjs/core"
 import {scalar, Vec2, vec3, Vec3, Smooth, SmoothVector} from "@benev/toolbox"
 
@@ -105,7 +106,7 @@ export class Orbitcam {
 		this.#zoom.target = scalar.clamp(this.#zoom.target, ...this.options.zoomRange)
 	}
 
-	drag = (event: PointerEvent) => {
+	drag = (event: Pointing) => {
 		const [x, y] = this.gimbal
 		this.gimbal = [
 			x + (event.movementX * this.options.orbitSensitivity),

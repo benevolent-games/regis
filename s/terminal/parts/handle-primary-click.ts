@@ -16,7 +16,7 @@ export function handlePrimaryClick(options: {
 	const selected = selectacon.selection.value
 	const target = selectacon.pick(pointing)
 
-	planner.navigateActionSpace({
+	const happened = planner.navigateActionSpace({
 		target,
 		selected,
 		on: {
@@ -26,7 +26,8 @@ export function handlePrimaryClick(options: {
 		},
 	})
 
-	selectacon.selection.value = target
+	if (happened)
+		selectacon.selection.value = target
 }
 
 export function actualize(result: ConsiderationResult) {

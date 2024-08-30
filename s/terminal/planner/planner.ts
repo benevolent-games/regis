@@ -114,6 +114,7 @@ export class Planner {
 			}
 		}) {
 
+		let happened = false
 		const {agent} = this.options
 		const {considerations} = this
 
@@ -125,16 +126,20 @@ export class Planner {
 				selected &&
 				selected.kind === "roster" &&
 				selected.teamId === agent.activeTeamIndex) {
-					on.spawn(considerations.spawn(target.place, selected.unitKind))
+					if (on.spawn(considerations.spawn(target.place, selected.unitKind)))
+						happened = true
 			}
 
 			// a tile is already selected
 			else if (selected && selected.kind === "tile") {
-				doFirstValidThing([
+				if (doFirstValidThing([
 					() => on.attack(considerations.attack(selected.place, target.place)),
 					() => on.movement(considerations.movement(selected.place, target.place)),
-				])
+				]))
+					happened = true
 			}
+
+			return happened
 		}
 	}
 }

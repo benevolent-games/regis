@@ -3,6 +3,7 @@ import {ev, Pipe, Trashbin} from "@benev/slate"
 import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
 
 import {World} from "./world.js"
+import {Pointing} from "./types.js"
 import {CameraRig} from "./camera-rig.js"
 import {Selectacon} from "./selectacon.js"
 import {Agent} from "../../logic/agent.js"
@@ -13,7 +14,6 @@ import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 
 export class UserInputs {
 	#trashbin = new Trashbin()
-
 	dispose = this.#trashbin.dispose
 
 	constructor(private options: {
@@ -55,44 +55,30 @@ export class UserInputs {
 		}))
 	}
 
-	leftMouse = new DragQueen({
-		predicate: event => event.button === 0,
-		onAnyDrag: () => {},
-		onIntendedDrag: () => {},
-		onIntendedClick: () => {},
-		onAnyClick: event => handlePrimaryClick({
-			...this.options,
-			pointing: event,
-		}),
-	})
-
-	rightMouse = new DragQueen({
-		predicate: event => event.button === 2,
-		onAnyDrag: () => {},
-		onAnyClick: () => {},
-
-		// rotate camera orbit
-		onIntendedDrag: event => {
-			this.options.cameraRig.orbitcam.drag(event)
+	antics = {
+		select: (pointing: Pointing) => {
+			const {selectacon} = this.options
+			const target = selectacon.pick(pointing)
+			selectacon.selection.value = target
 		},
 
-		// click-move camera pivot
-		onIntendedClick: event => {
+		rotateOrbitcam: (pointing: Pointing) => {
+			this.options.cameraRig.orbitcam.drag(pointing)
+		},
+
+		actuateAction: (pointing: Pointing) => {
+			handlePrimaryClick({...this.options, pointing})
+		},
+
+		setNewCameraPivot: (pointing: Pointing) => {
 			const {selectacon, cameraRig} = this.options
-			const cell = selectacon.pick(event)
+			const cell = selectacon.pick(pointing)
 			if (cell)
 				cameraRig.orbitcam.pivot = cell.position
 		},
-	})
 
-	middleMouse = new DragQueen({
-		predicate: event => event.button === 1,
-		onAnyClick: () => {},
-		onIntendedDrag: () => {},
-		onIntendedClick: () => {},
-
-		// panning
-		onAnyDrag: ({movementX, movementY}) => {
+		panningCameraPivot: (pointing: Pointing) => {
+			const {movementX, movementY} = pointing
 			const {agent, cameraRig: {orbitcam}} = this.options
 			const panningSensitivity = 2 / 100
 			const movement = [movementX, movementY] as Vec2
@@ -115,6 +101,30 @@ export class UserInputs {
 					.done()
 			)
 		},
+	}
+
+	leftMouse = new DragQueen({
+		predicate: event => event.button === 0,
+		onAnyDrag: () => {},
+		onAnyClick: () => {},
+		onIntendedDrag: this.antics.rotateOrbitcam,
+		onIntendedClick: this.antics.select,
+	})
+
+	rightMouse = new DragQueen({
+		predicate: event => event.button === 2,
+		onAnyDrag: () => {},
+		onAnyClick: this.antics.actuateAction,
+		onIntendedDrag: this.antics.rotateOrbitcam,
+		onIntendedClick: () => {},
+	})
+
+	middleMouse = new DragQueen({
+		predicate: event => event.button === 1,
+		onAnyClick: () => {},
+		onAnyDrag: this.antics.panningCameraPivot,
+		onIntendedDrag: () => {},
+		onIntendedClick: this.antics.setNewCameraPivot,
 	})
 }
 

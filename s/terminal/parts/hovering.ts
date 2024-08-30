@@ -21,8 +21,8 @@ export class Hovering {
 
 		// record every pointer movement
 		dr(ev(world.canvas, {
-			pointermove: ({clientX, clientY}: PointerEvent) => {
-				this.#last = {clientX, clientY}
+			pointermove: ({clientX, clientY, movementX, movementY}: PointerEvent) => {
+				this.#last = {clientX, clientY, movementX, movementY}
 			},
 		}))
 
