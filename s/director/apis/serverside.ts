@@ -1,6 +1,5 @@
 
 import {fns} from "renraku"
-import {Game} from "../parts/gaming.js"
 import {Director} from "../director.js"
 import {noop} from "../../tools/noop.js"
 import {ClientId, RegularReport} from "../types.js"
@@ -17,12 +16,6 @@ export type Serverside = {
 		abandon(): Promise<void>
 	}
 }
-
-// type Session = {
-// 	game: Game
-// 	gameId: number
-// 	teamId: number
-// }
 
 export function makeServerside(
 		director: Director,
