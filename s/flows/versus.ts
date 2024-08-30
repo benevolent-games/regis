@@ -24,7 +24,6 @@ export async function versusFlow({
 	const agent = new Agent(startData.agentState)
 	const connection = connectivity.connection.payload
 
-	console.log("versus", startData)
 	printReport(agent, startData.teamId)
 
 	if (!connection) {
