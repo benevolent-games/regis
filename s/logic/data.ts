@@ -10,13 +10,13 @@ export function defaultGameConfig(): GameConfig {
 		costs: {
 			investment: 10,
 			staking: {
-				resource: 4,
+				resource: 6,
 				watchtower: 0,
 				tech: {
-					knight: 4,
-					rook: 4,
-					bishop: 4,
-					queen: 4,
+					knight: 6,
+					rook: 6,
+					bishop: 6,
+					queen: 6,
 				},
 			},
 		},
@@ -152,7 +152,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		},
 		attack: {
 			cap: 1,
-			damage: 1,
+			damage: 2,
 			range: 1,
 			verticality: verticality.everywhere,
 		},
@@ -202,7 +202,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			cap: 1,
 			damage: 1,
 			range: 1,
-			verticality: verticality.flat,
+			verticality: verticality.everywhere,
 		},
 	},
 })
