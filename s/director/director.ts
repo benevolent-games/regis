@@ -1,6 +1,6 @@
 
 import {Remote} from "renraku"
-import {Person, PersonId} from "./types.js"
+import {Person} from "./types.js"
 import {Games} from "./parts/games.js"
 import {People} from "./parts/people.js"
 import {Clientside} from "./apis/clientside.js"
@@ -9,8 +9,8 @@ import {Matchmaker} from "./parts/matchmaker.js"
 import {makeServerside} from "./apis/serverside.js"
 
 export class Director {
-	games = new Games()
 	people = new People()
+	games = new Games(this.people)
 	matchmaker = new Matchmaker()
 
 	#ids = new IdCounter()
@@ -30,20 +30,7 @@ export class Director {
 		// end any game they're associated with
 		const game = this.games.findGameWithPerson(person)
 		if (game)
-			await this.endGame(game.id)
-	}
-
-	async endGame(gameId: number) {
-		const game = this.games.get(gameId)
-		if (game) {
-			game.dispose()
-			this.games.delete(gameId)
-			await Promise.all(
-				game.couple
-					.filter(person => this.people.has(person.id))
-					.map(client => client.clientside.game.end())
-			)
-		}
+			await this.games.endGame(game)
 	}
 }
 

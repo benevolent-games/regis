@@ -1,19 +1,23 @@
 
 import {Game} from "./game.js"
-import {IdMap2} from "../../tools/map2.js"
+import {People} from "./people.js"
 import {GamesStats} from "./games-stats.js"
+import {IdMappable2} from "../../tools/map2.js"
 import {IdCounter} from "../../tools/id-counter.js"
-import {Couple, GamerSession, Person, PersonId} from "../types.js"
+import {Couple, GamerSession, Person} from "../types.js"
 
-export class Games extends IdMap2<number, Game> {
+export class Games extends IdMappable2<number, Game> {
 	stats = new GamesStats()
-
 	#ids = new IdCounter()
+
+	constructor(public people: People) {
+		super()
+	}
 
 	newGame(couple: Couple) {
 		const id = this.#ids.next()
 		const game = new Game(id, couple)
-		this.add(game)
+		this.map.add(game)
 		this.stats.countNewGame()
 		return game
 	}
@@ -35,6 +39,16 @@ export class Games extends IdMap2<number, Game> {
 				return game
 		}
 		return undefined
+	}
+
+	async endGame(game: Game) {
+		game.dispose()
+		this.map.remove(game)
+		await Promise.all(
+			game.couple
+				.filter(person => this.people.got(person))
+				.map(person => person.clientside.game.end())
+		)
 	}
 }
 

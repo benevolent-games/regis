@@ -65,7 +65,6 @@ export function makeServerside(
 			},
 
 			async leaveQueue() {
-				// TODO hmm probably should ensure they're not in a game already too
 				matchmaker.queue.delete(person)
 			},
 		},
@@ -88,7 +87,7 @@ export function makeServerside(
 
 			async abandon() {
 				const {game} = requireSession()
-				await director.endGame(game.id)
+				await games.endGame(game)
 			},
 		},
 	})

@@ -30,9 +30,17 @@ export class Map2<K, V> extends Map<K, V> {
 export type Identifiable = {id: any}
 
 export class IdMap2<K, V extends Identifiable> extends Map2<K, V> {
+	got(value: V) {
+		return this.has(value.id)
+	}
+
 	add(value: V) {
 		this.set(value.id, value)
 		return value
+	}
+
+	remove(value: V) {
+		return this.delete(value.id)
 	}
 }
 
@@ -58,9 +66,13 @@ export class Mappable2<K, V> {
 	get size() {
 		return this.map.size
 	}
+
+	get = this.map.get.bind(this.map)
+	require = this.map.require.bind(this.map)
 }
 
 export class IdMappable2<K, V extends Identifiable> extends Mappable2<K, V> {
 	map = new IdMap2<K, V>()
+	got = this.map.got.bind(this.map)
 }
 

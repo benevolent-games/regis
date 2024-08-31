@@ -1,10 +1,13 @@
 
+import {Trashbin} from "@benev/slate"
 import {Couple} from "../types.js"
 import {randomMap} from "../../map-pool.js"
 import {Arbiter} from "../../logic/arbiter.js"
 import {ChessTimer} from "../../logic/utilities/chess-timer.js"
 
 export class Game {
+	#trash = new Trashbin()
+
 	couple: Couple
 	arbiter = new Arbiter({map: randomMap()})
 
@@ -12,11 +15,6 @@ export class Game {
 		this.arbiter.state.initial.config.time,
 		this.arbiter.state.teams.length,
 	)
-
-	dispose = this.arbiter.statesRef.on(() => {
-		const team = this.arbiter.agent.activeTeamIndex
-		this.timer.team = team
-	})
 
 	constructor(
 			public id: number,
@@ -27,8 +25,18 @@ export class Game {
 		this.couple = (Math.random() > 0.5)
 			? couple.toReversed() as Couple
 			: couple
+
+		// tell the timer whenever the turn changes
+		this.#trash.disposer(
+			this.arbiter.statesRef.on(() => {
+				const team = this.arbiter.agent.activeTeamIndex
+				this.timer.team = team
+			})
+		)
 	}
 
-	sendEndGame() {}
+	dispose() {
+		this.#trash.dispose()
+	}
 }
 
