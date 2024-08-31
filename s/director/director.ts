@@ -43,6 +43,7 @@ export class Director {
 	async endGame(gameId: number) {
 		const game = this.gaming.games.get(gameId)
 		if (game) {
+			game.dispose()
 			this.gaming.games.delete(gameId)
 			await Promise.all(
 				game.pair

@@ -1,5 +1,5 @@
 
-import {Trashbin} from "@benev/slate"
+import {interval, Trashbin} from "@benev/slate"
 
 import {Agent} from "../logic/agent.js"
 import {printReport} from "./utils/print-report.js"
@@ -8,6 +8,7 @@ import {TimeDisplay} from "../dom/utils/time-display.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 import {GameStartData} from "../director/apis/clientside.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
+import { TimeReport } from "../logic/utilities/chess-timer.js"
 
 export async function versusFlow({
 		data: startData,
@@ -22,12 +23,24 @@ export async function versusFlow({
 	const trashbin = new Trashbin()
 	const dr = trashbin.disposer
 
+	const teamIndex = startData.teamId
+	let timeReport = startData.timeReport
+
 	const agent = new Agent(startData.agentState)
 	const connection = connectivity.connection.payload
 
 	const timeDisplay = new TimeDisplay()
+	const updateTimeDisplay = (report: TimeReport) => {
+		console.log(report.gameTime)
+		timeDisplay.update(
+			report,
+			teamIndex,
+		)
+	}
 
-	printReport(agent, startData.teamId)
+	updateTimeDisplay(startData.timeReport)
+	const stopTicker = interval(1000, () => updateTimeDisplay(timeReport))
+	printReport(agent, teamIndex)
 
 	if (!connection) {
 		exit()
@@ -45,7 +58,8 @@ export async function versusFlow({
 
 	dr(connectivity.machinery.onGameUpdate(data => {
 		agent.state = data.agentState
-		printReport(agent, startData.teamId)
+		updateTimeDisplay(data.timeReport)
+		printReport(agent, teamIndex)
 	}))
 
 	dr(connectivity.machinery.onGameEnd(() => {
@@ -53,7 +67,7 @@ export async function versusFlow({
 		exit()
 	}))
 
-	const turnTracker = new TurnTracker(agent, startData.teamId)
+	const turnTracker = new TurnTracker(agent, teamIndex)
 
 	const terminal = await makeGameTerminal(
 		agent,

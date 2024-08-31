@@ -55,11 +55,12 @@ export function makeServerside(
 
 				for (const pair of matchmaker.extractPairs()) {
 					const [gameId, game] = gaming.newGame(pair)
+					const timeReport = game.timer.report()
 
 					game.pair.forEach((clientId, teamId) => {
 						const client = director.clients.get(clientId)!
 						const agentState = game.arbiter.statesRef.value.agents.at(teamId)!
-						client.clientside.game.start({gameId, teamId, agentState}).catch(noop)
+						client.clientside.game.start({gameId, teamId, agentState, timeReport}).catch(noop)
 					})
 				}
 			},
@@ -72,13 +73,15 @@ export function makeServerside(
 		game: {
 			async submitTurn(turn) {
 				const {game, teamId} = requireSession()
-				const {gameTime} = game
+				const {gameTime} = game.timer
+				const timeReport = game.timer.report()
+
 				game.arbiter.submitTurn({turn, gameTime})
 
 				game.pair.forEach((clientId, teamId) => {
 					const client = director.clients.get(clientId)!
 					const agentState = game.arbiter.getAgentState(teamId)
-					client.clientside.game.update({agentState}).catch(noop)
+					client.clientside.game.update({agentState, timeReport}).catch(noop)
 				})
 
 				return game.arbiter.getAgentState(teamId)

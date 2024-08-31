@@ -17,13 +17,7 @@ export async function freeplayFlow() {
 
 	const timer = new ChessTimer(config.time, config.teams.length)
 	const timeDisplay = new TimeDisplay()
-
-	function updateTimeDisplay() {
-		const report = timer.report()
-		const teamReport = report.teamwise.at(agent.activeTeamIndex)!
-		timeDisplay.remaining.value = teamReport.remaining
-		timeDisplay.ourTeam.value = true
-	}
+	const updateTimeDisplay = () => timeDisplay.update(timer.report(), agent.activeTeamIndex)
 
 	const stopTicker = interval(1000, updateTimeDisplay)
 

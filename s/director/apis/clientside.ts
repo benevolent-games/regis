@@ -3,15 +3,18 @@ import {fns} from "renraku"
 import {Serverside} from "./serverside.js"
 import {AgentState} from "../../logic/state.js"
 import {ClientMachinery} from "../plumbing/machinery.js"
+import {TimeReport} from "../../logic/utilities/chess-timer.js"
 
 export type GameStartData = {
 	gameId: number
 	teamId: number
 	agentState: AgentState
+	timeReport: TimeReport
 }
 
 export type GameUpdateData = {
 	agentState: AgentState
+	timeReport: TimeReport
 }
 
 export type Clientside = {

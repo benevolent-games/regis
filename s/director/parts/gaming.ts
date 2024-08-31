@@ -5,15 +5,21 @@ import {randomMap} from "../../map-pool.js"
 import {Arbiter} from "../../logic/arbiter.js"
 import {GameCounting} from "./game-counting.js"
 import {IdCounter} from "../../tools/id-counter.js"
+import {ChessTimer} from "../../logic/utilities/chess-timer.js"
 
 export class Game {
-	#start = Date.now()
-
-	get gameTime() {
-		return Date.now() - this.#start
-	}
-
 	arbiter = new Arbiter({map: randomMap()})
+
+	timer = new ChessTimer(
+		this.arbiter.state.initial.config.time,
+		this.arbiter.state.teams.length,
+	)
+
+	dispose = this.arbiter.statesRef.on(() => {
+		const team = this.arbiter.agent.activeTeamIndex
+		this.timer.team = team
+	})
+
 	constructor(public pair: Pair) {}
 }
 
