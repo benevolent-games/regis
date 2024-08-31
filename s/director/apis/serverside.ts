@@ -74,7 +74,7 @@ export function makeServerside(
 				const {game, teamId, person} = requireSession()
 				const {gameTime} = game.timer
 				const timeReport = game.timer.report()
-				const righteousTurn = game.arbiter.agent.activeTeamIndex
+				const righteousTurn = game.arbiter.activeTeamIndex
 
 				if (teamId !== righteousTurn) {
 					console.error(`person ${person.id} submitted an out-of-order turn`)

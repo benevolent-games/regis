@@ -9,11 +9,11 @@ import {BoundaryHelper} from "./helpers/boundary.js"
 import {CoordinatorHelper} from "./helpers/coordinator.js"
 import {activeTeamIndex} from "./simulation/aspects/turns.js"
 
-export class Agent {
-	#state: AgentState
-	onStateChange = pubsub<[AgentState]>()
+export class Agent<State extends AgentState = AgentState> {
+	#state: State
+	onStateChange = pubsub<[State]>()
 
-	constructor(state: AgentState) {
+	constructor(state: State) {
 		this.#state = state
 	}
 
@@ -25,7 +25,7 @@ export class Agent {
 		return this.#state
 	}
 
-	set state(state: AgentState) {
+	set state(state: State) {
 		this.#state = state
 		this.publishStateChange()
 	}

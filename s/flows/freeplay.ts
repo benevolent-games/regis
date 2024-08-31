@@ -3,6 +3,7 @@ import {interval} from "@benev/slate"
 
 import {Agent} from "../logic/agent.js"
 import {Arbiter} from "../logic/arbiter.js"
+import {AgentState} from "../logic/state.js"
 import {printReport} from "./utils/print-report.js"
 import {asciiMap} from "../logic/ascii/ascii-map.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
@@ -18,7 +19,7 @@ export async function freeplayFlow() {
 	// which we pass around the freeplay flow,
 	// where we manually swap out its state each turn,
 	// literally changing which team's perspective it represents.
-	const dynamicAgent = new Agent(arbiter.state)
+	const dynamicAgent = new Agent<AgentState>(arbiter.state)
 
 	// boot up various crap
 	const turnTracker = new TurnTracker(dynamicAgent, dynamicAgent.activeTeamIndex)
@@ -42,7 +43,7 @@ export async function freeplayFlow() {
 	arbiter.onStateChange(() => {
 
 		// figure out who's turn it is
-		const teamIndex = arbiter.agent.activeTeamIndex
+		const teamIndex = arbiter.activeTeamIndex
 
 		// swap out the dynamic agent's state for the current player's
 		dynamicAgent.state = arbiter.teamAgent(teamIndex).state
