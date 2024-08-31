@@ -34,7 +34,7 @@ export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 		${loading.braille(use.context.connectivity.connection, connection =>
 			wherefor(connection, ({report, ping}) => html`
 				<ul class=connected>
-					<li>status: ${report.clientStatus}</li>
+					<li>status: ${report.personStatus}</li>
 					<li>players: ${report.worldStats.players}</li>
 					<li>games: ${report.worldStats.games}</li>
 					<li>games/hour: ${report.worldStats.gamesInLastHour}</li>

@@ -1,5 +1,7 @@
 
-export type ClientId = number
+import {Remote} from "renraku"
+import {Game} from "./parts/game.js"
+import {Clientside} from "./apis/clientside.js"
 
 export type WorldStats = {
 	games: number
@@ -7,7 +9,7 @@ export type WorldStats = {
 	gamesInLastHour: number
 }
 
-export type ClientStatus = (
+export type PersonStatus = (
 	| "chilling"
 	| "queued"
 	| "gaming"
@@ -15,6 +17,23 @@ export type ClientStatus = (
 
 export type RegularReport = {
 	worldStats: WorldStats
-	clientStatus: ClientStatus
+	personStatus: PersonStatus
+}
+
+export type PersonId = number
+
+export type Person = {
+	id: PersonId
+	clientside: Remote<Clientside>
+	closeConnection: () => void
+}
+
+export type Couple = [Person, Person]
+
+/** one gamer's perspective on an ongoing game */
+export type GamerSession = {
+	game: Game
+	person: Person
+	teamId: number
 }
 

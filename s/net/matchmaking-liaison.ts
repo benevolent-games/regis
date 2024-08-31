@@ -69,7 +69,7 @@ export class MatchmakingLiaison {
 
 	#getCurrentState() {
 		return (
-			this.connectivity.connection.payload?.report.clientStatus === "queued"
+			this.connectivity.connection.payload?.report.personStatus === "queued"
 				? "queued"
 				: "unqueued"
 		)

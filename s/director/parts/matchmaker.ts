@@ -1,17 +1,15 @@
 
-import {ClientId} from "../types.js"
-
-export type Pair = [ClientId, ClientId]
+import {Couple, Person} from "../types.js"
 
 export class Matchmaker {
-	queue = new Set<ClientId>()
+	queue = new Set<Person>()
 
-	;*extractPairs() {
-		let previous: ClientId | null = null
+	;*extractCouples() {
+		let previous: Person | null = null
 
 		for (const current of this.queue) {
 			if (previous !== null) {
-				const pair = [previous, current] as Pair
+				const pair = [previous, current] as Couple
 				this.queue.delete(previous)
 				this.queue.delete(current)
 				previous = null

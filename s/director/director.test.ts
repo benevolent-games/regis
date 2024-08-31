@@ -12,7 +12,7 @@ export function testSituation() {
 		newClient() {
 			const clientside = makeClientside(new ClientMachinery(), () => serverside)
 			const remoteClientside = remote<typeof clientside>(expose(() => clientside))
-			const {serverside} = director.acceptClient(remoteClientside, () => {})
+			const {serverside} = director.newPerson(remoteClientside, () => {})
 			return {clientside, serverside}
 		},
 	}
@@ -35,16 +35,16 @@ export default <Suite>{
 		})()
 
 		await client1.serverside.matchmaking.joinQueue(),
-		expect((await client1.serverside.report()).clientStatus).equals("queued")
+		expect((await client1.serverside.report()).personStatus).equals("queued")
 
 		await client2.serverside.matchmaking.joinQueue(),
 		expect(started).ok()
 
-		const {worldStats, clientStatus} = await client1.serverside.report()
+		const {worldStats, personStatus} = await client1.serverside.report()
 		expect(worldStats.games).equals(1)
 		expect(worldStats.players).equals(2)
 		expect(worldStats.gamesInLastHour).equals(1)
-		expect(clientStatus).equals("gaming")
+		expect(personStatus).equals("gaming")
 	},
 }
 

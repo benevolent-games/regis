@@ -1,8 +1,8 @@
 
-export class GameCounting {
+export class GamesStats {
 	#times: number[] = []
 
-	count() {
+	countNewGame() {
 		this.#times.push(Date.now())
 	}
 

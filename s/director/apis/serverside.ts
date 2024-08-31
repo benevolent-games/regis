@@ -2,7 +2,7 @@
 import {fns} from "renraku"
 import {Director} from "../director.js"
 import {noop} from "../../tools/noop.js"
-import {ClientId, RegularReport} from "../types.js"
+import {Person, RegularReport} from "../types.js"
 import {AgentState, Turn} from "../../logic/state.js"
 
 export type Serverside = {
@@ -19,30 +19,24 @@ export type Serverside = {
 
 export function makeServerside(
 		director: Director,
-		clientId: ClientId,
+		person: Person,
 	) {
 
-	const {matchmaker, gaming} = director
-
-	function requireSession() {
-		const session = director.gaming.queryForClient(clientId)
-		if (!session)
-			throw new Error("no valid session")
-		return session
-	}
+	const {matchmaker, games} = director
+	const requireSession = () => games.requireSession(person)
 
 	return fns<Serverside>({
 		async report() {
 			return {
 				worldStats: {
-					games: director.gaming.games.size,
-					players: director.clients.size,
-					gamesInLastHour: director.gaming.gamesInLastHour,
+					games: director.games.size,
+					players: director.people.size,
+					gamesInLastHour: director.games.stats.gamesInLastHour,
 				},
-				clientStatus: (
-					(director.gaming.findGameWithClient(clientId))
+				personStatus: (
+					(director.games.findGameWithPerson(person))
 						? "gaming"
-					: (director.matchmaker.queue.has(clientId))
+					: (director.matchmaker.queue.has(person))
 						? "queued"
 						: "chilling"
 				),
@@ -51,22 +45,28 @@ export function makeServerside(
 
 		matchmaking: {
 			async joinQueue() {
-				matchmaker.queue.add(clientId)
+				matchmaker.queue.add(person)
 
-				for (const pair of matchmaker.extractPairs()) {
-					const [gameId, game] = gaming.newGame(pair)
+				for (const couple of matchmaker.extractCouples()) {
+					const game = games.newGame(couple)
+					const gameId = game.id
 					const timeReport = game.timer.report()
 
-					game.pair.forEach((clientId, teamId) => {
-						const client = director.clients.get(clientId)!
+					game.couple.forEach((gamer, teamId) => {
 						const agentState = game.arbiter.statesRef.value.agents.at(teamId)!
-						client.clientside.game.start({gameId, teamId, agentState, timeReport}).catch(noop)
+						gamer.clientside.game.start({
+							gameId,
+							teamId,
+							agentState,
+							timeReport,
+						}).catch(noop)
 					})
 				}
 			},
 
 			async leaveQueue() {
-				matchmaker.queue.delete(clientId)
+				// TODO hmm probably should ensure they're not in a game already too
+				matchmaker.queue.delete(person)
 			},
 		},
 
@@ -78,18 +78,17 @@ export function makeServerside(
 
 				game.arbiter.submitTurn({turn, gameTime})
 
-				game.pair.forEach((clientId, teamId) => {
-					const client = director.clients.get(clientId)!
+				game.couple.forEach((person, teamId) => {
 					const agentState = game.arbiter.getAgentState(teamId)
-					client.clientside.game.update({agentState, timeReport}).catch(noop)
+					person.clientside.game.update({agentState, timeReport}).catch(noop)
 				})
 
 				return game.arbiter.getAgentState(teamId)
 			},
 
 			async abandon() {
-				const {gameId} = requireSession()
-				await director.endGame(gameId)
+				const {game} = requireSession()
+				await director.endGame(game.id)
 			},
 		},
 	})
