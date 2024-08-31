@@ -7,8 +7,8 @@ import {Connectivity} from "../net/connectivity.js"
 import {TimeDisplay} from "../dom/utils/time-display.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 import {GameStartData} from "../director/apis/clientside.js"
+import {TimerObserver} from "../logic/utilities/timer-observer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
-import { TimeReport } from "../logic/utilities/chess-timer.js"
 
 export async function versusFlow({
 		data: startData,
@@ -24,22 +24,22 @@ export async function versusFlow({
 	const dr = trashbin.disposer
 
 	const teamIndex = startData.teamId
-	let timeReport = startData.timeReport
 
 	const agent = new Agent(startData.agentState)
 	const connection = connectivity.connection.payload
 
+	const timerObserver = new TimerObserver(
+		agent.state.initial.config.time,
+		startData.timeReport,
+	)
 	const timeDisplay = new TimeDisplay()
-	const updateTimeDisplay = (report: TimeReport) => {
-		console.log(report.gameTime)
-		timeDisplay.update(
-			report,
-			teamIndex,
-		)
+	const updateTimeDisplay = () => {
+		const localReport = timerObserver.report(agent.activeTeamIndex)
+		timeDisplay.update(localReport, agent.activeTeamIndex, teamIndex)
 	}
 
-	updateTimeDisplay(startData.timeReport)
-	const stopTicker = interval(1000, () => updateTimeDisplay(timeReport))
+	updateTimeDisplay()
+	dr(interval(1000, updateTimeDisplay))
 	printReport(agent, teamIndex)
 
 	if (!connection) {
@@ -58,7 +58,7 @@ export async function versusFlow({
 
 	dr(connectivity.machinery.onGameUpdate(data => {
 		agent.state = data.agentState
-		updateTimeDisplay(data.timeReport)
+		timerObserver.update(data.timeReport)
 		printReport(agent, teamIndex)
 	}))
 
