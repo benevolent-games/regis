@@ -3,14 +3,15 @@ import {clone} from "@benev/slate"
 import {Agent} from "../../logic/agent.js"
 
 export function setupPreviewAgent(baseAgent: Agent, onReset: () => void) {
-	const agent = new Agent(clone(baseAgent.state))
-	const dispose = baseAgent.stateRef.on(reset)
+	const getBaseState = () => clone(baseAgent.state)
+	const agent = new Agent(getBaseState())
 
 	function reset() {
-		agent.state = clone(baseAgent.state)
+		agent.state = getBaseState()
 		onReset()
 	}
 
+	const dispose = baseAgent.onStateChange(reset)
 	return {agent, reset, dispose}
 }
 

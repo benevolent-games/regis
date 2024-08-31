@@ -1,5 +1,5 @@
 
-import {ref, Ref} from "@benev/slate"
+import {pubsub} from "@benev/slate"
 
 import {TilesHelper} from "./helpers/tiles.js"
 import {UnitsHelper} from "./helpers/units.js"
@@ -10,18 +10,24 @@ import {CoordinatorHelper} from "./helpers/coordinator.js"
 import {activeTeamIndex} from "./simulation/aspects/turns.js"
 
 export class Agent {
-	stateRef: Ref<AgentState>
+	#state: AgentState
+	onStateChange = pubsub<[AgentState]>()
 
 	constructor(state: AgentState) {
-		this.stateRef = ref(state)
+		this.#state = state
+	}
+
+	publishStateChange() {
+		this.onStateChange.publish(this.state)
 	}
 
 	get state() {
-		return this.stateRef.value
+		return this.#state
 	}
 
-	set state(value: AgentState) {
-		this.stateRef.value = value
+	set state(state: AgentState) {
+		this.#state = state
+		this.publishStateChange()
 	}
 
 	get boundary() { return new BoundaryHelper(this.state.initial.board) }
@@ -38,7 +44,7 @@ export class Agent {
 
 	deleteUnit(id: number) {
 		this.state.units = this.state.units.filter(unit => unit.id !== id)
-		this.stateRef.publish()
+		this.publishStateChange()
 	}
 
 	archetype(unitKind: UnitKind) {

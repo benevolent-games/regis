@@ -46,7 +46,7 @@ export class Planner {
 
 	#commit = (choice: Choice.Any) => {
 		this.choices.push(choice)
-		this.options.agent.stateRef.publish()
+		this.options.agent.publishStateChange()
 	}
 
 	reset() {

@@ -8,24 +8,27 @@ import {ArbiterState, ChronicleRecord, GameHistory, GameInitial} from "./state.j
 
 export class Arbiter {
 	history: GameHistory
-	state: ArbiterState
+	#state: ArbiterState
 
 	onStateChange = pubsub<[ArbiterState]>()
 
-	constructor(initial: GameInitial) {
-		this.history = {initial, chronicle: []}
-		this.state = this.#simulate()
+	get state() {
+		return this.#state
 	}
 
-	#simulate() {
-		this.state = simulateGame(this.history)
-		this.onStateChange.publish(this.state)
-		return this.state
+	set state(state: ArbiterState) {
+		this.#state = state
+		this.onStateChange.publish(state)
+	}
+
+	constructor(initial: GameInitial) {
+		this.history = {initial, chronicle: []}
+		this.#state = simulateGame(this.history)
 	}
 
 	submitTurn = (record: ChronicleRecord) => {
 		this.history.chronicle.push(record)
-		this.#simulate()
+		this.state = simulateGame(this.history)
 	}
 
 	get agent() {

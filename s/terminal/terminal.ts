@@ -63,7 +63,7 @@ export async function makeGameTerminal(
 	tiler.render()
 	render()
 	world.gameloop.start()
-	dr(agent.stateRef.on(render))
+	dr(agent.onStateChange(render))
 
 	return {world, render, dispose}
 }
