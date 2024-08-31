@@ -4,10 +4,10 @@ import {ref, Ref} from "@benev/slate"
 import {TilesHelper} from "./helpers/tiles.js"
 import {UnitsHelper} from "./helpers/units.js"
 import {AgentState, UnitKind} from "./state.js"
+import {ClaimsHelper} from "./helpers/claims.js"
 import {BoundaryHelper} from "./helpers/boundary.js"
 import {CoordinatorHelper} from "./helpers/coordinator.js"
 import {activeTeamIndex} from "./simulation/aspects/turns.js"
-import { ClaimsHelper } from "./helpers/claims.js"
 
 export class Agent {
 	stateRef: Ref<AgentState>

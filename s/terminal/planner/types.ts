@@ -1,9 +1,8 @@
 
 import {Assets} from "../parts/assets.js"
 import {Agent} from "../../logic/agent.js"
-import {Choice} from "../../logic/state.js"
 import {Selectacon} from "../parts/selectacon.js"
-import {SubmitTurnFn} from "../../logic/arbiter.js"
+import {Choice, Turn} from "../../logic/state.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 import {Proposers} from "../../logic/simulation/proposer/make-proposers.js"
 
@@ -12,7 +11,7 @@ export type PlannerOptions = {
 	assets: Assets
 	selectacon: Selectacon
 	turnTracker: TurnTracker
-	submitTurn: SubmitTurnFn
+	submitTurn: (turn: Turn) => void
 }
 
 export type ConsiderationOptions = {

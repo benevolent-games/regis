@@ -1,66 +1,49 @@
 
-export function randomMap(): MapData {
-	return getMap("ridgeline")
-
-	const maplist = Object.entries(mapPool)
-	const index = Math.floor(Math.random() * maplist.length)
-	const [name, spec] = maplist[index]
-	return {
-		name,
-		ascii: spec.ascii,
-		author: spec.author,
-	}
-}
-
-export function getMap(name: keyof typeof mapPool): MapData {
-	return {
-		name,
-		...mapPool[name],
-	}
-}
-
-export type MapSpec = {
-	ascii: string
-	author: string
-}
-
-export type MapData = {
-	name: string
-	author: string
-	ascii: string
-}
-
-const bingus = {
-	blank: {
-		author: "chase",
-		ascii: `
-			.    .    .    .    .    .    .    .
-			.    .    .    .    .    .    .    .
-			.    .    .    .    .    .    .    .
-			.    .    .    .    .    .    .    .
-			.    .    .    .    .    .    .    .
-			.    .    .    .    .    .    .    .
-			.    .    .    .    .    .    .    .
-			.    .    .    .    .    .    .    .
-		`,
-	},
-
-	bridgePreset: {
-		author: "chase",
-		ascii: `
-			#b   #$♟  #    =^   =^%  =^   #    #$♕
-			#    #♚   #A   .    .    .    #♖   #
-			=^♝  =    .^   .^   .^   .^   =$   =^
-			=    =♞   =    =    =    =    =    =
-			=    =    =    =    =    =    =♘   =
-			=^   =$   .^   .^   .^   .^   =♗   =^
-			#    #♜   .    .    .    #A   #♔   #
-			#$♛  #    =^   =^%  =^   #    #$♙  #b
-		`,
-	},
-}
+import {MapSpec} from "./logic/ascii/types.js"
 
 export const mapPool = {
+	rift: {
+		author: "chase",
+		ascii: `
+			#$♚  #B   #A   .$$  .    .^   =    =$
+			#    #    #$   .    .    .^   =    =
+			#    #    #    .    #    .^   =    =
+			=^   =^   .^   .    .    .^   =    =
+			=    =    .^   .    .    .^   =^   =^
+			=    =    .^   #    .    #    #    #
+			=    =    .^   .    .    #$   #    #
+			=$   =    .^   .    .$$  #A   #B   #$♔
+		`,
+	},
+
+	ridgeline: {
+		author: "chase",
+		ascii: `
+			#$♚  =^   =    .^   .    .    .    .$
+			#k   =^   =    .^   .    #    .    .
+			#r   =^   .$   #    .    .    .    .
+			#b   =^   .    .    .*   .    =^   #q
+			#q   =^   .    .*   .    .    =^   #b
+			.    .    .    .    #    .$   =^   #r
+			.    .    #    .    .^   =    =^   #k
+			.$   .    .    .    .^   =    =^   #$♔
+		`,
+	},
+
+	bingus: {
+		author: "supreme being",
+		ascii: `
+			#$♔  r#    #    =^   =    =    #*    #$$
+			#$     #    #    =^   =    =    =^   #A
+			#     #    k#    .    .^   .^   .^  =^%
+			=^%    .    .    .    .    .    .    =
+			=     .    .    .    .    .    .    =^%
+			=^%     .^   .^   .^   .    #k    #   #
+			#A     =^   =    =    =^   #    #    #$
+			#$$   #*    =    =    =^   #    #r   #$♚
+		`,
+	},
+
 	//
 	// bridge: {
 	// 	author: "chase",
@@ -300,47 +283,35 @@ export const mapPool = {
 	// 	`,
 	// },
 
-	rift: {
-		author: "chase",
-		ascii: `
-			#$♚  #B   #A   .$$  .    .^   =    =$
-			#    #    #$   .    .    .^   =    =
-			#    #    #    .    #    .^   =    =
-			=^   =^   .^   .    .    .^   =    =
-			=    =    .^   .    .    .^   =^   =^
-			=    =    .^   #    .    #    #    #
-			=    =    .^   .    .    #$   #    #
-			=$   =    .^   .    .$$  #A   #B   #$♔
-		`,
-	},
+} satisfies Record<string, Omit<MapSpec, "name">>
 
-	ridgeline: {
-		author: "chase",
-		ascii: `
-			#$♚  =^   =    .^   .    .    .    .$
-			#k   =^   =    .^   .    #    .    .
-			#r   =^   .$   #    .    .    .    .
-			#b   =^   .    .    .*   .    =^   #q
-			#q   =^   .    .*   .    .    =^   #b
-			.    .    .    .    #    .$   =^   #r
-			.    .    #    .    .^   =    =^   #k
-			.$   .    .    .    .^   =    =^   #$♔
-		`,
-	},
-
-	bingus: {
-		author: "supreme being",
-		ascii: `
-			#$♔  r#    #    =^   =    =    #*    #$$
-			#$     #    #    =^   =    =    =^   #A
-			#     #    k#    .    .^   .^   .^  =^%
-			=^%    .    .    .    .    .    .    =
-			=     .    .    .    .    .    .    =^%
-			=^%     .^   .^   .^   .    #k    #   #
-			#A     =^   =    =    =^   #    #    #$
-			#$$   #*    =    =    =^   #    #r   #$♚
-		`,
-	},
-
-} satisfies Record<string, MapSpec>
+// const bingus = {
+// 	blank: {
+// 		author: "chase",
+// 		ascii: `
+// 			.    .    .    .    .    .    .    .
+// 			.    .    .    .    .    .    .    .
+// 			.    .    .    .    .    .    .    .
+// 			.    .    .    .    .    .    .    .
+// 			.    .    .    .    .    .    .    .
+// 			.    .    .    .    .    .    .    .
+// 			.    .    .    .    .    .    .    .
+// 			.    .    .    .    .    .    .    .
+// 		`,
+// 	},
+//
+// 	bridgePreset: {
+// 		author: "chase",
+// 		ascii: `
+// 			#b   #$♟  #    =^   =^%  =^   #    #$♕
+// 			#    #♚   #A   .    .    .    #♖   #
+// 			=^♝  =    .^   .^   .^   .^   =$   =^
+// 			=    =♞   =    =    =    =    =    =
+// 			=    =    =    =    =    =    =♘   =
+// 			=^   =$   .^   .^   .^   .^   =♗   =^
+// 			#    #♜   .    .    .    #A   #♔   #
+// 			#$♛  #    =^   =^%  =^   #    #$♙  #b
+// 		`,
+// 	},
+// }
 

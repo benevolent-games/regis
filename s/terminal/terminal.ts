@@ -1,6 +1,7 @@
 
 import {Trashbin} from "@benev/slate"
 
+import {Turn} from "../logic/state.js"
 import {Tiler} from "./parts/tiler.js"
 import {Agent} from "../logic/agent.js"
 import {Rosters} from "./parts/rosters.js"
@@ -9,7 +10,6 @@ import {Planner} from "./planner/planner.js"
 import {Claimery} from "./parts/claimery.js"
 import {CameraRig} from "./parts/camera-rig.js"
 import {Selectacon} from "./parts/selectacon.js"
-import {SubmitTurnFn} from "../logic/arbiter.js"
 import {UserInputs} from "./parts/user-inputs.js"
 import {makeBasicVisuals} from "./parts/basics.js"
 import {UnitVisuals} from "./parts/unit-visuals.js"
@@ -25,7 +25,7 @@ export async function makeGameTerminal(
 		turnTracker: TurnTracker,
 
 		// submit the player's turn to the arbiter
-		submitTurn: SubmitTurnFn,
+		submitTurn: (turn: Turn) => void,
 	) {
 
 	const trashbin = new Trashbin()

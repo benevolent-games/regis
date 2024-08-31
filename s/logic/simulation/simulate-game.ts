@@ -1,7 +1,6 @@
 
-import {GameHistory, GameStates} from "../state.js"
+import {GameHistory} from "../state.js"
 import {simulateTurn} from "./simulants/simulate-turn.js"
-import {finalizeGameStates} from "./simulants/finalize-game-states.js"
 import {initializeArbiterState} from "./simulants/initialize-arbiter-state.js"
 
 /**
@@ -15,21 +14,16 @@ import {initializeArbiterState} from "./simulants/initialize-arbiter-state.js"
  * for each turn, we add a historical event -- then we simply recompute the
  * game state again.
  */
-export function simulateGame({initial, chronicle}: GameHistory): GameStates {
+export function simulateGame({initial, chronicle}: GameHistory) {
 	const state = initializeArbiterState(initial)
 
-	// churn through game history
 	for (const {turn} of chronicle) {
+		simulateTurn(state, turn)
 
-		// simulate each turn, updating the state
-		const gameOver = simulateTurn(state, turn)
-
-		// if the game is over, abandon further simulation
-		if (gameOver)
+		if (state.context.conclusion)
 			break
 	}
 
-	// compute new states for each player's own perspective
-	return finalizeGameStates(state, chronicle)
+	return state
 }
 

@@ -2,8 +2,8 @@
 import {fns} from "renraku"
 import {Director} from "../director.js"
 import {noop} from "../../tools/noop.js"
+import {Turn} from "../../logic/state.js"
 import {Person, RegularReport} from "../types.js"
-import {AgentState, Turn} from "../../logic/state.js"
 
 export type Serverside = {
 	report(): Promise<RegularReport>
@@ -12,7 +12,7 @@ export type Serverside = {
 		leaveQueue(): Promise<void>
 	}
 	game: {
-		submitTurn(turn: Turn): Promise<AgentState>
+		submitTurn(turn: Turn): Promise<void>
 		abandon(): Promise<void>
 	}
 }
@@ -52,13 +52,13 @@ export function makeServerside(
 					const gameId = game.id
 					const timeReport = game.timer.report()
 
+					// send game start to people
 					game.couple.forEach((gamer, teamId) => {
-						const agentState = game.arbiter.statesRef.value.agents.at(teamId)!
 						gamer.clientside.game.start({
 							gameId,
 							teamId,
-							agentState,
 							timeReport,
+							agentState: game.arbiter.teamAgent(teamId).state,
 						}).catch(noop)
 					})
 				}
@@ -71,18 +71,26 @@ export function makeServerside(
 
 		game: {
 			async submitTurn(turn) {
-				const {game, teamId} = requireSession()
+				const {game, teamId, person} = requireSession()
 				const {gameTime} = game.timer
 				const timeReport = game.timer.report()
+				const righteousTurn = game.arbiter.agent.activeTeamIndex
 
+				if (teamId !== righteousTurn) {
+					console.error(`person ${person.id} submitted an out-of-order turn`)
+					return
+				}
+
+				// submit the turn
 				game.arbiter.submitTurn({turn, gameTime})
 
+				// send game updates to people
 				game.couple.forEach((person, teamId) => {
-					const agentState = game.arbiter.getAgentState(teamId)
-					person.clientside.game.update({agentState, timeReport}).catch(noop)
+					person.clientside.game.update({
+						agentState: game.arbiter.teamAgent(teamId).state,
+						timeReport,
+					}).catch(noop)
 				})
-
-				return game.arbiter.getAgentState(teamId)
 			},
 
 			async abandon() {

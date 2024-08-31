@@ -9,7 +9,7 @@ export function activeTeamIndex({
 	return turnIndex % teams.length
 }
 
-export function processWinByConquest(state: ArbiterState) {
+export function applyWinByConquest(state: ArbiterState) {
 	const agent = new Agent(state)
 
 	const teamsStillStanding = state.initial.config.teams

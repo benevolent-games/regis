@@ -2,17 +2,19 @@
 import {Vec2} from "@benev/toolbox"
 
 import {glyphs} from "./glyphs.js"
+import {MapSpec} from "./types.js"
+import {defaultGameConfig} from "../data.js"
 import {TilesHelper} from "../helpers/tiles.js"
 import {UnitsHelper} from "../helpers/units.js"
 import {defaultClaims} from "./default-claims.js"
-import {makePlainBoardState, UnitKind} from "../state.js"
+import {GameInitial, makePlainBoardState, UnitKind} from "../state.js"
 
-export function asciiMap(ascii: string) {
+export function asciiMap(map: MapSpec): GameInitial {
 	let id = 0
 	const board = new TilesHelper(makePlainBoardState())
 	const units = new UnitsHelper([])
 
-	const lines = ascii
+	const lines = map.ascii
 		.split("\n")
 		.map(s => s.trim())
 		.filter(s => s.length > 0)
@@ -90,6 +92,11 @@ export function asciiMap(ascii: string) {
 		id,
 		board: board.state,
 		units: units.state,
+		config: defaultGameConfig(),
+		mapMeta: {
+			name: map.name,
+			author: map.author,
+		},
 	}
 }
 
