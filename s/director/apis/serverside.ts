@@ -72,7 +72,8 @@ export function makeServerside(
 		game: {
 			async submitTurn(turn) {
 				const {game, teamId} = requireSession()
-				game.arbiter.submitTurn(turn)
+				const {gameTime} = game
+				game.arbiter.submitTurn({turn, gameTime})
 
 				game.pair.forEach((clientId, teamId) => {
 					const client = director.clients.get(clientId)!

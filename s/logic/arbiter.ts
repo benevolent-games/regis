@@ -4,15 +4,16 @@ import {clone, Ref, ref} from "@benev/slate"
 import {Agent} from "./agent.js"
 import {defaultGameConfig} from "./data.js"
 import {asciiMap} from "./ascii/ascii-map.js"
-import {GameHistory, GameStates, Turn} from "./state.js"
 import {simulateGame} from "./simulation/simulate-game.js"
-import {activeTeamIndex} from "./simulation/aspects/turns.js"
+import {ChronicleRecord, GameHistory, GameStates, Turn} from "./state.js"
 
 export type SubmitTurnFn = (turn: Turn) => void
+export type SubmitChronicleFn = (record: ChronicleRecord) => void
 
 export class Arbiter {
 	historyRef: Ref<GameHistory>
 	statesRef: Ref<GameStates>
+	agent: Agent
 
 	constructor({map}: {
 			map: {
@@ -23,7 +24,7 @@ export class Arbiter {
 		}) {
 		const {board, units, id} = asciiMap(map.ascii)
 		this.historyRef = ref<GameHistory>({
-			turns: [],
+			chronicle: [],
 			initial: {
 				id,
 				board,
@@ -36,6 +37,7 @@ export class Arbiter {
 			},
 		})
 		this.statesRef = ref(clone(simulateGame(this.historyRef.value)))
+		this.agent = this.makeAgent(null)
 	}
 
 	makeAgent(teamId: null | number) {
@@ -50,23 +52,19 @@ export class Arbiter {
 		return agent
 	}
 
-	submitTurn: SubmitTurnFn = turn => {
+	submitTurn: SubmitChronicleFn = record => {
 		const {conclusion} = this.statesRef.value.arbiter.context
 		if (conclusion) {
 			console.error("user submitted turn after game already ended")
 			return
 		}
 		const newHistory = clone(this.historyRef.value)
-		newHistory.turns.push(turn)
+		newHistory.chronicle.push(record)
 		this.#commit(newHistory)
 	}
 
 	getAgentState(teamId: number) {
 		return this.statesRef.value.agents.at(teamId)!
-	}
-
-	get activeTeamIndex() {
-		return activeTeamIndex(this.statesRef.value.arbiter)
 	}
 
 	#commit(history: GameHistory) {

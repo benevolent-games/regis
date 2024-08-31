@@ -22,7 +22,7 @@ import {awardIncomeToActiveTeam, processWinByConquest} from "./aspects/turns.js"
  * for each turn, we add a historical event -- then we simply recompute the
  * game state again.
  */
-export function simulateGame({initial, turns}: GameHistory): GameStates {
+export function simulateGame({initial, chronicle}: GameHistory): GameStates {
 
 	// establish the authoritative state for the game,
 	// the arbiter "knows all"
@@ -47,7 +47,7 @@ export function simulateGame({initial, turns}: GameHistory): GameStates {
 
 	// we churn through every event in the game history,
 	// updating the arbiter state as we go along
-	for (const turn of turns) {
+	for (const {turn} of chronicle) {
 		const agent = new Agent(state)
 		const turnTracker = new TurnTracker(agent, agent.activeTeamIndex)
 		const proposers = makeProposers({
@@ -78,7 +78,7 @@ export function simulateGame({initial, turns}: GameHistory): GameStates {
 	return {
 		arbiter: state,
 		agents: state.teams.map((_, teamId) => {
-			const vision = turns.length === 0
+			const vision = chronicle.length === 0
 				? universalVision(state)
 				: limitedVision(state, teamId)
 			return {

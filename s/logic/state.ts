@@ -7,7 +7,12 @@ import {loop2d, Vec2} from "@benev/toolbox"
 
 export type GameHistory = {
 	initial: GameInitial
-	turns: Turn[]
+	chronicle: ChronicleRecord[]
+}
+
+export type ChronicleRecord = {
+	turn: Turn
+	gameTime: number
 }
 
 export type GameInitial = {
@@ -24,6 +29,7 @@ export type MapMeta = {
 }
 
 export type GameConfig = {
+	time: TimeRules | null
 	startingResources: number
 	universalBasicIncome: number
 	unitArchetypes: UnitArchetypes
@@ -36,6 +42,12 @@ export type GameConfig = {
 			tech: Record<TechKind, number>
 		}
 	}
+}
+
+export type TimeRules = {
+	limit: number
+	delay: number
+	charity: number
 }
 
 /////////////////////////////////////////////////

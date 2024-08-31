@@ -7,6 +7,12 @@ import {GameCounting} from "./game-counting.js"
 import {IdCounter} from "../../tools/id-counter.js"
 
 export class Game {
+	#start = Date.now()
+
+	get gameTime() {
+		return Date.now() - this.#start
+	}
+
 	arbiter = new Arbiter({map: randomMap()})
 	constructor(public pair: Pair) {}
 }
