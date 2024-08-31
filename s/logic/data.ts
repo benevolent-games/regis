@@ -7,7 +7,7 @@ export function defaultGameConfig(): GameConfig {
 	return {
 		time: {
 			limit: seconds(60),
-			delay: seconds(10),
+			delay: seconds(5),
 			charity: seconds(0),
 		},
 		startingResources: 8,

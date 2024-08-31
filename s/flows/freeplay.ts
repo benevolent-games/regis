@@ -5,6 +5,7 @@ import {randomMap} from "../map-pool.js"
 import {Arbiter} from "../logic/arbiter.js"
 import {printReport} from "./utils/print-report.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
+import {TimeDisplay} from "../dom/utils/time-display.js"
 import {ChessTimer} from "../logic/utilities/chess-timer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 
@@ -15,10 +16,16 @@ export async function freeplayFlow() {
 	const {config} = arbiter.state.initial
 
 	const timer = new ChessTimer(config.time, config.teams.length)
-	const stopTicker = interval(1000, () => {
-		const remaining = timer.report().teamwise.at(0)!.remaining ?? 0
-		console.log((remaining / 1000).toFixed(0))
-	})
+	const timeDisplay = new TimeDisplay()
+
+	function updateTimeDisplay() {
+		const report = timer.report()
+		const teamReport = report.teamwise.at(agent.activeTeamIndex)!
+		timeDisplay.remaining.value = teamReport.remaining
+		timeDisplay.ourTeam.value = true
+	}
+
+	const stopTicker = interval(1000, updateTimeDisplay)
 
 	const terminal = await makeGameTerminal(
 		agent,
@@ -31,6 +38,7 @@ export async function freeplayFlow() {
 		agent.state = states.agents.at(teamIndex)!
 		turnTracker.teamIndex = teamIndex
 		timer.team = teamIndex
+		updateTimeDisplay()
 
 		printReport(agent, teamIndex)
 		terminal.render()
@@ -40,6 +48,7 @@ export async function freeplayFlow() {
 
 	return {
 		world: terminal.world,
+		timeDisplay,
 		dispose() {
 			terminal.dispose()
 			stopTicker()

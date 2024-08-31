@@ -4,6 +4,7 @@ import {Trashbin} from "@benev/slate"
 import {Agent} from "../logic/agent.js"
 import {printReport} from "./utils/print-report.js"
 import {Connectivity} from "../net/connectivity.js"
+import {TimeDisplay} from "../dom/utils/time-display.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 import {GameStartData} from "../director/apis/clientside.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
@@ -23,6 +24,8 @@ export async function versusFlow({
 
 	const agent = new Agent(startData.agentState)
 	const connection = connectivity.connection.payload
+
+	const timeDisplay = new TimeDisplay()
 
 	printReport(agent, startData.teamId)
 
@@ -61,6 +64,7 @@ export async function versusFlow({
 	)
 
 	return {
+		timeDisplay,
 		world: terminal.world,
 		dispose() {
 			terminal.dispose()
