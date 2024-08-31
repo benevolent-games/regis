@@ -40,6 +40,10 @@ export class Arbiter {
 		this.agent = this.makeAgent(null)
 	}
 
+	get state() {
+		return this.statesRef.value.arbiter
+	}
+
 	makeAgent(teamId: null | number) {
 		const getState = () => {
 			return teamId === null

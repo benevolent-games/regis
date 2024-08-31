@@ -1,6 +1,7 @@
 
 import {UnitArchetypes} from "./data.js"
 import {loop2d, Vec2} from "@benev/toolbox"
+import { TimeRules } from "./utilities/chess-timer.js"
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -42,12 +43,6 @@ export type GameConfig = {
 			tech: Record<TechKind, number>
 		}
 	}
-}
-
-export type TimeRules = {
-	limit: number
-	delay: number
-	charity: number
 }
 
 /////////////////////////////////////////////////

@@ -1,14 +1,14 @@
 
-import {minutes} from "../tools/timely.js"
+import {seconds} from "../tools/timely.js"
 import {GameConfig, InitialTeamInfo, Roster, UnitArchetype, UnitKind, VerticalCapability} from "./state.js"
 
 export function defaultGameConfig(): GameConfig {
 	const unitArchetypes = defaultUnitArchetypes()
 	return {
 		time: {
-			limit: minutes(2),
-			delay: 3,
-			charity: 0,
+			limit: seconds(60),
+			delay: seconds(10),
+			charity: seconds(0),
 		},
 		startingResources: 8,
 		universalBasicIncome: 2,
