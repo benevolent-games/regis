@@ -23,7 +23,7 @@ export async function versusFlow({
 	const trashbin = new Trashbin()
 	const dr = trashbin.disposer
 
-	const teamIndex = startData.teamId
+	const teamId = startData.teamId
 
 	const agent = new Agent(startData.agentState)
 	const connection = connectivity.connection.payload
@@ -34,13 +34,13 @@ export async function versusFlow({
 	)
 	const timeDisplay = new TimeDisplay()
 	const updateTimeDisplay = () => {
-		const localReport = timerObserver.report(agent.activeTeamIndex)
-		timeDisplay.update(localReport, agent.activeTeamIndex, teamIndex)
+		const localReport = timerObserver.report(agent.activeTeamId)
+		timeDisplay.update(localReport, agent.activeTeamId, teamId)
 	}
 
 	updateTimeDisplay()
 	dr(interval(1000, updateTimeDisplay))
-	printReport(agent, teamIndex)
+	printReport(agent, teamId)
 
 	if (!connection) {
 		exit()
@@ -59,7 +59,7 @@ export async function versusFlow({
 	dr(connectivity.machinery.onGameUpdate(data => {
 		agent.state = data.agentState
 		timerObserver.update(data.timeReport)
-		printReport(agent, teamIndex)
+		printReport(agent, teamId)
 	}))
 
 	dr(connectivity.machinery.onGameEnd(() => {
@@ -67,7 +67,7 @@ export async function versusFlow({
 		exit()
 	}))
 
-	const turnTracker = new TurnTracker(agent, teamIndex)
+	const turnTracker = new TurnTracker(agent, teamId)
 
 	const terminal = await makeGameTerminal(
 		agent,

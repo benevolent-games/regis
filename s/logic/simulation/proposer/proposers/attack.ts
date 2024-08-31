@@ -20,7 +20,7 @@ export const proposeAttack = proposerFn(
 	if (!canAttack)
 		return new MovementDenial(`unit "${attacker.kind}" at ${boardCoords(attacker.place)} does not have freedom to attack`)
 
-	if (!turnTracker.ourTurn || turnTracker.teamIndex !== attacker.team)
+	if (!turnTracker.ourTurn || turnTracker.teamId !== attacker.team)
 		return new WrongTeamDenial()
 
 	if (agent.conclusion)

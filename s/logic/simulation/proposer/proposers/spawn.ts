@@ -13,21 +13,21 @@ export const proposeSpawn = proposerFn(
 	const {unitKind} = choice
 	const {config} = agent.state.initial
 	const {cost: unitCost, stakeholder} = config.unitArchetypes[unitKind]
-	const teamIndex = agent.activeTeamIndex
+	const teamId = agent.activeTeamId
 
 	const stakingCost = stakeholder
 		? agent.claims.getStakingCost(choice.place)
 		: 0
 
 	const buyable = unitCost !== null
-	const tech = agent.claims.getTech(teamIndex)
+	const tech = agent.claims.getTech(teamId)
 
-	const validPlace = isValidSpawnPlace(agent, teamIndex, choice.place)
+	const validPlace = isValidSpawnPlace(agent, teamId, choice.place)
 	const howManyAlready = [...agent.units.list()]
-		.filter(unit => unit.team === teamIndex)
+		.filter(unit => unit.team === teamId)
 		.filter(unit => unit.kind === choice.unitKind)
 		.length
-	const {roster} = config.teams.at(teamIndex)!
+	const {roster} = config.teams.at(teamId)!
 	const remainingRosterCount = roster[choice.unitKind] - howManyAlready
 	const availableInRoster = remainingRosterCount > 0
 
@@ -56,14 +56,14 @@ export const proposeSpawn = proposerFn(
 		return new GameOverDenial()
 
 	return () => {
-		subtractResources(agent.state, teamIndex, cost)
+		subtractResources(agent.state, teamId, cost)
 		const id = agent.grabId()
 		freedom.countSpawning(id)
 		agent.units.add({
 			id,
 			kind: choice.unitKind,
 			place: choice.place,
-			team: teamIndex,
+			team: teamId,
 			damage: 0,
 		})
 	}

@@ -30,7 +30,7 @@ export class Game {
 		// tell the timer whenever the turn changes
 		this.#trash.disposer(
 			this.arbiter.onStateChange(() => {
-				const team = this.arbiter.activeTeamIndex
+				const team = this.arbiter.activeTeamId
 				this.timer.team = team
 			})
 		)

@@ -50,7 +50,7 @@ export class ClaimsHelper {
 		return resource.startingLevel + (investment?.count ?? 0)
 	}
 
-	getStakedClaims(teamIndex: number) {
+	getStakedClaims(teamId: number) {
 		const {tiles} = this
 
 		return Array.from(tiles.list())
@@ -62,7 +62,7 @@ export class ClaimsHelper {
 				if (!stakeholder)
 					return null
 
-				if (stakeholder.team !== teamIndex)
+				if (stakeholder.team !== teamId)
 					return null
 
 				return {
@@ -74,7 +74,7 @@ export class ClaimsHelper {
 			.filter(c => !!c)
 	}
 
-	getTech(teamIndex: number) {
+	getTech(teamId: number) {
 		const tech: Claim.Tech = {
 			knight: false,
 			rook: false,
@@ -82,7 +82,7 @@ export class ClaimsHelper {
 			queen: false,
 		}
 
-		for (const {claim} of this.getStakedClaims(teamIndex)) {
+		for (const {claim} of this.getStakedClaims(teamId)) {
 			if (!claim.tech)
 				continue
 			for (const [key, value] of Object.entries(claim.tech)) {
@@ -94,11 +94,11 @@ export class ClaimsHelper {
 		return tech
 	}
 
-	getIncome(teamIndex: number) {
+	getIncome(teamId: number) {
 		const {state} = this
 		let income = state.initial.config.universalBasicIncome
 
-		for (const {claim, place} of this.getStakedClaims(teamIndex)) {
+		for (const {claim, place} of this.getStakedClaims(teamId)) {
 			if (!claim.resource)
 				continue
 

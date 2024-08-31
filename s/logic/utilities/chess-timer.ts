@@ -115,12 +115,12 @@ export class ChessTimer {
 	static generateTeamwise(
 			rules: TimeRules | null,
 			teamRecords: TimeRecord[],
-			currentTeam: number,
+			currentTeamId: number,
 			since: number,
 		) {
 		return teamRecords
-			.map((stale, teamIndex): TeamTimeReport => {
-				const record = teamIndex === currentTeam
+			.map((stale, teamId): TeamTimeReport => {
+				const record = teamId === currentTeamId
 					? ChessTimer.updateRecord(rules, stale, since)
 					: stale
 				return ChessTimer.calculateTeamReport(rules, record)

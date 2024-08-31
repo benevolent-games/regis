@@ -8,8 +8,8 @@ export function initializeArbiterState(initial: GameInitial): ArbiterState {
 		initial,
 		units: initial.units,
 		context: {
+			turnCount: 0,
 			nextId: initial.id,
-			turnIndex: 0,
 			conclusion: null,
 		},
 		teams: initial.config.teams.map((team): FullTeamInfo => ({

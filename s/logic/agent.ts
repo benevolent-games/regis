@@ -7,7 +7,7 @@ import {AgentState, UnitKind} from "./state.js"
 import {ClaimsHelper} from "./helpers/claims.js"
 import {BoundaryHelper} from "./helpers/boundary.js"
 import {CoordinatorHelper} from "./helpers/coordinator.js"
-import {activeTeamIndex} from "./simulation/aspects/turns.js"
+import {determineCurrentTeamId} from "./simulation/aspects/turns.js"
 
 export class Agent<State extends AgentState = AgentState> {
 	#state: State
@@ -52,11 +52,11 @@ export class Agent<State extends AgentState = AgentState> {
 	}
 
 	get activeTeam() {
-		return this.state.teams.at(this.activeTeamIndex)!
+		return this.state.teams.at(this.activeTeamId)!
 	}
 
-	get activeTeamIndex() {
-		return activeTeamIndex(this.state)
+	get activeTeamId() {
+		return determineCurrentTeamId(this.state)
 	}
 
 	get conclusion() {

@@ -24,8 +24,8 @@ export function initializeGameState({ascii, teams}: Options): GameState {
 		},
 		agents: teams.map((_, agentIndex) => ({
 			...details,
-			teams: teams.map((team, teamIndex) => {
-				return (teamIndex === agentIndex
+			teams: teams.map((team, teamId) => {
+				return (teamId === agentIndex
 					? team
 					: {name: team.name}
 				) as Team | TeamFoggy

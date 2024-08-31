@@ -77,7 +77,7 @@ export type AgentState = {
 /** current situation that the game is in */
 export type GameContext = {
 	nextId: number
-	turnIndex: number
+	turnCount: number
 	conclusion: null | Conclusion
 }
 

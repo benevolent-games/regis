@@ -57,7 +57,7 @@ export class Selectacon {
 		const cell = this.hover.value
 
 		if (cell) {
-			const teamId = agent.activeTeamIndex
+			const teamId = agent.activeTeamId
 			const instance = assets.indicators.hover(teamId)
 			this.#hoverbin.disposable(instance)
 			instance.position.set(...cell.position)

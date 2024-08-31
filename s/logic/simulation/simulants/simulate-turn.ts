@@ -9,7 +9,7 @@ import {awardIncomeToActiveTeam, applyWinByConquest} from "../aspects/turns.js"
 
 export function simulateTurn(state: ArbiterState, turn: Turn) {
 	const agent = new Agent(state)
-	const turnTracker = new TurnTracker(agent, agent.activeTeamIndex)
+	const turnTracker = new TurnTracker(agent, agent.activeTeamId)
 
 	const proposers = makeProposers({
 		agent,
@@ -28,7 +28,7 @@ export function simulateTurn(state: ArbiterState, turn: Turn) {
 	applyWinByConquest(state)
 
 	if (!state.context.conclusion) {
-		state.context.turnIndex += 1
+		state.context.turnCount += 1
 		awardIncomeToActiveTeam(state)
 	}
 }

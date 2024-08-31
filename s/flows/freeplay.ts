@@ -22,14 +22,14 @@ export async function freeplayFlow() {
 	const dynamicAgent = new Agent<AgentState>(arbiter.state)
 
 	// boot up various crap
-	const turnTracker = new TurnTracker(dynamicAgent, dynamicAgent.activeTeamIndex)
+	const turnTracker = new TurnTracker(dynamicAgent, dynamicAgent.activeTeamId)
 	const {config} = arbiter.state.initial
 	const timer = new ChessTimer(config.time, config.teams.length)
 	const timeDisplay = new TimeDisplay()
 	const updateTimeDisplay = () => timeDisplay.update(
 		timer.report(),
-		dynamicAgent.activeTeamIndex,
-		dynamicAgent.activeTeamIndex,
+		dynamicAgent.activeTeamId,
+		dynamicAgent.activeTeamId,
 	)
 	const stopTicker = interval(1000, updateTimeDisplay)
 
@@ -43,25 +43,25 @@ export async function freeplayFlow() {
 	arbiter.onStateChange(() => {
 
 		// figure out who's turn it is
-		const teamIndex = arbiter.activeTeamIndex
+		const teamId = arbiter.activeTeamId
 
 		// swap out the dynamic agent's state for the current player's
-		dynamicAgent.state = arbiter.teamAgent(teamIndex).state
+		dynamicAgent.state = arbiter.teamAgent(teamId).state
 
 		// update stuff about the turn change
-		turnTracker.teamIndex = teamIndex
-		timer.team = teamIndex
+		turnTracker.teamId = teamId
+		timer.team = teamId
 
 		// render ui
 		updateTimeDisplay()
-		printReport(dynamicAgent, teamIndex)
+		printReport(dynamicAgent, teamId)
 
 		// render 3d stuff
 		terminal.render()
 	})
 
 	// print initial report
-	printReport(dynamicAgent, dynamicAgent.activeTeamIndex)
+	printReport(dynamicAgent, dynamicAgent.activeTeamId)
 
 	return {
 		timeDisplay,

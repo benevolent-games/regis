@@ -2,11 +2,11 @@
 import {Agent} from "../../agent.js"
 import {AgentState, ArbiterState} from "../../state.js"
 
-export function activeTeamIndex({
-		context: {turnIndex},
+export function determineCurrentTeamId({
+		context: {turnCount},
 		initial: {config: {teams}},
 	}: AgentState) {
-	return turnIndex % teams.length
+	return turnCount % teams.length
 }
 
 export function applyWinByConquest(state: ArbiterState) {
@@ -32,9 +32,9 @@ export function applyWinByConquest(state: ArbiterState) {
 
 export function awardIncomeToActiveTeam(state: ArbiterState) {
 	const agent = new Agent(state)
-	const teamIndex = activeTeamIndex(state)
-	const income = agent.claims.getIncome(teamIndex)
-	const team = state.teams.at(teamIndex)!
+	const teamId = determineCurrentTeamId(state)
+	const income = agent.claims.getIncome(teamId)
+	const team = state.teams.at(teamId)!
 	team.resources += income
 }
 

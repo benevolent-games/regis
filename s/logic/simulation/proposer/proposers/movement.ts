@@ -26,7 +26,7 @@ export const proposeMovement = proposerFn(
 	const destination = [...choice.path].pop()!
 	const destinationStakingCost = agent.claims.getStakingCost(destination)
 
-	if (!turnTracker.ourTurn || turnTracker.teamIndex !== unit.team)
+	if (!turnTracker.ourTurn || turnTracker.teamId !== unit.team)
 		return new WrongTeamDenial()
 
 	if (agent.conclusion)
@@ -64,7 +64,7 @@ export const proposeMovement = proposerFn(
 
 	return () => {
 		freedom.countMove(unit.id)
-		subtractResources(agent.state, agent.activeTeamIndex, cost)
+		subtractResources(agent.state, agent.activeTeamId, cost)
 		unit.place = lastStep
 	}
 })

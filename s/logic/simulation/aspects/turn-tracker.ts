@@ -4,11 +4,11 @@ import {Agent} from "../../agent.js"
 export class TurnTracker {
 	constructor(
 		public agent: Agent,
-		public teamIndex: number,
+		public teamId: number,
 	) {}
 
 	get ourTurn() {
-		return this.teamIndex === this.agent.activeTeamIndex
+		return this.teamId === this.agent.activeTeamId
 	}
 }
 

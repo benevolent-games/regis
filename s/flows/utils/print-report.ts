@@ -3,12 +3,12 @@ import {Agent} from "../../logic/agent.js"
 import {FullTeamInfo} from "../../logic/state.js"
 
 export function printReport(agent: Agent, teamId: number) {
-	const {activeTeamIndex, activeTeam} = agent
-	const ourTurn = activeTeamIndex === teamId
+	const {activeTeamId, activeTeam} = agent
+	const ourTurn = activeTeamId === teamId
 	const ourTeam = agent.state.teams.at(teamId)! as FullTeamInfo
-	const {turnIndex} = agent.state.context
+	const {turnCount: turnId} = agent.state.context
 
-	if (turnIndex === 0) {
+	if (turnId === 0) {
 		const map = agent.state.initial.mapMeta
 		console.log(`🎲 $$$ GAME START on "${map.name}" by "${map.author}"`)
 	}

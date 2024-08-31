@@ -125,7 +125,7 @@ export class Planner {
 			if (
 				selected &&
 				selected.kind === "roster" &&
-				selected.teamId === agent.activeTeamIndex) {
+				selected.teamId === agent.activeTeamId) {
 					if (on.spawn(considerations.spawn(target.place, selected.unitKind)))
 						happened = true
 			}
