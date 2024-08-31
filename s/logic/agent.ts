@@ -39,6 +39,7 @@ export class Agent<State extends AgentState = AgentState> {
 	grabId() {
 		const id = this.state.context.nextId
 		this.state.context.nextId += 1
+		this.publishStateChange()
 		return id
 	}
 
