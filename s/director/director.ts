@@ -1,6 +1,6 @@
 
 import {Remote} from "renraku"
-import {Person} from "./types.js"
+import {Person, PersonStatus, WorldStats} from "./types.js"
 import {Games} from "./parts/games.js"
 import {People} from "./parts/people.js"
 import {Clientside} from "./apis/clientside.js"
@@ -21,6 +21,24 @@ export class Director {
 		const serverside = makeServerside(this, person)
 		const disconnected = async() => await this.#personDisconnected(person)
 		return {person, serverside, disconnected}
+	}
+
+	get stats(): WorldStats {
+		return {
+			games: this.games.size,
+			players: this.people.size,
+			gamesInLastHour: this.games.stats.gamesInLastHour,
+		}
+	}
+
+	getPersonStatus(person: Person): PersonStatus {
+		return (
+			(this.games.findGameWithPerson(person))
+				? "gaming"
+				: (this.matchmaker.queue.has(person))
+					? "queued"
+					: "chilling"
+		)
 	}
 
 	#personDisconnected = async(person: Person) => {
