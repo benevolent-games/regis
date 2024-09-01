@@ -1,14 +1,15 @@
 
-import {interval, Trashbin} from "@benev/slate"
+import {Trashbin} from "@benev/slate"
 
 import {Agent} from "../logic/agent.js"
+import {UiData} from "../dom/utils/ui-data.js"
 import {printReport} from "./utils/print-report.js"
 import {Connectivity} from "../net/connectivity.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 import {StartMemo} from "../director/apis/clientside.js"
 import {TimerObserver} from "../tools/chess-timer/timer-observer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
-import { UiData } from "../dom/utils/ui-data.js"
+import {requestAnimationFrameLoop} from "../tools/request-animation-frame-loop.js"
 
 export async function versusFlow({
 		data: startData,
@@ -42,7 +43,7 @@ export async function versusFlow({
 	}
 
 	updateUi()
-	dr(interval(1000, updateUi))
+	dr(requestAnimationFrameLoop(updateUi))
 	printReport(agent, teamId)
 
 	if (!connection) {

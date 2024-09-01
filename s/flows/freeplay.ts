@@ -1,6 +1,4 @@
 
-import {interval} from "@benev/slate"
-
 import {Agent} from "../logic/agent.js"
 import {Arbiter} from "../logic/arbiter.js"
 import {AgentState} from "../logic/state.js"
@@ -11,6 +9,7 @@ import {makeGameTerminal} from "../terminal/terminal.js"
 import {randomMap} from "../logic/routines/map-access.js"
 import {ChessTimer} from "../tools/chess-timer/chess-timer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
+import {requestAnimationFrameLoop} from "../tools/request-animation-frame-loop.js"
 
 export async function freeplayFlow() {
 	const arbiter = new Arbiter(asciiMap(randomMap()))
@@ -34,7 +33,7 @@ export async function freeplayFlow() {
 			timeReport: timer.report(),
 		})
 	}
-	const stopTicker = interval(1000, updateUi)
+	const stopTicker = requestAnimationFrameLoop(updateUi)
 
 	// 3d rendering
 	const terminal = await makeGameTerminal(

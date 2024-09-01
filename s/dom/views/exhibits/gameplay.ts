@@ -47,6 +47,7 @@ export const styles = css`
 		right: 0;
 		margin: 0 auto;
 		padding: 0.5em;
+		pointer-events: none;
 	}
 `
 

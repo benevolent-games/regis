@@ -24,7 +24,10 @@ export const ClockView = nexus.shadowView(use => (
 		.filter(([id]) => id !== ourTeamId)
 
 	function formatTime(ms: number) {
-		return Math.floor(ms / 1000).toFixed()
+		const [big, small] = (ms / 1000).toFixed(2).split(".")
+		return html`
+			<span class=big>${big}</span><span class=small>.${small}</span>
+		`
 	}
 
 	function renderTeamTime(
@@ -80,7 +83,7 @@ export const styles = css`
 
 			--color: #fff;
 			&[data-team-id="0"] { --color: #0ff; }
-			&[data-team-id="1"] { --color: #fa0; }
+			&[data-team-id="1"] { --color: #fd0; }
 			&[data-is-danger] { --color: #f00; }
 
 			transition: all 150ms linear;
@@ -99,6 +102,10 @@ export const styles = css`
 			> span {
 				font-size: 2em;
 				font-weight: bold;
+				> .small {
+					opacity: 0.5;
+					font-size: 0.6em;
+				}
 			}
 
 			&:not([data-is-our-team]) {

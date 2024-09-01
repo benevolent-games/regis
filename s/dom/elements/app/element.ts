@@ -81,8 +81,9 @@ export const GameApp = nexus.shadowComponent(use => {
 			}),
 		}
 
-		// hack skip to freeplay
-		goExhibit.freeplay()
+		// hack to skip to freeplay
+		if (window.location.hash.includes("freeplay"))
+			goExhibit.freeplay()
 
 		return orchestrator
 	})

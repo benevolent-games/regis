@@ -16,6 +16,9 @@ export const ActionBarView = nexus.shadowView(use => (
 	use.name("actionbar")
 	use.styles(styles)
 
+	const ourTurn = uiData.ourTurn.value
+	const resources = uiData.resources.value
+
 	return html`
 		<div class="chunk static">
 			<div class="entry">
@@ -27,14 +30,14 @@ export const ActionBarView = nexus.shadowView(use => (
 		</div>
 
 		<div class="chunk stretchy left">
-			<div class="entry" hidden>
+			<div class="entry" hidden ?data-disabled="${!ourTurn}">
 				<div class="button">
 					${arrowCounterClockwiseSvg}
 					<em>z</em>
 				</div>
 			</div>
 
-			<div class="entry">
+			<div class="entry" ?data-disabled="${!ourTurn}">
 				<div class="button">
 					${xSvg}
 					<em>ctrl-z</em>
@@ -47,9 +50,8 @@ export const ActionBarView = nexus.shadowView(use => (
 		</div>
 
 		<div class="chunk stretchy right">
-			<div class="entry">
+			<div class="entry" ?data-disabled="${!ourTurn}">
 				<div class="button juicy">
-					<span>Commit Turn</span>
 					${circleCheckSvg}
 					<em>spacebar</em>
 				</div>
@@ -57,7 +59,11 @@ export const ActionBarView = nexus.shadowView(use => (
 		</div>
 
 		<div class="chunk static">
-			resources
+			<div class="resources">
+				<span>
+					🪙${resources}
+				</span>
+			</div>
 		</div>
 	`
 })
@@ -67,6 +73,11 @@ export const styles = css`
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.5em;
+		user-select: none;
+	}
+
+	.chunk > * {
+		pointer-events: all;
 	}
 
 	.chunk {
@@ -75,10 +86,23 @@ export const styles = css`
 		gap: 0.5em;
 
 		align-items: start;
-		justify-content: center;
+		&.left { justify-content: end; }
+		&.right { justify-content: start; }
 
 		&.static { flex: 0 0 auto; }
 		&.stretchy { flex: 1 1 0; }
+	}
+
+	.resources {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 3em;
+		padding: 0 1em;
+
+		> span {
+			font-size: 1.5em;
+		}
 	}
 
 	.entry {
@@ -88,6 +112,13 @@ export const styles = css`
 		> * { flex: 1 0 auto; }
 
 		&[hidden] { display: none; }
+
+		transition: opacity 150ms linear;
+		opacity: 1;
+		&[data-disabled] {
+			opacity: 0;
+			pointer-event: none;
+		}
 
 		> .button {
 			position: relative;
@@ -123,6 +154,7 @@ export const styles = css`
 			}
 
 			> em {
+				pointer-events: none;
 				position: absolute;
 				margin: auto;
 				inset: 0;
