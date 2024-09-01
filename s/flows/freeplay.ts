@@ -9,7 +9,7 @@ import {asciiMap} from "../logic/ascii/ascii-map.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 import {TimeDisplay} from "../dom/utils/time-display.js"
 import {randomMap} from "../logic/routines/map-access.js"
-import {ChessTimer} from "../logic/utilities/chess-timer.js"
+import {ChessTimer} from "../tools/chess-timer/chess-timer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 
 export async function freeplayFlow() {

@@ -1,6 +1,6 @@
 
 import {signal} from "@benev/slate"
-import {TimeReport} from "../../logic/utilities/chess-timer.js"
+import {TimeReport} from "../../tools/chess-timer/types.js"
 
 export class TimeDisplay {
 	ourTeam = signal(true)

@@ -3,7 +3,7 @@ import {fns} from "renraku"
 import {Serverside} from "./serverside.js"
 import {AgentState} from "../../logic/state.js"
 import {ClientMachinery} from "../plumbing/machinery.js"
-import {TimeReport} from "../../logic/utilities/chess-timer.js"
+import {TimeReport} from "../../tools/chess-timer/types.js"
 
 export type StartMemo = {
 	gameId: number

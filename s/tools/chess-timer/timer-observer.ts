@@ -1,5 +1,6 @@
 
-import {ChessTimer, TimeReport, TimeRules} from "./chess-timer.js"
+import {ChessTimer} from "./chess-timer.js"
+import {TimeReport, TimeRules} from "./types.js"
 
 export class TimerObserver {
 	#lastUpdate = Date.now()
@@ -15,7 +16,7 @@ export class TimerObserver {
 	}
 
 	report(activeTeamIndex: number): TimeReport {
-		const {rules, remoteReport} = this
+		const {remoteReport} = this
 		const since = Date.now() - this.#lastUpdate
 
 		const gameTime = remoteReport.gameTime + since

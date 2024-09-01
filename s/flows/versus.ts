@@ -7,7 +7,7 @@ import {Connectivity} from "../net/connectivity.js"
 import {TimeDisplay} from "../dom/utils/time-display.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 import {StartMemo} from "../director/apis/clientside.js"
-import {TimerObserver} from "../logic/utilities/timer-observer.js"
+import {TimerObserver} from "../tools/chess-timer/timer-observer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 
 export async function versusFlow({

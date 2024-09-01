@@ -7,7 +7,7 @@ import {Couple, Person} from "../types.js"
 import {Arbiter} from "../../logic/arbiter.js"
 import {asciiMap} from "../../logic/ascii/ascii-map.js"
 import {randomMap} from "../../logic/routines/map-access.js"
-import {ChessTimer} from "../../logic/utilities/chess-timer.js"
+import {ChessTimer} from "../../tools/chess-timer/chess-timer.js"
 
 export class Game {
 	#trash = new Trashbin()

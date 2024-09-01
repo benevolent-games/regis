@@ -1,7 +1,8 @@
 
 import {loop2d, Vec2} from "@benev/toolbox"
+
 import {UnitArchetypes} from "./data.js"
-import {TimeReport, TimeRules} from "./utilities/chess-timer.js"
+import {TimeRules} from "../tools/chess-timer/types.js"
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
