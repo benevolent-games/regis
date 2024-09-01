@@ -12,7 +12,8 @@ export const glyphs = {
 
 	claims: {
 		resource: "$",
-		goldResource: "$$",
+		resource2: "$$",
+		resource3: "$$$",
 		watchtower: "*",
 		techKnight: "k",
 		techRook: "r",
