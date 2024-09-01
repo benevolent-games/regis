@@ -1,6 +1,6 @@
 
 import {Agent} from "../../agent.js"
-import {AgentState, ArbiterState} from "../../state.js"
+import {AgentState, ArbiterState, Conclusion} from "../../state.js"
 
 export function determineCurrentTeamId({
 		context: {turnCount},
@@ -20,14 +20,28 @@ export function applyWinByConquest(state: ArbiterState) {
 	if (teamsStillStanding.length === 1) {
 		const [winner] = teamsStillStanding
 		state.context.conclusion = {
-			kind: "conclusion",
 			reason: "conquest",
-			winningTeamIndex: winner.teamId,
+			winnerTeamId: winner.teamId,
 		}
 		return true
 	}
 
 	return false
+}
+
+export function applyWinByElimination(
+		state: ArbiterState,
+		eliminatedTeamId: number,
+		reason: Conclusion["reason"],
+	) {
+
+	const teamIds = [...state.initial.config.teams.keys()]
+	const teamsStillAlive = teamIds.filter(teamId => teamId !== eliminatedTeamId)
+
+	if (teamsStillAlive.length === 1) {
+		const [winnerTeamId] = teamsStillAlive
+		state.context.conclusion = {reason, winnerTeamId}
+	}
 }
 
 export function awardIncomeToActiveTeam(state: ArbiterState) {

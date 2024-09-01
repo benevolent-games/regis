@@ -7,15 +7,6 @@ export type TimeRules = {
 	charity: number
 }
 
-export type TimeRecord = {
-
-	/** actual elapsed amount of time */
-	elapsed: number
-
-	/** accumulation of delay and charity benefits */
-	benefits: number
-}
-
 export type TimeReport = {
 	gameTime: number
 	teamwise: TeamTimeReport[]
@@ -30,6 +21,15 @@ export type TeamTimeReport = {
 	expired: boolean
 
 } & TimeRecord
+
+export type TimeRecord = {
+
+	/** actual elapsed amount of time */
+	elapsed: number
+
+	/** accumulation of delay and charity benefits */
+	benefits: number
+}
 
 export class ChessTimer {
 	#team = 0

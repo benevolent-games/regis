@@ -37,7 +37,11 @@ export async function freeplayFlow() {
 	const terminal = await makeGameTerminal(
 		dynamicAgent,
 		turnTracker,
-		turn => arbiter.submitTurn({turn, gameTime: timer.gameTime}),
+		turn => arbiter.commit({
+			kind: "turn",
+			turn,
+			gameTime: timer.report().gameTime,
+		}),
 	)
 
 	arbiter.onStateChange(() => {

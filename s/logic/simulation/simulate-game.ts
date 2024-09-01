@@ -1,6 +1,7 @@
 
 import {GameHistory} from "../state.js"
 import {simulateTurn} from "./simulants/simulate-turn.js"
+import {applyWinByElimination} from "./aspects/turns.js"
 import {initializeArbiterState} from "./simulants/initialize-arbiter-state.js"
 
 /**
@@ -17,8 +18,24 @@ import {initializeArbiterState} from "./simulants/initialize-arbiter-state.js"
 export function simulateGame({initial, chronicle}: GameHistory) {
 	const state = initializeArbiterState(initial)
 
-	for (const {turn} of chronicle) {
-		simulateTurn(state, turn)
+	for (const entry of chronicle) {
+		switch (entry.kind) {
+
+			case "turn":
+				simulateTurn(state, entry.turn)
+				break
+
+			case "timeExpired":
+				applyWinByElimination(state, entry.eliminatedTeamId, "timeExpired")
+				break
+
+			case "surrender":
+				applyWinByElimination(state, entry.eliminatedTeamId, "timeExpired")
+				break
+
+			default:
+				throw new Error(`unknown chronicle entry kind`)
+		}
 
 		if (state.context.conclusion)
 			break

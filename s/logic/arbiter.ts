@@ -2,7 +2,7 @@
 import {Agent} from "./agent.js"
 import {simulateGame} from "./simulation/simulate-game.js"
 import {deduceAgentState} from "./simulation/deduce-agent-state.js"
-import {AgentState, ArbiterState, ChronicleRecord, GameHistory, GameInitial} from "./state.js"
+import {ArbiterState, ChronicleRecord, GameHistory, GameInitial} from "./state.js"
 
 export class Arbiter extends Agent<ArbiterState> {
 	history: GameHistory
@@ -19,7 +19,7 @@ export class Arbiter extends Agent<ArbiterState> {
 		)
 	}
 
-	submitTurn = (record: ChronicleRecord) => {
+	commit = (record: ChronicleRecord) => {
 		this.history.chronicle.push(record)
 		this.state = simulateGame(this.history)
 	}

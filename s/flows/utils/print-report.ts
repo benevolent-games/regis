@@ -22,8 +22,8 @@ export function printReport(agent: Agent, teamId: number) {
 	}
 
 	if (agent.conclusion) {
-		const {winningTeamIndex} = agent.conclusion
-		const victory = teamId === winningTeamIndex
+		const {winnerTeamId} = agent.conclusion
+		const victory = teamId === winnerTeamId
 		if (victory) {
 			console.log(`==========`)
 			console.log(`👑 VICTORY for ${ourTeam.name}`)

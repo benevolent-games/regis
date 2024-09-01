@@ -8,7 +8,7 @@ import {GameplayView} from "../../views/exhibits/gameplay.js"
 import {detectInputMethod} from "../../utils/input-method.js"
 import {MainMenuView} from "../../views/exhibits/main-menu.js"
 import {IntroPageView} from "../../views/exhibits/intro-page.js"
-import {GameStartData} from "../../../director/apis/clientside.js"
+import {StartMemo} from "../../../director/apis/clientside.js"
 import {LogoSplashView} from "../../views/loading-screens/logo-splash.js"
 
 export const GameApp = nexus.shadowComponent(use => {
@@ -49,7 +49,7 @@ export const GameApp = nexus.shadowComponent(use => {
 					template: () => MainMenuView([{
 						goIntro: () => goExhibit.intro(),
 						goFreeplay: () => goExhibit.freeplay(),
-						goVersus: (data: GameStartData) => goExhibit.versus(data),
+						goVersus: (data: StartMemo) => goExhibit.versus(data),
 					}]),
 				}
 			}),
@@ -63,7 +63,7 @@ export const GameApp = nexus.shadowComponent(use => {
 				}
 			}),
 
-			versus: orchestrator.makeNavFn(loadscreens.logoSplash, async(data: GameStartData) => {
+			versus: orchestrator.makeNavFn(loadscreens.logoSplash, async(data: StartMemo) => {
 				const {connectivity} = use.context
 				const {versusFlow} = await import("../../../flows/versus.js")
 				const flow = await versusFlow({

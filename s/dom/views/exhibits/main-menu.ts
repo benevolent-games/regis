@@ -2,13 +2,13 @@
 import {css, html, loading, wherefor} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
-import {GameStartData} from "../../../director/apis/clientside.js"
+import {StartMemo} from "../../../director/apis/clientside.js"
 import {MatchmakingLiaison} from "../../../net/matchmaking-liaison.js"
 
 type Options = {
 	goIntro: () => void
 	goFreeplay: () => void
-	goVersus: (data: GameStartData) => void
+	goVersus: (data: StartMemo) => void
 }
 
 export const MainMenuView = nexus.shadowView(use => (o: Options) => {

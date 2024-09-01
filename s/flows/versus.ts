@@ -6,7 +6,7 @@ import {printReport} from "./utils/print-report.js"
 import {Connectivity} from "../net/connectivity.js"
 import {TimeDisplay} from "../dom/utils/time-display.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
-import {GameStartData} from "../director/apis/clientside.js"
+import {StartMemo} from "../director/apis/clientside.js"
 import {TimerObserver} from "../logic/utilities/timer-observer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 
@@ -15,7 +15,7 @@ export async function versusFlow({
 		connectivity,
 		exit,
 	}: {
-		data: GameStartData
+		data: StartMemo
 		connectivity: Connectivity
 		exit: () => void
 	}) {

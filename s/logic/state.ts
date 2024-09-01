@@ -1,7 +1,7 @@
 
-import {UnitArchetypes} from "./data.js"
 import {loop2d, Vec2} from "@benev/toolbox"
-import { TimeRules } from "./utilities/chess-timer.js"
+import {UnitArchetypes} from "./data.js"
+import {TimeReport, TimeRules} from "./utilities/chess-timer.js"
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -11,10 +11,33 @@ export type GameHistory = {
 	chronicle: ChronicleRecord[]
 }
 
-export type ChronicleRecord = {
-	turn: Turn
+///////////////////////////////////
+
+export type ChronicleRecord = (
+	| ChronicleTurn
+	| ChronicleTimeExpired
+	| ChronicleSurrender
+)
+
+export type ChronicleTurn = {
+	kind: "turn"
 	gameTime: number
+	turn: Turn
 }
+
+export type ChronicleTimeExpired = {
+	kind: "timeExpired"
+	gameTime: number
+	eliminatedTeamId: number
+}
+
+export type ChronicleSurrender = {
+	kind: "surrender"
+	gameTime: number
+	eliminatedTeamId: number
+}
+
+///////////////////////////////////
 
 export type GameInitial = {
 	id: number
@@ -183,9 +206,8 @@ export namespace Choice {
 /////////////////////////////////////////////////
 
 export type Conclusion = {
-	kind: "conclusion"
-	winningTeamIndex: number
-	reason: "time" | "conquest" | "surrender"
+	reason: "conquest" | "timeExpired" | "surrender"
+	winnerTeamId: number
 }
 
 export type Turn = {

@@ -5,41 +5,40 @@ import {AgentState} from "../../logic/state.js"
 import {ClientMachinery} from "../plumbing/machinery.js"
 import {TimeReport} from "../../logic/utilities/chess-timer.js"
 
-export type GameStartData = {
+export type StartMemo = {
 	gameId: number
 	teamId: number
 	agentState: AgentState
 	timeReport: TimeReport
 }
 
-export type GameUpdateData = {
+export type UpdateMemo = {
 	agentState: AgentState
 	timeReport: TimeReport
 }
 
 export type Clientside = {
 	game: {
-		start(data: GameStartData): Promise<void>
-		update(data: GameUpdateData): Promise<void>
+		start(memo: StartMemo): Promise<void>
+		update(memo: UpdateMemo): Promise<void>
 		end(): Promise<void>
 	}
 }
 
 export function makeClientside(
 		machinery: ClientMachinery,
-		getServerside: () => Serverside,
+		_getServerside: () => Serverside,
 	) {
 
 	return fns<Clientside>({
 		game: {
-			async start(data) {
-				machinery.onGameStart.publish(data)
+			async start(memo) {
+				machinery.onGameStart.publish(memo)
 			},
-			async update(data) {
-				machinery.onGameUpdate.publish(data)
+			async update(memo) {
+				machinery.onGameUpdate.publish(memo)
 			},
 			async end() {
-				console.log("END RECEIVED")
 				machinery.onGameEnd.publish()
 			},
 		},
