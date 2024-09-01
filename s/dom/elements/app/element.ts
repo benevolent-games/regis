@@ -81,8 +81,8 @@ export const GameApp = nexus.shadowComponent(use => {
 			}),
 		}
 
-		// // hack skip to freeplay
-		// goExhibit.freeplay()
+		// hack skip to freeplay
+		goExhibit.freeplay()
 
 		return orchestrator
 	})

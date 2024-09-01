@@ -33,7 +33,7 @@ export class UserInputs {
 		dr(ev(canvas, this.leftMouse.events))
 		dr(ev(canvas, this.rightMouse.events))
 		dr(ev(canvas, this.middleMouse.events))
-		dr(ev(document, {contextmenu: (e: Event) => e.preventDefault()}))
+		dr(ev(canvas, {contextmenu: (e: Event) => e.preventDefault()}))
 		dr(ev(canvas, {wheel: cameraRig.orbitcam.wheel}))
 		dr(ev(canvas, {wheel: cameraRig.orbitcam.wheel}))
 
