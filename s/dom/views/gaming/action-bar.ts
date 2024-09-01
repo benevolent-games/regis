@@ -93,6 +93,7 @@ export const styles = css`
 			position: relative;
 			flex: 0 0 auto;
 			width: max-content;
+			height: 3em;
 
 			display: flex;
 			justify-content: center;
