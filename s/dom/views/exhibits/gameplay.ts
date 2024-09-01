@@ -2,20 +2,20 @@
 import {css, html} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
+import {UiData} from "../../utils/ui-data.js"
 import {ActionBarView} from "../gaming/action-bar.js"
-import {TimeDisplay} from "../../utils/time-display.js"
 import type {World} from "../../../terminal/parts/world.js"
 
 export const GameplayView = nexus.shadowView(use => (
 		world: World,
-		timeDisplay: TimeDisplay,
+		uiData: UiData,
 	) => {
 
 	use.name("gameplay")
 	use.styles(styles)
 
 	return html`
-		${ActionBarView([timeDisplay])}
+		${ActionBarView([uiData])}
 		${world.canvas}
 	`
 })

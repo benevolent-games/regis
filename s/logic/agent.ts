@@ -48,6 +48,11 @@ export class Agent<State extends AgentState = AgentState> {
 		this.publishStateChange()
 	}
 
+	getOpponentTeamIds(teamId: number) {
+		const {teams} = this.state.initial.config
+		return [...teams.keys()].filter(id => id !== teamId)
+	}
+
 	archetype(unitKind: UnitKind) {
 		return this.state.initial.config.unitArchetypes[unitKind]
 	}

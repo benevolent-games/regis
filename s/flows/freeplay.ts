@@ -4,10 +4,10 @@ import {interval} from "@benev/slate"
 import {Agent} from "../logic/agent.js"
 import {Arbiter} from "../logic/arbiter.js"
 import {AgentState} from "../logic/state.js"
+import {UiData} from "../dom/utils/ui-data.js"
 import {printReport} from "./utils/print-report.js"
 import {asciiMap} from "../logic/ascii/ascii-map.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
-import {TimeDisplay} from "../dom/utils/time-display.js"
 import {randomMap} from "../logic/routines/map-access.js"
 import {ChessTimer} from "../tools/chess-timer/chess-timer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
@@ -25,13 +25,16 @@ export async function freeplayFlow() {
 	const turnTracker = new TurnTracker(dynamicAgent, dynamicAgent.activeTeamId)
 	const {config} = arbiter.state.initial
 	const timer = new ChessTimer(config.time, config.teams.length)
-	const timeDisplay = new TimeDisplay()
-	const updateTimeDisplay = () => timeDisplay.update(
-		timer.report(),
-		dynamicAgent.activeTeamId,
-		dynamicAgent.activeTeamId,
-	)
-	const stopTicker = interval(1000, updateTimeDisplay)
+
+	const uiData = new UiData()
+	const updateUi = () => {
+		uiData.update({
+			agent: dynamicAgent,
+			teamId: dynamicAgent.activeTeamId,
+			timeReport: timer.report(),
+		})
+	}
+	const stopTicker = interval(1000, updateUi)
 
 	// 3d rendering
 	const terminal = await makeGameTerminal(
@@ -57,7 +60,7 @@ export async function freeplayFlow() {
 		timer.team = teamId
 
 		// render ui
-		updateTimeDisplay()
+		updateUi()
 		printReport(dynamicAgent, teamId)
 
 		// render 3d stuff
@@ -68,7 +71,7 @@ export async function freeplayFlow() {
 	printReport(dynamicAgent, dynamicAgent.activeTeamId)
 
 	return {
-		timeDisplay,
+		uiData,
 		world: terminal.world,
 		dispose() {
 			terminal.dispose()

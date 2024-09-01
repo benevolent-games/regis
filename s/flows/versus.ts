@@ -4,11 +4,11 @@ import {interval, Trashbin} from "@benev/slate"
 import {Agent} from "../logic/agent.js"
 import {printReport} from "./utils/print-report.js"
 import {Connectivity} from "../net/connectivity.js"
-import {TimeDisplay} from "../dom/utils/time-display.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 import {StartMemo} from "../director/apis/clientside.js"
 import {TimerObserver} from "../tools/chess-timer/timer-observer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
+import { UiData } from "../dom/utils/ui-data.js"
 
 export async function versusFlow({
 		data: startData,
@@ -32,14 +32,17 @@ export async function versusFlow({
 		agent.state.initial.config.time,
 		startData.timeReport,
 	)
-	const timeDisplay = new TimeDisplay()
-	const updateTimeDisplay = () => {
-		const localReport = timerObserver.report(agent.activeTeamId)
-		timeDisplay.update(localReport, agent.activeTeamId, teamId)
+	const uiData = new UiData()
+	const updateUi = () => {
+		uiData.update({
+			agent,
+			teamId,
+			timeReport: timerObserver.report(agent.activeTeamId),
+		})
 	}
 
-	updateTimeDisplay()
-	dr(interval(1000, updateTimeDisplay))
+	updateUi()
+	dr(interval(1000, updateUi))
 	printReport(agent, teamId)
 
 	if (!connection) {
@@ -78,7 +81,7 @@ export async function versusFlow({
 	)
 
 	return {
-		timeDisplay,
+		uiData,
 		world: terminal.world,
 		dispose() {
 			terminal.dispose()

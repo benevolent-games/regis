@@ -3,14 +3,14 @@ import {css, html} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
 import {ClockView} from "./clock.js"
+import {UiData} from "../../utils/ui-data.js"
 import xSvg from "../../icons/tabler/x.svg.js"
 import menuSvg from "../../icons/tabler/menu.svg.js"
-import {TimeDisplay} from "../../utils/time-display.js"
 import circleCheckSvg from "../../icons/tabler/circle-check.svg.js"
 import arrowCounterClockwiseSvg from "../../icons/akar/arrow-counter-clockwise.svg.js"
 
 export const ActionBarView = nexus.shadowView(use => (
-		timeDisplay: TimeDisplay,
+		uiData: UiData,
 	) => {
 
 	use.name("actionbar")
@@ -43,7 +43,7 @@ export const ActionBarView = nexus.shadowView(use => (
 		</div>
 
 		<div class="chunk static">
-			${ClockView([timeDisplay])}
+			${ClockView([uiData])}
 		</div>
 
 		<div class="chunk stretchy right">
@@ -74,14 +74,11 @@ export const styles = css`
 		flex-wrap: wrap;
 		gap: 0.5em;
 
-		align-items: center;
+		align-items: start;
+		justify-content: center;
 
 		&.static { flex: 0 0 auto; }
 		&.stretchy { flex: 1 1 0; }
-
-		justify-content: center;
-		&.XXXleft { justify-content: end; }
-		&.XXXright { justify-content: start; }
 	}
 
 	.entry {
