@@ -4,6 +4,7 @@ import {AssetContainer, TransformNode} from "@babylonjs/core"
 import {Glb} from "./glb.js"
 import {World} from "./world.js"
 import {UnitKind} from "../../logic/state.js"
+import {getTopMeshes} from "./babylon-helpers.js"
 
 export type AssetUrls = {
 	board: string
@@ -77,7 +78,7 @@ export class IndicatorsGlb extends Glb {
 	libertyPattern = () => this.instance(`liberty-pattern`)
 	libertyAction = () => this.instance(`liberty-action`)
 	attackPattern = () => this.instance(`attack-pattern`)
-	attackAction = () => this.instance(`attack-action`)
+	attackAction = () => this.instance(`attack`)
 	claims = {
 		resource: (level: number, on = false) => this.instance(`resource${level}-${onOff(on)}`),
 		knight: (on = false) => this.instance(`claim-knight-${onOff(on)}`),
@@ -85,6 +86,28 @@ export class IndicatorsGlb extends Glb {
 		bishop: (on = false) => this.instance(`claim-bishop-${onOff(on)}`),
 		queen: (on = false) => this.instance(`claim-queen-${onOff(on)}`),
 		watchtower: (on = false) => this.instance(`claim-watchtower-${onOff(on)}`),
+	}
+
+	constructor(container: AssetContainer) {
+		super(container)
+		// this.setClaimsOpacity(0.5)
+	}
+
+	setClaimsOpacity(opacity: number) {
+		const names = [
+			"resource1",
+			"resource2",
+			"resource3",
+			"claim-knight",
+			"claim-rook",
+			"claim-bishop",
+			"claim-queen",
+			"claim-watchtower",
+		].flatMap(n => [`${n}-on`, `${n}-off`])
+
+		for (const name of names)
+			for (const mesh of getTopMeshes(this.props.get(name)!))
+				mesh.visibility = opacity
 	}
 }
 
