@@ -89,6 +89,7 @@ export const styles = css`
 			transition: all 150ms linear;
 
 			background: #4448;
+			backdrop-filter: blur(10px);
 			border-radius: 0.3rem;
 			border: .2em solid transparent;
 

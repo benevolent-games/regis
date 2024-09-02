@@ -20,7 +20,7 @@ export const ActionBarView = nexus.shadowView(use => (
 	const resources = uiData.resources.value
 
 	return html`
-		<div class="chunk static">
+		<div class="corner chunk static">
 			<div class="entry">
 				<div class="button">
 					${menuSvg}
@@ -58,10 +58,10 @@ export const ActionBarView = nexus.shadowView(use => (
 			</div>
 		</div>
 
-		<div class="chunk static">
+		<div class="corner chunk static">
 			<div class="resources">
 				<span>
-					🪙${resources}
+					💎${resources}
 				</span>
 			</div>
 		</div>
@@ -91,6 +91,12 @@ export const styles = css`
 
 		&.static { flex: 0 0 auto; }
 		&.stretchy { flex: 1 1 0; }
+
+		&.corner {
+			flex: 0 1 auto;
+			min-width: 8em;
+			&:last-child { justify-content: end; }
+		}
 	}
 
 	.resources {
@@ -141,11 +147,12 @@ export const styles = css`
 			font-weight: bold;
 
 			background: #4448;
+			backdrop-filter: blur(10px);
 			&.juicy { background: #2a0a; }
 
-			opacity: 0.8;
-			&:is(:hover) { opacity: 1; }
-			&:is(:active) { opacity: 0.6; }
+			filter: brightness(100%);
+			&:is(:hover) { filter: brightness(120%); }
+			&:is(:active) { filter: brightness(140%); }
 
 			> svg {
 				flex: 0 0 auto;

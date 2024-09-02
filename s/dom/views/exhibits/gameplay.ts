@@ -15,8 +15,10 @@ export const GameplayView = nexus.shadowView(use => (
 	use.styles(styles)
 
 	return html`
-		${ActionBarView([uiData])}
 		${world.canvas}
+		<div class="hud">
+			${ActionBarView([uiData])}
+		</div>
 	`
 })
 
@@ -39,15 +41,27 @@ export const styles = css`
 		}
 	}
 
-	[view="actionbar"] {
-		z-index: 1;
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		margin: 0 auto;
-		padding: 0.5em;
+	.hud {
 		pointer-events: none;
+		z-index: 1;
+		position: relative;
+		inset: 0;
+		margin: auto;
+
+		aspect-ratio: 16 / 9;
+		width: auto;
+		height: 100%;
+		max-width: 100%;
+
+		> [view="actionbar"] {
+			z-index: 1;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			margin: 0 auto;
+			padding: 0.5em;
+		}
 	}
 `
 
