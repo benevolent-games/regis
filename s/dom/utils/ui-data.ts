@@ -10,6 +10,7 @@ export class UiData {
 	ourTurn = signal(false)
 
 	resources = signal(0)
+	income = signal(0)
 	timeReport = signal<TimeReport | null>(null)
 
 	/////////////////////////////////////////////////
@@ -27,6 +28,7 @@ export class UiData {
 
 		const myTeam = agent.state.teams.at(teamId)! as FullTeamInfo
 		this.resources.value = myTeam.resources
+		this.income.value = agent.claims.getIncome(teamId)
 
 		this.timeReport.value = timeReport
 	}

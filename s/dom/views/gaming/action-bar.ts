@@ -16,6 +16,7 @@ export const ActionBarView = nexus.shadowView(use => (
 	use.name("actionbar")
 	use.styles(styles)
 
+	const income = uiData.income.value
 	const ourTurn = uiData.ourTurn.value
 	const resources = uiData.resources.value
 
@@ -60,8 +61,11 @@ export const ActionBarView = nexus.shadowView(use => (
 
 		<div class="corner chunk static">
 			<div class="resources">
-				<span>
+				<span class=value>
 					💎${resources}
+				</span>
+				<span class=income>
+					+${income}
 				</span>
 			</div>
 		</div>
@@ -101,14 +105,16 @@ export const styles = css`
 
 	.resources {
 		display: flex;
-		align-items: center;
+		flex-direction: column;
+		align-items: end;
 		justify-content: center;
+
+		font-family: monospace;
 		height: 3em;
 		padding: 0 1em;
 
-		> span {
-			font-size: 1.5em;
-		}
+		> .value { font-size: 1.5em; }
+		> .income { font-size: 1em; }
 	}
 
 	.entry {
