@@ -65,6 +65,6 @@ export async function makeGameTerminal(
 	world.gameloop.start()
 	dr(agent.onStateChange(render))
 
-	return {world, render, dispose}
+	return {world, previewAgent: agent, render, dispose}
 }
 

@@ -25,16 +25,6 @@ export async function freeplayFlow() {
 	const {config} = arbiter.state.initial
 	const timer = new ChessTimer(config.time, config.teams.length)
 
-	const uiData = new UiData()
-	const updateUi = () => {
-		uiData.update({
-			agent: dynamicAgent,
-			teamId: dynamicAgent.activeTeamId,
-			timeReport: timer.report(),
-		})
-	}
-	const stopTicker = requestAnimationFrameLoop(updateUi)
-
 	// 3d rendering
 	const terminal = await makeGameTerminal(
 		dynamicAgent,
@@ -46,6 +36,18 @@ export async function freeplayFlow() {
 		}),
 	)
 
+	// ui data
+	const uiData = new UiData()
+	const updateUi = () => {
+		uiData.update({
+			agent: terminal.previewAgent,
+			teamId: terminal.previewAgent.activeTeamId,
+			timeReport: timer.report(),
+		})
+	}
+	const stopTicker = requestAnimationFrameLoop(updateUi)
+
+	// update things when the arbiter state changes
 	arbiter.onStateChange(() => {
 
 		// figure out who's turn it is

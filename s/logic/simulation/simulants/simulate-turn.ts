@@ -28,8 +28,8 @@ export function simulateTurn(state: ArbiterState, turn: Turn) {
 	applyWinByConquest(state)
 
 	if (!state.context.conclusion) {
-		state.context.turnCount += 1
 		awardIncomeToActiveTeam(state)
+		state.context.turnCount += 1
 	}
 }
 

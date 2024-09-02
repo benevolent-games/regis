@@ -29,14 +29,25 @@ export async function versusFlow({
 	const agent = new Agent(startData.agentState)
 	const connection = connectivity.connection.payload
 
+	const turnTracker = new TurnTracker(agent, teamId)
+
+	const terminal = await makeGameTerminal(
+		agent,
+		turnTracker,
+		turn => connectivity
+			.connection.payload?.serverside
+			.game.submitTurn(turn),
+	)
+
 	const timerObserver = new TimerObserver(
 		agent.state.initial.config.time,
 		startData.timeReport,
 	)
+
 	const uiData = new UiData()
 	const updateUi = () => {
 		uiData.update({
-			agent,
+			agent: terminal.previewAgent,
 			teamId,
 			timeReport: timerObserver.report(agent.activeTeamId),
 		})
@@ -70,16 +81,6 @@ export async function versusFlow({
 		console.log("versus got onGameEnd")
 		exit()
 	}))
-
-	const turnTracker = new TurnTracker(agent, teamId)
-
-	const terminal = await makeGameTerminal(
-		agent,
-		turnTracker,
-		turn => connectivity
-			.connection.payload?.serverside
-			.game.submitTurn(turn),
-	)
 
 	return {
 		uiData,
