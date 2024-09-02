@@ -16,6 +16,7 @@ import {UnitVisuals} from "./parts/unit-visuals.js"
 import {setupPreviewAgent} from "./parts/preview-agent.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 import { TerminalActions } from "./parts/terminal-actions.js"
+import { FogFenceRenderer } from "./parts/fog-of-war.js"
 
 export async function makeGameTerminal(
 
@@ -40,12 +41,14 @@ export async function makeGameTerminal(
 
 	const {world, assets} = d(await makeBasicVisuals())
 	d(assets.board.border())
+
 	const cameraRig = d(new CameraRig({world, teamId: turnTracker.teamId}))
 	const tiler = d(new Tiler({agent, world, assets}))
 	const rosters = d(new Rosters({agent, world, assets, turnTracker}))
 	const selectacon = d(new Selectacon({agent, world, assets, tiler, rosters, turnTracker}))
 	const unitVisuals = d(new UnitVisuals(agent, assets))
 	const claimery = d(new Claimery({agent, assets}))
+	const fogFence = d(new FogFenceRenderer({agent: baseAgent, assets, turnTracker}))
 
 	const planner = d(new Planner({agent, assets, selectacon, turnTracker, submitTurn}))
 	d(new Hovering({world, selectacon}))
@@ -80,6 +83,7 @@ export async function makeGameTerminal(
 		unitVisuals.render()
 		planner.render()
 		claimery.render()
+		fogFence.render()
 	}
 
 	tiler.render()

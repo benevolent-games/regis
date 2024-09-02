@@ -22,9 +22,6 @@ export class Assets {
 		const boardGlb = new BoardGlb(boardContainer)
 		const unitsGlb = new UnitsGlb(unitsContainer, boardGlb)
 		const indicatorsGlb = new IndicatorsGlb(indicatorsContainer)
-
-		console.log("INDICATORS", [...indicatorsGlb.props.keys()])
-
 		return new this(boardGlb, unitsGlb, indicatorsGlb)
 	}
 
@@ -73,12 +70,14 @@ export class UnitsGlb extends Glb {
 }
 
 export class IndicatorsGlb extends Glb {
-	selection = () => this.instance(`selected`)
+	aura = this.instancer("aura")
+	selection = this.instancer(`selected`)
+	libertyAction = this.instancer(`liberty-action`)
+	libertyPattern = this.instancer(`liberty-pattern`)
+	attackAction = this.instancer(`attack`)
+	attackPattern = this.instancer(`attack-pattern`)
 	hover = (teamId: number) => this.instance(`hover-team${teamId + 1}`)
-	libertyPattern = () => this.instance(`liberty-pattern`)
-	libertyAction = () => this.instance(`liberty-action`)
-	attackPattern = () => this.instance(`attack-pattern`)
-	attackAction = () => this.instance(`attack`)
+
 	claims = {
 		resource: (level: number, on = false) => this.instance(`resource${level}-${onOff(on)}`),
 		knight: (on = false) => this.instance(`claim-knight-${onOff(on)}`),
@@ -86,28 +85,6 @@ export class IndicatorsGlb extends Glb {
 		bishop: (on = false) => this.instance(`claim-bishop-${onOff(on)}`),
 		queen: (on = false) => this.instance(`claim-queen-${onOff(on)}`),
 		watchtower: (on = false) => this.instance(`claim-watchtower-${onOff(on)}`),
-	}
-
-	constructor(container: AssetContainer) {
-		super(container)
-		// this.setClaimsOpacity(0.5)
-	}
-
-	setClaimsOpacity(opacity: number) {
-		const names = [
-			"resource1",
-			"resource2",
-			"resource3",
-			"claim-knight",
-			"claim-rook",
-			"claim-bishop",
-			"claim-queen",
-			"claim-watchtower",
-		].flatMap(n => [`${n}-on`, `${n}-off`])
-
-		for (const name of names)
-			for (const mesh of getTopMeshes(this.props.get(name)!))
-				mesh.visibility = opacity
 	}
 }
 

@@ -8,7 +8,7 @@
 - [ ] attack arcs
 - [ ] undo one action
 - [ ] inspector ui
-- [ ] fog of war visuals
+- [x] fog of war visuals
 - [ ] resource depletion
 - [ ] 10 second pregame
 - [ ] endgame state

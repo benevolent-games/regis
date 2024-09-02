@@ -1,11 +1,22 @@
 
+import {Map2} from "../../tools/map2.js"
 import {babyloid, Meshoid, Prop} from "@benev/toolbox"
 import {AssetContainer, PBRMaterial, TransformNode} from "@babylonjs/core"
 
 export class Glb {
-	readonly props = new Map<string, Prop>()
-	readonly meshes = new Map<string, Meshoid>()
-	readonly materials = new Map<string, PBRMaterial>()
+	readonly props = new Map2<string, Prop>()
+	readonly meshes = new Map2<string, Meshoid>()
+	readonly materials = new Map2<string, PBRMaterial>()
+
+	static instantiate(prop: Prop) {
+		return prop.instantiateHierarchy(
+			undefined,
+			undefined,
+			(source, clone) => {
+				clone.name = source.name
+			},
+		) as TransformNode
+	}
 
 	constructor(public readonly container: AssetContainer) {
 		for (const material of container.materials)
@@ -21,15 +32,12 @@ export class Glb {
 	}
 
 	instancer(name: string) {
-		const prop = this.props.get(name)
-		if (!prop) throw new Error(`prop "${name}" not found`)
-		return () => prop.instantiateHierarchy(undefined, undefined, (source, clone) => {
-			clone.name = source.name
-		}) as TransformNode
+		const prop = this.props.require(name)
+		return () => Glb.instantiate(prop)
 	}
 
 	instance(name: string) {
-		return this.instancer(name)()
+		return Glb.instantiate(this.props.require(name))
 	}
 }
 

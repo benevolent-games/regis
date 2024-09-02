@@ -4,7 +4,6 @@ import {vec2, Vec2} from "@benev/toolbox"
 import {Agent} from "../../agent.js"
 import {VerticalCapability} from "../../state.js"
 import {getCardinalNeighbors, isValidStep} from "./navigation.js"
-import {isVerticallyCompatible} from "./verticality.js"
 
 export type PathfindOptions = {
 	agent: Agent
