@@ -8,6 +8,7 @@ import {CameraRig} from "./camera-rig.js"
 import {Selectacon} from "./selectacon.js"
 import {Agent} from "../../logic/agent.js"
 import {Planner} from "../planner/planner.js"
+import {UnitKind} from "../../logic/state.js"
 import {DragQueen} from "../../tools/drag-queen.js"
 import {TerminalActions} from "./terminal-actions.js"
 import {handlePrimaryClick} from "./handle-primary-click.js"
@@ -27,7 +28,7 @@ export class UserInputs {
 			actions: TerminalActions
 		}) {
 
-		const {planner, cameraRig, actions} = options
+		const {cameraRig, actions, turnTracker} = options
 		const {canvas} = options.world
 		const dr = this.#trashbin.disposer
 
@@ -38,6 +39,40 @@ export class UserInputs {
 		dr(ev(canvas, {wheel: cameraRig.orbitcam.wheel}))
 		dr(ev(canvas, {wheel: cameraRig.orbitcam.wheel}))
 
+		// roster select hotkeys
+		dr(ev(window, {
+			keydown: (event: KeyboardEvent) => {
+				const select = (unitKind: UnitKind): void => {
+					actions.selectRosterUnit(turnTracker.teamId, unitKind)
+				}
+				switch (event.code) {
+					// case "KeyE": return select("pawn")
+					// case "KeyW": return select("knight")
+					// case "KeyD": return select("rook")
+					// case "KeyS": return select("bishop")
+					// case "KeyA": return select("queen")
+
+					case "Digit1": return select("pawn")
+					case "Digit2": return select("knight")
+					case "Digit3": return select("rook")
+					case "Digit4": return select("bishop")
+					case "Digit5": return select("queen")
+
+					case "KeyQ": return select("pawn")
+					case "KeyW": return select("knight")
+					case "KeyE": return select("rook")
+					case "KeyR": return select("bishop")
+					case "KeyT": return select("queen")
+
+					case "KeyA": return select("pawn")
+					case "KeyS": return select("knight")
+					case "KeyD": return select("rook")
+					case "KeyF": return select("bishop")
+					case "KeyG": return select("queen")
+				}
+			},
+		}))
+
 		// ctrl+z wipe turn plan
 		dr(ev(window, {
 			keydown: (event: KeyboardEvent) => {
@@ -46,6 +81,7 @@ export class UserInputs {
 			},
 		}))
 
+		// spacebar to execute turn
 		dr(ev(window, {
 			keydown: (event: KeyboardEvent) => {
 				const {turnTracker, agent} = this.options
@@ -114,9 +150,9 @@ export class UserInputs {
 	rightMouse = new DragQueen({
 		predicate: event => event.button === 2,
 		onAnyDrag: () => {},
-		onAnyClick: this.antics.actuateAction,
+		onAnyClick: () => {},
 		onIntendedDrag: this.antics.rotateOrbitcam,
-		onIntendedClick: () => {},
+		onIntendedClick: this.antics.actuateAction,
 	})
 
 	middleMouse = new DragQueen({

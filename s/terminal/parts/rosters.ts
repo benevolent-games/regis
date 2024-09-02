@@ -46,10 +46,9 @@ export class Rosters {
 
 		const rosterGuide = assets.board.instance(propName)
 		rosterGuide.computeWorldMatrix(true)
-		rosterGuide.dispose()
 
 		const unitKinds: UnitKind[] = [
-			"pawn", "knight", "rook", "bishop", "queen", "king",
+			"pawn", "knight", "rook", "bishop", "queen", // "king",
 		]
 
 		const offset = (unitKinds.length / 2) - 0.5
@@ -79,6 +78,7 @@ export class Rosters {
 
 		transform.position = rosterGuide.position.clone()
 		transform.rotationQuaternion = assert_babylon_quaternion(rosterGuide)
+		rosterGuide.dispose()
 
 		for (const placer of placers)
 			placer()

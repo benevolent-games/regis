@@ -1,7 +1,7 @@
 
 import {Trashbin} from "@benev/slate"
 
-import {Turn} from "../logic/state.js"
+import {Turn, UnitKind} from "../logic/state.js"
 import {Tiler} from "./parts/tiler.js"
 import {Agent} from "../logic/agent.js"
 import {Rosters} from "./parts/rosters.js"
@@ -53,6 +53,21 @@ export async function makeGameTerminal(
 	const actions: TerminalActions = {
 		resetPreview,
 		commitTurn: () => planner.executePlan(),
+		selectRosterUnit: (teamId, unitKind) => {
+			const placement = [...rosters.placements.values()]
+				.find(placement => (
+					placement.teamId === teamId &&
+					placement.unitKind === unitKind
+				))
+			if (placement) {
+				selectacon.selection.value = {
+					kind: "roster",
+					teamId,
+					unitKind,
+					position: placement.position,
+				}
+			}
+		},
 	}
 
 	d(new UserInputs({agent, world, planner, selectacon, cameraRig, turnTracker, actions}))
