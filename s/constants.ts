@@ -17,8 +17,8 @@ export const constants = {
 	},
 	indicators: {
 		verticalOffsets: {
-			normalIndicators: 0.1,
-			claimLayering: 0.01,
+			normalIndicators: 0.03,
+			claimLayering: 0.005,
 		},
 	},
 	net: {
