@@ -1,8 +1,8 @@
 
-- [ ] health bars
 - [ ] inspector ui
 - [ ] resource depletion
 - [ ] reveal enemies on attack or block
+- [x] linear health bars
 
 - [ ] select-my-king hotkey
 - [ ] obstacle persistent-vision
