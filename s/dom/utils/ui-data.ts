@@ -13,6 +13,7 @@ export class UiData {
 	resources = signal(0)
 	income = signal(0)
 	timeReport = signal<TimeReport | null>(null)
+	turnCount = signal<number>(0)
 
 	constructor(public actions: TerminalActions) {}
 
@@ -28,6 +29,7 @@ export class UiData {
 		this.activeTeamId.value = agent.activeTeamId
 		this.ourTeamId.value = teamId
 		this.ourTurn.value = agent.activeTeamId === teamId
+		this.turnCount.value = agent.state.context.turnCount
 
 		const myTeam = agent.state.teams.at(teamId)! as FullTeamInfo
 		this.resources.value = myTeam.resources

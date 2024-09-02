@@ -22,16 +22,20 @@ export const ActionBarView = nexus.shadowView(use => (
 	const resources = uiData.resources.value
 
 	return html`
-		<div class="corner chunk static">
+		<div class="chunk stretchy left">
 			<div class="entry">
 				<div class="button">
 					${menuSvg}
 					<em>tab</em>
 				</div>
 			</div>
-		</div>
 
-		<div class="chunk stretchy left">
+			<div class="cycles">
+				cycle ${Math.floor(uiData.turnCount.value / 2)}
+			</div>
+
+			<div class="splitter"></div>
+
 			<div class="entry" ?data-disabled="${!ourTurn}" hidden>
 				<div class="button">
 					${arrowCounterClockwiseSvg}
@@ -58,9 +62,9 @@ export const ActionBarView = nexus.shadowView(use => (
 					<em>spacebar</em>
 				</div>
 			</div>
-		</div>
 
-		<div class="corner chunk static">
+			<div class="splitter"></div>
+
 			<div class="resources">
 				<span class=value>
 					💎${resources}
@@ -90,7 +94,7 @@ export const styles = css`
 		flex-wrap: wrap;
 		gap: 0.5em;
 
-		align-items: start;
+		align-items: stretch;
 		&.left { justify-content: end; }
 		&.right { justify-content: start; }
 
@@ -102,6 +106,19 @@ export const styles = css`
 			min-width: 8em;
 			&:last-child { justify-content: end; }
 		}
+
+		> .splitter { width: 0; }
+		&.left > .splitter { margin-right: auto; }
+		&.right > .splitter { margin-left: auto; }
+	}
+
+	.cycles {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-family: monospace;
+		opacity: 0.5;
+		height: 3em;
 	}
 
 	.resources {
