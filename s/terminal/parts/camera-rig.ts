@@ -20,7 +20,7 @@ export class CameraRig {
 			zoomAddsPivotHeight: 2,
 			zoomSensitivity: 3 / 100,
 			orbitSensitivity: 5 / 1000,
-			verticalRange: [degrees(0), degrees(90)],
+			verticalRange: [degrees(1), degrees(89)],
 		}))
 
 		orbitcam.gimbal = [degrees(90), degrees(45)]

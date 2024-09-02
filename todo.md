@@ -17,7 +17,7 @@
   - display a game over sign
   - add a ui button to leave the match
 
-- [ ] fix orbitcam cursor desync (limit verticality)
+- [x] fix orbitcam cursor desync (limit verticality)
 
 - [x] fix annoying dropped websocket rejection error
 
