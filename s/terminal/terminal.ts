@@ -1,7 +1,7 @@
 
 import {Trashbin} from "@benev/slate"
 
-import {Turn, UnitKind} from "../logic/state.js"
+import {Turn} from "../logic/state.js"
 import {Tiler} from "./parts/tiler.js"
 import {Agent} from "../logic/agent.js"
 import {Rosters} from "./parts/rosters.js"
@@ -13,10 +13,12 @@ import {Selectacon} from "./parts/selectacon.js"
 import {UserInputs} from "./parts/user-inputs.js"
 import {makeBasicVisuals} from "./parts/basics.js"
 import {UnitVisuals} from "./parts/unit-visuals.js"
+import {FogFenceRenderer} from "./parts/fog-of-war.js"
 import {setupPreviewAgent} from "./parts/preview-agent.js"
+import {TerminalActions} from "./parts/terminal-actions.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
-import { TerminalActions } from "./parts/terminal-actions.js"
-import { FogFenceRenderer } from "./parts/fog-of-war.js"
+
+export type Terminal = Awaited<ReturnType<typeof makeGameTerminal>>
 
 export async function makeGameTerminal(
 
@@ -95,6 +97,7 @@ export async function makeGameTerminal(
 		world,
 		actions,
 		previewAgent: agent,
+		selectacon,
 		render,
 		dispose,
 	}

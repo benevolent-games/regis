@@ -40,14 +40,8 @@ export async function freeplayFlow() {
 		}),
 	)
 
-	// ui data
-	const portholePod = new PortholePod(() => ({
-		agent: terminal.previewAgent,
-		teamId: terminal.previewAgent.activeTeamId,
-		timeReport: timer.report(),
-		actions: terminal.actions,
-	}))
-
+	// data that gets sent to the ui
+	const portholePod = new PortholePod(terminal, () => timer.report())
 	const stopTicker = requestAnimationFrameLoop(portholePod.update)
 
 	// update things when the arbiter state changes

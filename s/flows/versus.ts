@@ -44,12 +44,11 @@ export async function versusFlow({
 		startData.timeReport,
 	)
 
-	const portholePod = new PortholePod(() => ({
-		teamId,
-		agent: terminal.previewAgent,
-		timeReport: timerObserver.report(agent.activeTeamId),
-		actions: terminal.actions,
-	}))
+	// data that gets sent to the ui
+	const portholePod = new PortholePod(
+		terminal,
+		() => timerObserver.report(agent.activeTeamId),
+	)
 
 	dr(requestAnimationFrameLoop(portholePod.update))
 	printReport(agent, teamId)
