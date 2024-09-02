@@ -1,15 +1,18 @@
 
+- [ ] health bars
+- [ ] inspector ui
+- [ ] resource depletion
+- [ ] reveal enemies on attack or block
+
+- [ ] select-my-king hotkey
 - [ ] obstacle persistent-vision
-- [ ] remove investment concept
+- [ ] decide what to do with investment mechanic
 - [ ] queen healing ability
 - [x] camera starting angle, camera smoothing
-- [ ] reveal enemies on attack or block
 - [x] turn counter (cycles count)
 - [ ] attack arcs
 - [ ] undo one action
-- [ ] inspector ui
 - [x] fog of war visuals
-- [ ] resource depletion
 - [ ] 10 second pregame
 - [ ] endgame state
   - game should be frozen, no further turns
