@@ -283,6 +283,7 @@ export type UnitArchetype = {
 	move: null | {
 		cap: number
 		range: number
+		chebyshev: boolean
 		verticality: VerticalCapability
 	}
 	attack: null | {

@@ -2,6 +2,7 @@
 import {vec2, Vec2} from "@benev/toolbox"
 import {Agent} from "../../agent.js"
 import {pathfind} from "./pathfinding.js"
+import {chebyshevDistance} from "./navigation.js"
 
 export function calculateMovement({
 		agent,
@@ -28,7 +29,16 @@ export function calculateMovement({
 	const {verticality} = archetype.move
 	const path = pathfind({agent, verticality, source, target})
 
-	return (path && path.length <= archetype.move.range)
+	if (!path)
+		return null
+
+	const {range, chebyshev} = archetype.move
+
+	const withinRange = chebyshev
+		? ((path.length <= (range + 1)) && chebyshevDistance(source, target) <= range)
+		: (path.length <= range)
+
+	return withinRange
 		? {
 			unit,
 			path,

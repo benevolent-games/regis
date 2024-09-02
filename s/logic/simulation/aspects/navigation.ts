@@ -37,15 +37,16 @@ export function manhattanDistance(a: Vec2, b: Vec2) {
 	return distanceX + distanceY
 }
 
-export function isWithinRange(range: number, a: Vec2, b: Vec2) {
+export function chebyshevDistance(a: Vec2, b: Vec2) {
 	const [aX, aY] = a
 	const [bX, bY] = b
 	const distanceX = Math.abs(bX - aX)
 	const distanceY = Math.abs(bY - aY)
-	return (
-		distanceX <= range &&
-		distanceY <= range
-	)
+	return Math.max(distanceX, distanceY)
+}
+
+export function isWithinRange(range: number, a: Vec2, b: Vec2) {
+	return chebyshevDistance(a, b) <= range
 }
 
 export function isValidStep(
