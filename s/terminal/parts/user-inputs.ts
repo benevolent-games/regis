@@ -9,6 +9,7 @@ import {Selectacon} from "./selectacon.js"
 import {Agent} from "../../logic/agent.js"
 import {Planner} from "../planner/planner.js"
 import {DragQueen} from "../../tools/drag-queen.js"
+import {TerminalActions} from "./terminal-actions.js"
 import {handlePrimaryClick} from "./handle-primary-click.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 
@@ -23,10 +24,10 @@ export class UserInputs {
 			cameraRig: CameraRig
 			selectacon: Selectacon
 			turnTracker: TurnTracker
-			resetPreview: () => void
+			actions: TerminalActions
 		}) {
 
-		const {planner, cameraRig, resetPreview} = options
+		const {planner, cameraRig, actions} = options
 		const {canvas} = options.world
 		const dr = this.#trashbin.disposer
 
@@ -40,9 +41,8 @@ export class UserInputs {
 		// ctrl+z wipe turn plan
 		dr(ev(window, {
 			keydown: (event: KeyboardEvent) => {
-				if (event.code === "KeyZ" && event.ctrlKey) {
-					resetPreview()
-				}
+				if (event.code === "KeyZ" && event.ctrlKey)
+					actions.resetPreview()
 			},
 		}))
 
@@ -50,7 +50,7 @@ export class UserInputs {
 			keydown: (event: KeyboardEvent) => {
 				const {turnTracker, agent} = this.options
 				if (event.code === "Space" && !agent.conclusion && turnTracker.ourTurn)
-					planner.executePlan()
+					actions.commitTurn()
 			},
 		}))
 	}

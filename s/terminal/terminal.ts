@@ -15,6 +15,7 @@ import {makeBasicVisuals} from "./parts/basics.js"
 import {UnitVisuals} from "./parts/unit-visuals.js"
 import {setupPreviewAgent} from "./parts/preview-agent.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
+import { TerminalActions } from "./parts/terminal-actions.js"
 
 export async function makeGameTerminal(
 
@@ -48,7 +49,13 @@ export async function makeGameTerminal(
 
 	const planner = d(new Planner({agent, assets, selectacon, turnTracker, submitTurn}))
 	d(new Hovering({world, selectacon}))
-	d(new UserInputs({agent, world, planner, selectacon, cameraRig, turnTracker, resetPreview}))
+
+	const actions: TerminalActions = {
+		resetPreview,
+		commitTurn: () => planner.executePlan(),
+	}
+
+	d(new UserInputs({agent, world, planner, selectacon, cameraRig, turnTracker, actions}))
 
 	dr(selectacon.selection.on(() => planner.render()))
 
@@ -65,6 +72,12 @@ export async function makeGameTerminal(
 	world.gameloop.start()
 	dr(agent.onStateChange(render))
 
-	return {world, previewAgent: agent, render, dispose}
+	return {
+		world,
+		actions,
+		previewAgent: agent,
+		render,
+		dispose,
+	}
 }
 

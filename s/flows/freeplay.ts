@@ -37,7 +37,7 @@ export async function freeplayFlow() {
 	)
 
 	// ui data
-	const uiData = new UiData()
+	const uiData = new UiData(terminal.actions)
 	const updateUi = () => {
 		uiData.update({
 			agent: terminal.previewAgent,

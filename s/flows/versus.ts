@@ -44,7 +44,7 @@ export async function versusFlow({
 		startData.timeReport,
 	)
 
-	const uiData = new UiData()
+	const uiData = new UiData(terminal.actions)
 	const updateUi = () => {
 		uiData.update({
 			agent: terminal.previewAgent,

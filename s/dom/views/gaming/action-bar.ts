@@ -16,6 +16,7 @@ export const ActionBarView = nexus.shadowView(use => (
 	use.name("actionbar")
 	use.styles(styles)
 
+	const {actions} = uiData
 	const income = uiData.income.value
 	const ourTurn = uiData.ourTurn.value
 	const resources = uiData.resources.value
@@ -31,7 +32,7 @@ export const ActionBarView = nexus.shadowView(use => (
 		</div>
 
 		<div class="chunk stretchy left">
-			<div class="entry" hidden ?data-disabled="${!ourTurn}">
+			<div class="entry" ?data-disabled="${!ourTurn}" hidden>
 				<div class="button">
 					${arrowCounterClockwiseSvg}
 					<em>z</em>
@@ -39,7 +40,7 @@ export const ActionBarView = nexus.shadowView(use => (
 			</div>
 
 			<div class="entry" ?data-disabled="${!ourTurn}">
-				<div class="button">
+				<div class="button" @click="${actions.resetPreview}">
 					${xSvg}
 					<em>ctrl-z</em>
 				</div>
@@ -52,7 +53,7 @@ export const ActionBarView = nexus.shadowView(use => (
 
 		<div class="chunk stretchy right">
 			<div class="entry" ?data-disabled="${!ourTurn}">
-				<div class="button juicy">
+				<div class="button juicy" @click="${actions.commitTurn}">
 					${circleCheckSvg}
 					<em>spacebar</em>
 				</div>

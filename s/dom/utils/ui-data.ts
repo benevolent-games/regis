@@ -3,6 +3,7 @@ import {signal} from "@benev/slate"
 import {Agent} from "../../logic/agent.js"
 import {FullTeamInfo} from "../../logic/state.js"
 import {TimeReport} from "../../tools/chess-timer/types.js"
+import {TerminalActions} from "../../terminal/parts/terminal-actions.js"
 
 export class UiData {
 	activeTeamId = signal(0)
@@ -12,6 +13,8 @@ export class UiData {
 	resources = signal(0)
 	income = signal(0)
 	timeReport = signal<TimeReport | null>(null)
+
+	constructor(public actions: TerminalActions) {}
 
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
