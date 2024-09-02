@@ -6,7 +6,7 @@ export function defaultGameConfig(): GameConfig {
 	const unitArchetypes = defaultUnitArchetypes()
 	return {
 		time: {
-			limit: seconds(60),
+			limit: seconds(120),
 			delay: seconds(5),
 			charity: seconds(0),
 		},
