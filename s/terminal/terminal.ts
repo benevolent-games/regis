@@ -42,7 +42,7 @@ export async function makeGameTerminal(
 	const cameraRig = d(new CameraRig({world}))
 	const tiler = d(new Tiler({agent, world, assets}))
 	const rosters = d(new Rosters({agent, world, assets}))
-	const selectacon = d(new Selectacon({agent, world, assets, tiler, rosters}))
+	const selectacon = d(new Selectacon({agent, world, assets, tiler, rosters, turnTracker}))
 	const unitVisuals = d(new UnitVisuals(agent, assets))
 	const claimery = d(new Claimery({agent, assets}))
 

@@ -9,6 +9,7 @@ import {Pointing} from "./types.js"
 import {Rosters} from "./rosters.js"
 import {Agent} from "../../logic/agent.js"
 import {Tile, UnitKind} from "../../logic/state.js"
+import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 
 export type TileCell = {
 	kind: "tile"
@@ -38,6 +39,7 @@ export class Selectacon {
 			tiler: Tiler
 			rosters: Rosters
 			world: World
+			turnTracker: TurnTracker
 		}) {
 
 		this.#trashbin.disposer(this.hover.on(() => this.render()))
@@ -52,13 +54,12 @@ export class Selectacon {
 	#selectbin = new Trashbin()
 
 	#renderHover() {
-		const {agent, assets} = this.options
+		const {assets, turnTracker} = this.options
 		this.#hoverbin.dispose()
 		const cell = this.hover.value
 
 		if (cell) {
-			const teamId = agent.activeTeamId
-			const instance = assets.indicators.hover(teamId)
+			const instance = assets.indicators.hover(turnTracker.teamId)
 			this.#hoverbin.disposable(instance)
 			instance.position.set(...cell.position)
 		}
