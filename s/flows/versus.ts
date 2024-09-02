@@ -2,7 +2,6 @@
 import {Trashbin} from "@benev/slate"
 
 import {Agent} from "../logic/agent.js"
-import {UiData} from "../dom/utils/ui-data.js"
 import {printReport} from "./utils/print-report.js"
 import {Connectivity} from "../net/connectivity.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
@@ -10,6 +9,7 @@ import {StartMemo} from "../director/apis/clientside.js"
 import {TimerObserver} from "../tools/chess-timer/timer-observer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 import {requestAnimationFrameLoop} from "../tools/request-animation-frame-loop.js"
+import { PortholePod } from "../dom/utils/porthole.js"
 
 export async function versusFlow({
 		data: startData,
@@ -44,17 +44,14 @@ export async function versusFlow({
 		startData.timeReport,
 	)
 
-	const uiData = new UiData(terminal.actions)
-	const updateUi = () => {
-		uiData.update({
-			agent: terminal.previewAgent,
-			teamId,
-			timeReport: timerObserver.report(agent.activeTeamId),
-		})
-	}
+	const portholePod = new PortholePod(() => ({
+		teamId,
+		agent: terminal.previewAgent,
+		timeReport: timerObserver.report(agent.activeTeamId),
+		actions: terminal.actions,
+	}))
 
-	updateUi()
-	dr(requestAnimationFrameLoop(updateUi))
+	dr(requestAnimationFrameLoop(portholePod.update))
 	printReport(agent, teamId)
 
 	if (!connection) {
@@ -83,7 +80,7 @@ export async function versusFlow({
 	}))
 
 	return {
-		uiData,
+		porthole: portholePod.porthole,
 		world: terminal.world,
 		dispose() {
 			terminal.dispose()

@@ -1,8 +1,8 @@
 
+import {signal} from "@benev/slate"
 import {Agent} from "../logic/agent.js"
 import {Arbiter} from "../logic/arbiter.js"
 import {AgentState} from "../logic/state.js"
-import {UiData} from "../dom/utils/ui-data.js"
 import {printReport} from "./utils/print-report.js"
 import {asciiMap} from "../logic/ascii/ascii-map.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
@@ -10,6 +10,7 @@ import {randomMap} from "../logic/routines/map-access.js"
 import {ChessTimer} from "../tools/chess-timer/chess-timer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 import {requestAnimationFrameLoop} from "../tools/request-animation-frame-loop.js"
+import { PortholePod } from "../dom/utils/porthole.js"
 
 export async function freeplayFlow() {
 	const initial = asciiMap(randomMap())
@@ -40,15 +41,14 @@ export async function freeplayFlow() {
 	)
 
 	// ui data
-	const uiData = new UiData(terminal.actions)
-	const updateUi = () => {
-		uiData.update({
-			agent: terminal.previewAgent,
-			teamId: terminal.previewAgent.activeTeamId,
-			timeReport: timer.report(),
-		})
-	}
-	const stopTicker = requestAnimationFrameLoop(updateUi)
+	const portholePod = new PortholePod(() => ({
+		agent: terminal.previewAgent,
+		teamId: terminal.previewAgent.activeTeamId,
+		timeReport: timer.report(),
+		actions: terminal.actions,
+	}))
+
+	const stopTicker = requestAnimationFrameLoop(portholePod.update)
 
 	// update things when the arbiter state changes
 	arbiter.onStateChange(() => {
@@ -63,8 +63,7 @@ export async function freeplayFlow() {
 		turnTracker.teamId = teamId
 		timer.team = teamId
 
-		// render ui
-		updateUi()
+		// print report to console
 		printReport(dynamicAgent, teamId)
 
 		// render 3d stuff
@@ -75,7 +74,7 @@ export async function freeplayFlow() {
 	printReport(dynamicAgent, dynamicAgent.activeTeamId)
 
 	return {
-		uiData,
+		porthole: portholePod.porthole,
 		world: terminal.world,
 		dispose() {
 			terminal.dispose()

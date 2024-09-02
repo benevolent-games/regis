@@ -1,25 +1,28 @@
 
-import {css, html} from "@benev/slate"
+import {css, html, Signal} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
 import {ClockView} from "./clock.js"
-import {UiData} from "../../utils/ui-data.js"
 import xSvg from "../../icons/tabler/x.svg.js"
+import {Porthole} from "../../utils/porthole.js"
 import menuSvg from "../../icons/tabler/menu.svg.js"
+import {FullTeamInfo} from "../../../logic/state.js"
 import circleCheckSvg from "../../icons/tabler/circle-check.svg.js"
 import arrowCounterClockwiseSvg from "../../icons/akar/arrow-counter-clockwise.svg.js"
 
 export const ActionBarView = nexus.shadowView(use => (
-		uiData: UiData,
+		porthole: Signal<Porthole>,
 	) => {
 
 	use.name("actionbar")
 	use.styles(styles)
 
-	const {actions} = uiData
-	const income = uiData.income.value
-	const ourTurn = uiData.ourTurn.value
-	const resources = uiData.resources.value
+	const {actions, agent, teamId} = porthole.value
+
+	const income = agent.claims.getIncome(teamId)
+	const ourTurn = agent.activeTeamId === teamId
+	const turnCount = agent.state.context.turnCount
+	const myTeam = agent.state.teams.at(teamId)! as FullTeamInfo
 
 	return html`
 		<div class="chunk stretchy left">
@@ -31,7 +34,7 @@ export const ActionBarView = nexus.shadowView(use => (
 			</div>
 
 			<div class="cycles">
-				cycle ${Math.floor(uiData.turnCount.value / 2)}
+				cycle ${Math.floor(turnCount / 2)}
 			</div>
 
 			<div class="splitter"></div>
@@ -52,7 +55,7 @@ export const ActionBarView = nexus.shadowView(use => (
 		</div>
 
 		<div class="chunk static">
-			${ClockView([uiData])}
+			${ClockView([porthole])}
 		</div>
 
 		<div class="chunk stretchy right">
@@ -67,7 +70,7 @@ export const ActionBarView = nexus.shadowView(use => (
 
 			<div class="resources">
 				<span class=value>
-					💎${resources}
+					💎${myTeam.resources}
 				</span>
 				<span class=income>
 					+${income}

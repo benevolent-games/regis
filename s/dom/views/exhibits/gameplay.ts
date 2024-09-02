@@ -1,14 +1,14 @@
 
-import {css, html} from "@benev/slate"
+import {css, html, Signal} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
-import {UiData} from "../../utils/ui-data.js"
+import {Porthole} from "../../utils/porthole.js"
 import {ActionBarView} from "../gaming/action-bar.js"
 import type {World} from "../../../terminal/parts/world.js"
 
 export const GameplayView = nexus.shadowView(use => (
 		world: World,
-		uiData: UiData,
+		porthole: Signal<Porthole>
 	) => {
 
 	use.name("gameplay")
@@ -17,7 +17,7 @@ export const GameplayView = nexus.shadowView(use => (
 	return html`
 		${world.canvas}
 		<div class="hud">
-			${ActionBarView([uiData])}
+			${ActionBarView([porthole])}
 		</div>
 	`
 })

@@ -56,10 +56,10 @@ export const GameApp = nexus.shadowComponent(use => {
 
 			freeplay: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
 				const {freeplayFlow} = await import("../../../flows/freeplay.js")
-				const {world, uiData, dispose} = await freeplayFlow()
+				const {world, porthole, dispose} = await freeplayFlow()
 				return {
 					dispose,
-					template: () => GameplayView([world, uiData]),
+					template: () => GameplayView([world, porthole]),
 				}
 			}),
 
@@ -74,7 +74,7 @@ export const GameApp = nexus.shadowComponent(use => {
 				if (flow)
 					return {
 						dispose: flow.dispose,
-						template: () => GameplayView([flow.world, flow.uiData]),
+						template: () => GameplayView([flow.world, flow.porthole]),
 					}
 				else
 					return {template: () => null, dispose: () => {}}
