@@ -10,13 +10,13 @@ export function defaultGameConfig(): GameConfig {
 			delay: seconds(5),
 			charity: seconds(0),
 		},
-		startingResources: 2,
+		startingResources: 6,
 		universalBasicIncome: 1,
 		teams: defaultTeams(),
 		costs: {
 			investment: 0,
 			staking: {
-				resource: 6,
+				resource: 4,
 				watchtower: 0,
 				tech: {
 					knight: 4,
@@ -96,7 +96,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	},
 
 	pawn: {
-		cost: 2,
+		cost: 4,
 		health: 3,
 		actionCap: 2,
 		stakeholder: true,
@@ -119,7 +119,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	},
 
 	knight: {
-		cost: 3,
+		cost: 7,
 		health: 3,
 		actionCap: 2,
 		stakeholder: false,
@@ -142,7 +142,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	},
 
 	rook: {
-		cost: 5,
+		cost: 10,
 		health: 7,
 		actionCap: 1,
 		stakeholder: false,
@@ -165,7 +165,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	},
 
 	bishop: {
-		cost: 6,
+		cost: 12,
 		health: 2,
 		actionCap: 1,
 		stakeholder: false,
@@ -188,7 +188,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	},
 
 	queen: {
-		cost: 2,
+		cost: 3,
 		health: 3,
 		actionCap: 1,
 		stakeholder: false,
