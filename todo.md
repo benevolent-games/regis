@@ -1,9 +1,23 @@
 
+- [ ] attack indicators
+
+- [ ] undo one action
+
+- [ ] inspector ui
+
+- [ ] fog of war
+
+- [ ] resource depletion
+
+- [ ] 10 second pregame
+
 - [ ] endgame state
   - game should be frozen, no further turns
   - lift the fog-of-war, revealing the whole board state to both teams
   - display a game over sign
   - add a ui button to leave the match
+
+- [ ] fix orbitcam cursor desync (limit verticality)
 
 - [x] fix annoying dropped websocket rejection error
 
