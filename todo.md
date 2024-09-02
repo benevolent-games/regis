@@ -4,7 +4,7 @@
 - [ ] queen healing ability
 - [x] camera starting angle, camera smoothing
 - [ ] reveal enemies on attack or block
-- [ ] turn counter
+- [x] turn counter (cycles count)
 - [ ] attack arcs
 - [ ] undo one action
 - [ ] inspector ui
