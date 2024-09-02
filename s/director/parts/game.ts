@@ -46,6 +46,8 @@ export class Game {
 
 		// check the timer and end the game when time expires
 		this.#trash.disposer(interval(100, () => {
+			if (this.arbiter.state.context.conclusion)
+				return
 			const {gameTime, teamwise} = this.timer.report()
 			for (const [teamId, teamReport] of teamwise.entries()) {
 				if (teamReport.expired) {
