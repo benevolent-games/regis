@@ -3,7 +3,7 @@ import {mapPool} from "../../map-pool.js"
 import {MapSpec} from "../ascii/types.js"
 
 export function randomMap(): MapSpec {
-	// return getMap("noMansLand")
+	// return getMap("chestersField")
 
 	const maplist = Object.entries(mapPool)
 	const index = Math.floor(Math.random() * maplist.length)
