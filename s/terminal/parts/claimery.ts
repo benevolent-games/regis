@@ -27,7 +27,7 @@ export class Claimery {
 
 			let offset = 0
 
-			function emplace(instance: TransformNode) {
+			function emplace(instance: TransformNode, scale = 1) {
 				d(instance)
 				const tweak = ((offset++) + 1) * constants.indicators.verticalOffsets.claimLayering
 				instance.position.set(...vec3.add(position, [0, tweak, 0]))
@@ -37,6 +37,9 @@ export class Claimery {
 					instance.rotationQuaternion = (
 						Quaternion.RotationYawPitchRoll(flip, 0, 0)
 					)
+				instance.scaling.set(
+					...vec3.multiplyBy(instance.scaling.asArray(), scale)
+				)
 				return instance
 			}
 
@@ -45,20 +48,22 @@ export class Claimery {
 				emplace(indicators.claims.resource(level, staked))
 			}
 
+			const scale = 0.6
+
 			if (watchtower)
-				emplace(indicators.claims.watchtower(staked))
+				emplace(indicators.claims.watchtower(staked), scale)
 
 			if (tech?.knight)
-				emplace(indicators.claims.knight(staked))
+				emplace(indicators.claims.knight(staked), scale)
 
 			if (tech?.rook)
-				emplace(indicators.claims.rook(staked))
+				emplace(indicators.claims.rook(staked), scale)
 
 			if (tech?.bishop)
-				emplace(indicators.claims.bishop(staked))
+				emplace(indicators.claims.bishop(staked), scale)
 
 			if (tech?.queen)
-				emplace(indicators.claims.queen(staked))
+				emplace(indicators.claims.queen(staked), scale)
 		}
 	}
 
