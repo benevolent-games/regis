@@ -17,6 +17,8 @@
   - display a game over sign
   - add a ui button to leave the match
 
+- [x] roster unlocks
+
 - [x] fix orbitcam cursor desync (limit verticality)
 
 - [x] fix annoying dropped websocket rejection error

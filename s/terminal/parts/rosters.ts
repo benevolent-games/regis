@@ -9,6 +9,7 @@ import {Agent} from "../../logic/agent.js"
 import {constants} from "../../constants.js"
 import {UnitKind} from "../../logic/state.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
+import { getTopMeshes } from "./babylon-helpers.js"
 
 export type RosterPlacement = {
 	mesh: Meshoid
@@ -41,20 +42,31 @@ export class Rosters {
 	}
 
 	#instanceRoster(teamId: number, propName: string) {
-		const {assets, world} = this.options
+		const {assets, world, agent} = this.options
 		const d = this.#trashbin.disposable
 
 		const rosterGuide = assets.board.instance(propName)
 		rosterGuide.computeWorldMatrix(true)
 
-		const unitKinds: UnitKind[] = [
-			"pawn", "knight", "rook", "bishop", "queen", // "king",
+		const spawnableUnits = Object.entries(agent.state.initial.config.unitArchetypes)
+			.filter(([,archetype]) => archetype.cost !== null)
+			.map(([kind]) => kind as UnitKind)
+
+		const unlockedUnits: UnitKind[] = [
+			"pawn",
+			...Object.entries(agent.claims.getTech(teamId))
+				.filter(([,enabled]) => !!enabled)
+				.map(([unitKind]) => unitKind as UnitKind)
 		]
 
-		const offset = (unitKinds.length / 2) - 0.5
+		const offset = (spawnableUnits.length / 2) - 0.5
 		const transform = new TransformNode("rosterRoot", world.scene)
 
-		const placers = unitKinds.map((unitKind, index) => {
+		const placers = spawnableUnits.map((unitKind, index) => {
+			const isUnlocked = unlockedUnits.includes(unitKind)
+			if (!isUnlocked)
+				return () => {}
+
 			const {size} = constants.block
 			const instance = d(assets.units.unit.get(unitKind)!(teamId))
 			const block = d(MeshBuilder.CreateBox("block", {size}, world.scene))
