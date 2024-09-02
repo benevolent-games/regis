@@ -38,7 +38,14 @@ export function manhattanDistance(a: Vec2, b: Vec2) {
 }
 
 export function isWithinRange(range: number, a: Vec2, b: Vec2) {
-	return manhattanDistance(a, b) <= range
+	const [aX, aY] = a
+	const [bX, bY] = b
+	const distanceX = Math.abs(bX - aX)
+	const distanceY = Math.abs(bY - aY)
+	return (
+		distanceX <= range &&
+		distanceY <= range
+	)
 }
 
 export function isValidStep(

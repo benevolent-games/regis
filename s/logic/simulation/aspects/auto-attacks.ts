@@ -3,7 +3,6 @@ import {Vec2} from "@benev/toolbox"
 
 import {Denial} from "./denials.js"
 import {Agent} from "../../agent.js"
-import {isChoiceLethal} from "./attack-report.js"
 import {Choice, Turn, Unit} from "../../state.js"
 import {Proposers} from "../proposer/make-proposers.js"
 import {isWithinRange, manhattanDistance} from "../aspects/navigation.js"
@@ -12,8 +11,6 @@ export function autoAttacks(agent: Agent, proposers: Proposers, turn: Turn) {
 	const myTeam = agent.activeTeamId
 	const myUnits = [...agent.units.list()]
 		.filter(unit => unit.team === myTeam)
-
-	const enemyUnits = new Set(findEnemyUnits(agent, myTeam))
 
 	const alreadyAttacked = new Set<number>()
 
@@ -30,6 +27,7 @@ export function autoAttacks(agent: Agent, proposers: Proposers, turn: Turn) {
 		if (archetype.attack && !alreadyAttacked.has(attacker.id)) {
 			const {range} = archetype.attack
 
+			const enemyUnits = findEnemyUnits(agent, myTeam)
 			const enemiesNearby = [...enemyUnits]
 				.filter(enemy => isWithinRange(range, attacker.place, enemy.place))
 
@@ -48,8 +46,7 @@ export function autoAttacks(agent: Agent, proposers: Proposers, turn: Turn) {
 
 			if (valid) {
 				autoChoices.push(choice)
-				if (isChoiceLethal(agent, choice))
-					enemyUnits.delete(victim)
+				proposal()
 			}
 		}
 	}
