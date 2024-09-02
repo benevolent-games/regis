@@ -12,7 +12,10 @@ import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 import {requestAnimationFrameLoop} from "../tools/request-animation-frame-loop.js"
 
 export async function freeplayFlow() {
-	const arbiter = new Arbiter(asciiMap(randomMap()))
+	const initial = asciiMap(randomMap())
+	initial.config.time = null
+
+	const arbiter = new Arbiter(initial)
 
 	// special agent,
 	// which we pass around the freeplay flow,

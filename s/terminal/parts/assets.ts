@@ -80,11 +80,11 @@ export class IndicatorsGlb extends Glb {
 	attackAction = () => this.instance(`attack-action`)
 	claims = {
 		resource: (level: number, on = false) => this.instance(`resource${level}-${onOff(on)}`),
-		knight: (on = false) => this.instance(`knight-${onOff(on)}`),
-		rook: (on = false) => this.instance(`rook-${onOff(on)}`),
-		bishop: (on = false) => this.instance(`bishop-${onOff(on)}`),
-		queen: (on = false) => this.instance(`queen-${onOff(on)}`),
-		watchtower: (on = false) => this.instance(`watchtower-${onOff(on)}`),
+		knight: (on = false) => this.instance(`claim-knight-${onOff(on)}`),
+		rook: (on = false) => this.instance(`claim-rook-${onOff(on)}`),
+		bishop: (on = false) => this.instance(`claim-bishop-${onOff(on)}`),
+		queen: (on = false) => this.instance(`claim-queen-${onOff(on)}`),
+		watchtower: (on = false) => this.instance(`claim-watchtower-${onOff(on)}`),
 	}
 }
 

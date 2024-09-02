@@ -1,5 +1,5 @@
 
-import {Vec2} from "@benev/toolbox"
+import {Vec2, vec3} from "@benev/toolbox"
 import {Trashbin} from "@benev/slate"
 import {TransformNode} from "@babylonjs/core"
 
@@ -11,6 +11,7 @@ import {autoAttacks} from "../../logic/simulation/aspects/auto-attacks.js"
 import {UnitFreedom} from "../../logic/simulation/aspects/unit-freedom.js"
 import {Considerations, makeConsiderations} from "./make-considerations.js"
 import {makeProposers, Proposers} from "../../logic/simulation/proposer/make-proposers.js"
+import { constants } from "../../constants.js"
 
 export class Planner {
 	proposers: Proposers
@@ -36,10 +37,13 @@ export class Planner {
 		})
 	}
 
-	#instance(fn: () => TransformNode, place: Vec2) {
+	#instanceIndicator(fn: () => TransformNode, place: Vec2) {
 		const {agent} = this.options
 		const instance = fn()
-		const position = agent.coordinator.toPosition(place)
+		const position = vec3.add(
+			agent.coordinator.toPosition(place),
+			[0, constants.indicators.verticalOffsets.normalIndicators, 0],
+		)
 		instance.position.set(...position)
 		this.#renderbin.disposable(instance)
 		return instance
@@ -91,16 +95,16 @@ export class Planner {
 				selected,
 				on: {
 					spawn: considered => makeIndicator(considered, {
-						action: () => this.#instance(indicators.libertyAction, place),
-						pattern: () => this.#instance(indicators.libertyPattern, place),
+						action: () => this.#instanceIndicator(indicators.libertyAction, place),
+						pattern: () => this.#instanceIndicator(indicators.libertyPattern, place),
 					}),
 					attack: considered => makeIndicator(considered, {
-						action: () => this.#instance(indicators.attackAction, place),
-						pattern: () => this.#instance(indicators.attackPattern, place),
+						action: () => this.#instanceIndicator(indicators.attackAction, place),
+						pattern: () => this.#instanceIndicator(indicators.attackPattern, place),
 					}),
 					movement: considered => makeIndicator(considered, {
-						action: () => this.#instance(indicators.libertyAction, place),
-						pattern: () => this.#instance(indicators.libertyPattern, place),
+						action: () => this.#instanceIndicator(indicators.libertyAction, place),
+						pattern: () => this.#instanceIndicator(indicators.libertyPattern, place),
 					}),
 				},
 			})
