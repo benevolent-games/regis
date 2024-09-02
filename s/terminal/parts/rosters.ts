@@ -8,6 +8,7 @@ import {Assets} from "./assets.js"
 import {Agent} from "../../logic/agent.js"
 import {constants} from "../../constants.js"
 import {UnitKind} from "../../logic/state.js"
+import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 
 export type RosterPlacement = {
 	mesh: Meshoid
@@ -24,14 +25,19 @@ export class Rosters {
 		agent: Agent
 		world: World
 		assets: Assets
+		turnTracker: TurnTracker
 	}) {}
 
 	render() {
 		this.#trashbin.dispose()
 		this.placements.clear()
 
-		this.#instanceRoster(0, "team1-roster")
-		this.#instanceRoster(1, "team2-roster")
+		switch (this.options.turnTracker.teamId) {
+			case 0:
+				return this.#instanceRoster(0, "team1-roster")
+			case 1:
+				return this.#instanceRoster(1, "team2-roster")
+		}
 	}
 
 	#instanceRoster(teamId: number, propName: string) {
