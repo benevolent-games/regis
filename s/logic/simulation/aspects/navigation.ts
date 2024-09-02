@@ -29,15 +29,16 @@ export const ordinals: Vec2[] = [
 	[-1, 1],
 ]
 
-export function isWithinRange(range: number, a: Vec2, b: Vec2) {
+export function manhattanDistance(a: Vec2, b: Vec2) {
 	const [aX, aY] = a
 	const [bX, bY] = b
 	const distanceX = Math.abs(bX - aX)
 	const distanceY = Math.abs(bY - aY)
-	return (
-		(distanceX <= range) &&
-		(distanceY <= range)
-	)
+	return distanceX + distanceY
+}
+
+export function isWithinRange(range: number, a: Vec2, b: Vec2) {
+	return manhattanDistance(a, b) <= range
 }
 
 export function isValidStep(

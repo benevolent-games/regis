@@ -211,6 +211,7 @@ export type Conclusion = {
 	winnerTeamId: number
 }
 
+// TODO maybe replace the "turn" concept with just "choices"..
 export type Turn = {
 	choices: Choice.Any[]
 }

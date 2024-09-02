@@ -7,6 +7,7 @@ import {Choice} from "../../logic/state.js"
 import {Cell, TileCell} from "../parts/selectacon.js"
 import {ConsiderationResult, PlannerOptions} from "./types.js"
 import {doFirstValidThing} from "../../tools/do-first-valid-thing.js"
+import {autoAttacks} from "../../logic/simulation/aspects/auto-attacks.js"
 import {UnitFreedom} from "../../logic/simulation/aspects/unit-freedom.js"
 import {Considerations, makeConsiderations} from "./make-considerations.js"
 import {makeProposers, Proposers} from "../../logic/simulation/proposer/make-proposers.js"
@@ -61,7 +62,9 @@ export class Planner {
 	}
 
 	executePlan() {
-		this.options.submitTurn({choices: this.choices})
+		const {choices} = this
+		const autoChoices = autoAttacks(this.options.agent, this.proposers, {choices})
+		this.options.submitTurn({choices: [...choices, ...autoChoices]})
 		this.reset()
 	}
 

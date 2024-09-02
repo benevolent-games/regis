@@ -42,17 +42,16 @@ export function attackReport(
 		attack,
 		attacker,
 		victim,
-		isKill: wouldThisBeLethal(agent, victim, attack.damage),
+		// isKill: wouldThisBeLethal(agent, victim, attack.damage),
 	}
 }
 
-export function wouldThisBeLethal(
-		agent: Agent,
-		unit: Unit,
-		additionallyProposedDamage: number,
-	) {
-	const {health} = agent.archetype(unit.kind)
-	return isLethal(health, unit.damage - additionallyProposedDamage)
+export function isChoiceLethal(agent: Agent, choice: Choice.Attack) {
+	const attacker = agent.units.requireGet(choice.attackerId)
+	const victim = agent.units.requireGet(choice.victimId)
+	const {health} = agent.archetype(victim.kind)
+	const {attack} = agent.archetype(attacker.kind)
+	return isLethal(health, victim.damage + (attack?.damage ?? 0))
 }
 
 export function applyDamage(agent: Agent, unit: Unit, damage: number) {
