@@ -11,7 +11,7 @@ export class CameraRig {
 	orbitcam: Orbitcam
 	#trashbin = new Trashbin()
 
-	constructor({world}: {world: World}) {
+	constructor({world, teamId}: {world: World, teamId: number}) {
 		const orbitcam = this.orbitcam = this.#trashbin.disposable(new Orbitcam({
 			scene: world.scene,
 			smoothing: 7,
@@ -23,7 +23,12 @@ export class CameraRig {
 			verticalRange: [degrees(1), degrees(89)],
 		}))
 
-		orbitcam.gimbal = [degrees(90), degrees(45)]
+		const x = teamId === 0
+			? degrees(90)
+			: degrees(270)
+
+		orbitcam.gimbal = [x, degrees(30)]
+
 		world.rendering.setCamera(orbitcam.camera)
 		this.#trashbin.disposer(world.gameloop.on(orbitcam.tick))
 	}

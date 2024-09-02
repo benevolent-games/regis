@@ -2,7 +2,7 @@
 - [ ] obstacle persistent-vision
 - [ ] remove investment concept
 - [ ] queen healing ability
-- [ ] camera starting angle, camera smoothing
+- [x] camera starting angle, camera smoothing
 - [ ] reveal enemies on attack or block
 - [ ] turn counter
 - [ ] attack arcs
