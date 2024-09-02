@@ -16,25 +16,25 @@ export function handlePrimaryClick(options: {
 	const selected = selectacon.selection.value
 	const target = selectacon.pick(pointing)
 
-	const happened = planner.navigateActionSpace({
+	planner.navigateActionSpace({
 		target,
 		selected,
 		on: {
-			spawn: actualize,
-			attack: actualize,
-			movement: actualize,
+			spawn: actualize(() => {}),
+			attack: actualize(() => { selectacon.selection.value = target }),
+			movement: actualize(() => { selectacon.selection.value = target }),
 		},
 	})
-
-	if (happened)
-		selectacon.selection.value = target
 }
 
-export function actualize(result: ConsiderationResult) {
-	if (result.actuate) {
-		result.actuate()
-		return true
+export function actualize(fn: () => void) {
+	return (result: ConsiderationResult) => {
+		if (result.actuate) {
+			result.actuate()
+			fn()
+			return true
+		}
+		return false
 	}
-	return false
 }
 
