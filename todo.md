@@ -1,7 +1,7 @@
 
-- [ ] inspector ui
 - [ ] resource depletion
 - [ ] reveal enemies on attack or block
+- [x] inspector ui
 - [x] linear health bars
 
 - [ ] select-my-king hotkey
