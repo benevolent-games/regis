@@ -163,7 +163,7 @@ export namespace Claim {
 	}
 	export type Watchtower = {
 		range: number
-		verticality: VerticalCapability
+		verticality: Verticality
 	}
 	export type Tech = Record<TechKind, boolean>
 }
@@ -268,29 +268,42 @@ export type VerticalCapability = {
 	below: boolean
 }
 
+export const verticality = {
+	flat: {above: false, below: false},
+	downwards: {above: false, below: true},
+	upwards: {above: true, below: false},
+	everywhere: {above: true, below: true},
+} satisfies Record<string, VerticalCapability>
+
+export type Verticality = keyof typeof verticality
+
+export function getVerticalCapability(v: Verticality) {
+	return verticality[v]
+}
+
 export type UnitArchetype = {
 	cost: null | number
 	health: null | number
 	stakeholder: boolean
 	actionCap: number
 	spawning: null | {
-		verticality: VerticalCapability
+		verticality: Verticality
 	}
 	vision: null | {
 		range: number
-		verticality: VerticalCapability
+		verticality: Verticality
 	}
 	move: null | {
 		cap: number
 		range: number
 		chebyshev: boolean
-		verticality: VerticalCapability
+		verticality: Verticality
 	}
 	attack: null | {
 		cap: number
 		damage: number
 		range: number
-		verticality: VerticalCapability
+		verticality: Verticality
 	}
 }
 

@@ -1,5 +1,5 @@
 
-import {Tile, VerticalCapability} from "../../state.js"
+import {getVerticalCapability, Tile, VerticalCapability, Verticality} from "../../state.js"
 
 export type VerticalCompatibility = {
 	above: boolean
@@ -9,7 +9,8 @@ export type VerticalCompatibility = {
 	withinFullStep: boolean
 }
 
-export function isVerticallyCompatible(allow: VerticalCapability, a: Tile, b: Tile) {
+export function isVerticallyCompatible(verticality: Verticality, a: Tile, b: Tile) {
+	const allow = getVerticalCapability(verticality)
 	const report = verticalCompatibilityReport(a, b)
 	return (
 		(report.withinHalfStep) ||

@@ -2,14 +2,14 @@
 import {vec2, Vec2} from "@benev/toolbox"
 
 import {Agent} from "../../agent.js"
-import {VerticalCapability} from "../../state.js"
+import {VerticalCapability, Verticality} from "../../state.js"
 import {getCardinalNeighbors, isValidStep} from "./navigation.js"
 
 export type PathfindOptions = {
 	agent: Agent
 	source: Vec2
 	target: Vec2
-	verticality: VerticalCapability
+	verticality: Verticality
 }
 
 type Pathnode = {
@@ -88,7 +88,7 @@ function consolidatePath(node: Pathnode) {
 
 function getNextValidSteps(
 		agent: Agent,
-		verticality: VerticalCapability,
+		verticality: Verticality,
 		placeA: Vec2,
 	) {
 

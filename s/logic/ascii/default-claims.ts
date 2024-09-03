@@ -1,5 +1,4 @@
 
-import { verticality } from "../data.js"
 import {Claim, Tile} from "../state.js"
 
 const basetech: Claim.Tech = {
@@ -20,7 +19,7 @@ export const defaultClaims = {
 	watchtower: (tile: Tile) => {
 		tile.claim.watchtower = {
 			range: 2,
-			verticality: verticality.everywhere,
+			verticality: "everywhere",
 		}
 	},
 

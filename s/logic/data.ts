@@ -1,6 +1,6 @@
 
 import {seconds} from "../tools/timely.js"
-import {GameConfig, InitialTeamInfo, Roster, UnitArchetype, UnitKind, VerticalCapability} from "./state.js"
+import {GameConfig, InitialTeamInfo, Roster, UnitArchetype, UnitKind} from "./state.js"
 
 export function defaultGameConfig(): GameConfig {
 	const unitArchetypes = defaultUnitArchetypes()
@@ -49,13 +49,6 @@ export function defaultRoster(): Roster {
 	}
 }
 
-export const verticality = {
-	flat: {above: false, below: false},
-	downwards: {above: false, below: true},
-	upwards: {above: true, below: false},
-	everywhere: {above: true, below: true},
-} satisfies Record<string, VerticalCapability>
-
 export type UnitArchetypes = Record<UnitKind, UnitArchetype>
 
 export const defaultUnitArchetypes = (): UnitArchetypes => ({
@@ -76,23 +69,23 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		actionCap: 2,
 		stakeholder: false,
 		spawning: {
-			verticality: verticality.flat,
+			verticality: "flat",
 		},
 		vision: {
 			range: 2,
-			verticality: verticality.downwards,
+			verticality: "downwards",
 		},
 		move: {
 			cap: 1,
 			range: 1,
 			chebyshev: true,
-			verticality: verticality.flat,
+			verticality: "flat",
 		},
 		attack: {
 			cap: 1,
 			damage: 1,
 			range: 1,
-			verticality: verticality.flat,
+			verticality: "flat",
 		},
 	},
 
@@ -104,19 +97,19 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		spawning: null,
 		vision: {
 			range: 2,
-			verticality: verticality.downwards,
+			verticality: "downwards",
 		},
 		move: {
 			cap: 1,
 			range: 2,
 			chebyshev: false,
-			verticality: verticality.flat,
+			verticality: "flat",
 		},
 		attack: {
 			cap: 1,
 			damage: 1,
 			range: 1,
-			verticality: verticality.flat,
+			verticality: "flat",
 		},
 	},
 
@@ -128,19 +121,19 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		spawning: null,
 		vision: {
 			range: 2,
-			verticality: verticality.downwards,
+			verticality: "downwards",
 		},
 		move: {
 			cap: 1,
 			range: 2,
 			chebyshev: false,
-			verticality: verticality.flat,
+			verticality: "flat",
 		},
 		attack: {
 			cap: 1,
 			damage: 2,
 			range: 1,
-			verticality: verticality.flat,
+			verticality: "flat",
 		},
 	},
 
@@ -152,19 +145,19 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		spawning: null,
 		vision: {
 			range: 1,
-			verticality: verticality.downwards,
+			verticality: "downwards",
 		},
 		move: {
 			cap: 1,
 			range: 1,
 			chebyshev: false,
-			verticality: verticality.flat,
+			verticality: "flat",
 		},
 		attack: {
 			cap: 1,
 			damage: 2,
 			range: 1,
-			verticality: verticality.everywhere,
+			verticality: "everywhere",
 		},
 	},
 
@@ -176,19 +169,19 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		spawning: null,
 		vision: {
 			range: 2,
-			verticality: verticality.downwards,
+			verticality: "downwards",
 		},
 		move: {
 			cap: 1,
 			range: 1,
 			chebyshev: false,
-			verticality: verticality.flat,
+			verticality: "flat",
 		},
 		attack: {
 			cap: 1,
 			damage: 1,
 			range: 2,
-			verticality: verticality.everywhere,
+			verticality: "everywhere",
 		},
 	},
 
@@ -198,23 +191,23 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		actionCap: 1,
 		stakeholder: false,
 		spawning: {
-			verticality: verticality.flat,
+			verticality: "flat",
 		},
 		vision: {
 			range: 2,
-			verticality: verticality.everywhere,
+			verticality: "everywhere",
 		},
 		move: {
 			cap: 1,
 			range: 3,
 			chebyshev: false,
-			verticality: verticality.flat,
+			verticality: "flat",
 		},
 		attack: {
 			cap: 1,
 			damage: 1,
 			range: 1,
-			verticality: verticality.everywhere,
+			verticality: "everywhere",
 		},
 	},
 })
