@@ -6,7 +6,7 @@
 
 - [ ] select-my-king hotkey
 - [ ] obstacle persistent-vision
-- [ ] decide what to do with investment mechanic
+- [x] decide what to do with investment mechanic
 - [ ] queen healing ability
 - [x] camera starting angle, camera smoothing
 - [x] turn counter (cycles count)
