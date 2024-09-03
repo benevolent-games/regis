@@ -16,16 +16,18 @@ export const inspectorPanels = {
 		if (!unit)
 			return null
 
+		const info = generalUnitInfo(agent, unit.kind)
 		const living = livingUnitInfo(agent, unit, myTeam, freedom)
 
 		return html`
 			<div class="panel unit">
-				<h1>${living.allegiance} ${living.name} ${living.health.pattern}</h1>
+				<h1>${living.allegiance} ${info.name} ${living.health.pattern}</h1>
+				${info.essay}
 				${listify({
 					health: living.health.text,
 					availability: living.availability,
 				})}
-				${renderGeneralUnitPanel(agent, unit.kind)}
+				${listify(info.stats)}
 			</div>
 		`
 	},
@@ -35,16 +37,17 @@ export const inspectorPanels = {
 		const {claim} = tile
 		const hasClaims = claim.resource || claim.watchtower || claim.tech
 		const stakingCost = agent.claims.getStakingCost(place)
+		const stakeholder = agent.claims.getStakeholder(place)?.kind
 		return html`
 			<div class="panel tile">
 				<h1>Tile ${boardCoords(place)}</h1>
 				${listify({
 					elevation: tile.elevation + (tile.step ? 0.5 : 0),
 					"staking cost": stakingCost || null,
-					"currently staked by": agent.claims.getStakeholder(place)?.kind,
+					"currently staked by": stakeholder,
 				})}
 				${hasClaims ? html`
-					<h2>Claims available</h2>
+					<h2>Claims</h2>
 					${listify({
 						resource: claim.resource
 							&& `provides +${agent.claims.determineResourceClaimLevel(place, claim.resource)} income per turn (${claim.resource.stockpile} remains)`,
@@ -56,27 +59,23 @@ export const inspectorPanels = {
 							.join(" and "),
 					})}
 				` : null}
-				<p>To stake these claims, move a pawn on top of this tile (will cost ${stakingCost}).</p>
+				${stakeholder
+					? html`<p>Move a pawn onto this tile to stake the claim.</p>`
+					: null}
+				<p>Move a pawn onto this </p>
 			</div>
 		`
 	},
 
 	roster(agent: Agent, selection: RosterCell) {
+		const info = generalUnitInfo(agent, selection.unitKind)
 		return html`
 			<div class="panel roster">
 				<h1>Roster ${capitalize(selection.unitKind)}</h1>
-				${renderGeneralUnitPanel(agent, selection.unitKind)}
+				${listify(info.stats)}
 			</div>
 		`
 	},
-}
-
-function renderGeneralUnitPanel(agent: Agent, unitKind: UnitKind) {
-	const info = generalUnitInfo(agent, unitKind)
-	return html`
-		${info.essay}
-		${listify(info.stats)}
-	`
 }
 
 function listify(stats: Record<string, any>) {
@@ -123,7 +122,6 @@ function generalUnitInfo(agent: Agent, unitKind: UnitKind) {
 
 function livingUnitInfo(agent: Agent, unit: Unit, myTeam: number, freedom: UnitFreedom) {
 	const arc = agent.archetype(unit.kind)
-	const name = capitalize(unit.kind)
 
 	const allegiance = (
 		(unit.team === myTeam)
@@ -162,7 +160,6 @@ function livingUnitInfo(agent: Agent, unit: Unit, myTeam: number, freedom: UnitF
 	})()
 
 	return {
-		name,
 		health,
 		allegiance,
 		availability,

@@ -70,7 +70,7 @@ export const styles = css`
 			z-index: 1;
 			position: absolute;
 			user-select: auto;
-			pointer-events: all;
+			pointer-events: none;
 
 			bottom: 0;
 			left: 0;
