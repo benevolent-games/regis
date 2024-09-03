@@ -3,9 +3,11 @@ import {loop} from "@benev/toolbox"
 import {html, is} from "@benev/slate"
 
 import {Agent} from "../../../../logic/agent.js"
+import {constants} from "../../../../constants.js"
 import {unitEssays} from "../../../../logic/essays.js"
 import {Unit, UnitKind} from "../../../../logic/state.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
+import {canAfford} from "../../../../logic/simulation/aspects/money.js"
 import {RosterCell, TileCell} from "../../../../terminal/parts/selectacon.js"
 import {UnitFreedom} from "../../../../logic/simulation/aspects/unit-freedom.js"
 
@@ -37,13 +39,17 @@ export const inspectorPanels = {
 		`
 	},
 
-	tile(agent: Agent, selection: TileCell) {
+	tile(agent: Agent, selection: TileCell, myTeam: number) {
 		const {place, tile} = selection
 		const {claim} = tile
 		const hasClaims = claim.resource || claim.watchtower || claim.tech
 		const stakingCost = agent.claims.getStakingCost(place)
 		const stakeholder = agent.claims.getStakeholder(place)?.kind
 		const elevation = tile.elevation + (tile.step ? 0.5 : 0)
+
+		const team = agent.state.teams.at(myTeam)!
+		const afford = canAfford(team, stakingCost)
+
 		return html`
 			<div class="panel tile">
 				<h1>Tile ${boardCoords(place)}</h1>
@@ -67,25 +73,35 @@ export const inspectorPanels = {
 							.map(([name]) => name)
 							.join(" and "),
 					})}
+					${stakeholder
+						? null
+						: html`<p>Unclaimed: nobody is staking this claim.</p>`}
+					${affordance(afford)}
 				` : null}
-				${stakeholder
-					? null
-					: html`<p>Unclaimed: nobody is staking this claim.</p>`}
 			</div>
 		`
 	},
 
-	roster(agent: Agent, selection: RosterCell) {
+	roster(agent: Agent, selection: RosterCell, myTeam: number) {
 		const info = generalUnitInfo(agent, selection.unitKind)
+		const team = agent.state.teams.at(myTeam)!
+		const afford = canAfford(team, info.archetype.cost)
 		return html`
 			<div class="panel roster">
-				<h1>Roster ${capitalize(selection.unitKind)}</h1>
+				<h1>Roster ${capitalize(selection.unitKind)} ${constants.icons.resource}${info.stats.cost}</h1>
 				<p class=essay>${info.essay}</p>
+				${affordance(afford)}
 				${listify(info.stats)}
 				${cardify(info.cards)}
 			</div>
 		`
 	},
+}
+
+function affordance(afford: boolean) {
+	return afford
+		? html`<p class="can afford">✅ Can afford.</p>`
+		: html`<p class="cannot afford">❌ Cannot afford.</p>`
 }
 
 function listify(stats: Record<string, any>) {
@@ -128,14 +144,15 @@ function generalUnitInfo(agent: Agent, unitKind: UnitKind) {
 	}
 
 	return {
+		archetype: arc,
 		name,
 		essay,
 		cards,
 		stats: {
 			cost: arc.cost ?? "not for sale",
 			health: arc.health ?? "invincible",
-			stakeholder: arc.stakeholder ? "can stake claims" : null,
 			"action-cap": arc.actionCap ?? null,
+			stakeholder: arc.stakeholder ? "can stake claims" : null,
 			"spawns": arc.spawning
 				? "can spawn units"
 				: null,

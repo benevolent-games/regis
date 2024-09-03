@@ -9,6 +9,7 @@ import menuSvg from "../../icons/tabler/menu.svg.js"
 import {FullTeamInfo} from "../../../logic/state.js"
 import circleCheckSvg from "../../icons/tabler/circle-check.svg.js"
 import arrowCounterClockwiseSvg from "../../icons/akar/arrow-counter-clockwise.svg.js"
+import { constants } from "../../../constants.js"
 
 export const ActionBarView = nexus.shadowView(use => (
 		bridge: Bridge
@@ -72,7 +73,7 @@ export const ActionBarView = nexus.shadowView(use => (
 
 			<div class="resources">
 				<span class=value>
-					💎${myTeam.resources}
+					${constants.icons.resource}${myTeam.resources}
 				</span>
 				<span class=income>
 					+${income}
@@ -136,8 +137,8 @@ export const styles = css`
 		height: 3em;
 		padding: 0 1em;
 
-		> .value { font-size: 1.5em; }
-		> .income { font-size: 1em; }
+		> .value { font-size: 2em; }
+		> .income { font-size: 1.25em; }
 	}
 
 	.entry {
@@ -199,6 +200,7 @@ export const styles = css`
 				opacity: 0.3;
 				text-align: center;
 				font-size: 0.7em;
+				font-style: normal;
 			}
 		}
 	}

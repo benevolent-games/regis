@@ -18,12 +18,12 @@ export const InspectorView = nexus.shadowView(use => (
 	if (selection?.kind === "tile")
 		return html`
 			${inspectorPanels.unit(agent, bridge.teamId.value, selection, bridge.terminal.planner.freedom)}
-			${inspectorPanels.tile(agent, selection)}
+			${inspectorPanels.tile(agent, selection, bridge.teamId.value)}
 		`
 
 	if (selection?.kind === "roster")
 		return html`
-			${inspectorPanels.roster(agent, selection)}
+			${inspectorPanels.roster(agent, selection, bridge.teamId.value)}
 		`
 
 	else
@@ -56,7 +56,8 @@ export const styles = css`
 	h2 { font-size: 1.2em; }
 	h3 { font-size: 1.15em; }
 	.essay { margin-bottom: 1em; }
-	h2, h3, .health-pattern { color: #0a0; }
+	h2, h3, .health-pattern, .afford.can { color: #0a0; }
+	.afford.cannot { color: #d00; }
 
 	ul, ol {
 		display: flex;

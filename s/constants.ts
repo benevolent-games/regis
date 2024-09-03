@@ -26,5 +26,8 @@ export const constants = {
 		reconnectDelay: 10_000,
 		reportingDelay: 5_000,
 	},
+	icons: {
+		resource: "💎",
+	},
 }
 
