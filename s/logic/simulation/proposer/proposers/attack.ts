@@ -6,7 +6,7 @@ import {applyDamage, attackReport} from "../../aspects/attack-report.js"
 import {Denial, GameOverDenial, MovementDenial, WrongTeamDenial} from "../../aspects/denials.js"
 
 export const proposeAttack = proposerFn(
-	({agent, freedom, turnTracker}) =>
+	({agent, freedom, chalkboard, turnTracker}) =>
 	(choice: Choice.Attack) => {
 
 	const report = attackReport(agent, choice)
@@ -31,6 +31,7 @@ export const proposeAttack = proposerFn(
 		const lethal = applyDamage(agent, victim, attack.damage)
 		if (lethal)
 			agent.deleteUnit(victim.id)
+		chalkboard.reveal(attacker.place)
 	}
 })
 

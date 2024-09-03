@@ -22,8 +22,7 @@ export function initializeArbiterState(initial: GameInitial): ArbiterState {
 		})),
 		investments: [],
 		reminders: {
-			choices: [],
-			kills: [],
+			revelations: [],
 		},
 	})
 }

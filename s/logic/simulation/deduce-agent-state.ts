@@ -13,7 +13,7 @@ export function deduceAgentState(
 
 	const vision = chronicle.length === 0
 		? universalVision(state)
-		: limitedVision(state, teamId)
+		: [...limitedVision(state, teamId), ...state.reminders.revelations]
 
 	return {
 		initial: state.initial,
@@ -24,10 +24,7 @@ export function deduceAgentState(
 				? team
 				: censorTeam(team)
 		),
-		reminders: {
-			choices: [],
-			kills: [],
-		},
+		reminders: state.reminders,
 	}
 }
 

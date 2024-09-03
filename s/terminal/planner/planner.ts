@@ -8,6 +8,7 @@ import {constants} from "../../constants.js"
 import {Cell, TileCell} from "../parts/selectacon.js"
 import {ConsiderationResult, PlannerOptions} from "./types.js"
 import {doFirstValidThing} from "../../tools/do-first-valid-thing.js"
+import {Chalkboard} from "../../logic/simulation/proposer/chalkboard.js"
 import {autoAttacks} from "../../logic/simulation/aspects/auto-attacks.js"
 import {UnitFreedom} from "../../logic/simulation/aspects/unit-freedom.js"
 import {Considerations, makeConsiderations} from "./make-considerations.js"
@@ -28,6 +29,7 @@ export class Planner {
 			agent,
 			turnTracker,
 			freedom: this.freedom,
+			chalkboard: new Chalkboard(),
 		})
 
 		this.considerations = makeConsiderations({
@@ -61,6 +63,7 @@ export class Planner {
 			agent,
 			turnTracker,
 			freedom: this.freedom,
+			chalkboard: new Chalkboard(),
 		})
 		this.choices = []
 	}

@@ -107,11 +107,7 @@ export type GameContext = {
 
 /** what happened in the previous turn (may be censored for fog-of-war) */
 export type Reminders = {
-	choices: Choice.Any[]
-	kills: {
-		unitKind: UnitKind
-		place: Vec2
-	}[]
+	revelations: Vec2[]
 }
 
 export type ChoiceKind = Choice.Any["kind"]
