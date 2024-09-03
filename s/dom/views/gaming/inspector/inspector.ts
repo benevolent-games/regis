@@ -46,7 +46,7 @@ export const styles = css`
 		text-shadow: 1px 2px 1px #0004;
 
 		&.unit { margin-right: auto; }
-		&.roster { margin: 0 auto; }
+		&.roster { margin-right: auto; }
 		&.tile { margin-left: auto; }
 
 		> * + * { margin-top: 0.4em; }
@@ -56,6 +56,7 @@ export const styles = css`
 	h2 { font-size: 1.2em; }
 	h3 { font-size: 1.15em; }
 	.essay { margin-bottom: 1em; }
+	h2, h3, .health-pattern { color: #0a0; }
 
 	ul, ol {
 		display: flex;

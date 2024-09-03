@@ -21,7 +21,11 @@ export const inspectorPanels = {
 
 		return html`
 			<div class="panel unit">
-				<h1>${living.allegiance} ${info.name} ${living.health.pattern}</h1>
+				<h1>
+					${living.allegiance}
+					${info.name}
+					<span class="health-pattern">${living.health.pattern}</span>
+				</h1>
 				<p class=essay>${info.essay}</p>
 				${listify({
 					health: living.health.text,
@@ -105,7 +109,7 @@ function cardify(cards: Record<string, Record<string, any> | null>) {
 		.map(([name, card]) => html`
 			<div class=cards>
 				<div class=card>
-					<h3>${name}</h3>
+					<h2>${capitalize(name)}</h2>
 					${listify(card!)}
 				</div>
 			<div>
