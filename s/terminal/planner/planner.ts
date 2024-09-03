@@ -82,9 +82,8 @@ export class Planner {
 		const {indicators} = assets
 		const selected = selectacon.selection.value
 
-		for (const {place, tile} of agent.tiles.list()) {
+		for (const {place} of agent.tiles.list()) {
 			const target: TileCell = {
-				tile,
 				place,
 				kind: "tile",
 				position: agent.coordinator.toPosition(place),

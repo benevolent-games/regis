@@ -8,13 +8,12 @@ import {Assets} from "./assets.js"
 import {Pointing} from "./types.js"
 import {Rosters} from "./rosters.js"
 import {Agent} from "../../logic/agent.js"
-import {Tile, UnitKind} from "../../logic/state.js"
+import {UnitKind} from "../../logic/state.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 
 export type TileCell = {
 	kind: "tile"
 	place: Vec2
-	tile: Tile
 	position: Vec3
 }
 
@@ -103,7 +102,6 @@ export class Selectacon {
 				return {
 					kind: "tile",
 					place,
-					tile: agent.tiles.at(place),
 					position: agent.coordinator.toPosition(place),
 				}
 			}

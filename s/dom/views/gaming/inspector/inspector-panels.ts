@@ -40,7 +40,8 @@ export const inspectorPanels = {
 	},
 
 	tile(agent: Agent, selection: TileCell, myTeam: number) {
-		const {place, tile} = selection
+		const {place} = selection
+		const tile = agent.tiles.at(place)
 		const {claim} = tile
 		const hasClaims = claim.resource || claim.specialResource || claim.watchtower || claim.tech
 		const stakingCost = agent.claims.getStakingCost(place)
