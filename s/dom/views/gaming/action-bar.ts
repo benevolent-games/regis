@@ -1,23 +1,25 @@
 
-import {css, html, Signal} from "@benev/slate"
+import {css, html} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
 import {ClockView} from "./clock.js"
+import {Bridge} from "../../utils/bridge.js"
 import xSvg from "../../icons/tabler/x.svg.js"
-import {Porthole} from "../../utils/porthole.js"
 import menuSvg from "../../icons/tabler/menu.svg.js"
 import {FullTeamInfo} from "../../../logic/state.js"
 import circleCheckSvg from "../../icons/tabler/circle-check.svg.js"
 import arrowCounterClockwiseSvg from "../../icons/akar/arrow-counter-clockwise.svg.js"
 
 export const ActionBarView = nexus.shadowView(use => (
-		porthole: Signal<Porthole>,
+		bridge: Bridge
 	) => {
 
 	use.name("actionbar")
 	use.styles(styles)
 
-	const {actions, agent, teamId} = porthole.value
+	const agent = bridge.agent.value
+	const teamId = bridge.teamId.value
+	const actions = bridge.terminal.actions
 
 	const income = agent.claims.getIncome(teamId)
 	const ourTurn = agent.activeTeamId === teamId
@@ -55,7 +57,7 @@ export const ActionBarView = nexus.shadowView(use => (
 		</div>
 
 		<div class="chunk static">
-			${ClockView([porthole])}
+			${ClockView([bridge])}
 		</div>
 
 		<div class="chunk stretchy right">

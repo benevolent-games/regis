@@ -2,13 +2,13 @@
 import {css, html, Signal} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
-import {Porthole} from "../../utils/porthole.js"
+import {Bridge} from "../../utils/bridge.js"
 import {ActionBarView} from "../gaming/action-bar.js"
 import type {World} from "../../../terminal/parts/world.js"
 
 export const GameplayView = nexus.shadowView(use => (
 		world: World,
-		porthole: Signal<Porthole>
+		bridge: Bridge
 	) => {
 
 	use.name("gameplay")
@@ -17,7 +17,7 @@ export const GameplayView = nexus.shadowView(use => (
 	return html`
 		${world.canvas}
 		<div class="hud">
-			${ActionBarView([porthole])}
+			${ActionBarView([bridge])}
 		</div>
 	`
 })

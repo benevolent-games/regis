@@ -1,8 +1,9 @@
 
-import {signal} from "@benev/slate"
+import {Trashbin} from "@benev/slate"
 import {Agent} from "../logic/agent.js"
 import {Arbiter} from "../logic/arbiter.js"
 import {AgentState} from "../logic/state.js"
+import {Bridge} from "../dom/utils/bridge.js"
 import {printReport} from "./utils/print-report.js"
 import {asciiMap} from "../logic/ascii/ascii-map.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
@@ -10,9 +11,11 @@ import {randomMap} from "../logic/routines/map-access.js"
 import {ChessTimer} from "../tools/chess-timer/chess-timer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 import {requestAnimationFrameLoop} from "../tools/request-animation-frame-loop.js"
-import { PortholePod } from "../dom/utils/porthole.js"
 
 export async function freeplayFlow() {
+	const trash = new Trashbin()
+	const [d, dr] = [trash.disposer, trash.disposable]
+
 	const initial = asciiMap(randomMap())
 	initial.config.time = null
 
@@ -30,7 +33,7 @@ export async function freeplayFlow() {
 	const timer = new ChessTimer(config.time, config.teams.length)
 
 	// 3d rendering
-	const terminal = await makeGameTerminal(
+	const terminal = dr(await makeGameTerminal(
 		dynamicAgent,
 		turnTracker,
 		turn => arbiter.commit({
@@ -38,11 +41,15 @@ export async function freeplayFlow() {
 			turn,
 			gameTime: timer.report().gameTime,
 		}),
-	)
+	))
 
 	// data that gets sent to the ui
-	const portholePod = new PortholePod(terminal, () => timer.report())
-	const stopTicker = requestAnimationFrameLoop(portholePod.update)
+	const bridge = new Bridge({
+		terminal,
+		getTimeReport: () => timer.report(),
+		getTeamId: () => terminal.previewAgent.activeTeamId,
+	})
+	d(requestAnimationFrameLoop(bridge.updateTime))
 
 	// update things when the arbiter state changes
 	arbiter.onStateChange(() => {
@@ -68,12 +75,9 @@ export async function freeplayFlow() {
 	printReport(dynamicAgent, dynamicAgent.activeTeamId)
 
 	return {
-		porthole: portholePod.porthole,
+		bridge,
 		world: terminal.world,
-		dispose() {
-			terminal.dispose()
-			stopTicker()
-		},
+		dispose: () => trash.dispose(),
 	}
 }
 

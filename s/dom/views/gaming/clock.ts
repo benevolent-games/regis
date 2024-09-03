@@ -1,18 +1,20 @@
 
-import {css, html, Signal} from "@benev/slate"
+import {css, html} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
-import {Porthole} from "../../utils/porthole.js"
+import {Bridge} from "../../utils/bridge.js"
 import {TeamTimeReport} from "../../../tools/chess-timer/types.js"
 
 export const ClockView = nexus.shadowView(use => (
-		porthole: Signal<Porthole>
+		bridge: Bridge
 	) => {
 
 	use.name("clock")
 	use.styles(styles)
 
-	const {teamId, agent, timeReport} = porthole.value
+	const agent = bridge.agent.value
+	const teamId = bridge.teamId.value
+	const timeReport = bridge.timeReport.value
 
 	const ourTeamId = teamId
 	const activeTeamId = agent.activeTeamId
