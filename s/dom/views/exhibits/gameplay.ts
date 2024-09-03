@@ -1,15 +1,15 @@
 
-import {css, html, Signal} from "@benev/slate"
+import {css, html} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
 import {Bridge} from "../../utils/bridge.js"
 import {ActionBarView} from "../gaming/action-bar.js"
 import type {World} from "../../../terminal/parts/world.js"
-import { InspectorView } from "../gaming/inspector.js"
+import {InspectorView} from "../gaming/inspector/inspector.js"
 
 export const GameplayView = nexus.shadowView(use => (
 		world: World,
-		bridge: Bridge
+		bridge: Bridge,
 	) => {
 
 	use.name("gameplay")
@@ -74,10 +74,9 @@ export const styles = css`
 
 			bottom: 0;
 			left: 0;
+			right: 0;
 
-			max-width: 40em;
-			max-height: 50%;
-			overflow: auto;
+			overflow: hidden;
 		}
 	}
 `

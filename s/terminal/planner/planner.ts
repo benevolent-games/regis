@@ -4,6 +4,7 @@ import {Trashbin} from "@benev/slate"
 import {TransformNode} from "@babylonjs/core"
 
 import {Choice} from "../../logic/state.js"
+import {constants} from "../../constants.js"
 import {Cell, TileCell} from "../parts/selectacon.js"
 import {ConsiderationResult, PlannerOptions} from "./types.js"
 import {doFirstValidThing} from "../../tools/do-first-valid-thing.js"
@@ -11,15 +12,14 @@ import {autoAttacks} from "../../logic/simulation/aspects/auto-attacks.js"
 import {UnitFreedom} from "../../logic/simulation/aspects/unit-freedom.js"
 import {Considerations, makeConsiderations} from "./make-considerations.js"
 import {makeProposers, Proposers} from "../../logic/simulation/proposer/make-proposers.js"
-import { constants } from "../../constants.js"
 
 export class Planner {
-	proposers: Proposers
+	freedom = new UnitFreedom()
 	choices: Choice.Any[] = []
+	proposers: Proposers
 	considerations: Considerations
 
 	#renderbin = new Trashbin()
-	#freedom = new UnitFreedom()
 
 	constructor(private options: PlannerOptions) {
 		const {agent, turnTracker} = this.options
@@ -27,7 +27,7 @@ export class Planner {
 		this.proposers = makeProposers({
 			agent,
 			turnTracker,
-			freedom: this.#freedom,
+			freedom: this.freedom,
 		})
 
 		this.considerations = makeConsiderations({
@@ -56,11 +56,11 @@ export class Planner {
 
 	reset() {
 		const {agent, turnTracker} = this.options
-		this.#freedom.clear()
+		this.freedom.clear()
 		this.proposers = makeProposers({
 			agent,
 			turnTracker,
-			freedom: this.#freedom,
+			freedom: this.freedom,
 		})
 		this.choices = []
 	}

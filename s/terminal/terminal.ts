@@ -96,8 +96,9 @@ export async function makeGameTerminal(
 	return {
 		world,
 		actions,
-		previewAgent: agent,
+		planner,
 		selectacon,
+		previewAgent: agent,
 		render,
 		dispose,
 	}

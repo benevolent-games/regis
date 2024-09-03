@@ -9,27 +9,27 @@ export const unitEssays = {
 	`,
 
 	king: html`
-		<p>The King serves as a spawn-point for new units. The game ends when he dies. He has a sturdy constitution, but is otherwise unremarkable in combat.</p>
+		<p>Serves as spawn point, game ends when he dies.</p>
 	`,
 
 	pawn: html`
-		<p>Pawns can stake resource claims to increase your income, or stake technology claims to unlock more units. They're not ideal in combat, though can be formidible in numbers.</p>
+		<p>Can stake claims, formidible in numbers.</p>
 	`,
 
 	knight: html`
-		<p>Knights are aggressive cavalry troops. They move fast and deal high damage. Effective against pawns, and excellent against bishops if they can close the distance. Potent when used in aggressive plays.</p>
+		<p>Aggressive cavalry troops, strong against pawns and bishops.</p>
 	`,
 
 	rook: html`
-		<p>Rooks are stalwart defenders. They move slow, hit hard, and can soak up a ton of damage. Deadly against any foe on the ground, if only they can catch them. Great for blocking narrow paths.</p>
+		<p>Stalwart defenders, slow and strong, can shoot over cliffs.</p>
 	`,
 
 	bishop: html`
-		<p>Bishops are archers. They can shoot enemies from a distance, if only they can see them. Ideal for chipping away at rooks from a safe distance.</p>
+		<p>Archers, tactically strong against rooks, vulnerable if unprotected.</p>
 	`,
 
 	queen: html`
-		<p>Queens are specialty units. They can see up cliffs, perfect for helping bishops spot high-ground targets. Awful in combat, but they can act as an alternative spawn-point for new reinforcements.</p>
+		<p>Specialty unit, can see up cliffs for bishops.</p>
 	`,
 
 } satisfies Record<UnitKind, any>
