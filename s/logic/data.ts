@@ -157,7 +157,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		move: {
 			cap: 1,
 			range: 1,
-			chebyshev: true,
+			chebyshev: false,
 			verticality: verticality.flat,
 		},
 		attack: {
@@ -181,7 +181,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		move: {
 			cap: 1,
 			range: 1,
-			chebyshev: true,
+			chebyshev: false,
 			verticality: verticality.flat,
 		},
 		attack: {
