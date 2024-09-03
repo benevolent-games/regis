@@ -1,7 +1,7 @@
 
 import {Vec2} from "@benev/toolbox"
 
-export const letters = [..."abcdefgh"]
+export const letters = [..."abcdefgh".toUpperCase()]
 export const numbers = [..."12345678"]
 
 export function boardCoords([x, y]: Vec2) {
