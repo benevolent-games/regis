@@ -12,13 +12,13 @@ export const defaultClaims = {
 	resource: (tile: Tile, level: 1 | 2 | 3) => {
 		tile.claim.resource = {
 			level,
-			stockpile: 30,
+			stockpile: 32 * level,
 		}
 	},
 
 	specialResource: (tile: Tile) => {
 		tile.claim.specialResource = {
-			stockpile: 30,
+			stockpile: 32,
 		}
 	},
 
