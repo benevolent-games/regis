@@ -130,7 +130,7 @@ export const styles = css`
 	.resources {
 		display: flex;
 		flex-direction: column;
-		align-items: end;
+		align-items: center;
 		justify-content: center;
 
 		font-family: monospace;
@@ -138,7 +138,7 @@ export const styles = css`
 		padding: 0 1em;
 
 		> .value { font-size: 2em; }
-		> .income { font-size: 1.25em; }
+		> .income { font-size: 1.25em; opacity: 0.5; }
 	}
 
 	.entry {
