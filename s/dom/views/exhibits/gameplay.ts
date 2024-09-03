@@ -45,6 +45,8 @@ export const styles = css`
 	}
 
 	.hud {
+		font-size: 0.8em;
+
 		pointer-events: none;
 		z-index: 1;
 		position: relative;

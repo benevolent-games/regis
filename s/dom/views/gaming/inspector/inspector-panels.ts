@@ -22,12 +22,13 @@ export const inspectorPanels = {
 		return html`
 			<div class="panel unit">
 				<h1>${living.allegiance} ${info.name} ${living.health.pattern}</h1>
-				${info.essay}
+				<p class=essay>${info.essay}</p>
 				${listify({
 					health: living.health.text,
-					availability: living.availability,
+					actions: living.availability,
 				})}
 				${listify(info.stats)}
+				${cardify(info.cards)}
 			</div>
 		`
 	},
@@ -38,11 +39,15 @@ export const inspectorPanels = {
 		const hasClaims = claim.resource || claim.watchtower || claim.tech
 		const stakingCost = agent.claims.getStakingCost(place)
 		const stakeholder = agent.claims.getStakeholder(place)?.kind
+		const elevation = tile.elevation + (tile.step ? 0.5 : 0)
 		return html`
 			<div class="panel tile">
 				<h1>Tile ${boardCoords(place)}</h1>
+				${elevation === 0
+					? html`<p>Non-traversable.</p>`
+					: null}
 				${listify({
-					elevation: tile.elevation + (tile.step ? 0.5 : 0),
+					elevation,
 					"staking cost": stakingCost || null,
 					"currently staked by": stakeholder,
 				})}
@@ -50,7 +55,7 @@ export const inspectorPanels = {
 					<h2>Claims</h2>
 					${listify({
 						resource: claim.resource
-							&& `provides +${agent.claims.determineResourceClaimLevel(place, claim.resource)} income per turn (${claim.resource.stockpile} remains)`,
+							&& `+${agent.claims.determineResourceClaimLevel(place, claim.resource)} income per turn (${claim.resource.stockpile} remains)`,
 						watchtower: claim.watchtower
 							&& `watchtower ${claim.watchtower.range}`,
 						unlocks: claim.tech && Object.entries(claim.tech)
@@ -60,9 +65,8 @@ export const inspectorPanels = {
 					})}
 				` : null}
 				${stakeholder
-					? html`<p>Move a pawn onto this tile to stake the claim.</p>`
-					: null}
-				<p>Move a pawn onto this </p>
+					? null
+					: html`<p>Unclaimed: nobody is staking this claim.</p>`}
 			</div>
 		`
 	},
@@ -72,7 +76,9 @@ export const inspectorPanels = {
 		return html`
 			<div class="panel roster">
 				<h1>Roster ${capitalize(selection.unitKind)}</h1>
+				<p class=essay>${info.essay}</p>
 				${listify(info.stats)}
+				${cardify(info.cards)}
 			</div>
 		`
 	},
@@ -91,6 +97,19 @@ function listify(stats: Record<string, any>) {
 			`)}
 		</ul>
 	`
+}
+
+function cardify(cards: Record<string, Record<string, any> | null>) {
+	return Object.entries(cards)
+		.filter(([,card]) => !!card)
+		.map(([name, card]) => html`
+			<div class=cards>
+				<div class=card>
+					<h3>${name}</h3>
+					${listify(card!)}
+				</div>
+			<div>
+		`)
 }
 
 function generalUnitInfo(agent: Agent, unitKind: UnitKind) {
@@ -156,7 +175,7 @@ function livingUnitInfo(agent: Agent, unit: Unit, myTeam: number, freedom: UnitF
 			if (can.length > 0)
 				return `can ${can.join(", ")}`
 		}
-		else return "actions exhausted"
+		else return "exhausted"
 	})()
 
 	return {

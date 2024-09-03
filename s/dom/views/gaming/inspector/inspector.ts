@@ -36,7 +36,6 @@ export const styles = css`
 		justify-content: space-between;
 		align-items: end;
 		width: 100%;
-
 	}
 
 	.panel {
@@ -50,11 +49,13 @@ export const styles = css`
 		&.roster { margin: 0 auto; }
 		&.tile { margin-left: auto; }
 
-		> * + * { margin-top: 0.2em; }
+		> * + * { margin-top: 0.4em; }
 	}
 
 	h1 { font-size: 1.3em; }
 	h2 { font-size: 1.2em; }
+	h3 { font-size: 1.15em; }
+	.essay { margin-bottom: 1em; }
 
 	ul, ol {
 		display: flex;
@@ -63,8 +64,8 @@ export const styles = css`
 
 		li {
 			display: flex;
-			gap: 0.4em;
-			margin-right: 0.8em;
+			gap: 0.2em;
+			margin-right: 0.4em;
 			> span { opacity: 0.7; }
 		}
 	}
