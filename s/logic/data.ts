@@ -24,7 +24,7 @@ export function defaultGameConfig(): GameConfig {
 					knight: 4,
 					rook: 4,
 					bishop: 4,
-					queen: 12,
+					queen: 0,
 				},
 			},
 		},
@@ -188,9 +188,9 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	},
 
 	queen: {
-		cost: 24,
-		health: 12,
-		actionCap: 2,
+		cost: 4,
+		health: 4,
+		actionCap: 1,
 		stakeholder: false,
 		spawning: {
 			verticality: "flat",
@@ -201,7 +201,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		},
 		move: {
 			cap: 1,
-			range: 2,
+			range: 3,
 			chebyshev: false,
 			verticality: "flat",
 		},
@@ -209,7 +209,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			cap: 1,
 			damage: 6,
 			range: 1,
-			verticality: "downwards",
+			verticality: "flat",
 		},
 	},
 })
