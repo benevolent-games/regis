@@ -19,10 +19,10 @@ export function defaultGameConfig(): GameConfig {
 				resource: 4,
 				watchtower: 0,
 				tech: {
-					knight: 2,
-					rook: 2,
+					knight: 4,
+					rook: 4,
 					bishop: 4,
-					queen: 0,
+					queen: 12,
 				},
 			},
 		},
@@ -73,7 +73,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		},
 		vision: {
 			range: 2,
-			verticality: "downwards",
+			verticality: "everywhere",
 		},
 		move: {
 			cap: 1,
@@ -186,28 +186,28 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	},
 
 	queen: {
-		cost: 4,
-		health: 3,
-		actionCap: 1,
+		cost: 24,
+		health: 12,
+		actionCap: 2,
 		stakeholder: false,
 		spawning: {
 			verticality: "flat",
 		},
 		vision: {
 			range: 2,
-			verticality: "everywhere",
+			verticality: "downwards",
 		},
 		move: {
 			cap: 1,
-			range: 3,
+			range: 2,
 			chebyshev: false,
 			verticality: "flat",
 		},
 		attack: {
 			cap: 1,
-			damage: 1,
+			damage: 6,
 			range: 1,
-			verticality: "everywhere",
+			verticality: "downwards",
 		},
 	},
 })
