@@ -5,11 +5,11 @@ import {nexus} from "../../nexus.js"
 import {ClockView} from "./clock.js"
 import {Bridge} from "../../utils/bridge.js"
 import xSvg from "../../icons/tabler/x.svg.js"
+import {constants} from "../../../constants.js"
 import menuSvg from "../../icons/tabler/menu.svg.js"
 import {FullTeamInfo} from "../../../logic/state.js"
 import circleCheckSvg from "../../icons/tabler/circle-check.svg.js"
 import arrowCounterClockwiseSvg from "../../icons/akar/arrow-counter-clockwise.svg.js"
-import { constants } from "../../../constants.js"
 
 export const ActionBarView = nexus.shadowView(use => (
 		bridge: Bridge
@@ -22,7 +22,7 @@ export const ActionBarView = nexus.shadowView(use => (
 	const teamId = bridge.teamId.value
 	const actions = bridge.terminal.actions
 
-	const income = agent.claims.getIncome(teamId)
+	const {income} = agent.claims.getTeamIncome(teamId)
 	const ourTurn = agent.activeTeamId === teamId
 	const turnCount = agent.state.context.turnCount
 	const myTeam = agent.state.teams.at(teamId)! as FullTeamInfo

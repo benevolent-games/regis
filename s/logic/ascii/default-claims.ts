@@ -11,8 +11,14 @@ const basetech: Claim.Tech = {
 export const defaultClaims = {
 	resource: (tile: Tile, level: 1 | 2 | 3) => {
 		tile.claim.resource = {
-			startingLevel: level,
-			stockpile: 60,
+			level,
+			stockpile: 30,
+		}
+	},
+
+	specialResource: (tile: Tile) => {
+		tile.claim.specialResource = {
+			stockpile: 30,
 		}
 	},
 

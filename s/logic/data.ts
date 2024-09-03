@@ -12,12 +12,14 @@ export function defaultGameConfig(): GameConfig {
 		},
 		startingResources: 8,
 		universalBasicIncome: 1,
+		resourceValue: 1,
+		specialResourceValue: 3,
 		teams: defaultTeams(),
 		costs: {
-			investment: 0,
 			staking: {
-				resource: 4,
 				watchtower: 0,
+				resources: [4, 12, 16],
+				specialResource: 4,
 				tech: {
 					knight: 4,
 					rook: 4,

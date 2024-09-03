@@ -52,12 +52,20 @@ export const styles = css`
 		> * + * { margin-top: 0.4em; }
 	}
 
+	.price {
+		font-family: monospace;
+		font-weight: normal;
+		color: white;
+	}
+
 	h1 { font-size: 1.3em; }
 	h2 { font-size: 1.2em; }
 	h3 { font-size: 1.15em; }
 	.essay { margin-bottom: 1em; }
-	h2, h3, .health-pattern, .afford.can { color: #0a0; }
-	.afford.cannot { color: #d00; }
+	.angry { color: #d00; }
+	.happy { color: #0a0; }
+	.health-pattern { color: #fae; }
+	h2, h3 { color: #99ca; }
 
 	ul, ol {
 		display: flex;

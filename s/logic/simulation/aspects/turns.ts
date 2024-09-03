@@ -47,8 +47,9 @@ export function applyWinByElimination(
 export function awardIncomeToActiveTeam(state: ArbiterState) {
 	const agent = new Agent(state)
 	const teamId = determineCurrentTeamId(state)
-	const income = agent.claims.getIncome(teamId)
+	const {income, commitExtraction} = agent.claims.getTeamIncome(teamId)
 	const team = state.teams.at(teamId)!
 	team.resources += income
+	commitExtraction()
 }
 

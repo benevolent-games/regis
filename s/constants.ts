@@ -27,7 +27,8 @@ export const constants = {
 		reportingDelay: 5_000,
 	},
 	icons: {
-		resource: "💎",
+		resource: "🍞",
+		// resource: "💎",
 	},
 }
 

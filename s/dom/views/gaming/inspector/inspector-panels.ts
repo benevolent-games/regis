@@ -42,9 +42,9 @@ export const inspectorPanels = {
 	tile(agent: Agent, selection: TileCell, myTeam: number) {
 		const {place, tile} = selection
 		const {claim} = tile
-		const hasClaims = claim.resource || claim.watchtower || claim.tech
+		const hasClaims = claim.resource || claim.specialResource || claim.watchtower || claim.tech
 		const stakingCost = agent.claims.getStakingCost(place)
-		const stakeholder = agent.claims.getStakeholder(place)?.kind
+		const stakeholder = agent.claims.getStakeholder(place)
 		const elevation = tile.elevation + (tile.step ? 0.5 : 0)
 
 		const team = agent.state.teams.at(myTeam)!
@@ -54,29 +54,41 @@ export const inspectorPanels = {
 			<div class="panel tile">
 				<h1>Tile ${boardCoords(place)}</h1>
 				${elevation === 0
-					? html`<p>Non-traversable.</p>`
+					? html`<p class=angry>Non-traversable.</p>`
 					: null}
 				${listify({
 					elevation,
-					"staking cost": stakingCost || null,
-					"currently staked by": stakeholder,
 				})}
 				${hasClaims ? html`
-					<h2>Claims</h2>
+					<h2>
+						<span>Claims<span>
+						${!stakeholder ? html`
+							<span class="price ${afford ? "" : "angry"}">
+								${constants.icons.resource}${stakingCost}
+							</span>
+						` : null}
+					</h2>
+					${!stakeholder ?
+						html`<p>You can stake this claim with a pawn.</p>`
+						: (stakeholder.team === myTeam)
+							? html`<p class=happy>✅ You are staking this claim.</p>`
+							: html`<p class=angry>❌ The enemy is staking this claim.</p>`}
+					${(claim.resource && claim.resource.stockpile <= 0)
+						? html`<p class=angry>Depleted, it's empty and provides no income.</p>`
+						: null}
 					${listify({
 						resource: claim.resource
-							&& `+${agent.claims.determineResourceClaimLevel(place, claim.resource)} income per turn (${claim.resource.stockpile} remains)`,
+							&& `+${agent.claims.getClaimIncome(claim).income} income per turn`,
+						stockpile: claim.resource?.stockpile,
 						watchtower: claim.watchtower
 							&& `watchtower ${claim.watchtower.range}`,
 						unlocks: claim.tech && Object.entries(claim.tech)
 							.filter(([,b]) => b)
 							.map(([name]) => name)
 							.join(" and "),
+						"currently staked by": stakeholder?.kind,
+						"staking cost": stakingCost || null,
 					})}
-					${stakeholder
-						? null
-						: html`<p>Unclaimed: nobody is staking this claim.</p>`}
-					${affordance(afford)}
 				` : null}
 			</div>
 		`
@@ -88,20 +100,18 @@ export const inspectorPanels = {
 		const afford = canAfford(team, info.archetype.cost)
 		return html`
 			<div class="panel roster">
-				<h1>Roster ${capitalize(selection.unitKind)} ${constants.icons.resource}${info.stats.cost}</h1>
+				<h1>
+					<span>Roster ${capitalize(selection.unitKind)}</span>
+					<span class="price ${afford ? "" : "angry"}">
+						${constants.icons.resource}${info.stats.cost}
+					</span>
+				</h1>
 				<p class=essay>${info.essay}</p>
-				${affordance(afford)}
 				${listify(info.stats)}
 				${cardify(info.cards)}
 			</div>
 		`
 	},
-}
-
-function affordance(afford: boolean) {
-	return afford
-		? html`<p class="can afford">✅ Can afford.</p>`
-		: html`<p class="cannot afford">❌ Cannot afford.</p>`
 }
 
 function listify(stats: Record<string, any>) {

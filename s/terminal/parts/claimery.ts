@@ -21,7 +21,7 @@ export class Claimery {
 		const d = this.#renderbin.disposable
 
 		for (const {place, tile} of agent.tiles.list()) {
-			const {resource, tech, watchtower} = tile.claim
+			const {resource, specialResource, tech, watchtower} = tile.claim
 			const position = agent.coordinator.toPosition(place)
 			const staked = !!agent.claims.getStakeholder(place)
 
@@ -44,8 +44,12 @@ export class Claimery {
 			}
 
 			if (resource) {
-				const level = agent.claims.determineResourceClaimLevel(place, resource)
+				const level = resource.level
 				emplace(indicators.claims.resource(level, staked))
+			}
+
+			if (specialResource) {
+				emplace(indicators.claims.resource(3, staked))
 			}
 
 			const scale = 0.6

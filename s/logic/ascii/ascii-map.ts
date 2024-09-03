@@ -49,6 +49,7 @@ export function asciiMap(map: MapSpec): GameInitial {
 			zoop(glyphs.claims.resource, () => defaultClaims.resource(tile, 1))
 			zoop(glyphs.claims.resource2, () => defaultClaims.resource(tile, 2))
 			zoop(glyphs.claims.resource3, () => defaultClaims.resource(tile, 3))
+			zoop(glyphs.claims.specialResource, () => defaultClaims.specialResource(tile))
 			zoop(glyphs.claims.watchtower, () => defaultClaims.watchtower(tile))
 			zoop(glyphs.claims.techKnight, () => defaultClaims.techKnight(tile))
 			zoop(glyphs.claims.techRook, () => defaultClaims.techRook(tile))

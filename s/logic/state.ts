@@ -57,12 +57,14 @@ export type GameConfig = {
 	time: TimeRules | null
 	startingResources: number
 	universalBasicIncome: number
+	resourceValue: number
+	specialResourceValue: number
 	unitArchetypes: UnitArchetypes
 	teams: InitialTeamInfo[]
 	costs: {
-		investment: number
 		staking: {
-			resource: number
+			resources: [number, number, number]
+			specialResource: number
 			watchtower: number
 			tech: Record<TechKind, number>
 		}
@@ -83,7 +85,6 @@ export type ArbiterState = {
 	initial: GameInitial
 	units: Unit[]
 	teams: FullTeamInfo[]
-	investments: Investment[]
 	context: GameContext
 	reminders: Reminders
 }
@@ -93,7 +94,6 @@ export type AgentState = {
 	initial: GameInitial
 	units: Unit[]
 	teams: (FullTeamInfo | LimitedTeamInfo)[]
-	investments: Investment[]
 	context: GameContext
 	reminders: Reminders
 }
@@ -151,15 +151,13 @@ export type TechKind = (
 	| "queen"
 )
 
-export type Investment = {
-	place: Vec2
-	count: number
-}
-
 export namespace Claim {
+	export type SpecialResource = {
+		stockpile: number
+	}
 	export type Resource = {
 		stockpile: number
-		startingLevel: 1 | 2 | 3
+		level: 1 | 2 | 3
 	}
 	export type Watchtower = {
 		range: number
@@ -190,16 +188,10 @@ export namespace Choice {
 		victimId: number
 	}
 
-	export type Investment = {
-		kind: "investment"
-		place: Vec2
-	}
-
 	export type Any = (
 		| Spawn
 		| Movement
 		| Attack
-		| Investment
 	)
 }
 
@@ -229,6 +221,7 @@ export type Tile = {
 
 export type TileClaim = {
 	resource: Claim.Resource | null
+	specialResource: Claim.SpecialResource | null
 	watchtower: Claim.Watchtower | null
 	tech: Claim.Tech | null
 }
@@ -244,8 +237,9 @@ export function makePlainBoardState(): BoardState {
 		step: false,
 		elevation: 1,
 		claim: {
-			resource: null,
 			watchtower: null,
+			resource: null,
+			specialResource: null,
 			tech: null,
 		}
 	}))

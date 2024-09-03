@@ -36,8 +36,13 @@ export class ClaimsHelper {
 				if (value)
 					cost += config.costs.staking.tech[key as TechKind]
 
-		if (claim.resource)
-			cost += config.costs.staking.resource
+		if (claim.resource) {
+			const level = claim.resource.level
+			cost += config.costs.staking.resources[level - 1]
+		}
+
+		if (claim.specialResource)
+			cost += config.costs.staking.specialResource
 
 		if (claim.watchtower)
 			cost += config.costs.staking.watchtower
@@ -45,9 +50,29 @@ export class ClaimsHelper {
 		return cost
 	}
 
-	determineResourceClaimLevel(place: Vec2, resource: Claim.Resource) {
-		const investment = this.state.investments.find(i => vec2.equal(i.place, place))
-		return resource.startingLevel + (investment?.count ?? 0)
+	getClaimIncome({resource, specialResource}: TileClaim) {
+		const {config} = this.state.initial
+		
+		const extractors: (() => void)[] = []
+		let income = 0
+
+		const extract = (container: {stockpile: number}, take: number) => {
+			const remaining = Math.max(0, container.stockpile - take)
+			const taken = container.stockpile - remaining
+			income += taken
+			extractors.push(() => { container.stockpile = remaining })
+		}
+
+		if (resource) {
+			extract(resource, resource.level * config.resourceValue)
+		}
+
+		if (specialResource) {
+			extract(specialResource, config.specialResourceValue)
+		}
+
+		const commitExtraction = () => extractors.forEach(fn => fn())
+		return {income, commitExtraction}
 	}
 
 	getStakedClaims(teamId: number) {
@@ -94,19 +119,23 @@ export class ClaimsHelper {
 		return tech
 	}
 
-	getIncome(teamId: number) {
-		const {state} = this
-		let income = state.initial.config.universalBasicIncome
+	getTeamIncome(teamId: number) {
+		const {config} = this.state.initial
 
-		for (const {claim, place} of this.getStakedClaims(teamId)) {
+		let totalIncome = config.universalBasicIncome
+		const extractors: (() => void)[] = []
+
+		for (const {claim} of this.getStakedClaims(teamId)) {
 			if (!claim.resource)
 				continue
 
-			const level = this.determineResourceClaimLevel(place, claim.resource)
-			income += level
+			const {income, commitExtraction} = this.getClaimIncome(claim)
+			totalIncome += income
+			extractors.push(commitExtraction)
 		}
 
-		return income
+		const commitExtraction = () => extractors.forEach(fn => fn())
+		return {income: totalIncome, commitExtraction}
 	}
 }
 

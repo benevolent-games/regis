@@ -1,6 +1,6 @@
 
-- [ ] resource depletion
 - [ ] reveal enemies on attack or block
+- [x] resource depletion
 - [x] inspector ui
 - [x] linear health bars
 

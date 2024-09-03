@@ -14,6 +14,7 @@ export const glyphs = {
 		resource: "$",
 		resource2: "$$",
 		resource3: "$$$",
+		specialResource: "S",
 		watchtower: "*",
 		techKnight: "k",
 		techRook: "r",

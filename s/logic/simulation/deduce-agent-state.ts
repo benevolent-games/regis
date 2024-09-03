@@ -19,7 +19,6 @@ export function deduceAgentState(
 		initial: state.initial,
 		context: state.context,
 		units: censorUnits(state.units, vision),
-		investments: state.investments,
 		teams: state.teams.map(
 			(team, id) => (id === teamId)
 				? team
