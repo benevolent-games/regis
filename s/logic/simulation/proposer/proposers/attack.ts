@@ -31,7 +31,8 @@ export const proposeAttack = proposerFn(
 		const lethal = applyDamage(agent, victim, attack.damage)
 		if (lethal)
 			agent.deleteUnit(victim.id)
-		chalkboard.reveal(attacker.place)
+		if (victim.team !== null)
+			chalkboard.reveal(attacker.place)
 	}
 })
 
