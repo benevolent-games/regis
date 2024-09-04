@@ -96,6 +96,10 @@ export class Planner {
 				target,
 				selected,
 				on: {
+					heal: considered => makeIndicator(considered, {
+						action: () => this.#instanceIndicator(indicators.heal.action, place),
+						pattern: () => this.#instanceIndicator(indicators.heal.pattern, place),
+					}),
 					spawn: considered => makeIndicator(considered, {
 						action: () => this.#instanceIndicator(indicators.liberty(null).action, place),
 						pattern: () => this.#instanceIndicator(indicators.liberty(null).pattern, place),
@@ -117,6 +121,7 @@ export class Planner {
 			target: Cell | null
 			selected: Cell | null
 			on: {
+				heal: (r: ConsiderationResult) => boolean
 				spawn: (r: ConsiderationResult) => boolean
 				attack: (r: ConsiderationResult) => boolean
 				movement: (r: ConsiderationResult) => boolean
@@ -141,6 +146,7 @@ export class Planner {
 			else if (selected && selected.kind === "tile") {
 				doFirstValidThing([
 					() => on.attack(considerations.attack(selected.place, target.place)),
+					() => on.heal(considerations.heal(selected.place, target.place)),
 					() => on.movement(considerations.movement(selected.place, target.place)),
 				])
 			}

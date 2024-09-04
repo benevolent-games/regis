@@ -20,6 +20,7 @@ export function handlePrimaryClick(options: {
 		target,
 		selected,
 		on: {
+			heal: actualize(() => {}),
 			spawn: actualize(() => {}),
 			attack: actualize(() => { selectacon.selection.value = target }),
 			movement: actualize(() => { selectacon.selection.value = target }),

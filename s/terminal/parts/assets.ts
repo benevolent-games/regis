@@ -88,6 +88,11 @@ export class IndicatorsGlb extends Glb {
 		pattern: this.instancer(`attack-pattern`),
 	})
 
+	heal = ({
+		action: this.instancer(`liberty-action-neutral`),
+		pattern: this.instancer(`liberty-pattern-neutral`),
+	})
+
 	claims = {
 		corners: (on: boolean) => this.instance(`claim-${on ? "on" : "off"}`),
 		resource: (level: number) => this.instance(`claim-resource${level}`),
