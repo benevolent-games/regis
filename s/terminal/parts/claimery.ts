@@ -89,6 +89,9 @@ export class Claimery {
 
 			if (tech?.queen)
 				emplace(indicators.claims.queen(), scale)
+
+			if (tech?.elephant)
+				emplace(indicators.claims.elephant(), scale)
 		}
 	}
 

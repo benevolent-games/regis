@@ -9,5 +9,6 @@ export const unitEssays = {
 	rook: "Stalwart defender, strong but slow, can shoot over cliffs.",
 	bishop: "Archer, deals damage at a distance, but vulnerable if unprotected.",
 	queen: "Specialty unit, can see up cliffs for bishops.",
+	elephant: "Rampaging beast, no chains can bind him...",
 } satisfies Record<UnitKind, string>
 

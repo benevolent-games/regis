@@ -20,6 +20,7 @@ export const glyphs = {
 		techRook: "r",
 		techBishop: "b",
 		techQueen: "q",
+		techElephant: "e",
 		techBasic: "B",
 		techAdvanced: "A",
 	},

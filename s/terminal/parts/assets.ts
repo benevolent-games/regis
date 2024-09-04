@@ -66,6 +66,7 @@ export class UnitsGlb extends Glb {
 		.set("knight", teamId => this.instance(`unit-team${this.#team(teamId)}-knight`))
 		.set("rook", teamId => this.instance(`unit-team${this.#team(teamId)}-rook`))
 		.set("pawn", teamId => this.instance(`unit-team${this.#team(teamId)}-pawn`))
+		.set("elephant", teamId => this.instance(`unit-team${this.#team(teamId)}-elephant`))
 }
 
 export class IndicatorsGlb extends Glb {
@@ -95,6 +96,7 @@ export class IndicatorsGlb extends Glb {
 		rook: this.instancer(`claim-rook`),
 		bishop: this.instancer(`claim-bishop`),
 		queen: this.instancer(`claim-queen`),
+		elephant: this.instancer(`claim-elephant`),
 		watchtower: this.instancer(`claim-watchtower`),
 	}
 }

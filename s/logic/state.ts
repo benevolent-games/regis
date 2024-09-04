@@ -145,6 +145,7 @@ export type TechKind = (
 	| "rook"
 	| "bishop"
 	| "queen"
+	| "elephant"
 )
 
 export namespace Claim {
@@ -305,5 +306,6 @@ export type UnitKind = (
 	| "knight"
 	| "rook"
 	| "pawn"
+	| "elephant"
 )
 

@@ -25,6 +25,7 @@ export function defaultGameConfig(): GameConfig {
 					rook: 4,
 					bishop: 4,
 					queen: 0,
+					elephant: 12,
 				},
 			},
 		},
@@ -48,6 +49,7 @@ export function defaultRoster(): Roster {
 		knight: 99,
 		rook: 99,
 		pawn: 99,
+		elephant: 99,
 	}
 }
 
@@ -207,6 +209,31 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		},
 		attack: {
 			cap: 1,
+			damage: 6,
+			range: 1,
+			verticality: "flat",
+		},
+	},
+
+
+	elephant: {
+		cost: 32,
+		health: 12,
+		actionCap: 2,
+		stakeholder: false,
+		spawning: null,
+		vision: {
+			range: 2,
+			verticality: "downwards",
+		},
+		move: {
+			cap: 1,
+			range: 2,
+			chebyshev: false,
+			verticality: "flat",
+		},
+		attack: {
+			cap: 2,
 			damage: 6,
 			range: 1,
 			verticality: "flat",

@@ -6,6 +6,7 @@ const basetech: Claim.Tech = {
 	rook: false,
 	bishop: false,
 	queen: false,
+	elephant: false,
 }
 
 export const defaultClaims = {
@@ -54,6 +55,13 @@ export const defaultClaims = {
 		tile.claim.tech = {
 			...basetech,
 			queen: true,
+		}
+	},
+
+	techElephant: (tile: Tile) => {
+		tile.claim.tech = {
+			...basetech,
+			elephant: true,
 		}
 	},
 

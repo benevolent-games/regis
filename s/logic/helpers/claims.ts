@@ -1,5 +1,5 @@
 
-import {Vec2, vec2} from "@benev/toolbox"
+import {Vec2} from "@benev/toolbox"
 
 import {TilesHelper} from "./tiles.js"
 import {UnitsHelper} from "./units.js"
@@ -105,6 +105,7 @@ export class ClaimsHelper {
 			rook: false,
 			bishop: false,
 			queen: false,
+			elephant: false,
 		}
 
 		for (const {claim} of this.getStakedClaims(teamId)) {

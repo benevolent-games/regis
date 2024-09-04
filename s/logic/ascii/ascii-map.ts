@@ -55,6 +55,7 @@ export function asciiMap(map: MapSpec): GameInitial {
 			zoop(glyphs.claims.techRook, () => defaultClaims.techRook(tile))
 			zoop(glyphs.claims.techBishop, () => defaultClaims.techBishop(tile))
 			zoop(glyphs.claims.techQueen, () => defaultClaims.techQueen(tile))
+			zoop(glyphs.claims.techElephant, () => defaultClaims.techElephant(tile))
 			zoop(glyphs.claims.techBasic, () => defaultClaims.techBasic(tile))
 			zoop(glyphs.claims.techAdvanced, () => defaultClaims.techAdvanced(tile))
 
