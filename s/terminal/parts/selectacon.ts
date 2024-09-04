@@ -30,7 +30,7 @@ export class Selectacon {
 	hover = ref<Cell | null>(null, {dedupe: true})
 	selection = ref<Cell | null>(null, {dedupe: true})
 
-	#trashbin = new Trashbin()
+	#bin = new Trashbin()
 
 	constructor(private options: {
 			agent: Agent
@@ -41,42 +41,40 @@ export class Selectacon {
 			turnTracker: TurnTracker
 		}) {
 
-		this.#trashbin.disposer(this.hover.on(() => this.render()))
-		this.#trashbin.disposer(this.selection.on(() => this.render()))
+		this.hover.on(() => this.render())
+		this.selection.on(() => this.render())
 	}
 
 	performHover(p: Pointing | null) {
 		this.hover.value = p ? this.pick(p) : null
 	}
 
-	#hoverbin = new Trashbin()
-	#selectbin = new Trashbin()
-
 	#renderHover() {
+		this.#bin.dispose()
+
 		const {assets, turnTracker} = this.options
-		this.#hoverbin.dispose()
+		const d = this.#bin.disposable
 		const cell = this.hover.value
 
 		if (cell) {
-			const instance = assets.indicators.hover(turnTracker.teamId)
-			this.#hoverbin.disposable(instance)
+			const instance = d(assets.indicators.hover(turnTracker.teamId))
 			instance.position.set(...cell.position)
 		}
 	}
 
 	#renderSelection() {
 		const {assets} = this.options
-		this.#selectbin.dispose()
+		const d = this.#bin.disposable
 		const cell = this.selection.value
 
 		if (cell) {
-			const instance = assets.indicators.selection()
+			const instance = d(assets.indicators.selection())
 			instance.position.set(...cell.position)
-			this.#selectbin.disposable(instance)
 		}
 	}
 
 	render() {
+		this.#bin.dispose()
 		this.#renderHover()
 		this.#renderSelection()
 	}
@@ -122,10 +120,7 @@ export class Selectacon {
 	dispose() {
 		this.hover.dispose()
 		this.selection.dispose()
-
-		this.#trashbin.dispose()
-		this.#hoverbin.dispose()
-		this.#selectbin.dispose()
+		this.#bin.dispose()
 	}
 }
 

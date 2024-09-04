@@ -68,7 +68,7 @@ export class Rosters {
 				return () => {}
 
 			const {size} = constants.block
-			const instance = d(assets.units.unit.get(unitKind)!(teamId))
+			const instance = d(assets.units.unit[unitKind](teamId).normal())
 			const block = d(MeshBuilder.CreateBox("block", {size}, world.scene))
 
 			const x = (index - offset) * constants.block.size

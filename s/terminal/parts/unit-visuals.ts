@@ -1,12 +1,12 @@
 
+import {loop} from "@benev/toolbox"
 import {Trashbin} from "@benev/slate"
 
 import {Assets} from "./assets.js"
 import {Agent} from "../../logic/agent.js"
 import {UnitKind} from "../../logic/state.js"
-import { getBestHealthbar } from "./healthbars.js"
-import { loop } from "@benev/toolbox"
-import { getChildProps } from "./babylon-helpers.js"
+import {getBestHealthbar} from "./healthbars.js"
+import {getChildProps} from "./babylon-helpers.js"
 
 export const unitKindsWithHealthRing: UnitKind[] = [
 	"king",
@@ -15,6 +15,7 @@ export const unitKindsWithHealthRing: UnitKind[] = [
 	"rook",
 	"bishop",
 	"queen",
+	"elephant",
 ]
 
 export class UnitVisuals {
@@ -29,10 +30,7 @@ export class UnitVisuals {
 
 		// instantiate units
 		for (const unit of agent.units.list()) {
-			const instancer = assets.units.unit.get(unit.kind)
-			if (!instancer)
-				throw new Error(`cannot spawn unknown unit kind "${unit.kind}"`)
-			const instance = d(instancer(unit.team))
+			const instance = d(assets.units.unit[unit.kind](unit.team).normal())
 			instance.position.set(...agent.coordinator.toPosition(unit.place))
 		}
 

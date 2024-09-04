@@ -1,7 +1,7 @@
 
 import {Map2} from "../../tools/map2.js"
 import {babyloid, Meshoid, Prop} from "@benev/toolbox"
-import {AssetContainer, PBRMaterial, TransformNode} from "@babylonjs/core"
+import {AssetContainer, InstancedMesh, PBRMaterial, TransformNode} from "@babylonjs/core"
 
 export class Glb {
 	readonly props = new Map2<string, Prop>()
@@ -29,6 +29,15 @@ export class Glb {
 		for (const node of [...container.meshes, ...container.transformNodes])
 			if (!node.name.includes("_primitive"))
 				this.props.set(node.name, node)
+	}
+
+	getSourceMesh(name: string) {
+		const meshoid = this.meshes.get(name)
+		if (meshoid) {
+			return meshoid instanceof InstancedMesh
+				? meshoid.sourceMesh
+				: meshoid
+		}
 	}
 
 	instancer(name: string) {

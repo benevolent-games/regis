@@ -3,6 +3,7 @@ import {Assets} from "../parts/assets.js"
 import {Agent} from "../../logic/agent.js"
 import {Selectacon} from "../parts/selectacon.js"
 import {Choice, Turn} from "../../logic/state.js"
+import {SpawnGhostRenderer} from "./parts/spawn-ghost-renderer.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 import {Proposers} from "../../logic/simulation/proposer/make-proposers.js"
 
@@ -11,6 +12,7 @@ export type PlannerOptions = {
 	assets: Assets
 	selectacon: Selectacon
 	turnTracker: TurnTracker
+	spawnGhosts: SpawnGhostRenderer
 	submitTurn: (turn: Turn) => void
 }
 

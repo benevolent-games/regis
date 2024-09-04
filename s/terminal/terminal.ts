@@ -17,6 +17,7 @@ import {FogFenceRenderer} from "./parts/fog-of-war.js"
 import {setupPreviewAgent} from "./parts/preview-agent.js"
 import {TerminalActions} from "./parts/terminal-actions.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
+import { SpawnGhostRenderer } from "./planner/parts/spawn-ghost-renderer.js"
 
 export type Terminal = Awaited<ReturnType<typeof makeGameTerminal>>
 
@@ -52,7 +53,8 @@ export async function makeGameTerminal(
 	const claimery = d(new Claimery({agent, assets}))
 	const fogFence = d(new FogFenceRenderer({agent: baseAgent, assets, turnTracker}))
 
-	const planner = d(new Planner({agent, assets, selectacon, turnTracker, submitTurn}))
+	const spawnGhosts = new SpawnGhostRenderer({assets, selectacon})
+	const planner = d(new Planner({agent, assets, selectacon, turnTracker, spawnGhosts, submitTurn}))
 	d(new Hovering({world, selectacon}))
 
 	const actions: TerminalActions = {
@@ -79,6 +81,9 @@ export async function makeGameTerminal(
 
 	dr(selectacon.selection.on(() => planner.render()))
 
+	dr(selectacon.hover.on(() => spawnGhosts.render()))
+	dr(selectacon.selection.on(() => spawnGhosts.render()))
+
 	function render() {
 		rosters.render()
 		selectacon.render()
@@ -86,6 +91,7 @@ export async function makeGameTerminal(
 		planner.render()
 		claimery.render()
 		fogFence.render()
+		spawnGhosts.render()
 	}
 
 	tiler.render()

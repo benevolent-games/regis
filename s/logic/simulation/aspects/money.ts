@@ -12,11 +12,5 @@ export function subtractResources(state: AgentState, teamId: number, cost: numbe
 
 	if ("resources" in team)
 		team.resources -= cost
-
-	// if (canAfford(team, cost)) {
-	// 	team.resources -= cost
-	// 	return true
-	// }
-	// return false
 }
 

@@ -4,6 +4,11 @@ import {AssetContainer, TransformNode} from "@babylonjs/core"
 import {Glb} from "./glb.js"
 import {World} from "./world.js"
 import {UnitKind} from "../../logic/state.js"
+import { ob } from "@benev/slate"
+import { defaultUnitArchetypes } from "../../logic/data.js"
+import { need } from "../../tools/need.js"
+import { Map2 } from "../../tools/map2.js"
+import { getTopMeshes } from "./babylon-helpers.js"
 
 export type AssetUrls = {
 	board: string
@@ -50,30 +55,48 @@ export class UnitsGlb extends Glb {
 		super(container)
 	}
 
-	#team(teamId: null | number) {
-		return teamId === null
-			? "null"
-			: (teamId + 1).toString()
-	}
-
 	ring = () => this.instance("ring")
 
-	unit = new Map<UnitKind, (teamId: null | number) => TransformNode>()
-		.set("obstacle", () => this.themeGlb.obstacle())
-		.set("king", teamId => this.instance(`unit-team${this.#team(teamId)}-king`))
-		.set("queen", teamId => this.instance(`unit-team${this.#team(teamId)}-queen`))
-		.set("bishop", teamId => this.instance(`unit-team${this.#team(teamId)}-bishop`))
-		.set("knight", teamId => this.instance(`unit-team${this.#team(teamId)}-knight`))
-		.set("rook", teamId => this.instance(`unit-team${this.#team(teamId)}-rook`))
-		.set("pawn", teamId => this.instance(`unit-team${this.#team(teamId)}-pawn`))
-		.set("elephant", teamId => this.instance(`unit-team${this.#team(teamId)}-elephant`))
+	unit = (() => {
+		console.log("UNITS", [...this.props.keys()])
+
+		const prepare = (kind: UnitKind) => {
+			const teamly = (teamId: number) => {
+				const name = `unit-team${teamId + 1}-${kind}`
+				const normalProp = this.props.require(name)
+				const fadedProp = normalProp.clone(normalProp.name, null)!
+				getTopMeshes(fadedProp).forEach(mesh => {
+					mesh.visibility = 0.3
+					this.container.scene.removeMesh(mesh, true)
+				})
+				return {
+					normal: () => Glb.instantiate(normalProp),
+					faded: () => Glb.instantiate(fadedProp)
+				}
+			}
+			const map = new Map2<number, ReturnType<typeof teamly>>()
+			map.set(0, teamly(0))
+			map.set(1, teamly(1))
+			return (teamId: number | null) => map.require(teamId!)
+		}
+
+		return {
+			obstacle: (_teamId: number | null) => ({
+				normal: this.themeGlb.obstacle,
+				faded: this.themeGlb.obstacle,
+			}),
+			king: prepare("king"),
+			queen: prepare("queen"),
+			bishop: prepare("bishop"),
+			knight: prepare("knight"),
+			rook: prepare("rook"),
+			pawn: prepare("pawn"),
+			elephant: prepare("elephant"),
+		} satisfies Record<UnitKind, any>
+	})()
 }
 
 export class IndicatorsGlb extends Glb {
-	lol = (() => {
-		console.log([...this.props.keys()])
-	})()
-
 	aura = this.instancer("aura")
 	selection = this.instancer(`selected`)
 	hover = (team: number | null) => this.instance(`hover-${teamName(team)}`)

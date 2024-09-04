@@ -81,7 +81,9 @@ export class Planner {
 
 	render() {
 		this.#renderbin.dispose()
-		const {agent, assets, selectacon, turnTracker} = this.options
+		const {agent, assets, selectacon, turnTracker, spawnGhosts} = this.options
+
+		spawnGhosts.resetPossibleGhosts()
 		const {indicators} = assets
 		const selected = selectacon.selection.value
 
@@ -111,7 +113,15 @@ export class Planner {
 						pattern: () => this.#instanceIndicator(indicators.heal.pattern, place),
 					}),
 					spawn: considered => makeIndicator(considered, {
-						action: () => this.#instanceIndicator(indicators.liberty(libertyTeam).action, place),
+						action: () => {
+							this.#instanceIndicator(indicators.liberty(libertyTeam).action, place)
+							if (selected?.kind === "roster")
+								spawnGhosts.setPossibleGhost({
+									place,
+									teamId: turnTracker.teamId,
+									unitKind: selected.unitKind,
+								})
+						},
 						pattern: () => this.#instanceIndicator(indicators.liberty(libertyTeam).pattern, place),
 					}),
 					attack: considered => makeIndicator(considered, {
