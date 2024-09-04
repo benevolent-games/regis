@@ -81,9 +81,15 @@ export class Planner {
 
 	render() {
 		this.#renderbin.dispose()
-		const {agent, assets, selectacon} = this.options
+		const {agent, assets, selectacon, turnTracker} = this.options
 		const {indicators} = assets
 		const selected = selectacon.selection.value
+
+		const selectedTeam = (
+			(selected?.kind === "tile")
+				? (agent.units.at(selected.place)?.team ?? null)
+				: selected?.teamId ?? null
+		)
 
 		for (const {place} of agent.tiles.list()) {
 			const target: TileCell = {
@@ -91,6 +97,10 @@ export class Planner {
 				kind: "tile",
 				position: agent.coordinator.toPosition(place),
 			}
+
+			const libertyTeam = turnTracker.ourTurn
+				? selectedTeam
+				: turnTracker.teamId
 
 			this.navigateActionSpace({
 				target,
@@ -101,16 +111,16 @@ export class Planner {
 						pattern: () => this.#instanceIndicator(indicators.heal.pattern, place),
 					}),
 					spawn: considered => makeIndicator(considered, {
-						action: () => this.#instanceIndicator(indicators.liberty(null).action, place),
-						pattern: () => this.#instanceIndicator(indicators.liberty(null).pattern, place),
+						action: () => this.#instanceIndicator(indicators.liberty(libertyTeam).action, place),
+						pattern: () => this.#instanceIndicator(indicators.liberty(libertyTeam).pattern, place),
 					}),
 					attack: considered => makeIndicator(considered, {
 						action: () => this.#instanceIndicator(indicators.attack.action, place),
 						pattern: () => this.#instanceIndicator(indicators.attack.pattern, place),
 					}),
 					movement: considered => makeIndicator(considered, {
-						action: () => this.#instanceIndicator(indicators.liberty(null).action, place),
-						pattern: () => this.#instanceIndicator(indicators.liberty(null).pattern, place),
+						action: () => this.#instanceIndicator(indicators.liberty(libertyTeam).action, place),
+						pattern: () => this.#instanceIndicator(indicators.liberty(libertyTeam).pattern, place),
 					}),
 				},
 			})

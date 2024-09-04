@@ -88,7 +88,7 @@ export const inspectorPanels = {
 							.map(([name]) => name)
 							.join(" and "),
 						"currently staked by": stakeholder?.kind,
-						"staking cost": stakingCost || null,
+						"staking cost": stakingCost,
 					})}
 				` : null}
 			</div>

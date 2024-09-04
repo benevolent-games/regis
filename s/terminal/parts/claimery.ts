@@ -51,8 +51,8 @@ export class Claimery {
 			const unit = agent.units.at(place)
 			const dry = resource && resource.stockpile <= 0
 			const solid = resource
-				? !dry
-				: true
+				? staked && !dry
+				: staked
 
 			const showCorners = hasClaim && !!(unit || dry)
 
@@ -64,7 +64,7 @@ export class Claimery {
 			// stickers
 			//
 
-			const scale = 0.6
+			const scale = 1
 
 			if (resource) {
 				const level = resource.level
