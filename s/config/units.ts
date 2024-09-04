@@ -1,7 +1,7 @@
 
-import {UnitSpec} from "./units/unit-types.js"
+import {UnitConfig} from "./units/unit-types.js"
 
-export const unitSpecs = {
+export const unitConfigs = {
 	obstacle: {
 		rendering: {algo: "obstacle"},
 		archetype: {
@@ -89,5 +89,5 @@ export const unitSpecs = {
 		},
 	},
 
-} satisfies Record<string, UnitSpec>
+} satisfies Record<string, UnitConfig>
 
