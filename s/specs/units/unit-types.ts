@@ -1,7 +1,7 @@
 
-import { deep, ob } from "@benev/slate"
+import {deep, ob} from "@benev/slate"
+import {unitSpecs} from "../units.js"
 import {Archetype} from "./archetype.js"
-import {unitSpecs} from "../unit-specs.js"
 import {UnitRendering} from "./rendering.js"
 
 export type UnitSpec = {
