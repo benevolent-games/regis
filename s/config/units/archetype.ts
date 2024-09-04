@@ -6,6 +6,10 @@ export type Archetypes = Record<string, Archetype>
 export type Archetype = Partial<Aspects>
 
 export type Aspects = {
+	explained: {
+		sentence: string
+	}
+
 	mortal: {
 		health: number
 	}

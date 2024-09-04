@@ -7,6 +7,7 @@ export const unitsConfig = deep.freeze({
 	obstacle: {
 		rendering: {algo: "obstacle"},
 		archetype: {
+			explained: {sentence: "Destructible thing that blocks a tile."},
 			mortal: {health: 12},
 		},
 	},
@@ -14,6 +15,7 @@ export const unitsConfig = deep.freeze({
 	king: {
 		rendering: {algo: "normal"},
 		archetype: {
+			explained: {sentence: "Game ends when he dies, can see up cliffs, acts as a spawnpoint."},
 			mortal: {health: 5},
 			mobile: {range: {steps: 1}},
 			sighted: {range: {steps: 1}, verticality: {above: true, below: true}},
@@ -25,6 +27,7 @@ export const unitsConfig = deep.freeze({
 	queen: {
 		rendering: {algo: "normal"},
 		archetype: {
+			explained: {sentence: "Specialist scout, medic, spawnpoint."},
 			mortal: {health: 4},
 			armed: {damage: 1, range: {steps: 1}},
 			mobile: {range: {steps: 3, kind: "manhattan"}},
@@ -38,6 +41,7 @@ export const unitsConfig = deep.freeze({
 	bishop: {
 		rendering: {algo: "normal"},
 		archetype: {
+			explained: {sentence: "Archer, deals damage at a distance, but vulnerable if unprotected."},
 			mortal: {health: 2},
 			armed: {damage: 1, range: {steps: 2}},
 			mobile: {range: {steps: 1, kind: "manhattan"}},
@@ -49,6 +53,7 @@ export const unitsConfig = deep.freeze({
 	knight: {
 		rendering: {algo: "normal"},
 		archetype: {
+			explained: {sentence: "Aggressive cavalry, strong against pawns and bishops."},
 			mortal: {health: 3},
 			armed: {damage: 2, range: {steps: 1}},
 			mobile: {range: {steps: 2, kind: "manhattan"}},
@@ -60,6 +65,7 @@ export const unitsConfig = deep.freeze({
 	rook: {
 		rendering: {algo: "normal"},
 		archetype: {
+			explained: {sentence: "Stalwart defender, strong but slow, can shoot over cliffs."},
 			mortal: {health: 7},
 			armed: {damage: 2, range: {steps: 1}, verticality: {above: true, below: true}},
 			mobile: {range: {steps: 1, kind: "manhattan"}},
@@ -71,6 +77,7 @@ export const unitsConfig = deep.freeze({
 	pawn: {
 		rendering: {algo: "normal"},
 		archetype: {
+			explained: {sentence: "Peasant worker, can stake claims, formidible in numbers."},
 			mortal: {health: 3},
 			armed: {damage: 1, range: {steps: 1}},
 			mobile: {range: {steps: 2, kind: "manhattan"}},
@@ -83,6 +90,7 @@ export const unitsConfig = deep.freeze({
 	elephant: {
 		rendering: {algo: "normal"},
 		archetype: {
+			explained: {sentence: "Rampaging beast, no chains can bind him..."},
 			mortal: {health: 12},
 			armed: {damage: 4, range: {steps: 1}, multitasking: {repeats: 2, focusFire: true, whileMoving: true}},
 			mobile: {range: {steps: 2, kind: "manhattan"}},
