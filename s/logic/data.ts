@@ -215,7 +215,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		},
 		attack: {
 			cap: 1,
-			damage: 6,
+			damage: 1,
 			range: 1,
 			verticality: "flat",
 		},
