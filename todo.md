@@ -1,5 +1,5 @@
 
-- [ ] queen healing ability
+- [x] queen healing ability
 - [ ] attack arcs
 - [ ] undo one action
 - [ ] spawn-ghosts

@@ -152,6 +152,7 @@ function generalUnitInfo(agent: Agent, unitKind: UnitKind) {
 		move: arc.move,
 		attack: arc.attack,
 		vision: arc.vision,
+		heal: arc.heal,
 	}
 
 	return {
@@ -204,6 +205,7 @@ function livingUnitInfo(agent: Agent, unit: Unit, myTeam: number, freedom: UnitF
 			const can: string[] = []
 			if (report.canMove) can.push("move")
 			if (report.canAttack) can.push("attack")
+			if (report.canHeal) can.push("heal")
 			if (can.length > 0)
 				return `can ${can.join(", ")}`
 		}

@@ -185,10 +185,17 @@ export namespace Choice {
 		victimId: number
 	}
 
+	export type Heal = {
+		kind: "heal"
+		doctorId: number
+		patientId: number
+	}
+
 	export type Any = (
 		| Spawn
 		| Movement
 		| Attack
+		| Heal
 	)
 }
 
@@ -269,7 +276,7 @@ export const verticality = {
 export type Verticality = keyof typeof verticality
 
 export function getVerticalCapability(v: Verticality) {
-	return verticality[v]
+	return verticality[v] as VerticalCapability
 }
 
 export type UnitArchetype = {
@@ -294,6 +301,12 @@ export type UnitArchetype = {
 		cap: number
 		damage: number
 		range: number
+		verticality: Verticality
+	}
+	heal: null | {
+		cap: number
+		range: number
+		amount: number
 		verticality: Verticality
 	}
 }

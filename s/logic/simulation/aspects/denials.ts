@@ -56,6 +56,12 @@ export class AttackDenial extends HardDenial {
 	}
 }
 
+export class HealDenial extends HardDenial {
+	constructor(reason: string) {
+		super(`heal denied: ${reason}`)
+	}
+}
+
 export class InvestmentDenial extends HardDenial {
 	constructor(reason: string) {
 		super(`investment denied: ${reason}`)

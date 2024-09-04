@@ -5,6 +5,7 @@ import {UnitArchetype} from "../../state.js"
 export type ActionRecord = {
 	moves: number
 	attacks: number
+	heals: number
 	spawning: boolean
 }
 
@@ -12,6 +13,7 @@ export type FreedomReport = {
 	canAct: boolean
 	canMove: boolean
 	canAttack: boolean
+	canHeal: boolean
 }
 
 export class UnitFreedom {
@@ -23,18 +25,20 @@ export class UnitFreedom {
 		return mapGuarantee(this.#map, id, () => ({
 			moves: 0,
 			attacks: 0,
+			heals: 0,
 			spawning: false,
 		}))
 	}
 
 	report(id: number, archetype: UnitArchetype): FreedomReport {
-		const {moves, attacks, spawning} = this.#obtain(id)
+		const {moves, attacks, heals, spawning} = this.#obtain(id)
 		const sum = moves + attacks
-		const action = !spawning && sum < archetype.actionCap
+		const canAct = !spawning && sum < archetype.actionCap
 		return {
-			canAct: action,
-			canMove: action && moves < (archetype.move?.cap ?? 0),
-			canAttack: action && attacks < (archetype.attack?.cap ?? 0),
+			canAct,
+			canMove: canAct && moves < (archetype.move?.cap ?? 0),
+			canAttack: canAct && attacks < (archetype.attack?.cap ?? 0),
+			canHeal: canAct && heals < (archetype.heal?.cap ?? 0),
 		}
 	}
 
@@ -51,6 +55,11 @@ export class UnitFreedom {
 	countSpawning(id: number) {
 		const record = this.#obtain(id)
 		record.spawning = true
+	}
+
+	countHeal(id: number) {
+		const record = this.#obtain(id)
+		record.heals += 1
 	}
 
 	clear() {

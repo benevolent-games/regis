@@ -3,8 +3,8 @@ import {vec2} from "@benev/toolbox"
 import {proposerFn} from "../types.js"
 import {Choice} from "../../../state.js"
 import {isValidStep} from "../../aspects/navigation.js"
-import {canAfford, subtractResources} from "../../aspects/money.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
+import {canAfford, subtractResources} from "../../aspects/money.js"
 import {GameOverDenial, MovementDenial, WrongTeamDenial} from "../../aspects/denials.js"
 
 export const proposeMovement = proposerFn(

@@ -65,6 +65,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		vision: null,
 		move: null,
 		attack: null,
+		heal: null,
 	},
 
 	king: {
@@ -91,6 +92,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			range: 1,
 			verticality: "flat",
 		},
+		heal: null,
 	},
 
 	pawn: {
@@ -115,6 +117,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			range: 1,
 			verticality: "flat",
 		},
+		heal: null,
 	},
 
 	knight: {
@@ -139,6 +142,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			range: 1,
 			verticality: "flat",
 		},
+		heal: null,
 	},
 
 	rook: {
@@ -163,6 +167,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			range: 1,
 			verticality: "everywhere",
 		},
+		heal: null,
 	},
 
 	bishop: {
@@ -187,6 +192,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			range: 2,
 			verticality: "everywhere",
 		},
+		heal: null,
 	},
 
 	queen: {
@@ -213,8 +219,13 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			range: 1,
 			verticality: "flat",
 		},
+		heal: {
+			cap: 1,
+			amount: 1,
+			range: 1,
+			verticality: "flat",
+		},
 	},
-
 
 	elephant: {
 		cost: 32,
@@ -238,6 +249,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 			range: 1,
 			verticality: "flat",
 		},
+		heal: null,
 	},
 })
 
