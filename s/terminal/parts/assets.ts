@@ -4,7 +4,6 @@ import {AssetContainer, TransformNode} from "@babylonjs/core"
 import {Glb} from "./glb.js"
 import {World} from "./world.js"
 import {UnitKind} from "../../logic/state.js"
-import {getTopMeshes} from "./babylon-helpers.js"
 
 export type AssetUrls = {
 	board: string
@@ -19,9 +18,9 @@ export class Assets {
 			world.loadContainer(urls.units),
 			world.loadContainer(urls.indicators),
 		])
+		const indicatorsGlb = new IndicatorsGlb(indicatorsContainer)
 		const boardGlb = new BoardGlb(boardContainer)
 		const unitsGlb = new UnitsGlb(unitsContainer, boardGlb)
-		const indicatorsGlb = new IndicatorsGlb(indicatorsContainer)
 		return new this(boardGlb, unitsGlb, indicatorsGlb)
 	}
 
@@ -70,25 +69,39 @@ export class UnitsGlb extends Glb {
 }
 
 export class IndicatorsGlb extends Glb {
+	lol = (() => {
+		console.log([...this.props.keys()])
+	})()
+
 	aura = this.instancer("aura")
 	selection = this.instancer(`selected`)
-	libertyAction = this.instancer(`liberty-action`)
-	libertyPattern = this.instancer(`liberty-pattern`)
-	attackAction = this.instancer(`attack`)
-	attackPattern = this.instancer(`attack-pattern`)
-	hover = (teamId: number) => this.instance(`hover-team${teamId + 1}`)
+	hover = (team: number | null) => this.instance(`hover-${teamName(team)}`)
+
+	liberty = (team: number | null) => ({
+		action: this.instancer(`liberty-action-${teamName(team)}`),
+		pattern: this.instancer(`liberty-pattern-${teamName(team)}`),
+	})
+
+	attack = ({
+		action: this.instancer(`attack`),
+		pattern: this.instancer(`attack-pattern`),
+	})
 
 	claims = {
-		resource: (level: number, on = false) => this.instance(`resource${level}-${onOff(on)}`),
-		knight: (on = false) => this.instance(`claim-knight-${onOff(on)}`),
-		rook: (on = false) => this.instance(`claim-rook-${onOff(on)}`),
-		bishop: (on = false) => this.instance(`claim-bishop-${onOff(on)}`),
-		queen: (on = false) => this.instance(`claim-queen-${onOff(on)}`),
-		watchtower: (on = false) => this.instance(`claim-watchtower-${onOff(on)}`),
+		corners: (on: boolean) => this.instance(`claim-${on ? "on" : "off"}`),
+		resource: (level: number) => this.instance(`claim-resource${level}`),
+		specialResource: this.instancer(`claim-special-resource`),
+		knight: this.instancer(`claim-knight`),
+		rook: this.instancer(`claim-rook`),
+		bishop: this.instancer(`claim-bishop`),
+		queen: this.instancer(`claim-queen`),
+		watchtower: this.instancer(`claim-watchtower`),
 	}
 }
 
-function onOff(on: boolean) {
-	return on ? "on" : "off"
+function teamName(team: number | null) {
+	return team === null
+		? "neutral"
+		: `team${team + 1}`
 }
 

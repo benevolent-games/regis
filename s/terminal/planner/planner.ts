@@ -97,16 +97,16 @@ export class Planner {
 				selected,
 				on: {
 					spawn: considered => makeIndicator(considered, {
-						action: () => this.#instanceIndicator(indicators.libertyAction, place),
-						pattern: () => this.#instanceIndicator(indicators.libertyPattern, place),
+						action: () => this.#instanceIndicator(indicators.liberty(null).action, place),
+						pattern: () => this.#instanceIndicator(indicators.liberty(null).pattern, place),
 					}),
 					attack: considered => makeIndicator(considered, {
-						action: () => this.#instanceIndicator(indicators.attackAction, place),
-						pattern: () => this.#instanceIndicator(indicators.attackPattern, place),
+						action: () => this.#instanceIndicator(indicators.attack.action, place),
+						pattern: () => this.#instanceIndicator(indicators.attack.pattern, place),
 					}),
 					movement: considered => makeIndicator(considered, {
-						action: () => this.#instanceIndicator(indicators.libertyAction, place),
-						pattern: () => this.#instanceIndicator(indicators.libertyPattern, place),
+						action: () => this.#instanceIndicator(indicators.liberty(null).action, place),
+						pattern: () => this.#instanceIndicator(indicators.liberty(null).pattern, place),
 					}),
 				},
 			})

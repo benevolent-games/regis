@@ -22,6 +22,7 @@ export class Claimery {
 
 		for (const {place, tile} of agent.tiles.list()) {
 			const {resource, specialResource, tech, watchtower} = tile.claim
+			const hasClaim = !!(resource || specialResource || tech || watchtower)
 			const position = agent.coordinator.toPosition(place)
 			const staked = !!agent.claims.getStakeholder(place)
 
@@ -43,31 +44,51 @@ export class Claimery {
 				return instance
 			}
 
-			if (resource) {
-				const level = resource.level
-				emplace(indicators.claims.resource(level, staked))
+			//
+			// claim corner squares
+			//
+
+			const unit = agent.units.at(place)
+			const dry = resource && resource.stockpile <= 0
+			const solid = resource
+				? !dry
+				: true
+
+			const showCorners = hasClaim && !!(unit || dry)
+
+			if (showCorners) {
+				emplace(indicators.claims.corners(solid))
 			}
 
-			if (specialResource) {
-				emplace(indicators.claims.resource(3, staked))
-			}
+			//
+			// stickers
+			//
 
 			const scale = 0.6
 
+			if (resource) {
+				const level = resource.level
+				emplace(indicators.claims.resource(level), scale)
+			}
+
+			if (specialResource) {
+				emplace(indicators.claims.resource(3), scale)
+			}
+
 			if (watchtower)
-				emplace(indicators.claims.watchtower(staked), scale)
+				emplace(indicators.claims.watchtower(), scale)
 
 			if (tech?.knight)
-				emplace(indicators.claims.knight(staked), scale)
+				emplace(indicators.claims.knight(), scale)
 
 			if (tech?.rook)
-				emplace(indicators.claims.rook(staked), scale)
+				emplace(indicators.claims.rook(), scale)
 
 			if (tech?.bishop)
-				emplace(indicators.claims.bishop(staked), scale)
+				emplace(indicators.claims.bishop(), scale)
 
 			if (tech?.queen)
-				emplace(indicators.claims.queen(staked), scale)
+				emplace(indicators.claims.queen(), scale)
 		}
 	}
 

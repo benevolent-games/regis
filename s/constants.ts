@@ -5,15 +5,15 @@ export const constants = {
 	urls: {
 		envmap: "/assets/studiolights.env",
 		assets: {
-			board: "/assets/glbs/board-dark.glb",
-			units: "/assets/glbs/units-dark1.glb",
-			indicators: "/assets/glbs/indicators-standard14.glb",
+			board: "/assets/glbs/board-dark5.glb",
+			units: "/assets/glbs/units-dark3.glb",
+			indicators: "/assets/glbs/indicators-standard15.glb",
 		} satisfies AssetUrls,
 	},
 	block: {
 		size: 2,
 		height: 1,
-		verticalOffset: -1,
+		verticalOffset: 0,
 	},
 	indicators: {
 		verticalOffsets: {
