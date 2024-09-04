@@ -1,26 +1,13 @@
 
 import {BoardRange, Multitaskability, Verticality} from "./traits"
 
+export type Archetypes = Record<string, Archetype>
+
 export type Archetype = Partial<Aspects>
 
 export type Aspects = {
 	mortal: {
 		health: number
-	}
-
-	recruitable: {
-		cost: number
-		unlockable?: {price: number}
-	}
-
-	sighted: {
-		range: BoardRange
-		verticality?: Verticality
-	}
-
-	mobile: {
-		range: BoardRange
-		verticality?: Verticality
 	}
 
 	armed: {
@@ -30,6 +17,16 @@ export type Aspects = {
 		multitasking?: Multitaskability
 	}
 
+	mobile: {
+		range: BoardRange
+		verticality?: Verticality
+	}
+
+	sighted: {
+		range: BoardRange
+		verticality?: Verticality
+	}
+
 	healer: {
 		healing: number
 		range: BoardRange
@@ -37,11 +34,17 @@ export type Aspects = {
 		multitasking?: Multitaskability
 	}
 
+	stakeholder: {},
+
 	summoner: {
 		range: BoardRange
 		limit?: number
 	}
 
-	stakeholder: {},
+	recruitable: {
+		cost: number
+		limit?: number
+		unlockable?: {price: number}
+	}
 }
 
