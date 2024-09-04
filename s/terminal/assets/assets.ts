@@ -3,7 +3,6 @@ import {AssetContainer, TransformNode} from "@babylonjs/core"
 
 import {Glb} from "./glb.js"
 import {World} from "./world.js"
-import {UnitKind} from "../../logic/state.js"
 import { ob } from "@benev/slate"
 import { defaultUnitArchetypes } from "../../logic/data.js"
 import { need } from "../../tools/need.js"

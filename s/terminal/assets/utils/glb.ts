@@ -1,5 +1,5 @@
 
-import {Map2} from "../../tools/map2.js"
+import {Map2} from "../../../tools/map2.js"
 import {babyloid, Meshoid, Prop} from "@benev/toolbox"
 import {AssetContainer, InstancedMesh, PBRMaterial, TransformNode} from "@babylonjs/core"
 

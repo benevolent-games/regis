@@ -9,7 +9,6 @@ import {Agent} from "../../logic/agent.js"
 import {constants} from "../../constants.js"
 import {UnitKind} from "../../logic/state.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
-import { getTopMeshes } from "./babylon-helpers.js"
 
 export type RosterPlacement = {
 	mesh: Meshoid
@@ -48,8 +47,8 @@ export class Rosters {
 		const rosterGuide = assets.board.instance(propName)
 		rosterGuide.computeWorldMatrix(true)
 
-		const spawnableUnits = Object.entries(agent.state.initial.config.unitArchetypes)
-			.filter(([,archetype]) => archetype.cost !== null)
+		const spawnableUnits = Object.entries(agent.state.initial.config.archetypes)
+			.filter(([,archetype]) => !!archetype.recruitable)
 			.map(([kind]) => kind as UnitKind)
 
 		const unlockedUnits: UnitKind[] = [
