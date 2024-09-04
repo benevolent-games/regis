@@ -17,6 +17,20 @@ export const mapPool = {
 		`,
 	},
 
+	walledCity: {
+		author: "chase",
+		ascii: `
+			=    .    .^   =%   .^$$ .^   =♚   =$$$
+			.^   .    .^   =    .^   .^   =q   =$
+			.    .    .    =^%  .    .    =r   =k
+			.e   .    .    #%   #%   .    .$$  =b
+			=b   .$$  .    #%   #%   .    .    .e
+			=k   =r   .    .    =^%  .    .    .
+			=$   =q   .^   .^   =    .^   .    .^
+			=$$$ =♔   .^   .^$$ =%   .^   .    =
+		`,
+	},
+
 	basic: {
 		author: "chase",
 		ascii: `
