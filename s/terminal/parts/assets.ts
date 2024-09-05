@@ -66,7 +66,7 @@ export class UnitsGlb extends Glb {
 				const normalProp = this.props.require(name)
 				const fadedProp = normalProp.clone(normalProp.name, null)!
 				getTopMeshes(fadedProp).forEach(mesh => {
-					mesh.visibility = 0.3
+					mesh.visibility = 0.6
 					this.container.scene.removeMesh(mesh, true)
 				})
 				return {
