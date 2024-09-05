@@ -1,4 +1,33 @@
 
+# art
+
+new indicators scheme
+- liberties
+  - liberty-move
+    - `liberty-move-neutral`
+    - `liberty-move-team1`
+    - `liberty-move-team2`
+  - liberty-attack
+    - `liberty-attack-neutral`
+    - `liberty-attack-team1`
+    - `liberty-attack-team2`
+  - liberty-spawn
+    - `liberty-spawn-neutral`
+    - `liberty-spawn-team1`
+    - `liberty-spawn-team2`
+  - liberty-heal
+    - `liberty-heal-neutral`
+    - `liberty-heal-team1`
+    - `liberty-heal-team2`
+- tech claims
+  - `claim-tech-knight`
+  - `claim-tech-rook`
+  - `claim-tech-bishop`
+  - `claim-tech-queen`
+  - `claim-tech-elephant`
+
+# code
+
 - [x] queen healing ability
 - [ ] attack arcs
 - [ ] undo one action

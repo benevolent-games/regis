@@ -1,6 +1,7 @@
 
 import {Map2} from "../../../tools/map2.js"
 import {babyloid, Meshoid, Prop} from "@benev/toolbox"
+import {getTopMeshes} from "../../parts/babylon-helpers.js"
 import {AssetContainer, InstancedMesh, PBRMaterial, TransformNode} from "@babylonjs/core"
 
 export type Instancer = () => TransformNode
@@ -18,6 +19,17 @@ export class Glb {
 				clone.name = source.name
 			},
 		) as TransformNode
+	}
+
+	static cloneProp(prop: Prop): Prop {
+		return prop.clone(prop.name, null)!
+	}
+
+	static changeOpacity(prop: Prop, opacity: number) {
+		getTopMeshes(prop).forEach(mesh => {
+			mesh.visibility = opacity
+			prop.getScene().removeMesh(mesh, true)
+		})
 	}
 
 	constructor(public readonly container: AssetContainer) {

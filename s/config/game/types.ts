@@ -19,6 +19,8 @@ export type ResourcesConfig = {
 	}
 }
 
+export type ResourceLevel = 1 | 2 | 3
+
 export type ResourceValues = {
 	revenue: number
 	stakeCost: number

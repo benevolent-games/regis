@@ -220,6 +220,8 @@ export function makePlainBoardState(): BoardState {
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
+export type TeamId = number | null
+
 export type Unit = {
 	id: number
 	place: Vec2
@@ -227,6 +229,6 @@ export type Unit = {
 	damage: number
 
 	// TODO rename to "teamId"
-	team: null | number
+	team: TeamId
 }
 

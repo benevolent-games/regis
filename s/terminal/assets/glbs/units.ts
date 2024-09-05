@@ -3,8 +3,8 @@ import {AssetContainer} from "@babylonjs/core"
 
 import {BoardGlb} from "./board.js"
 import {Map2} from "../../../tools/map2.js"
+import {TeamId} from "../../../logic/state.js"
 import {Glb, Instancer} from "../utils/glb.js"
-import {getTopMeshes} from "../../parts/babylon-helpers.js"
 import {UnitKind, unitsConfig} from "../../../config/units.js"
 import {HealthReport} from "../../../logic/utils/health-report.js"
 
@@ -16,6 +16,8 @@ export class UnitsGlb extends Glb {
 	constructor(container: AssetContainer, private boardGlb: BoardGlb) {
 		super(container)
 	}
+
+	ring = this.instancer("ring")
 
 	units = (() => {
 		const nameify = (kind: string, teamId: number) => {
@@ -31,25 +33,20 @@ export class UnitsGlb extends Glb {
 
 			for (const teamId of teamIds) {
 
-				// instancers for 'normal' prop variants
+				// instancer for 'normal' prop variants
 				const name = nameify(kind, teamId)
+				const normalProp = this.props.require(name)
 				normalMap.set(name, this.instancer(name))
 
-				// instancers for 'faded' prop variants
-				{
-					const normalProp = this.props.require(name)
-					const fadedProp = normalProp.clone(normalProp.name, null)!
-					getTopMeshes(fadedProp).forEach(mesh => {
-						mesh.visibility = fadedOpacity
-						this.container.scene.removeMesh(mesh, true)
-					})
-					fadedMap.set(name, () => Glb.instantiate(fadedProp))
-				}
+				// instancer for 'faded' prop variants
+				const fadedProp = Glb.cloneProp(normalProp)
+				Glb.changeOpacity(fadedProp, fadedOpacity)
+				normalMap.set(name, () => Glb.instantiate(fadedProp))
 			}
 		}
 
 		const prep = (map: Map2<string, Instancer>) =>
-			(kind: UnitKind, teamId: number | null, health: HealthReport | null) => {
+			(kind: UnitKind, teamId: TeamId, health: HealthReport | null) => {
 
 			const {rendering} = unitsConfig[kind]
 
