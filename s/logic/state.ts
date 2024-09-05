@@ -1,6 +1,7 @@
 
 import {loop2d, Vec2} from "@benev/toolbox"
 
+import {UnitKind} from "../config/units.js"
 import {GameConfig} from "../config/game/types.js"
 import {BoardRange} from "../config/units/traits.js"
 
@@ -222,7 +223,7 @@ export function makePlainBoardState(): BoardState {
 export type Unit = {
 	id: number
 	place: Vec2
-	kind: string
+	kind: UnitKind
 	damage: number
 
 	// TODO rename to "teamId"

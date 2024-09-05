@@ -3,6 +3,8 @@ import {deep, ob} from "@benev/slate"
 import {Archetypes} from "./units/archetype.js"
 import {UnitConfig} from "./units/unit-config.js"
 
+export type UnitKind = keyof typeof unitsConfig
+
 export const unitsConfig = deep.freeze({
 	obstacle: {
 		rendering: {algo: "obstacle"},

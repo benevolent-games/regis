@@ -1,8 +1,8 @@
 
+import {loop} from "@benev/toolbox"
+import {Map2} from "../../../tools/map2.js"
 import {Glb, Instancer} from "../utils/glb.js"
 import {Elevation} from "../../../logic/state.js"
-import { Map2 } from "../../../tools/map2.js"
-import { loop } from "@benev/toolbox"
 
 type Alt = "odd" | "even"
 type TileType = "block" | "step"
