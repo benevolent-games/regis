@@ -86,6 +86,7 @@ export class IndicatorsGlb extends Glb {
 		})(),
 
 		specialResource: this.instancer(`claim-special-resource`),
+		watchtower: this.instancer(`claim-watchtower`),
 
 		tech: (() => {
 			const instancers = new Map2<string, Instancer>()

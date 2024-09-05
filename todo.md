@@ -19,12 +19,17 @@ new indicators scheme
     - `liberty-heal-neutral`
     - `liberty-heal-team1`
     - `liberty-heal-team2`
-- tech claims
-  - `claim-tech-knight`
-  - `claim-tech-rook`
-  - `claim-tech-bishop`
-  - `claim-tech-queen`
-  - `claim-tech-elephant`
+- claims
+  - `claim-depleted`
+  - stake
+    - `claim-stake-on`
+    - `claim-stake-off`
+  - tech
+    - `claim-tech-knight`
+    - `claim-tech-rook`
+    - `claim-tech-bishop`
+    - `claim-tech-queen`
+    - `claim-tech-elephant`
 
 # code
 

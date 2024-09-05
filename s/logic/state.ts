@@ -132,7 +132,7 @@ export namespace Claim {
 	}
 	export type Tech = {
 		kind: "tech"
-		unlocks: string[]
+		unlock: UnitKind
 	}
 	export type Any = (
 		| SpecialResource
