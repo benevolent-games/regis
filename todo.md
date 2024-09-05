@@ -2,7 +2,7 @@
 - [x] queen healing ability
 - [ ] attack arcs
 - [ ] undo one action
-- [ ] spawn-ghosts
+- [x] spawn-ghosts
 - [ ] endgame state
   - game should be frozen, no further turns
   - lift the fog-of-war, revealing the whole board state to both teams
