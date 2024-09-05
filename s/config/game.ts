@@ -1,6 +1,6 @@
 
-import {seconds} from "../tools/timely"
-import {GameConfig} from "./game/types"
+import {seconds} from "../tools/timely.js"
+import {GameConfig} from "./game/types.js"
 import {standardArchetypes} from "./units.js"
 
 export function standardGameConfig(): GameConfig {
