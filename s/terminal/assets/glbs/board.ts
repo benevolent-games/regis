@@ -2,7 +2,7 @@
 import {loop} from "@benev/toolbox"
 import {Map2} from "../../../tools/map2.js"
 import {Glb, Instancer} from "../utils/glb.js"
-import {Elevation} from "../../../logic/state.js"
+import {Elevation, TeamId} from "../../../logic/state.js"
 
 type Alt = "odd" | "even"
 type TileType = "block" | "step"
@@ -52,7 +52,7 @@ export class BoardGlb extends Glb {
 		const map = new Map2<number, Instancer>()
 		map.set(0, this.instancer(`team1-roster`))
 		map.set(1, this.instancer(`team2-roster`))
-		return (teamId: number) => map.require(teamId)
+		return (teamId: number) => map.require(teamId)()
 	})()
 }
 

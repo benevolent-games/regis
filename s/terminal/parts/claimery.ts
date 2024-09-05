@@ -3,8 +3,8 @@ import {Trashbin} from "@benev/slate"
 import {scalar, vec3} from "@benev/toolbox"
 import {Quaternion, TransformNode} from "@babylonjs/core"
 
-import {Assets} from "./assets.js"
 import {Agent} from "../../logic/agent.js"
+import {Assets} from "../assets/assets.js"
 import {constants} from "../../constants.js"
 
 export class Claimery {

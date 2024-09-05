@@ -1,5 +1,5 @@
 
-import {UnitKind} from "../../logic/state.js"
+import {UnitKind} from "../../config/units.js"
 
 export type TerminalActions = {
 	commitTurn: () => void
