@@ -16,7 +16,7 @@ export const proposeMovement = proposerFn(
 		return new MovementDenial(`no unit found at ${boardCoords(choice.source)}`)
 
 	const archetype = agent.archetype(unit.kind)
-	if (!archetype.move)
+	if (!archetype.mobile)
 		return new MovementDenial(`unit archetype "${unit.kind}" does not have move capability`)
 
 	const {canMove} = freedom.report(unit.id, archetype)
@@ -37,7 +37,7 @@ export const proposeMovement = proposerFn(
 	for (const step of choice.path) {
 		const placeA = lastStep
 		const placeB = step
-		const {verticality} = archetype.move
+		const {verticality} = archetype.mobile
 		if (isValidStep(agent, verticality, placeA, placeB))
 			lastStep = placeB
 		else

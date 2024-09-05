@@ -1,8 +1,8 @@
 
 import {Agent} from "../../agent.js"
 import {vec2, Vec2} from "@benev/toolbox"
-import {Verticality} from "../../state.js"
 import {isVerticallyCompatible} from "./verticality.js"
+import {BoardRange, Verticality} from "../../../config/units/traits.js"
 
 export function getCardinalNeighbors(agent: Agent, place: Vec2) {
 	return cardinals
@@ -10,7 +10,7 @@ export function getCardinalNeighbors(agent: Agent, place: Vec2) {
 		.filter(v => agent.tiles.valid(v))
 }
 
-export function getNearby(agent: Agent, sourcePlace: Vec2, range: number) {
+export function getNearby(agent: Agent, sourcePlace: Vec2, range: BoardRange) {
 	return [...agent.tiles.list()]
 		.filter(({place}) => isWithinRange(range, sourcePlace, place))
 }
@@ -45,13 +45,16 @@ export function chebyshevDistance(a: Vec2, b: Vec2) {
 	return Math.max(distanceX, distanceY)
 }
 
-export function isWithinRange(range: number, a: Vec2, b: Vec2) {
-	return chebyshevDistance(a, b) <= range
+export function isWithinRange(range: BoardRange, a: Vec2, b: Vec2) {
+	const distance = range.kind === "chebyshev"
+		? chebyshevDistance(a, b)
+		: manhattanDistance(a, b)
+	return distance <= range.steps
 }
 
 export function isValidStep(
 		agent: Agent,
-		verticality: Verticality,
+		verticality: Verticality | undefined,
 		placeA: Vec2,
 		placeB: Vec2,
 	) {

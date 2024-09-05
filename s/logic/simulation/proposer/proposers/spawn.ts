@@ -5,6 +5,7 @@ import {isValidSpawnPlace} from "../../aspects/spawning.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
 import {canAfford, subtractResources} from "../../aspects/money.js"
 import {GameOverDenial, SpawnDenial, WrongTeamDenial} from "../../aspects/denials.js"
+import { is } from "@benev/slate"
 
 export const proposeSpawn = proposerFn(
 	({agent, freedom, turnTracker}) =>
@@ -12,14 +13,13 @@ export const proposeSpawn = proposerFn(
 
 	const {unitKind} = choice
 	const {config} = agent.state.initial
-	const {cost: unitCost, stakeholder} = config.unitArchetypes[unitKind]
+	const {recruitable, stakeholder} = config.archetypes[unitKind]
 	const teamId = agent.activeTeamId
 
 	const stakingCost = stakeholder
 		? agent.claims.getStakingCost(choice.place)
 		: 0
 
-	const buyable = unitCost !== null
 	const tech = agent.claims.getTech(teamId)
 
 	const validPlace = isValidSpawnPlace(agent, teamId, choice.place)
@@ -27,18 +27,18 @@ export const proposeSpawn = proposerFn(
 		.filter(unit => unit.team === teamId)
 		.filter(unit => unit.kind === choice.unitKind)
 		.length
-	const {roster} = config.teams.at(teamId)!
-	const remainingRosterCount = roster[choice.unitKind] - howManyAlready
-	const availableInRoster = remainingRosterCount > 0
 
 	if (unitKind in tech && !tech[unitKind as keyof Claim.Tech])
 		return new SpawnDenial(`unit kind "${unitKind}" is not unlocked`)
 
-	if (!buyable)
+	if (!recruitable)
 		return new SpawnDenial(`unit kind "${unitKind}" is not for sale`)
 
-	const cost = unitCost + stakingCost
+	const cost = recruitable.cost + stakingCost
 	const affordable = canAfford(agent.activeTeam, cost)
+	const availableInRoster = is.available(recruitable.limit)
+		? (recruitable.limit - howManyAlready) > 0
+		: true
 
 	if (!affordable)
 		return new SpawnDenial(`cannot afford "${unitKind}" at cost of ${cost}`)

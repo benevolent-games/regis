@@ -1,9 +1,9 @@
 
 import {proposerFn} from "../types.js"
-import {Choice, getVerticalCapability} from "../../../state.js"
+import {Choice} from "../../../state.js"
+import {isWithinRange} from "../../aspects/navigation.js"
+import {isVerticallyCompatible} from "../../aspects/verticality.js"
 import {GameOverDenial, HealDenial, WrongTeamDenial} from "../../aspects/denials.js"
-import { isVerticallyCompatible } from "../../aspects/verticality.js"
-import { isWithinRange } from "../../aspects/navigation.js"
 
 export const proposeHeal = proposerFn(
 	({agent, freedom, turnTracker}) =>
@@ -17,8 +17,8 @@ export const proposeHeal = proposerFn(
 		return new HealDenial("doctor or patient not found")
 
 	const doctorArc = agent.archetype(doctor.kind)
-	const {heal} = doctorArc
-	if (!heal)
+	const {healer} = doctorArc
+	if (!healer)
 		return new HealDenial("doctor does not have heal capability")
 
 	const {canHeal} = freedom.report(doctor.id, doctorArc)
@@ -30,13 +30,13 @@ export const proposeHeal = proposerFn(
 
 	const doctorTile = agent.tiles.at(doctor.place)
 	const patientTile = agent.tiles.at(patient.place)
-	if (!isVerticallyCompatible(heal.verticality, doctorTile, patientTile))
+	if (!isVerticallyCompatible(healer.verticality, doctorTile, patientTile))
 		return new HealDenial("vertically incompatible")
 
-	if (!isWithinRange(heal.range, doctor.place, patient.place))
+	if (!isWithinRange(healer.range, doctor.place, patient.place))
 		return new HealDenial("out of range")
 
-	const newDamageValue = Math.max(0, patient.damage - heal.amount)
+	const newDamageValue = Math.max(0, patient.damage - healer.healing)
 
 	if (!turnTracker.ourTurn || turnTracker.teamId !== doctor.team)
 		return new WrongTeamDenial()

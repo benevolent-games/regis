@@ -1,6 +1,6 @@
 
 import {mapGuarantee} from "@benev/slate"
-import {UnitArchetype} from "../../state.js"
+import {Archetype} from "../../../config/units/archetype.js"
 
 export type ActionRecord = {
 	moves: number
@@ -30,7 +30,7 @@ export class UnitFreedom {
 		}))
 	}
 
-	report(id: number, archetype: UnitArchetype): FreedomReport {
+	report(id: number, archetype: Archetype): FreedomReport {
 		const {moves, attacks, heals, spawning} = this.#obtain(id)
 		const sum = moves + attacks
 		const canAct = !spawning && sum < archetype.actionCap

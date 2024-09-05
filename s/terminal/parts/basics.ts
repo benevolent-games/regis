@@ -2,7 +2,7 @@
 import {make_envmap} from "@benev/toolbox"
 
 import {World} from "./world.js"
-import {Assets} from "./assets.js"
+import {Assets} from "../assets/assets.js"
 import {constants} from "../../constants.js"
 
 export async function makeBasicVisuals() {
