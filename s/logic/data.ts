@@ -22,7 +22,7 @@ export function defaultGameConfig(): GameConfig {
 				specialResource: 4,
 				tech: {
 					knight: 4,
-					rook: 4,
+					rook: 8,
 					bishop: 4,
 					queen: 0,
 					elephant: 12,
@@ -78,7 +78,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 		},
 		vision: {
 			range: 2,
-			verticality: "everywhere",
+			verticality: "downwards",
 		},
 		move: {
 			cap: 1,
@@ -146,7 +146,7 @@ export const defaultUnitArchetypes = (): UnitArchetypes => ({
 	},
 
 	rook: {
-		cost: 6,
+		cost: 8,
 		health: 7,
 		actionCap: 1,
 		stakeholder: false,
