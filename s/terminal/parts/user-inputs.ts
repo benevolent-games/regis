@@ -28,7 +28,7 @@ export class UserInputs {
 			actions: TerminalActions
 		}) {
 
-		const {cameraRig, actions, turnTracker} = options
+		const {cameraRig, actions, selectacon, turnTracker} = options
 		const {canvas} = options.world
 		const dr = this.#trashbin.disposer
 
@@ -45,7 +45,12 @@ export class UserInputs {
 				const select = (unitKind: UnitKind): void => {
 					actions.selectRosterUnit(turnTracker.teamId, unitKind)
 				}
+				const deselect = () => {
+					selectacon.selection.value = null
+				}
 				switch (event.code) {
+					case "Escape": return deselect()
+
 					// case "KeyE": return select("pawn")
 					// case "KeyW": return select("knight")
 					// case "KeyD": return select("rook")
