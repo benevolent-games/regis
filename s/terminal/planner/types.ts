@@ -1,6 +1,6 @@
 
-import {Assets} from "../parts/assets.js"
 import {Agent} from "../../logic/agent.js"
+import {Assets} from "../assets/assets.js"
 import {Selectacon} from "../parts/selectacon.js"
 import {Choice, Turn} from "../../logic/state.js"
 import {SpawnGhostRenderer} from "./parts/spawn-ghost-renderer.js"

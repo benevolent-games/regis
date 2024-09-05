@@ -4,9 +4,9 @@ import {TransformNode} from "@babylonjs/core"
 import {babyloid, Prop, Vec2} from "@benev/toolbox"
 
 import {World} from "./world.js"
-import {Assets} from "./assets.js"
-import {Tile} from "../../logic/state.js"
 import {Agent} from "../../logic/agent.js"
+import {Assets} from "../assets/assets.js"
+import {Elevation, Tile} from "../../logic/state.js"
 
 export type TilePlacement = {
 	place: Vec2
@@ -47,15 +47,19 @@ export class Tiler {
 					placements.set(mesh, {place})
 		}
 
-		function spawnBlock(place: Vec2, layer: number) {
-			const instance = trashbin.disposable(assets.board.block(layer, oddOrEven(place)))
+		function spawnBlock(place: Vec2, layer: Elevation) {
+			const instance = trashbin.disposable(
+				assets.board.tile.block(layer, oddOrEven(place))
+			)
 			positionBlock(instance, place, layer)
 			saveBlockPlacement(instance, place)
 			return instance
 		}
 
-		function spawnStep(place: Vec2, layer: number) {
-			const instance = trashbin.disposable(assets.board.step(layer - 1, oddOrEven(place)))
+		function spawnStep(place: Vec2, layer: Elevation) {
+			const instance = trashbin.disposable(
+				assets.board.tile.step(layer - 1 as Elevation, oddOrEven(place))
+			)
 			positionBlock(instance, place, layer)
 			saveBlockPlacement(instance, place)
 			return instance
@@ -67,7 +71,7 @@ export class Tiler {
 
 			if (tile.step) {
 				spawnBlock(place, tile.elevation)
-				spawnStep(place, tile.elevation + 1)
+				spawnStep(place, tile.elevation + 1 as Elevation)
 			}
 			else {
 				spawnBlock(place, tile.elevation)

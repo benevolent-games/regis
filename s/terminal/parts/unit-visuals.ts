@@ -2,21 +2,11 @@
 import {loop} from "@benev/toolbox"
 import {Trashbin} from "@benev/slate"
 
-import {Assets} from "./assets.js"
 import {Agent} from "../../logic/agent.js"
-import {UnitKind} from "../../logic/state.js"
+import {Assets} from "../assets/assets.js"
 import {getBestHealthbar} from "./healthbars.js"
 import {getChildProps} from "./babylon-helpers.js"
-
-export const unitKindsWithHealthRing: UnitKind[] = [
-	"king",
-	"pawn",
-	"knight",
-	"rook",
-	"bishop",
-	"queen",
-	"elephant",
-]
+import {healthReport} from "../../logic/utils/health-report.js"
 
 export class UnitVisuals {
 	#trashbin = new Trashbin()
@@ -30,24 +20,26 @@ export class UnitVisuals {
 
 		// instantiate units
 		for (const unit of agent.units.list()) {
-			const instance = d(assets.units.unit[unit.kind](unit.team).normal())
+			const instance = d(assets.units.unit(
+				unit.kind,
+				unit.team,
+				healthReport(unit, agent.archetype(unit.kind)),
+			))
 			instance.position.set(...agent.coordinator.toPosition(unit.place))
 		}
 
 		// instantiate unit health bars
 		for (const unit of agent.units.list()) {
-			const hasHealthRing = unitKindsWithHealthRing.includes(unit.kind)
 			const archetype = agent.archetype(unit.kind)
+			const health = healthReport(unit, archetype)
 
-			if (hasHealthRing && archetype.health) {
-				const healthAmount = archetype.health - unit.damage
-				const healthFraction = healthAmount / archetype.health
+			if (health) {
 				const position = agent.coordinator.toPosition(unit.place)
 
 				const ring = d(assets.units.ring())
 				ring.position.set(...position)
 
-				const healthbar = getBestHealthbar(healthFraction)
+				const healthbar = getBestHealthbar(health.fraction)
 				const ringChildren = getChildProps(ring)
 
 				for (const index of loop(24)) {

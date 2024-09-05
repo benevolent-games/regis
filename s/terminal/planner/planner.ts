@@ -3,7 +3,7 @@ import {Vec2, vec3} from "@benev/toolbox"
 import {Trashbin} from "@benev/slate"
 import {TransformNode} from "@babylonjs/core"
 
-import {Choice} from "../../logic/state.js"
+import {Choice, TeamId} from "../../logic/state.js"
 import {constants} from "../../constants.js"
 import {Cell, TileCell} from "../parts/selectacon.js"
 import {ConsiderationResult, PlannerOptions} from "./types.js"
@@ -100,21 +100,19 @@ export class Planner {
 				position: agent.coordinator.toPosition(place),
 			}
 
-			const libertyTeam = turnTracker.ourTurn
-				? selectedTeam
-				: turnTracker.teamId
+			const ourTeam = turnTracker.teamId
 
 			this.navigateActionSpace({
 				target,
 				selected,
 				on: {
 					heal: considered => makeIndicator(considered, {
-						action: () => this.#instanceIndicator(indicators.heal.action, place),
-						pattern: () => this.#instanceIndicator(indicators.heal.pattern, place),
+						action: () => this.#instanceIndicator(() => indicators.liberty.heal(ourTeam), place),
+						pattern: () => this.#instanceIndicator(() => indicators.liberty.heal(null), place),
 					}),
 					spawn: considered => makeIndicator(considered, {
 						action: () => {
-							this.#instanceIndicator(indicators.liberty(libertyTeam).action, place)
+							this.#instanceIndicator(() => indicators.liberty.spawn(ourTeam), place)
 							if (selected?.kind === "roster")
 								spawnGhosts.setPossibleGhost({
 									place,
@@ -122,15 +120,15 @@ export class Planner {
 									unitKind: selected.unitKind,
 								})
 						},
-						pattern: () => this.#instanceIndicator(indicators.liberty(libertyTeam).pattern, place),
+						pattern: () => this.#instanceIndicator(() => indicators.liberty.spawn(null), place),
 					}),
 					attack: considered => makeIndicator(considered, {
-						action: () => this.#instanceIndicator(indicators.attack.action, place),
-						pattern: () => this.#instanceIndicator(indicators.attack.pattern, place),
+						action: () => this.#instanceIndicator(() => indicators.liberty.attack(ourTeam), place),
+						pattern: () => this.#instanceIndicator(() => indicators.liberty.attack(null), place),
 					}),
 					movement: considered => makeIndicator(considered, {
-						action: () => this.#instanceIndicator(indicators.liberty(libertyTeam).action, place),
-						pattern: () => this.#instanceIndicator(indicators.liberty(libertyTeam).pattern, place),
+						action: () => this.#instanceIndicator(() => indicators.liberty.move(ourTeam), place),
+						pattern: () => this.#instanceIndicator(() => indicators.liberty.move(null), place),
 					}),
 				},
 			})

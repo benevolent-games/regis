@@ -1,5 +1,4 @@
 
-import {is} from "@benev/slate"
 import {Unit} from "../state.js"
 import {Archetype} from "../../config/units/archetype.js"
 
@@ -14,7 +13,7 @@ export function healthReport(
 		{mortal}: Archetype,
 	): HealthReport | null {
 
-	if (is.unavailable(mortal?.health))
+	if (!mortal)
 		return null
 
 	const total = mortal.health

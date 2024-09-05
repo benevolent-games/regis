@@ -27,8 +27,13 @@ export class BoardGlb extends Glb {
 			}
 		}
 
-		return (type: TileType, elevation: Elevation, alt: Alt) => {
-			return map.require(name(type, elevation, alt))
+		return {
+			block: (elevation: Elevation, alt: Alt) => {
+				return map.require(name("block", elevation, alt))()
+			},
+			step: (elevation: Elevation, alt: Alt) => {
+				return map.require(name("step", elevation, alt))()
+			},
 		}
 	})()
 
@@ -40,7 +45,7 @@ export class BoardGlb extends Glb {
 			map.set(hp, this.instancer(`obstacle${hp}`))
 		}
 
-		return (health: number) => map.require(health)
+		return (healthVariant: number) => map.require(healthVariant)()
 	})()
 
 	roster = (() => {

@@ -19,7 +19,7 @@ export class UnitsGlb extends Glb {
 
 	ring = this.instancer("ring")
 
-	units = (() => {
+	#unitSpawners = (() => {
 		const nameify = (kind: string, teamId: number) => {
 			return `unit-team${teamId + 1}-${kind}`
 		}
@@ -73,5 +73,13 @@ export class UnitsGlb extends Glb {
 			faded: prep(fadedMap),
 		}
 	})()
+
+	unit = (kind: UnitKind, teamId: TeamId, health: HealthReport | null) => {
+		return this.#unitSpawners.normal(kind, teamId, health)
+	}
+
+	faded = (kind: UnitKind, teamId: TeamId, health: HealthReport | null) => {
+		return this.#unitSpawners.normal(kind, teamId, health)
+	}
 }
 

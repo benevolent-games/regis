@@ -1,7 +1,8 @@
 
 import {Vec2} from "@benev/toolbox"
 import {considerationFn} from "../types.js"
-import {Choice, UnitKind} from "../../../logic/state.js"
+import {Choice} from "../../../logic/state.js"
+import {UnitKind} from "../../../config/units.js"
 import {Denial, SoftDenial} from "../../../logic/simulation/aspects/denials.js"
 
 export const considerSpawn = considerationFn(
