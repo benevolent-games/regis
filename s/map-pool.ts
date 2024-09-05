@@ -6,7 +6,7 @@ export const mapPool = {
 	sven: {
 		author: "chase",
 		ascii: `
-			=$$  =e   =    =    =    =^   #♚   #$$
+			=$$  =e   =    =    =    =^   #♚   #$$$
 			=    =    =    =    =    =^   #q   #$$
 			=    #    .^   .^   =    =    #k   #$
 			.^   .    .    .    .    .    #r   #b
