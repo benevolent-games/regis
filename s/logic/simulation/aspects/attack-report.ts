@@ -24,44 +24,44 @@ export function attackReport(
 	if (!hostile)
 		return new AttackDenial(`friendly fire`)
 
-	const {attack} = agent.archetype(attacker.kind)
-	if (!attack)
+	const {armed} = agent.archetype(attacker.kind)
+	if (!armed)
 		return new AttackDenial(`unit archetype "${attacker.kind}" not configured with attack capability`)
 
-	if (!isWithinRange(attack.range, attacker.place, victim.place))
+	if (!isWithinRange(armed.range, attacker.place, victim.place))
 		return new AttackDenial(`out of range`)
 
 	if (!isVerticallyCompatible(
-			attack.verticality,
+			armed.verticality,
 			agent.tiles.at(attacker.place),
 			agent.tiles.at(victim.place),
 		))
 		return new AttackDenial(`not vertically allowable`)
 
 	return {
-		attack,
+		armed,
 		attacker,
 		victim,
-		// isKill: wouldThisBeLethal(agent, victim, attack.damage),
 	}
 }
 
-export function isChoiceLethal(agent: Agent, choice: Choice.Attack) {
-	const attacker = agent.units.requireGet(choice.attackerId)
-	const victim = agent.units.requireGet(choice.victimId)
-	const {health} = agent.archetype(victim.kind)
-	const {attack} = agent.archetype(attacker.kind)
-	return isLethal(health, victim.damage + (attack?.damage ?? 0))
-}
+// // TODO delete if obsolete
+// export function isChoiceLethal(agent: Agent, choice: Choice.Attack) {
+// 	const attacker = agent.units.requireGet(choice.attackerId)
+// 	const victim = agent.units.requireGet(choice.victimId)
+// 	const {mortal} = agent.archetype(victim.kind)
+// 	const {armed} = agent.archetype(attacker.kind)
+// 	return isLethal(health, victim.damage + (attack?.damage ?? 0))
+// }
 
 export function applyDamage(agent: Agent, unit: Unit, damage: number) {
 	unit.damage += damage
-	const {health} = agent.archetype(unit.kind)
-	return isLethal(health, unit.damage)
+	const {mortal} = agent.archetype(unit.kind)
+	return isLethal(mortal?.health, unit.damage)
 }
 
-function isLethal(health: null | number, damage: number) {
-	return health === null
+function isLethal(health: number | undefined, damage: number) {
+	return health === undefined
 		? false
 		: (health - damage) <= 0
 }

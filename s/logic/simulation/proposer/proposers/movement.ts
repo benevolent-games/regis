@@ -24,7 +24,9 @@ export const proposeMovement = proposerFn(
 		return new MovementDenial(`unit "${unit.kind}" at ${boardCoords(choice.source)} does not have freedom to move`)
 
 	const destination = [...choice.path].pop()!
-	const destinationStakingCost = agent.claims.getStakingCost(destination)
+	const destinationStakingCost = agent.claims.stakingCost(
+		agent.tiles.at(destination).claims
+	)
 
 	if (!turnTracker.ourTurn || turnTracker.teamId !== unit.team)
 		return new WrongTeamDenial()
@@ -50,7 +52,9 @@ export const proposeMovement = proposerFn(
 		const hasMoved = !vec2.equal(lastStep, choice.source)
 		const interrupted = !vec2.equal(lastStep, destination)
 		if (hasMoved && interrupted) {
-			const lastStepStakingCost = agent.claims.getStakingCost(lastStep)
+			const lastStepStakingCost = agent.claims.stakingCost(
+				agent.tiles.at(lastStep).claims
+			)
 			if (lastStepStakingCost > 0)
 				return new MovementDenial(`interrupted movement landed on a pricey claim, cancelled whole movement (this is rare)`)
 		}
@@ -63,7 +67,7 @@ export const proposeMovement = proposerFn(
 		return new MovementDenial(`cannot afford movement, staking cost too high`)
 
 	return () => {
-		freedom.countMove(unit.id)
+		freedom.recordTask(unit.id, {kind: "move"})
 		subtractResources(agent.state, agent.activeTeamId, cost)
 		unit.place = lastStep
 	}

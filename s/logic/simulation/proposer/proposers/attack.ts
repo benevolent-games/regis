@@ -13,7 +13,7 @@ export const proposeAttack = proposerFn(
 	if (report instanceof Denial)
 		return report
 
-	const {attack, victim, attacker} = report
+	const {armed, victim, attacker} = report
 	const archetype = agent.archetype(attacker.kind)
 
 	const freequery = freedom.query(attacker.id, archetype)
@@ -28,7 +28,7 @@ export const proposeAttack = proposerFn(
 
 	return () => {
 		freedom.recordTask(attacker.id, {kind: "attack", targetId: victim.id})
-		const lethal = applyDamage(agent, victim, attack.damage)
+		const lethal = applyDamage(agent, victim, armed.damage)
 		if (lethal)
 			agent.deleteUnit(victim.id)
 		if (victim.team !== null)

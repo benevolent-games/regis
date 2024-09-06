@@ -1,7 +1,7 @@
 
 import {is} from "@benev/slate"
 import {proposerFn} from "../types.js"
-import {Choice, Claim} from "../../../state.js"
+import {Choice} from "../../../state.js"
 import {isValidSpawnPlace} from "../../aspects/spawning.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
 import {canAfford, subtractResources} from "../../aspects/money.js"
@@ -14,13 +14,15 @@ export const proposeSpawn = proposerFn(
 	const {unitKind} = choice
 	const {config} = agent.state.initial
 	const {recruitable, stakeholder} = config.archetypes[unitKind]
+
 	const teamId = agent.activeTeamId
+	const tile = agent.tiles.at(choice.place)
 
 	const stakingCost = stakeholder
-		? agent.claims.getStakingCost(choice.place)
+		? agent.claims.stakingCost(tile.claims)
 		: 0
 
-	const tech = agent.claims.getTech(teamId)
+	const tech = agent.claims.teamTech(teamId)
 
 	const validPlace = isValidSpawnPlace(agent, teamId, choice.place)
 	const howManyAlready = [...agent.units.list()]
@@ -28,7 +30,7 @@ export const proposeSpawn = proposerFn(
 		.filter(unit => unit.kind === choice.unitKind)
 		.length
 
-	if (unitKind in tech && !tech[unitKind as keyof Claim.Tech])
+	if (tech.has(unitKind))
 		return new SpawnDenial(`unit kind "${unitKind}" is not unlocked`)
 
 	if (!recruitable)

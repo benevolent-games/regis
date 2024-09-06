@@ -47,7 +47,7 @@ export class Rosters {
 
 		const unlockedUnits: UnitKind[] = [
 			"pawn",
-			...Object.entries(agent.claims.getTech(teamId))
+			...Object.entries(agent.claims.teamTech(teamId))
 				.filter(([,enabled]) => !!enabled)
 				.map(([unitKind]) => unitKind as UnitKind)
 		]

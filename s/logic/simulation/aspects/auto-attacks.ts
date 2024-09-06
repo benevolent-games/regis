@@ -24,8 +24,8 @@ export function autoAttacks(agent: Agent, proposers: Proposers, turn: Turn) {
 	for (const attacker of myUnits) {
 		const archetype = agent.archetype(attacker.kind)
 
-		if (archetype.attack && !alreadyAttacked.has(attacker.id)) {
-			const {range} = archetype.attack
+		if (archetype.armed && !alreadyAttacked.has(attacker.id)) {
+			const {range} = archetype.armed
 
 			const enemyUnits = findEnemyUnits(agent, myTeam)
 			const enemiesNearby = [...enemyUnits]
