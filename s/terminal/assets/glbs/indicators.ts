@@ -3,8 +3,8 @@ import {Map2} from "../../../tools/map2.js"
 import {Glb, Instancer} from "../utils/glb.js"
 import {TeamId} from "../../../logic/state.js"
 import {ResourceLevel} from "../../../config/game/types.js"
+import {Archetype} from "../../../config/units/archetype.js"
 import {UnitKind, unitsConfig} from "../../../config/units.js"
-import { Archetype } from "../../../config/units/archetype.js"
 
 const teamIds = [0, 1, null]
 
