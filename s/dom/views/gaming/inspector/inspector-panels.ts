@@ -2,10 +2,10 @@
 import {loop} from "@benev/toolbox"
 import {html, is} from "@benev/slate"
 
+import {Unit} from "../../../../logic/state.js"
 import {Agent} from "../../../../logic/agent.js"
 import {constants} from "../../../../constants.js"
 import {unitEssays} from "../../../../logic/essays.js"
-import {Unit, UnitKind} from "../../../../logic/state.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
 import {canAfford} from "../../../../logic/simulation/aspects/money.js"
 import {RosterCell, TileCell} from "../../../../terminal/parts/selectacon.js"
@@ -200,7 +200,7 @@ function livingUnitInfo(agent: Agent, unit: Unit, myTeam: number, freedom: UnitF
 	})()
 
 	const availability = (() => {
-		const report = freedom.report(unit.id, arc)
+		const report = freedom.query(unit.id, arc)
 		if (report.canAct) {
 			const can: string[] = []
 			if (report.canMove) can.push("move")

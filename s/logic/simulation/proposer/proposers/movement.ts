@@ -19,8 +19,8 @@ export const proposeMovement = proposerFn(
 	if (!archetype.mobile)
 		return new MovementDenial(`unit archetype "${unit.kind}" does not have move capability`)
 
-	const {canMove} = freedom.report(unit.id, archetype)
-	if (!canMove)
+	const report = freedom.query(unit.id, archetype)
+	if (!report?.available.moves)
 		return new MovementDenial(`unit "${unit.kind}" at ${boardCoords(choice.source)} does not have freedom to move`)
 
 	const destination = [...choice.path].pop()!

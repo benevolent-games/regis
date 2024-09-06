@@ -16,8 +16,8 @@ export const proposeAttack = proposerFn(
 	const {attack, victim, attacker} = report
 	const archetype = agent.archetype(attacker.kind)
 
-	const {canAttack} = freedom.report(attacker.id, archetype)
-	if (!canAttack)
+	const freequery = freedom.query(attacker.id, archetype)
+	if (!freequery?.canAttack(victim.id))
 		return new MovementDenial(`unit "${attacker.kind}" at ${boardCoords(attacker.place)} does not have freedom to attack`)
 
 	if (!turnTracker.ourTurn || turnTracker.teamId !== attacker.team)
@@ -27,7 +27,7 @@ export const proposeAttack = proposerFn(
 		return new GameOverDenial()
 
 	return () => {
-		freedom.countAttack(attacker.id)
+		freedom.recordTask(attacker.id, {kind: "attack", targetId: victim.id})
 		const lethal = applyDamage(agent, victim, attack.damage)
 		if (lethal)
 			agent.deleteUnit(victim.id)

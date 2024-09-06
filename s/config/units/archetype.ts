@@ -46,7 +46,7 @@ export type Aspects = {
 
 	summoner: {
 		range: BoardRange
-		limit?: number
+		verticality?: Verticality
 	}
 
 	recruitable: {

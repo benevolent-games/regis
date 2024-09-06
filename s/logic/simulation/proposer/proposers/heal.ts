@@ -21,8 +21,8 @@ export const proposeHeal = proposerFn(
 	if (!healer)
 		return new HealDenial("doctor does not have heal capability")
 
-	const {canHeal} = freedom.report(doctor.id, doctorArc)
-	if (!canHeal)
+	const report = freedom.query(doctor.id, doctorArc)
+	if (!report?.canHeal(patient.id))
 		return new HealDenial("unit does not have freedom to heal")
 
 	if (patient.team !== doctor.team)
@@ -45,7 +45,7 @@ export const proposeHeal = proposerFn(
 		return new GameOverDenial()
 
 	return () => {
-		freedom.countHeal(doctor.id)
+		freedom.recordTask(doctor.id, {kind: "heal", targetId: patient.id})
 		patient.damage = newDamageValue
 	}
 })

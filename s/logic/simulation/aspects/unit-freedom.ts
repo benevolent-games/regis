@@ -5,21 +5,27 @@ import {Archetype} from "../../../config/units/archetype.js"
 import {Repeatability} from "../../../config/units/traits.js"
 
 export namespace Task {
+
+	// this unit has just been spawned this turn
+	export type Spawned = {
+		kind: "spawned"
+	}
+
 	export type Move = {
 		kind: "move"
 	}
+
 	export type Attack = {
 		kind: "attack"
-		target: number
+		targetId: number
 	}
+
 	export type Heal = {
 		kind: "heal"
-		target: number
+		targetId: number
 	}
-	export type Summon = {
-		kind: "summon"
-	}
-	export type Any = Move | Attack | Heal | Summon
+
+	export type Any = Spawned | Move | Attack | Heal
 }
 
 export class UnitFreedom {
@@ -33,11 +39,12 @@ export class UnitFreedom {
 		this.#obtain(id).push(task)
 	}
 
+	/** the memory of unit freedom should be cleared every turn */
 	clear() {
 		this.#memory.clear()
 	}
 
-	report(id: number, archetype: Archetype) {
+	query(id: number, archetype: Archetype) {
 		const {multitasker} = archetype
 
 		const kinds = new Set<Task.Any["kind"]>()
@@ -50,15 +57,16 @@ export class UnitFreedom {
 			return tasks.filter(t => t.kind === kind) as T[]
 		}
 
-		const canAct = kinds.size < (multitasker?.count ?? 1)
-		if (!canAct)
+		const justSpawnedIn = tasks.some(t => t.kind === "spawned")
+		const happyMultitasking = kinds.size < (multitasker?.count ?? 1)
+		if (justSpawnedIn || !happyMultitasking)
 			return null
 
-		function checkRepeatability<T extends {target: any}>(
+		function checkRepeatability<T extends {targetId: any}>(
 				repeatable: Repeatability | undefined,
 				tasks: T[],
 			) {
-			const targets = new Set<any>(tasks.map(t => t.target))
+			const targets = new Set<any>(tasks.map(t => t.targetId))
 			const available = (repeatable?.count ?? 1) - tasks.length
 			return {
 				available,
@@ -79,64 +87,8 @@ export class UnitFreedom {
 					const tasks = getKind("move")
 					return 1 - tasks.length
 				})(),
-				summons: (() => {
-					const {summoner} = archetype
-					const tasks = getKind<Task.Summon>("summon")
-					return (summoner?.limit ?? 1) - tasks.length
-				})(),
 			},
 		}
 	}
 }
 
-// export class UnitFreedom {
-// 	#map = new Map<number, ActionRecord>()
-//
-// 	constructor() {}
-//
-// 	#obtain(id: number) {
-// 		return mapGuarantee(this.#map, id, () => ({
-// 			moves: 0,
-// 			attacks: 0,
-// 			heals: 0,
-// 			spawning: false,
-// 		}))
-// 	}
-//
-// 	report(id: number, archetype: Archetype): FreedomReport {
-// 		const {moves, attacks, heals, spawning} = this.#obtain(id)
-// 		const sum = moves + attacks
-// 		const canAct = !spawning && sum < archetype.actionCap
-// 		return {
-// 			canAct,
-// 			canMove: canAct && moves < (archetype.move?.cap ?? 0),
-// 			canAttack: canAct && attacks < (archetype.attack?.cap ?? 0),
-// 			canHeal: canAct && heals < (archetype.heal?.cap ?? 0),
-// 		}
-// 	}
-//
-// 	countMove(id: number) {
-// 		const record = this.#obtain(id)
-// 		record.moves += 1
-// 	}
-//
-// 	countAttack(id: number) {
-// 		const record = this.#obtain(id)
-// 		record.attacks += 1
-// 	}
-//
-// 	countSpawning(id: number) {
-// 		const record = this.#obtain(id)
-// 		record.spawning = true
-// 	}
-//
-// 	countHeal(id: number) {
-// 		const record = this.#obtain(id)
-// 		record.heals += 1
-// 	}
-//
-// 	clear() {
-// 		this.#map.clear()
-// 	}
-// }
-//

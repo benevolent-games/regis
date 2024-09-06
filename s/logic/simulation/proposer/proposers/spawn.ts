@@ -1,11 +1,11 @@
 
+import {is} from "@benev/slate"
 import {proposerFn} from "../types.js"
 import {Choice, Claim} from "../../../state.js"
 import {isValidSpawnPlace} from "../../aspects/spawning.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
 import {canAfford, subtractResources} from "../../aspects/money.js"
 import {GameOverDenial, SpawnDenial, WrongTeamDenial} from "../../aspects/denials.js"
-import { is } from "@benev/slate"
 
 export const proposeSpawn = proposerFn(
 	({agent, freedom, turnTracker}) =>
@@ -58,7 +58,7 @@ export const proposeSpawn = proposerFn(
 	return () => {
 		subtractResources(agent.state, teamId, cost)
 		const id = agent.grabId()
-		freedom.countSpawning(id)
+		freedom.recordTask(id, {kind: "spawned"})
 		agent.units.add({
 			id,
 			kind: choice.unitKind,
