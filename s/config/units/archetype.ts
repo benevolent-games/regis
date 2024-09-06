@@ -1,9 +1,13 @@
 
-import {BoardRange, Multitaskability, Verticality} from "./traits"
+import {BoardRange, Repeatability, Verticality} from "./traits"
 
 export type Archetypes = Record<string, Archetype>
 
 export type Archetype = Partial<Aspects>
+
+export function asArchetype<A extends Archetype>(a: A) {
+	return a
+}
 
 export type Aspects = {
 	explained: {
@@ -18,7 +22,7 @@ export type Aspects = {
 		damage: number
 		range: BoardRange
 		verticality?: Verticality
-		multitasking?: Multitaskability
+		repeatable?: Repeatability
 	}
 
 	mobile: {
@@ -35,7 +39,7 @@ export type Aspects = {
 		healing: number
 		range: BoardRange
 		verticality?: Verticality
-		multitasking?: Multitaskability
+		repeatable?: Repeatability
 	}
 
 	stakeholder: {},
@@ -49,6 +53,10 @@ export type Aspects = {
 		cost: number
 		limit?: number
 		unlockable?: {price: number}
+	}
+
+	multitasker: {
+		count: number
 	}
 }
 

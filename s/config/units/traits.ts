@@ -4,10 +4,9 @@ export type Verticality = {
 	below?: boolean
 }
 
-export type Multitaskability = {
-	repeats?: number
+export type Repeatability = {
+	count?: number
 	focusFire?: boolean
-	whileMoving?: boolean
 }
 
 export type BoardRange = {

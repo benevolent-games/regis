@@ -33,6 +33,13 @@ new indicators scheme
 
 # code
 
+refactors
+- rename `spawn` to `summon`
+
+------
+
+features
+
 - [x] queen healing ability
 - [ ] attack arcs
 - [ ] undo one action
