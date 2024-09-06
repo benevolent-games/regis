@@ -40,7 +40,7 @@ export class Claimery {
 	}) {}
 
 	#instanceSticker(claim: Claim.Any) {
-		const {agent, assets: {indicators}} = this.options
+		const {assets: {indicators}} = this.options
 		switch (claim.kind) {
 			case "resource": return indicators.claims.resource(claim.level)
 			case "specialResource": return indicators.claims.specialResource()
@@ -63,9 +63,12 @@ export class Claimery {
 
 			const {scale, coordinates: [x, y]} = arrangement
 			const sticker = d(this.#instanceSticker(claim))
-			const s = constants.block.size
-			sticker.position.set(-x * s, 0, y * s)
-			sticker.scaling.setAll(scale)
+			// const s = constants.block.size
+			// sticker.position.set(-x * s, 0, y * s)
+			// sticker.scaling.setAll(scale)
+
+			sticker.position.set(0, 0, 0)
+
 			sticker.setParent(root)
 		})
 

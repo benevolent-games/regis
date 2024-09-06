@@ -33,6 +33,15 @@ export function asciiMap(map: MapSpec): GameInitial {
 					fn()
 			}
 
+			function rezz(glyph: string, count: number, fn: () => void) {
+				let counted = 0
+				for (const char of part)
+					if (char === glyph)
+						counted += 1
+				if (counted === count)
+					fn()
+			}
+
 			//
 			// terrain
 			//
@@ -48,9 +57,9 @@ export function asciiMap(map: MapSpec): GameInitial {
 			//
 
 			const zip = defaultClaims(tile)
-			zoop(glyphs.claims.resource, () => zip.resource(1))
-			zoop(glyphs.claims.resource2, () => zip.resource(2))
-			zoop(glyphs.claims.resource3, () => zip.resource(3))
+			rezz(glyphs.claims.resource, 1, () => zip.resource(1))
+			rezz(glyphs.claims.resource, 2, () => zip.resource(2))
+			rezz(glyphs.claims.resource, 3, () => zip.resource(3))
 			zoop(glyphs.claims.specialResource, () => zip.specialResource())
 			zoop(glyphs.claims.watchtower, () => zip.watchtower())
 			zoop(glyphs.claims.techKnight, () => zip.tech("knight"))

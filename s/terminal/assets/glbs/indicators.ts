@@ -4,6 +4,7 @@ import {Glb, Instancer} from "../utils/glb.js"
 import {TeamId} from "../../../logic/state.js"
 import {ResourceLevel} from "../../../config/game/types.js"
 import {UnitKind, unitsConfig} from "../../../config/units.js"
+import { Archetype } from "../../../config/units/archetype.js"
 
 const teamIds = [0, 1, null]
 
@@ -90,8 +91,11 @@ export class IndicatorsGlb extends Glb {
 
 		tech: (() => {
 			const instancers = new Map2<string, Instancer>()
-			for (const kind of Object.keys(unitsConfig))
-				instancers.set(kind, this.instancer(`claim-${kind}`))
+			for (const [kind, config] of Object.entries(unitsConfig)) {
+				const archetype = config.archetype as Archetype
+				if (archetype.recruitable?.unlockable)
+					instancers.set(kind, this.instancer(`claim-${kind}`))
+			}
 			return (kind: UnitKind) => instancers.require(kind)()
 		})(),
 	}

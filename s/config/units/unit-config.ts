@@ -7,3 +7,11 @@ export type UnitConfig = {
 	rendering: UnitRendering
 }
 
+export function asUnitConfig<C extends UnitConfig>(c: C) {
+	return c
+}
+
+export function asUnitsConfig<C extends Record<string, UnitConfig>>(c: C) {
+	return c
+}
+

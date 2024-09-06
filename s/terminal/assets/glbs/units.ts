@@ -41,7 +41,7 @@ export class UnitsGlb extends Glb {
 				// instancer for 'faded' prop variants
 				const fadedProp = Glb.cloneProp(normalProp)
 				Glb.changeOpacity(fadedProp, fadedOpacity)
-				normalMap.set(name, () => Glb.instantiate(fadedProp))
+				fadedMap.set(name, () => Glb.instantiate(fadedProp))
 			}
 		}
 
@@ -79,7 +79,7 @@ export class UnitsGlb extends Glb {
 	}
 
 	faded = (kind: UnitKind, teamId: TeamId, health: HealthReport | null) => {
-		return this.#unitSpawners.normal(kind, teamId, health)
+		return this.#unitSpawners.faded(kind, teamId, health)
 	}
 }
 

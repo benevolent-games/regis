@@ -1,11 +1,15 @@
 
 import {deep, ob} from "@benev/slate"
 import {Archetypes} from "./units/archetype.js"
-import {UnitConfig} from "./units/unit-config.js"
+import {asUnitsConfig} from "./units/unit-config.js"
 
 export type UnitKind = keyof typeof unitsConfig
 
-export const unitsConfig = deep.freeze({
+export function standardArchetypes(): Archetypes {
+	return ob(unitsConfig).map(spec => deep.clone(spec.archetype))
+}
+
+export const unitsConfig = deep.freeze(asUnitsConfig({
 	obstacle: {
 		rendering: {algo: "obstacle"},
 		archetype: {
@@ -105,9 +109,5 @@ export const unitsConfig = deep.freeze({
 		},
 	},
 
-} satisfies Record<string, UnitConfig>)
-
-export function standardArchetypes(): Archetypes {
-	return ob(unitsConfig).map(spec => deep.clone(spec.archetype))
-}
+}))
 

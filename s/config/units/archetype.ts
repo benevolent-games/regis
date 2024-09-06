@@ -1,5 +1,5 @@
 
-import {BoardRange, Repeatability, Verticality} from "./traits"
+import {BoardRange, Repeatability, Verticality} from "./traits.js"
 
 export type Archetypes = Record<string, Archetype>
 

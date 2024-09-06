@@ -34,7 +34,7 @@ export class ClaimsHelper {
 		for (const claim of claims) {
 			switch (claim.kind) {
 				case "resource": {
-					const {stakeCost} = config.resources.mining.resource.at(claim.level)!
+					const {stakeCost} = config.resources.mining.resource.at(claim.level - 1)!
 					cost += stakeCost
 					break
 				}
@@ -89,12 +89,12 @@ export class ClaimsHelper {
 		for (const claim of claims) {
 			switch (claim.kind) {
 				case "resource": {
-					const resource = config.resources.mining.resource.at(claim.level)!
+					const resource = config.resources.mining.resource.at(claim.level - 1)!
 					evaluate(claim, resource.revenue)
 					break
 				}
 				case "specialResource": {
-					const resource = config.resources.mining.resource.at(claim.stockpile)!
+					const resource = config.resources.mining.specialResource
 					evaluate(claim, resource.revenue)
 					break
 				}

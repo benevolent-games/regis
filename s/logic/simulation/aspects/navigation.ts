@@ -46,7 +46,8 @@ export function chebyshevDistance(a: Vec2, b: Vec2) {
 }
 
 export function isWithinRange(range: BoardRange, a: Vec2, b: Vec2) {
-	const distance = range.kind === "chebyshev"
+	const kind = range.kind ?? "chebyshev"
+	const distance = kind === "chebyshev"
 		? chebyshevDistance(a, b)
 		: manhattanDistance(a, b)
 	return distance <= range.steps
