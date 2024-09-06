@@ -2,26 +2,20 @@
 # art
 
 new indicators scheme
+- color sources -- *i will yoink the colors from these sources to apply to other stuff*
+  - `color-neutral` -- *white*
+  - `color-team1` -- *cyan*
+  - `color-team2` -- *yellowy-orange*
+  - `color-angry` -- *red*
+  - `color-happy` -- *green*
 - liberties
-  - liberty-move
-    - `liberty-move-neutral`
-    - `liberty-move-team1`
-    - `liberty-move-team2`
-  - liberty-attack
-    - `liberty-attack-neutral`
-    - `liberty-attack-team1`
-    - `liberty-attack-team2`
-  - liberty-spawn
-    - `liberty-spawn-neutral`
-    - `liberty-spawn-team1`
-    - `liberty-spawn-team2`
-  - liberty-heal
-    - `liberty-heal-neutral`
-    - `liberty-heal-team1`
-    - `liberty-heal-team2`
+  - `liberty-move`
+  - `liberty-attack`
+  - `liberty-spawn`
+  - `liberty-heal`
 - claims
-  - `claim-depleted`
-  - stake
+  - `claim-depleted` *(some kinda alert)*
+  - staking *(four corners thing, maybe)*
     - `claim-stake-on`
     - `claim-stake-off`
   - tech
@@ -30,6 +24,27 @@ new indicators scheme
     - `claim-tech-bishop`
     - `claim-tech-queen`
     - `claim-tech-elephant`
+  - resources
+    - `claim-special-resource`
+    - `claim-resource1`
+    - `claim-resource2`
+    - `claim-resource3`
+- danger and attacks
+  - `damage` -- *unit on this tile has been hurt last turn*
+  - `threat` -- *identifies when your own unit is in danger*
+  - `attack-arc` -- *trajectory of an attack, through the air*
+  - `dead` -- *a unit died here*
+- fog of war
+  - `aura`
+- selection and hover
+  - `hover`
+  - `selected`
+- moves
+  - `move-straight`
+  - `move-corner`
+  - `move-start`
+  - `move-end`
+  - `move-riser`
 
 # code
 
