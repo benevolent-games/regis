@@ -2,7 +2,7 @@
 import {vec2} from "@benev/toolbox"
 import {proposerFn} from "../types.js"
 import {Choice} from "../../../state.js"
-import {isValidStep} from "../../aspects/navigation.js"
+import {isValidStep, isWithinRange} from "../../aspects/navigation.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
 import {canAfford, subtractResources} from "../../aspects/money.js"
 import {GameOverDenial, MovementDenial, WrongTeamDenial} from "../../aspects/denials.js"
@@ -18,6 +18,13 @@ export const proposeMovement = proposerFn(
 	const archetype = agent.archetype(unit.kind)
 	if (!archetype.mobile)
 		return new MovementDenial(`unit archetype "${unit.kind}" does not have move capability`)
+
+	const maxSteps = archetype.mobile.range.kind === "manhattan"
+		? archetype.mobile.range.steps
+		: archetype.mobile.range.steps + 1
+
+	if (choice.path.length > maxSteps)
+		return new MovementDenial(`path is too long`)
 
 	const report = freedom.query(unit.id, archetype)
 	if (!report?.available.moves)

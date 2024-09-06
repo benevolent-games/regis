@@ -1,9 +1,9 @@
 
-import {Vec2, vec3} from "@benev/toolbox"
 import {Trashbin} from "@benev/slate"
+import {Vec2, vec3} from "@benev/toolbox"
 import {TransformNode} from "@babylonjs/core"
 
-import {Choice, TeamId} from "../../logic/state.js"
+import {Choice} from "../../logic/state.js"
 import {constants} from "../../constants.js"
 import {Cell, TileCell} from "../parts/selectacon.js"
 import {ConsiderationResult, PlannerOptions} from "./types.js"
@@ -86,12 +86,6 @@ export class Planner {
 		spawnGhosts.resetPossibleGhosts()
 		const {indicators} = assets
 		const selected = selectacon.selection.value
-
-		const selectedTeam = (
-			(selected?.kind === "tile")
-				? (agent.units.at(selected.place)?.team ?? null)
-				: selected?.teamId ?? null
-		)
 
 		for (const {place} of agent.tiles.list()) {
 			const target: TileCell = {

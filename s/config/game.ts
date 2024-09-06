@@ -16,11 +16,11 @@ export function standardGameConfig(): GameConfig {
 			universalBasicIncome: 1,
 			mining: {
 				resource: [
-					{revenue: 1, stakeCost: 4},
-					{revenue: 2, stakeCost: 12},
-					{revenue: 3, stakeCost: 16},
+					{revenue: 1, stakeCost: 4, stock: 24 * 1},
+					{revenue: 2, stakeCost: 12, stock: 24 * 2},
+					{revenue: 3, stakeCost: 16, stock: 24 * 3},
 				],
-				specialResource: {revenue: 3, stakeCost: 4},
+				specialResource: {revenue: 3, stakeCost: 4, stock: 24},
 			},
 		},
 		teams: [

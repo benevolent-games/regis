@@ -15,12 +15,17 @@ export function isVerticallyCompatible(
 		a: Tile,
 		b: Tile,
 	) {
+
 	const report = verticalCompatibilityReport(a, b)
-	return (
-		(report.withinHalfStep) ||
-		(verticality?.above && report.above) ||
-		(verticality?.below && report.below)
-	)
+
+	if (report.withinHalfStep)
+		return true
+
+	if (report.above)
+		return !!verticality?.above
+
+	if (report.below)
+		return !!verticality?.below
 }
 
 function verticalCompatibilityReport(a: Tile, b: Tile): VerticalCompatibility {

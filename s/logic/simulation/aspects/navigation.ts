@@ -64,6 +64,7 @@ export function isValidStep(
 	const isVacant = !agent.units.at(placeB)
 	const isCardinalNeighbor = getCardinalNeighbors(agent, placeA)
 		.some(neighbor => vec2.equal(neighbor, placeB))
+
 	return (
 		isVacant &&
 		isCardinalNeighbor &&

@@ -2,6 +2,7 @@
 import {Vec2} from "@benev/toolbox"
 import {Choice} from "../../../logic/state.js"
 import {considerationFn, ConsiderationResult} from "../types.js"
+import {isWithinRange} from "../../../logic/simulation/aspects/navigation.js"
 import {calculateMovement} from "../../../logic/simulation/aspects/moving.js"
 import {Denial, SoftDenial} from "../../../logic/simulation/aspects/denials.js"
 
@@ -13,6 +14,18 @@ export const considerMovement = considerationFn(
 		indicate: undefined,
 		actuate: undefined,
 	}
+
+	const unit = agent.units.at(source)
+	if (!unit)
+		return nope
+
+	const archetype = agent.archetype(unit.kind)
+
+	if (!archetype.mobile)
+		return nope
+
+	if (!isWithinRange(archetype.mobile.range, source, target))
+		return nope
 
 	const movement = calculateMovement({agent, source, target})
 

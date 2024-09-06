@@ -119,12 +119,12 @@ export function isFullTeamInfo(team: TeamInfo): team is FullTeamInfo {
 export namespace Claim {
 	export type SpecialResource = {
 		kind: "specialResource"
-		stockpile: number
+		stockTaken: number
 	}
 	export type Resource = {
 		kind: "resource"
 		level: 1 | 2 | 3
-		stockpile: number
+		stockTaken: number
 	}
 	export type Watchtower = {
 		kind: "watchtower"

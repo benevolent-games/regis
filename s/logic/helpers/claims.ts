@@ -23,6 +23,10 @@ export class ClaimsHelper {
 		}
 	}
 
+	get #config() {
+		return this.state.initial.config
+	}
+
 	stakeholderAt(place: Vec2) {
 		const {state, units} = this
 
@@ -78,15 +82,27 @@ export class ClaimsHelper {
 		return claims.find(c => c.kind === "watchtower")
 	}
 
+	getResourceValues(claim: Claim.Resource | Claim.SpecialResource) {
+		const {resources} = this.#config
+		return (claim.kind === "resource")
+			? resources.mining.resource.at(claim.level - 1)!
+			: resources.mining.specialResource
+	}
+
+	initialStock(claim: Claim.Resource | Claim.SpecialResource) {
+		const {resources} = this.#config
+		return (claim.kind === "resource")
+			? this.getResourceValues(claim).stock
+			: resources.mining.specialResource.stock
+	}
+
 	stock(claims: Claim.Any[]) {
 		return claims
 			.filter(c => c.kind === "resource" || c.kind === "specialResource")
-			.reduce((stock, claim) => stock + claim.stockpile, 0)
+			.reduce((total, claim) => total + (this.initialStock(claim) - claim.stockTaken), 0)
 	}
 
 	income(claims: Claim.Any[]) {
-		const {config} = this.state.initial
-
 		// we'll accumulate the total income here
 		let income = 0
 
@@ -96,25 +112,18 @@ export class ClaimsHelper {
 		const removeFromStockpiles = () => extractors.forEach(fn => fn())
 
 		// this function accumulates `income` and adds an extractor function
-		const evaluate = (container: {stockpile: number}, take: number) => {
-			const remaining = Math.max(0, container.stockpile - take)
-			const taken = container.stockpile - remaining
-			income += taken
-			extractors.push(() => { container.stockpile = remaining })
+		const evaluate = (claim: Claim.Resource | Claim.SpecialResource, take: number) => {
+			const full = this.initialStock(claim)
+			const proposed = Math.min(full, claim.stockTaken + take)
+			const takeable = proposed - claim.stockTaken
+			income += takeable
+			extractors.push(() => { claim.stockTaken = proposed })
 		}
 
 		for (const claim of claims) {
-			switch (claim.kind) {
-				case "resource": {
-					const resource = config.resources.mining.resource.at(claim.level - 1)!
-					evaluate(claim, resource.revenue)
-					break
-				}
-				case "specialResource": {
-					const resource = config.resources.mining.specialResource
-					evaluate(claim, resource.revenue)
-					break
-				}
+			if (claim.kind === "resource" || claim.kind === "specialResource") {
+				const resource = this.getResourceValues(claim)
+				evaluate(claim, resource.revenue)
 			}
 		}
 
