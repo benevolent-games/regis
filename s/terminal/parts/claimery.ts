@@ -1,6 +1,6 @@
 
-import {Trashbin} from "@benev/slate"
-import {scalar, Vec2, Vec3, vec3} from "@benev/toolbox"
+import {Pipe, Trashbin} from "@benev/slate"
+import {scalar, vec2, Vec2, Vec3, vec3} from "@benev/toolbox"
 import {Quaternion, TransformNode} from "@babylonjs/core"
 
 import {World} from "./world.js"
@@ -24,10 +24,10 @@ const singleLayout: StickerLayout[] = [
 ]
 
 const quadLayout: StickerLayout[] = [
-	{scale: 0.5, coordinates: [0.25, 0.75]},
-	{scale: 0.5, coordinates: [0.75, 0.75]},
-	{scale: 0.5, coordinates: [0.25, 0.25]},
-	{scale: 0.5, coordinates: [0.75, 0.25]},
+	{scale: 0.6, coordinates: [0.33, 0.66]},
+	{scale: 0.6, coordinates: [0.66, 0.66]},
+	{scale: 0.6, coordinates: [0.33, 0.33]},
+	{scale: 0.6, coordinates: [0.66, 0.33]},
 ]
 
 export class Claimery {
@@ -61,13 +61,21 @@ export class Claimery {
 			if (!arrangement)
 				return
 
-			const {scale, coordinates: [x, y]} = arrangement
+			const {scale, coordinates} = arrangement
 			const sticker = d(this.#instanceSticker(claim))
-			// const s = constants.block.size
-			// sticker.position.set(-x * s, 0, y * s)
-			// sticker.scaling.setAll(scale)
 
-			sticker.position.set(0, 0, 0)
+			function coordinate(v: Vec2) {
+				return Pipe.with(v)
+					.to(v => vec2.add(v, [-0.5, -0.5]))
+					.to(v => vec2.multiplyBy(v, constants.block.size))
+					.to(([x, y]) => [x, 0, -y] as Vec3)
+					.done()
+			}
+
+			sticker.scaling.setAll(scale)
+			sticker.position.set(...coordinate(coordinates))
+
+			// sticker.position.set(0, 0, 0)
 
 			sticker.setParent(root)
 		})

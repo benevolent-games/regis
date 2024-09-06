@@ -48,6 +48,7 @@ export const inspectorPanels = {
 		const stakeholder = agent.claims.stakeholderAt(place)
 		const hasClaims = claims.length > 0
 		const {income} = agent.claims.income(claims)
+		const resourceful = agent.claims.isResourceful(claims)
 		const watchtower = agent.claims.watchtower(claims)
 		const stakingCost = agent.claims.stakingCost(claims)
 		const stock = agent.claims.stock(claims)
@@ -79,14 +80,14 @@ export const inspectorPanels = {
 						: (stakeholder.team === myTeam)
 							? html`<p class=happy>✅ You are staking this claim.</p>`
 							: html`<p class=angry>❌ The enemy is staking this claim.</p>`}
-					${(income === 0)
+					${(resourceful && income === 0)
 						? html`<p class=angry>Depleted, it's empty and provides no income.</p>`
 						: null}
 					${listify({
 						income: (income > 0)
 							? `+${income} per cycle`
 							: null,
-						stock,
+						stock: resourceful ? stock : null,
 						watchtower: watchtower
 							&& `watchtower ${watchtower.range.steps}`,
 						unlocks: [...tech].join(", "),
@@ -210,7 +211,7 @@ function livingUnitInfo(agent: Agent, unit: Unit, myTeam: number, freedom: UnitF
 			if (attacks > 0) can.push(`${attacks} attacks`)
 			if (heals > 0) can.push(`${heals} heals`)
 			if (can.length > 0)
-				return `can ${can.join(", ")}`
+				return can.join(", ")
 		}
 		else return "exhausted"
 	})()

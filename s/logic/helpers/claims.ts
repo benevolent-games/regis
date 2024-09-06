@@ -67,6 +67,13 @@ export class ClaimsHelper {
 		return cost
 	}
 
+	isResourceful(claims: Claim.Any[]) {
+		return claims.some(c =>
+			c.kind === "resource" ||
+			c.kind === "specialResource"
+		)
+	}
+
 	watchtower(claims: Claim.Any[]) {
 		return claims.find(c => c.kind === "watchtower")
 	}
