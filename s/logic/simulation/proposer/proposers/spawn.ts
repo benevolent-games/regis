@@ -30,7 +30,7 @@ export const proposeSpawn = proposerFn(
 		.filter(unit => unit.kind === choice.unitKind)
 		.length
 
-	if (tech.has(unitKind))
+	if (!tech.has(unitKind))
 		return new SpawnDenial(`unit kind "${unitKind}" is not unlocked`)
 
 	if (!recruitable)

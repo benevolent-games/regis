@@ -9,6 +9,7 @@ import {Assets} from "../assets/assets.js"
 import {constants} from "../../constants.js"
 import {UnitKind} from "../../config/units.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
+import { TeamId } from "../../logic/state.js"
 
 export type RosterPlacement = {
 	mesh: Meshoid
@@ -45,18 +46,13 @@ export class Rosters {
 			.filter(([,archetype]) => !!archetype.recruitable)
 			.map(([kind]) => kind as UnitKind)
 
-		const unlockedUnits: UnitKind[] = [
-			"pawn",
-			...Object.entries(agent.claims.teamTech(teamId))
-				.filter(([,enabled]) => !!enabled)
-				.map(([unitKind]) => unitKind as UnitKind)
-		]
+		const tech = agent.claims.teamTech(teamId)
 
 		const offset = (spawnableUnits.length / 2) - 0.5
 		const transform = new TransformNode("rosterRoot", world.scene)
 
 		const placers = spawnableUnits.map((unitKind, index) => {
-			const isUnlocked = unlockedUnits.includes(unitKind)
+			const isUnlocked = tech.has(unitKind)
 			if (!isUnlocked)
 				return () => {}
 

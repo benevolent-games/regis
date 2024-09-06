@@ -7,11 +7,21 @@ import {AgentState, Claim} from "../state.js"
 import {UnitKind} from "../../config/units.js"
 
 export class ClaimsHelper {
+	#alwaysUnlocked: UnitKind[] = []
+
 	constructor(
-		private state: AgentState,
-		private tiles: TilesHelper,
-		private units: UnitsHelper,
-	) {}
+			private state: AgentState,
+			private tiles: TilesHelper,
+			private units: UnitsHelper,
+		) {
+
+		for (const [unitKind, archetype] of Object.entries(state.initial.config.archetypes)) {
+			const recruitable = archetype.recruitable
+			const unlockable = archetype.recruitable?.unlockable
+			if (recruitable && !unlockable)
+				this.#alwaysUnlocked.push(unitKind as UnitKind)
+		}
+	}
 
 	stakeholderAt(place: Vec2) {
 		const {state, units} = this
@@ -126,7 +136,12 @@ export class ClaimsHelper {
 	}
 
 	teamTech(teamId: number) {
-		return this.tech(this.teamStakedClaims(teamId))
+		const tech = this.tech(this.teamStakedClaims(teamId))
+
+		for (const kind of this.#alwaysUnlocked)
+			tech.add(kind)
+
+		return tech
 	}
 
 	teamIncome(teamId: number) {
