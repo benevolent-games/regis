@@ -57,7 +57,10 @@ export class Selectacon {
 		const cell = this.hover.value
 
 		if (cell) {
-			const instance = d(assets.indicators.hover(turnTracker.teamId))
+			const teamId = turnTracker.ourTurn
+				? turnTracker.teamId
+				: null
+			const instance = d(assets.indicators.hover(teamId))
 			instance.position.set(...cell.position)
 		}
 	}
