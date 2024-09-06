@@ -35,7 +35,7 @@ export default template(async basic => {
 			<game-app>
 				<header slot=lead>
 					<h1>regis</h1>
-					<p>a new game like chess, but reworked to play like a modern rts.</p>
+					<p>a new game inspired by chess and modern rts games.</p>
 				</header>
 				<article>
 					${unsanitized(await getArticle())}

@@ -6,6 +6,53 @@ const config = standardGameConfig()
 
 export default string`
 
+## what's the deal with regis
+
+regis is played on a chess board with chess pieces.  
+much like a modern rts, regis has build orders, rushes and cheeses, and economics.  
+regis also has fog-of-war and terrain features like high-ground and choke-points.  
+
+### just do a knight rush!
+
+1. recruit a pawn onto your nearest (🌾 resource 1) claim.
+	- that will double your income right away, that's a good move.
+1. recruit another pawn to also stake the (♞ knight) claim.
+	- staking that claim will cost some more cash, you may need to pass a couple turns to save up for it.
+1. recruit a couple of knights, when you've got enough money for it.
+	- send 'em in and devastate your greedy opponent
+
+## rules of regis
+
+### fundamentals
+- you win by killing the opponent's king
+- you can perform multiple actions during your turn
+- units have varying amounts of health
+- units cannot jump up or down cliffs
+- you lose if you run out of time
+
+### resources and claims
+- you earn resources each turn
+- you can recruit new units by spending resources
+- you can stake a claim by placing a pawn onto it, which may cost resources
+- some claims increase your income, others unlock new units
+- each chess unit has unique movement and attacking capabilities
+
+### fog-of-war
+- each unit has a different vision range
+- you cannot see enemy units outside your vision
+- enemies outside your vision are revealed when they attack you
+- units cannot see up cliffs (but they can see *down* cliffs)
+
+## current game configuration
+
+\`\`\`json
+${JSON.stringify(config, null, "\t")}
+\`\`\`
+
+`
+
+export const oldArticle = string`
+
 ## the five pillars of strategy
 
 1. **maneuvers** — the tactics of conducting battles

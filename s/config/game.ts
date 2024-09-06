@@ -4,9 +4,7 @@ import {GameConfig} from "./game/types.js"
 import {standardArchetypes} from "./units.js"
 
 export function standardGameConfig(): GameConfig {
-	const archetypes = standardArchetypes()
 	return {
-		archetypes,
 		time: {
 			limit: seconds(120),
 			delay: seconds(5),
@@ -29,6 +27,7 @@ export function standardGameConfig(): GameConfig {
 			{name: "White"},
 			{name: "Black"},
 		],
+		archetypes: standardArchetypes(),
 	}
 }
 
