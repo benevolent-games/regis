@@ -44,7 +44,7 @@ export type Aspects = {
 
 	stakeholder: {},
 
-	summoner: {
+	recruiter: {
 		range: BoardRange
 		verticality?: Verticality
 	}

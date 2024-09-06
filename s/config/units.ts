@@ -21,12 +21,12 @@ export const unitsConfig = deep.freeze(asUnitsConfig({
 	king: {
 		rendering: {algo: "normal"},
 		archetype: {
-			explained: {sentence: "Game ends when he dies, can see up cliffs, acts as a spawnpoint."},
+			explained: {sentence: "Game ends when he dies, can see up cliffs, acts as recruitment point."},
 			mortal: {health: 5},
 			mobile: {range: {steps: 1}},
 			sighted: {range: {steps: 1}, verticality: {above: true, below: true}},
 			armed: {damage: 1, range: {steps: 1}},
-			summoner: {range: {steps: 1}},
+			recruiter: {range: {steps: 1}},
 			multitasker: {count: 2},
 		},
 	},
@@ -34,14 +34,14 @@ export const unitsConfig = deep.freeze(asUnitsConfig({
 	queen: {
 		rendering: {algo: "normal"},
 		archetype: {
-			explained: {sentence: "Specialist scout, medic, spawnpoint."},
+			explained: {sentence: "Specialist scout, medic, recruiter."},
 			recruitable: {cost: 4, unlockable: {price: 0}},
 			mortal: {health: 4},
 			armed: {damage: 1, range: {steps: 1}},
 			mobile: {range: {steps: 3, kind: "manhattan"}},
 			sighted: {range: {steps: 2}, verticality: {below: true}},
 			healer: {healing: 1, range: {steps: 1}},
-			summoner: {range: {steps: 1}},
+			recruiter: {range: {steps: 1}},
 		},
 	},
 

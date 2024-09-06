@@ -42,16 +42,16 @@ export class Rosters {
 		const rosterGuide = assets.board.roster(teamId)
 		rosterGuide.computeWorldMatrix(true)
 
-		const spawnableUnits = Object.entries(agent.state.initial.config.archetypes)
+		const recruitableUnits = Object.entries(agent.state.initial.config.archetypes)
 			.filter(([,archetype]) => !!archetype.recruitable)
 			.map(([kind]) => kind as UnitKind)
 
 		const tech = agent.claims.teamTech(teamId)
 
-		const offset = (spawnableUnits.length / 2) - 0.5
+		const offset = (recruitableUnits.length / 2) - 0.5
 		const transform = new TransformNode("rosterRoot", world.scene)
 
-		const placers = spawnableUnits.map((unitKind, index) => {
+		const placers = recruitableUnits.map((unitKind, index) => {
 			const isUnlocked = tech.has(unitKind)
 			if (!isUnlocked)
 				return () => {}

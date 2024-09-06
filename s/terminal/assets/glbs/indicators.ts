@@ -48,7 +48,7 @@ export class IndicatorsGlb extends Glb {
 			[1, this.instancer(`attack`)],
 		]),
 
-		spawn: this.#tempHack([
+		recruit: this.#tempHack([
 			[null, this.instancer(`liberty-action-neutral`)],
 			[0, this.instancer(`liberty-action-team1`)],
 			[1, this.instancer(`liberty-action-team2`)],

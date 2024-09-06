@@ -104,9 +104,9 @@ export class Planner {
 						action: () => this.#instanceIndicator(() => indicators.liberty.heal(ourTeam), place),
 						pattern: () => this.#instanceIndicator(() => indicators.liberty.heal(null), place),
 					}),
-					spawn: considered => makeIndicator(considered, {
+					recruit: considered => makeIndicator(considered, {
 						action: () => {
-							this.#instanceIndicator(() => indicators.liberty.spawn(ourTeam), place)
+							this.#instanceIndicator(() => indicators.liberty.recruit(ourTeam), place)
 							if (selected?.kind === "roster")
 								spawnGhosts.setPossibleGhost({
 									place,
@@ -114,7 +114,7 @@ export class Planner {
 									unitKind: selected.unitKind,
 								})
 						},
-						pattern: () => this.#instanceIndicator(() => indicators.liberty.spawn(null), place),
+						pattern: () => this.#instanceIndicator(() => indicators.liberty.recruit(null), place),
 					}),
 					attack: considered => makeIndicator(considered, {
 						action: () => this.#instanceIndicator(() => indicators.liberty.attack(ourTeam), place),
@@ -134,7 +134,7 @@ export class Planner {
 			selected: Cell | null
 			on: {
 				heal: (r: ConsiderationResult) => boolean
-				spawn: (r: ConsiderationResult) => boolean
+				recruit: (r: ConsiderationResult) => boolean
 				attack: (r: ConsiderationResult) => boolean
 				movement: (r: ConsiderationResult) => boolean
 			}
@@ -151,7 +151,7 @@ export class Planner {
 				selected &&
 				selected.kind === "roster" &&
 				selected.teamId === agent.activeTeamId) {
-					on.spawn(considerations.spawn(target.place, selected.unitKind))
+					on.recruit(considerations.recruit(target.place, selected.unitKind))
 			}
 
 			// a tile is already selected

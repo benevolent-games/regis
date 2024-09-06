@@ -168,7 +168,7 @@ function generalUnitInfo(agent: Agent, unitKind: UnitKind) {
 			health: arc.mortal?.health ?? "invincible",
 			multitasker: arc.multitasker ? arc.multitasker.count : null,
 			stakeholder: arc.stakeholder ? "can stake claims" : null,
-			"summoner": arc.summoner
+			recruiter: arc.recruiter
 				? "yes"
 				: null,
 		},

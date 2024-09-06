@@ -2,14 +2,14 @@
 import {is} from "@benev/slate"
 import {proposerFn} from "../types.js"
 import {Choice} from "../../../state.js"
-import {isValidSpawnPlace} from "../../aspects/spawning.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
+import {isValidRecruitmentPlace} from "../../aspects/recruiting.js"
 import {canAfford, subtractResources} from "../../aspects/money.js"
-import {GameOverDenial, SpawnDenial, WrongTeamDenial} from "../../aspects/denials.js"
+import {GameOverDenial, RecruitDenial, WrongTeamDenial} from "../../aspects/denials.js"
 
-export const proposeSpawn = proposerFn(
+export const proposeRecruit = proposerFn(
 	({agent, freedom, turnTracker}) =>
-	(choice: Choice.Spawn) => {
+	(choice: Choice.Recruit) => {
 
 	const {unitKind} = choice
 	const {config} = agent.state.initial
@@ -24,17 +24,17 @@ export const proposeSpawn = proposerFn(
 
 	const tech = agent.claims.teamTech(teamId)
 
-	const validPlace = isValidSpawnPlace(agent, teamId, choice.place)
+	const validPlace = isValidRecruitmentPlace(agent, teamId, choice.place)
 	const howManyAlready = [...agent.units.list()]
 		.filter(unit => unit.team === teamId)
 		.filter(unit => unit.kind === choice.unitKind)
 		.length
 
 	if (!tech.has(unitKind))
-		return new SpawnDenial(`unit kind "${unitKind}" is not unlocked`)
+		return new RecruitDenial(`unit kind "${unitKind}" is not unlocked`)
 
 	if (!recruitable)
-		return new SpawnDenial(`unit kind "${unitKind}" is not for sale`)
+		return new RecruitDenial(`unit kind "${unitKind}" is not for sale`)
 
 	const cost = recruitable.cost + stakingCost
 	const affordable = canAfford(agent.activeTeam, cost)
@@ -43,13 +43,13 @@ export const proposeSpawn = proposerFn(
 		: true
 
 	if (!affordable)
-		return new SpawnDenial(`cannot afford "${unitKind}" at cost of ${cost}`)
+		return new RecruitDenial(`cannot afford "${unitKind}" at cost of ${cost}`)
 
 	if (!availableInRoster)
-		return new SpawnDenial(`"${unitKind}" not available in roster`)
+		return new RecruitDenial(`"${unitKind}" not available in roster`)
 
 	if (!validPlace)
-		return new SpawnDenial(`invalid spawn place ${boardCoords(choice.place)}`)
+		return new RecruitDenial(`invalid spawn place ${boardCoords(choice.place)}`)
 
 	if (!turnTracker.ourTurn)
 		return new WrongTeamDenial()

@@ -11,7 +11,7 @@ new indicators scheme
 - liberties
   - `liberty-move`
   - `liberty-attack`
-  - `liberty-spawn`
+  - `liberty-recruit`
   - `liberty-heal`
 - claims
   - `claim-depleted` *(some kinda alert)*
@@ -47,11 +47,6 @@ new indicators scheme
   - `move-riser`
 
 # code
-
-refactors
-- rename `spawn` to `summon`
-
-------
 
 features
 

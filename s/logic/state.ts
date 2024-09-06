@@ -146,8 +146,8 @@ export namespace Claim {
 /////////////////////////////////////////////////
 
 export namespace Choice {
-	export type Spawn = {
-		kind: "spawn"
+	export type Recruit = {
+		kind: "recruit"
 		unitKind: UnitKind
 		place: Vec2
 	}
@@ -171,7 +171,7 @@ export namespace Choice {
 	}
 
 	export type Any = (
-		| Spawn
+		| Recruit
 		| Movement
 		| Attack
 		| Heal

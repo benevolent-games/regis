@@ -5,17 +5,17 @@ import {Choice} from "../../../logic/state.js"
 import {UnitKind} from "../../../config/units.js"
 import {Denial, SoftDenial} from "../../../logic/simulation/aspects/denials.js"
 
-export const considerSpawn = considerationFn(
+export const considerRecruit = considerationFn(
 	({proposers, commit}) =>
 	(place: Vec2, unitKind: UnitKind) => {
 
-	const choice: Choice.Spawn = {
-		kind: "spawn",
+	const choice: Choice.Recruit = {
+		kind: "recruit",
 		place,
 		unitKind,
 	}
 
-	const proposal = proposers.spawn(choice)
+	const proposal = proposers.recruit(choice)
 
 	if (proposal instanceof SoftDenial)
 		return {

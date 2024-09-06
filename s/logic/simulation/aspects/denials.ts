@@ -38,9 +38,9 @@ export class GameOverDenial extends SoftDenial {
 // hard denials
 //
 
-export class SpawnDenial extends HardDenial {
+export class RecruitDenial extends HardDenial {
 	constructor(reason: string) {
-		super(`spawn denied: ${reason}`)
+		super(`recruit denied: ${reason}`)
 	}
 }
 
