@@ -6,7 +6,7 @@ export class TimerObserver {
 	#lastUpdate = Date.now()
 
 	constructor(
-		public rules: TimeRules | null,
+		public rules: TimeRules | undefined,
 		public remoteReport: TimeReport,
 	) {}
 

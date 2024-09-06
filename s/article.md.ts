@@ -1,8 +1,8 @@
 
 import {string} from "@benev/turtle"
-import {defaultGameConfig} from "./logic/data.js"
+import {standardGameConfig} from "./config/game.js"
 
-const config = defaultGameConfig()
+const config = standardGameConfig()
 
 export default string`
 

@@ -1,5 +1,5 @@
 
-import {AssetUrls} from "./terminal/parts/assets.js"
+import {AssetUrls} from "./terminal/assets/assets.js"
 
 export const constants = {
 	urls: {

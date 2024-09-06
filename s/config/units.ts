@@ -22,7 +22,7 @@ export const unitsConfig = deep.freeze({
 			mobile: {range: {steps: 1}},
 			sighted: {range: {steps: 1}, verticality: {above: true, below: true}},
 			armed: {damage: 1, range: {steps: 1}},
-			summoner: {limit: 2, range: {steps: 1}},
+			summoner: {range: {steps: 1}},
 			multitasker: {count: 2},
 		},
 	},
@@ -37,7 +37,7 @@ export const unitsConfig = deep.freeze({
 			mobile: {range: {steps: 3, kind: "manhattan"}},
 			sighted: {range: {steps: 2}, verticality: {below: true}},
 			healer: {healing: 1, range: {steps: 1}},
-			summoner: {limit: 1, range: {steps: 1}},
+			summoner: {range: {steps: 1}},
 		},
 	},
 

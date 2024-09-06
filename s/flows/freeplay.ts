@@ -17,7 +17,7 @@ export async function freeplayFlow() {
 	const [d, dr] = [trash.disposer, trash.disposable]
 
 	const initial = asciiMap(randomMap())
-	initial.config.time = null
+	initial.config.time = undefined
 
 	const arbiter = new Arbiter(initial)
 
