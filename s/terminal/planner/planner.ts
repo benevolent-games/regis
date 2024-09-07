@@ -7,6 +7,7 @@ import {Choice} from "../../logic/state.js"
 import {constants} from "../../constants.js"
 import {Cell, TileCell} from "../parts/selectacon.js"
 import {ConsiderationResult, PlannerOptions} from "./types.js"
+import {Activities, makeActivities} from "../../logic/activities/activities.js"
 import {doFirstValidThing} from "../../tools/do-first-valid-thing.js"
 import {Chalkboard} from "../../logic/simulation/proposer/chalkboard.js"
 import {autoAttacks} from "../../logic/simulation/aspects/auto-attacks.js"
@@ -17,8 +18,10 @@ import {makeProposers, Proposers} from "../../logic/simulation/proposer/make-pro
 export class Planner {
 	freedom = new UnitFreedom()
 	choices: Choice.Any[] = []
+
 	proposers: Proposers
 	considerations: Considerations
+	activities: Activities
 
 	#renderbin = new Trashbin()
 
@@ -36,6 +39,12 @@ export class Planner {
 			plannerOptions: options,
 			proposers: this.proposers,
 			commit: this.#commit,
+		})
+
+		this.activities = makeActivities({
+			agent,
+			turnTracker,
+			freedom: this.freedom,
 		})
 	}
 
