@@ -93,8 +93,6 @@ export type Reminders = {
 	revelations: Vec2[]
 }
 
-export type ChoiceKind = Choice.Any["kind"]
-
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
@@ -115,6 +113,8 @@ export function isFullTeamInfo(team: TeamInfo): team is FullTeamInfo {
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
+
+export type ClaimKind = Claim.Any["kind"]
 
 export namespace Claim {
 	export type SpecialResource = {
@@ -144,6 +144,8 @@ export namespace Claim {
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
+
+export type ChoiceKind = Choice.Any["kind"]
 
 export namespace Choice {
 	export type Recruit = {

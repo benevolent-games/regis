@@ -2,16 +2,15 @@
 import {vec2, Vec2} from "@benev/toolbox"
 import {Choice} from "../../state.js"
 import {calculateMovement} from "../../simulation/aspects/moving.js"
+import {Proposal, Judgement, Rebuke, SoftRebuke, activity} from "../types.js"
 import {canAfford, subtractResources} from "../../simulation/aspects/money.js"
-import {Composition, Judgement, Rebuke, SoftRebuke, activity} from "../types.js"
 import {isValidStep, isWithinRange} from "../../simulation/aspects/navigation.js"
 
-export const movement = activity((
-		{agent, freedom, turnTracker},
-		fns,
-	) => fns<Choice.Movement>()
+export const movement = activity<Choice.Movement>()(({
+		agent, freedom, turnTracker,
+	}) => ({
 
-	.composer((source: Vec2, target: Vec2) => {
+	propose: (source: Vec2, target: Vec2) => {
 		const unit = agent.units.at(source)
 		if (!unit)
 			return new Rebuke()
@@ -28,14 +27,14 @@ export const movement = activity((
 		if (!movement)
 			return new Rebuke()
 
-		return new Composition({
+		return new Proposal({
 			kind: "movement",
 			source,
 			path: movement.path,
 		})
-	})
+	},
 
-	.judge(choice => {
+	judge: choice => {
 		const unit = agent.units.at(choice.source)
 		if (!unit)
 			return new Rebuke()
@@ -98,11 +97,11 @@ export const movement = activity((
 		if (!canAfford(agent.activeTeam, cost))
 			return new Rebuke()
 
-		return new Judgement(() => {
+		return new Judgement(choice, () => {
 			freedom.recordTask(unit.id, {kind: "move"})
 			subtractResources(agent.state, agent.activeTeamId, cost)
 			unit.place = lastStep
 		})
-	})
-)
+	},
+}))
 
