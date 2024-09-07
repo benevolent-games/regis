@@ -58,7 +58,7 @@ export class UnitFreedom {
 		}
 
 		const justSpawnedIn = tasks.some(t => t.kind === "spawned")
-		const happyMultitasking = kinds.size < (multitasker?.count ?? 1)
+		const happyMultitasking = kinds.size <= (multitasker?.count ?? 1)
 		if (justSpawnedIn || !happyMultitasking)
 			return null
 
@@ -70,16 +70,29 @@ export class UnitFreedom {
 			const available = (repeatable?.count ?? 1) - tasks.length
 			return {
 				available,
-				checkFocusFire: (target: any) => !targets.has(target)
+				checkFocusFire: (target: any) => {
+					return repeatable?.focusFire
+						? true
+						: !targets.has(target)
+				}
 			}
 		}
 
-		const heal = checkRepeatability(archetype?.healer?.repeatable, getKind<Task.Heal>("heal"))
-		const attack = checkRepeatability(archetype?.armed?.repeatable, getKind<Task.Attack>("attack"))
+		const heal = checkRepeatability(
+			archetype?.healer?.repeatable, getKind<Task.Heal>("heal")
+		)
+
+		const attack = checkRepeatability(
+			archetype?.armed?.repeatable, getKind<Task.Attack>("attack")
+		)
 
 		return {
-			canHeal: (patientId: number) => (heal.available > 0) && heal.checkFocusFire(patientId),
-			canAttack: (victimId: number) => (attack.available > 0) && attack.checkFocusFire(victimId),
+			canHeal: (patientId: number) => {
+				return (heal.available > 0) && heal.checkFocusFire(patientId)
+			},
+			canAttack: (victimId: number) => {
+				return (attack.available > 0) && attack.checkFocusFire(victimId)
+			},
 			available: {
 				heals: heal.available,
 				attacks: attack.available,

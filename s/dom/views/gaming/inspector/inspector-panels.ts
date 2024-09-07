@@ -32,6 +32,7 @@ export const inspectorPanels = {
 				${listify({
 					health: living.health.text,
 					actions: living.availability,
+					id: unit.id,
 				})}
 				${listify(info.stats)}
 				${cardify(info.cards)}

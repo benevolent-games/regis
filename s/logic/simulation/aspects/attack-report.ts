@@ -15,10 +15,8 @@ export function attackReport(
 		return new AttackDenial(`victim ${choice.victimId} not found`)
 
 	const attacker = agent.units.get(choice.attackerId)
-	if (!attacker) {
-		console.log([...agent.units.list()])
+	if (!attacker)
 		return new AttackDenial(`attacker ${choice.attackerId} not found`)
-	}
 
 	const hostile = attacker.team !== victim.team
 	if (!hostile)

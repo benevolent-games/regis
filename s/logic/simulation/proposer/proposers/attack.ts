@@ -17,7 +17,8 @@ export const proposeAttack = proposerFn(
 	const archetype = agent.archetype(attacker.kind)
 
 	const freequery = freedom.query(attacker.id, archetype)
-	if (!freequery?.canAttack(victim.id))
+	const canAttack = freequery?.canAttack(victim.id)
+	if (!canAttack)
 		return new MovementDenial(`unit "${attacker.kind}" at ${boardCoords(attacker.place)} does not have freedom to attack`)
 
 	if (!turnTracker.ourTurn || turnTracker.teamId !== attacker.team)
