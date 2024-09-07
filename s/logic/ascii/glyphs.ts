@@ -34,6 +34,7 @@ export const glyphs = {
 			knight: "♘",
 			rook: "♖",
 			pawn: "♙",
+			elephant: "🐘",
 		},
 		blacks: {
 			king: "♚",
@@ -42,6 +43,7 @@ export const glyphs = {
 			knight: "♞",
 			rook: "♜",
 			pawn: "♟",
+			elephant: "🐘",
 		},
 	},
 }

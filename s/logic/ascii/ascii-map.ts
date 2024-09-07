@@ -92,6 +92,7 @@ export function asciiMap(map: MapSpec): GameInitial {
 			zoop(glyphs.units.whites.knight, makeUnit("knight", 0, place))
 			zoop(glyphs.units.whites.rook, makeUnit("rook", 0, place))
 			zoop(glyphs.units.whites.pawn, makeUnit("pawn", 0, place))
+			zoop(glyphs.units.whites.elephant, makeUnit("elephant", 0, place))
 
 			zoop(glyphs.units.blacks.king, makeUnit("king", 1, place))
 			zoop(glyphs.units.blacks.queen, makeUnit("queen", 1, place))
@@ -99,6 +100,7 @@ export function asciiMap(map: MapSpec): GameInitial {
 			zoop(glyphs.units.blacks.knight, makeUnit("knight", 1, place))
 			zoop(glyphs.units.blacks.rook, makeUnit("rook", 1, place))
 			zoop(glyphs.units.blacks.pawn, makeUnit("pawn", 1, place))
+			zoop(glyphs.units.blacks.elephant, makeUnit("elephant", 1, place))
 		})
 	})
 
