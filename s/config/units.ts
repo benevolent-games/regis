@@ -49,7 +49,7 @@ export const unitsConfig = deep.freeze(asUnitsConfig({
 		rendering: {algo: "normal"},
 		archetype: {
 			explained: {sentence: "Archer, deals damage at a distance, but vulnerable if unprotected."},
-			recruitable: {cost: 4, unlockable: {price: 4}},
+			recruitable: {cost: 7, unlockable: {price: 4}},
 			mortal: {health: 2},
 			armed: {damage: 1, range: {steps: 2}, repeatable: {count: 2, focusFire: true}, verticality: {above: true, below: true}},
 			mobile: {range: {steps: 1, kind: "manhattan"}},
