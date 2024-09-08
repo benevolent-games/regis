@@ -18,7 +18,7 @@ export const defaultClaims = (tile: Tile) => ({
 
 	watchtower: () => tile.claims.push({
 		kind: "watchtower",
-		range: {steps: 2, kind: "chebyshev"},
+		range: {steps: 3, kind: "chebyshev"},
 	}),
 
 	tech: (...unlocks: UnitKind[]) => unlocks.forEach(
