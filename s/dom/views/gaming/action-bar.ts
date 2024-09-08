@@ -37,7 +37,7 @@ export const ActionBarView = nexus.shadowView(use => (
 			</div>
 
 			<div class="cycles">
-				cycle ${Math.floor(turnCount / 2)}
+				cycle ${Math.floor(turnCount / 2) + 1}
 			</div>
 
 			<div class="splitter"></div>
