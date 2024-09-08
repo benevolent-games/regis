@@ -1,8 +1,10 @@
 
 import {mapGuarantee} from "@benev/slate"
 import {Map2} from "../../../tools/map2.js"
-import {Archetype} from "../../../config/units/archetype.js"
 import {Repeatability} from "../../../config/units/traits.js"
+import {Archetype, Aspects} from "../../../config/units/archetype.js"
+
+export type TaskKind = Task.Any["kind"]
 
 export namespace Task {
 
@@ -39,64 +41,99 @@ export class UnitTaskTracker {
 		this.#obtain(id).push(task)
 	}
 
-	query(id: number, archetype: Archetype) {
-		const {multitasker} = archetype
+	possibilities(
+			id: number,
+			archetype: Archetype,
+			targetId: number | undefined,
+		) {
 
-		const kinds = new Set<Task.Any["kind"]>()
+		const {multitasker, armed, healer} = archetype
 		const tasks = this.#obtain(id)
 
-		for (const task of tasks)
-			kinds.add(task.kind)
+		const spawning = tasks.some(t => t.kind === "spawned")
 
-		function getKind<T extends Task.Any>(kind: Task.Any["kind"]) {
-			return tasks.filter(t => t.kind === kind) as T[]
-		}
-
-		const justSpawnedIn = tasks.some(t => t.kind === "spawned")
-		const happyMultitasking = kinds.size <= (multitasker?.count ?? 1)
-		if (justSpawnedIn || !happyMultitasking)
-			return null
-
-		function checkRepeatability<T extends {targetId: any}>(
-				repeatable: Repeatability | undefined,
-				tasks: T[],
-			) {
-			const targets = new Set<any>(tasks.map(t => t.targetId))
-			const available = (repeatable?.count ?? 1) - tasks.length
+		if (spawning)
 			return {
-				available,
-				checkFocusFire: (target: any) => {
-					return repeatable?.focusFire
-						? true
-						: !targets.has(target)
-				}
+				spawning: true,
+				exhausted: true,
+				available: {attack: 0, heal: 0, move: 0},
 			}
+
+		const available = {
+			attack: countAvailability(
+				"attack", tasks, multitasker, armed?.repeatable, targetId,
+			),
+			heal: countAvailability(
+				"heal", tasks, multitasker, healer?.repeatable, targetId,
+			),
+			move: countAvailability(
+				"move", tasks, multitasker, undefined, targetId,
+			),
 		}
 
-		const heal = checkRepeatability(
-			archetype?.healer?.repeatable, getKind<Task.Heal>("heal")
+		const exhausted = 0 === (
+			available.attack +
+			available.heal +
+			available.move
 		)
 
-		const attack = checkRepeatability(
-			archetype?.armed?.repeatable, getKind<Task.Attack>("attack")
-		)
+		return {spawning, exhausted, available}
+	}
+}
 
-		return {
-			canHeal: (patientId: number) => {
-				return (heal.available > 0) && heal.checkFocusFire(patientId)
-			},
-			canAttack: (victimId: number) => {
-				return (attack.available > 0) && attack.checkFocusFire(victimId)
-			},
-			available: {
-				heals: heal.available,
-				attacks: attack.available,
-				moves: (() => {
-					const tasks = getKind("move")
-					return 1 - tasks.length
-				})(),
-			},
-		}
+//////////////////////////////
+//////////////////////////////
+
+function getUniqueKinds(tasks: Task.Any[]) {
+	const kinds = new Set<TaskKind>()
+	for (const task of tasks)
+		kinds.add(task.kind)
+	return kinds
+}
+
+function getUniqueTargetIds(tasks: Task.Any[]) {
+	const targetIds = new Set<number>()
+	for (const task of tasks)
+		if ("targetId" in task)
+			targetIds.add(task.targetId)
+	return targetIds
+}
+
+function filterKind<T extends Task.Any>(
+		tasks: Task.Any[],
+		kind: TaskKind,
+	) {
+	return tasks.filter(t => t.kind === kind) as T[]
+}
+
+function countAvailability(
+		kind: TaskKind,
+		tasks: Task.Any[],
+		multitasker: Aspects["multitasker"] | undefined,
+		repeatable: Repeatability | undefined,
+		targetId: number | undefined,
+	) {
+
+	// check if multitasking is exceeded for this task kind
+	const multiLimit = multitasker?.count ?? 1
+	const kinds = getUniqueKinds(tasks)
+	kinds.add(kind)
+	const multiExhausted = kinds.size > multiLimit
+	if (multiExhausted)
+		return 0
+
+	// check if repeatability is exhausted
+	const repeatLimit = repeatable?.count ?? 1
+	const occurances = filterKind(tasks, kind).length
+	if (!repeatable?.focusFire && targetId !== undefined) {
+		const targetIds = getUniqueTargetIds(tasks)
+		const alreadyTargeted = targetIds.has(targetId)
+		return alreadyTargeted
+			? 0
+			: 1
+	}
+	else {
+		return Math.max(0, repeatLimit - occurances)
 	}
 }
 

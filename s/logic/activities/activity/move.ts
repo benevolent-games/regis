@@ -50,8 +50,10 @@ export const move = activity<Choice.Move>()(({
 		if (choice.path.length > maxSteps)
 			return new Rebuke()
 
-		const report = unitTaskTracker.query(unit.id, archetype)
-		if (!report?.available.moves)
+		const {available} = unitTaskTracker
+			.possibilities(unit.id, archetype, undefined)
+
+		if (available.move === 0)
 			return new Rebuke()
 
 		const destination = [...choice.path].pop()!

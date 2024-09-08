@@ -36,8 +36,10 @@ export const heal = activity<Choice.Heal>()(({
 		if (!healer)
 			return new Rebuke()
 
-		const report = unitTaskTracker.query(doctor.id, doctorArc)
-		if (!report?.canHeal(patient.id))
+		const {available} = unitTaskTracker
+			.possibilities(doctor.id, doctorArc, patient.id)
+
+		if (available.heal === 0)
 			return new Rebuke()
 
 		if (patient.team !== doctor.team)

@@ -204,17 +204,22 @@ function livingUnitInfo(agent: Agent, unit: Unit, myTeam: number, unitTaskTracke
 	})()
 
 	const availability = (() => {
-		const report = unitTaskTracker.query(unit.id, arc)
-		if (report) {
-			const {moves, attacks, heals} = report.available
-			const can: string[] = []
-			if (moves > 0) can.push(`${moves} moves`)
-			if (attacks > 0) can.push(`${attacks} attacks`)
-			if (heals > 0) can.push(`${heals} heals`)
-			if (can.length > 0)
-				return can.join(", ")
-		}
-		else return "exhausted"
+		const {available, exhausted, spawning} = unitTaskTracker
+			.possibilities(unit.id, arc, undefined)
+
+		if (spawning)
+			return "exhausted while spawning"
+
+		if (exhausted)
+			return "exhausted"
+
+		const {move, attack, heal} = available
+		const can: string[] = []
+		if (attack > 0) can.push(`${attack} attacks`)
+		if (heal > 0) can.push(`${heal} heals`)
+		if (move > 0) can.push(`${move} moves`)
+		if (can.length > 0)
+			return can.join(", ")
 	})()
 
 	return {

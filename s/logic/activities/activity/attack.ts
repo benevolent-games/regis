@@ -30,9 +30,10 @@ export const attack = activity<Choice.Attack>()(({
 		const {armed, victim, attacker} = report
 		const archetype = agent.archetype(attacker.kind)
 
-		const freequery = unitTaskTracker.query(attacker.id, archetype)
-		const canAttack = freequery?.canAttack(victim.id)
-		if (!canAttack)
+		const {available} = unitTaskTracker
+			.possibilities(attacker.id, archetype, victim.id)
+
+		if (available.attack === 0)
 			return new Rebuke()
 
 		if (!turnTracker.ourTurn || turnTracker.teamId !== attacker.team)
