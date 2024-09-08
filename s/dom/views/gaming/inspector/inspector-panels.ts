@@ -9,17 +9,17 @@ import {UnitKind} from "../../../../config/units.js"
 import {boardCoords} from "../../../../tools/board-coords.js"
 import {canAfford} from "../../../../logic/simulation/aspects/money.js"
 import {RosterCell, TileCell} from "../../../../terminal/parts/selectacon.js"
-import {UnitFreedom} from "../../../../logic/simulation/aspects/unit-freedom.js"
+import {UnitTaskTracker} from "../../../../logic/simulation/aspects/unit-task-tracker.js"
 
 export const inspectorPanels = {
 
-	unit(agent: Agent, myTeam: number, selection: TileCell, freedom: UnitFreedom) {
+	unit(agent: Agent, myTeam: number, selection: TileCell, unitTaskTracker: UnitTaskTracker) {
 		const unit = agent.units.at(selection.place)
 		if (!unit)
 			return null
 
 		const info = generalUnitInfo(agent, unit.kind)
-		const living = livingUnitInfo(agent, unit, myTeam, freedom)
+		const living = livingUnitInfo(agent, unit, myTeam, unitTaskTracker)
 
 		return html`
 			<div class="panel unit">
@@ -176,7 +176,7 @@ function generalUnitInfo(agent: Agent, unitKind: UnitKind) {
 	}
 }
 
-function livingUnitInfo(agent: Agent, unit: Unit, myTeam: number, freedom: UnitFreedom) {
+function livingUnitInfo(agent: Agent, unit: Unit, myTeam: number, unitTaskTracker: UnitTaskTracker) {
 	const arc = agent.archetype(unit.kind)
 
 	const allegiance = (
@@ -204,7 +204,7 @@ function livingUnitInfo(agent: Agent, unit: Unit, myTeam: number, freedom: UnitF
 	})()
 
 	const availability = (() => {
-		const report = freedom.query(unit.id, arc)
+		const report = unitTaskTracker.query(unit.id, arc)
 		if (report) {
 			const {moves, attacks, heals} = report.available
 			const can: string[] = []

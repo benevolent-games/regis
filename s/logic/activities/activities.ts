@@ -4,7 +4,7 @@ import {Choice, ChoiceKind} from "../state.js"
 import {Chalkboard} from "../utils/chalkboard.js"
 import {Activity, ActivityOptions} from "./types.js"
 import {TurnTracker} from "../simulation/aspects/turn-tracker.js"
-import {UnitFreedom} from "../simulation/aspects/unit-freedom.js"
+import {UnitTaskTracker} from "../simulation/aspects/unit-task-tracker.js"
 
 import {heal} from "./activity/heal.js"
 import {attack} from "./activity/attack.js"
@@ -12,8 +12,8 @@ import {recruit} from "./activity/recruit.js"
 import {movement} from "./activity/movement.js"
 
 export class Activities {
-	freedom = new UnitFreedom()
 	chalkboard = new Chalkboard()
+	unitTaskTracker = new UnitTaskTracker()
 	#group: ActivityGroup
 
 	constructor(options: {
@@ -23,8 +23,8 @@ export class Activities {
 
 		this.#group = makeActivityGroup({
 			...options,
-			freedom: this.freedom,
 			chalkboard: this.chalkboard,
+			unitTaskTracker: this.unitTaskTracker,
 		})
 	}
 

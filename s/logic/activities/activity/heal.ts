@@ -6,7 +6,7 @@ import {Judgement, Proposal, Rebuke, SoftRebuke, activity} from "../types.js"
 import {isVerticallyCompatible} from "../../simulation/aspects/verticality.js"
 
 export const heal = activity<Choice.Heal>()(({
-		agent, freedom, turnTracker,
+		agent, unitTaskTracker, turnTracker,
 	}) => ({
 
 	propose: (source: Vec2, target: Vec2) => {
@@ -36,7 +36,7 @@ export const heal = activity<Choice.Heal>()(({
 		if (!healer)
 			return new Rebuke()
 
-		const report = freedom.query(doctor.id, doctorArc)
+		const report = unitTaskTracker.query(doctor.id, doctorArc)
 		if (!report?.canHeal(patient.id))
 			return new Rebuke()
 
@@ -61,7 +61,7 @@ export const heal = activity<Choice.Heal>()(({
 			return new SoftRebuke()
 
 		return new Judgement(choice, () => {
-			freedom.recordTask(doctor.id, {kind: "heal", targetId: patient.id})
+			unitTaskTracker.recordTask(doctor.id, {kind: "heal", targetId: patient.id})
 			patient.damage = newDamageValue
 		})
 	},

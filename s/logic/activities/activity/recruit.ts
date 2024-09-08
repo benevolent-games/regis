@@ -8,7 +8,7 @@ import {isValidRecruitmentPlace} from "../../simulation/aspects/recruiting.js"
 import {canAfford, subtractResources} from "../../simulation/aspects/money.js"
 
 export const recruit = activity<Choice.Recruit>()(({
-		agent, freedom, turnTracker,
+		agent, unitTaskTracker, turnTracker,
 	}) => ({
 
 	propose: (place: Vec2, unitKind: UnitKind) => {
@@ -69,7 +69,7 @@ export const recruit = activity<Choice.Recruit>()(({
 		return new Judgement(choice, () => {
 			subtractResources(agent.state, teamId, cost)
 			const id = agent.grabId()
-			freedom.recordTask(id, {kind: "spawned"})
+			unitTaskTracker.recordTask(id, {kind: "spawned"})
 			agent.units.add({
 				id,
 				kind: choice.unitKind,

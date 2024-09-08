@@ -2,14 +2,14 @@
 import {Agent} from "../agent.js"
 import {Choice} from "../state.js"
 import {Chalkboard} from "../utils/chalkboard.js"
-import {UnitFreedom} from "../simulation/aspects/unit-freedom.js"
 import {TurnTracker} from "../simulation/aspects/turn-tracker.js"
+import {UnitTaskTracker} from "../simulation/aspects/unit-task-tracker.js"
 
 export type ActivityOptions = {
 	agent: Agent
-	turnTracker: TurnTracker
-	freedom: UnitFreedom
 	chalkboard: Chalkboard
+	turnTracker: TurnTracker
+	unitTaskTracker: UnitTaskTracker
 }
 
 export type Activity<C extends Choice.Any = Choice.Any, A extends any[] = any[]> = {

@@ -5,7 +5,7 @@ import {activity, Judgement, Proposal, Rebuke, SoftRebuke} from "../types.js"
 import {applyDamage, attackReport} from "../../simulation/aspects/attack-report.js"
 
 export const attack = activity<Choice.Attack>()(({
-		agent, freedom, turnTracker, chalkboard,
+		agent, unitTaskTracker, turnTracker, chalkboard,
 	}) => ({
 
 	propose: (source: Vec2, target: Vec2) => {
@@ -30,7 +30,7 @@ export const attack = activity<Choice.Attack>()(({
 		const {armed, victim, attacker} = report
 		const archetype = agent.archetype(attacker.kind)
 
-		const freequery = freedom.query(attacker.id, archetype)
+		const freequery = unitTaskTracker.query(attacker.id, archetype)
 		const canAttack = freequery?.canAttack(victim.id)
 		if (!canAttack)
 			return new Rebuke()
@@ -42,7 +42,7 @@ export const attack = activity<Choice.Attack>()(({
 			return new SoftRebuke()
 
 		return new Judgement(choice, () => {
-			freedom.recordTask(attacker.id, {kind: "attack", targetId: victim.id})
+			unitTaskTracker.recordTask(attacker.id, {kind: "attack", targetId: victim.id})
 			const lethal = applyDamage(agent, victim, armed.damage)
 
 			if (lethal)

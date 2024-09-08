@@ -28,7 +28,7 @@ export namespace Task {
 	export type Any = Spawned | Move | Attack | Heal
 }
 
-export class UnitFreedom {
+export class UnitTaskTracker {
 	#memory = new Map2<number, Task.Any[]>()
 
 	#obtain(id: number) {
@@ -37,11 +37,6 @@ export class UnitFreedom {
 
 	recordTask(id: number, task: Task.Any) {
 		this.#obtain(id).push(task)
-	}
-
-	/** the memory of unit freedom should be cleared every turn */
-	clear() {
-		this.#memory.clear()
 	}
 
 	query(id: number, archetype: Archetype) {

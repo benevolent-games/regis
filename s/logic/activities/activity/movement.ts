@@ -7,7 +7,7 @@ import {canAfford, subtractResources} from "../../simulation/aspects/money.js"
 import {isValidStep, isWithinRange} from "../../simulation/aspects/navigation.js"
 
 export const movement = activity<Choice.Movement>()(({
-		agent, freedom, turnTracker,
+		agent, unitTaskTracker, turnTracker,
 	}) => ({
 
 	propose: (source: Vec2, target: Vec2) => {
@@ -50,7 +50,7 @@ export const movement = activity<Choice.Movement>()(({
 		if (choice.path.length > maxSteps)
 			return new Rebuke()
 
-		const report = freedom.query(unit.id, archetype)
+		const report = unitTaskTracker.query(unit.id, archetype)
 		if (!report?.available.moves)
 			return new Rebuke()
 
@@ -98,7 +98,7 @@ export const movement = activity<Choice.Movement>()(({
 			return new Rebuke()
 
 		return new Judgement(choice, () => {
-			freedom.recordTask(unit.id, {kind: "move"})
+			unitTaskTracker.recordTask(unit.id, {kind: "move"})
 			subtractResources(agent.state, agent.activeTeamId, cost)
 			unit.place = lastStep
 		})

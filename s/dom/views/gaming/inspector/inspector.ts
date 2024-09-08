@@ -17,7 +17,7 @@ export const InspectorView = nexus.shadowView(use => (
 
 	if (selection?.kind === "tile")
 		return html`
-			${inspectorPanels.unit(agent, bridge.teamId.value, selection, bridge.terminal.planner.activities.freedom)}
+			${inspectorPanels.unit(agent, bridge.teamId.value, selection, bridge.terminal.planner.activities.unitTaskTracker)}
 			${inspectorPanels.tile(agent, selection, bridge.teamId.value)}
 		`
 
