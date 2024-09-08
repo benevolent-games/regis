@@ -3,7 +3,7 @@ import {mapPool} from "../../map-pool.js"
 import {MapSpec} from "../../logic/ascii/types.js"
 
 export function randomMap(): MapSpec {
-	return getMap("nine9")
+	return getMap("compact")
 
 	const maplist = Object.entries(mapPool)
 	const index = Math.floor(Math.random() * maplist.length)
