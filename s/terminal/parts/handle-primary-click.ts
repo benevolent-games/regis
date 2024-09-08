@@ -20,8 +20,7 @@ export function handlePrimaryClick(options: {
 		return (judgement: Rebuke | Judgement) => {
 			if (judgement instanceof Rebuke)
 				return undefined
-			planner.schedule(judgement.choice)
-			judgement.commit()
+			planner.schedule(judgement)
 			fn()
 		}
 	}

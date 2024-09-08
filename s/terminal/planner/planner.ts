@@ -27,8 +27,9 @@ export class Planner {
 		this.activities = new Activities(this.options)
 	}
 
-	schedule = (choice: Choice.Any) => {
-		this.choices.push(choice)
+	schedule = (judgement: Judgement) => {
+		this.choices.push(judgement.choice)
+		judgement.commit()
 		this.options.agent.publishStateChange()
 	}
 
@@ -56,16 +57,14 @@ export class Planner {
 			}
 
 			const indicate = (instance: Prop) => {
-				return () => {
-					const {agent} = this.options
-					const position = vec3.add(
-						agent.coordinator.toPosition(place),
-						[0, constants.indicators.verticalOffsets.normalIndicators, 0],
-					)
-					instance.position.set(...position)
-					this.#renderbin.disposable(instance)
-					return instance
-				}
+				const {agent} = this.options
+				const position = vec3.add(
+					agent.coordinator.toPosition(place),
+					[0, constants.indicators.verticalOffsets.normalIndicators, 0],
+				)
+				instance.position.set(...position)
+				this.#renderbin.disposable(instance)
+				return instance
 			}
 
 			this.navigateActionSpace({
@@ -73,11 +72,11 @@ export class Planner {
 				selected,
 				on: {
 					heal: indicatorResponses({
-						actionable: indicate(indicators.liberty.heal(ourTeam)),
-						pattern: indicate(indicators.liberty.heal(null)),
+						actionable: () => indicate(indicators.liberty.heal(ourTeam)),
+						pattern: () => indicate(indicators.liberty.heal(null)),
 					}),
 					recruit: indicatorResponses({
-						pattern: indicate(indicators.liberty.recruit(null)),
+						pattern: () => indicate(indicators.liberty.recruit(null)),
 						actionable: () => {
 							indicate(indicators.liberty.recruit(ourTeam))
 							if (selected?.kind === "roster")
@@ -89,12 +88,12 @@ export class Planner {
 						},
 					}),
 					attack: indicatorResponses({
-						actionable: indicate(indicators.liberty.attack(ourTeam)),
-						pattern: indicate(indicators.liberty.attack(null)),
+						actionable: () => indicate(indicators.liberty.attack(ourTeam)),
+						pattern: () => indicate(indicators.liberty.attack(null)),
 					}),
 					movement: indicatorResponses({
-						actionable: indicate(indicators.liberty.move(ourTeam)),
-						pattern: indicate(indicators.liberty.move(null)),
+						actionable: () => indicate(indicators.liberty.move(ourTeam)),
+						pattern: () => indicate(indicators.liberty.move(null)),
 					}),
 				},
 			})
