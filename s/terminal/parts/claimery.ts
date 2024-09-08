@@ -79,7 +79,8 @@ export class Claimery {
 		const position = agent.coordinator.toPosition(place)
 		root.position.set(...vec3.add(position, [0, offset, 0]))
 
-		const onBlackSideOfBoard = place[1] > 3
+		const [,extentY] = agent.state.initial.board.extent
+		const onBlackSideOfBoard = place[1] > (extentY / 2)
 		const flip = scalar.radians.from.degrees(180)
 		root.rotationQuaternion = onBlackSideOfBoard
 			? Quaternion.RotationYawPitchRoll(flip, 0, 0)
