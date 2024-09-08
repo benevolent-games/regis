@@ -31,8 +31,12 @@ export class FogFenceRenderer {
 				const neighbor = vec2.add(place, cardinal)
 				if (agent.tiles.valid(neighbor) && !inVision(neighbor)) {
 					const aura = d(assets.indicators.aura())
-					const position = agent.coordinator.toPosition(place)
-					aura.position.set(...position)
+					const [x,, z] = agent.coordinator.toPosition(place)
+					const y = Math.max(
+						agent.coordinator.tileHeight(agent.tiles.at(place)),
+						agent.coordinator.tileHeight(agent.tiles.at(neighbor)),
+					)
+					aura.position.set(x, y, z)
 					const twist = index + 1
 					aura.scaling.set(0.99, 0.2, 0.99)
 					aura.rotationQuaternion = Quaternion.RotationYawPitchRoll(

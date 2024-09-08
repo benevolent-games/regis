@@ -36,7 +36,9 @@ export class Tiler {
 		}
 
 		function positionBlock(instance: TransformNode, place: Vec2, elevation: number) {
-			const y = agent.coordinator.toHeight(elevation)
+			// subtracting one because blocks are rooted at their bottom,
+			// whereas the elevation height tells us the world height of the top
+			const y = agent.coordinator.elevationHeight(elevation - 1)
 			const [x,,z] = agent.coordinator.toBlockPosition(place)
 			instance.position.set(x, y, z)
 		}
@@ -47,20 +49,20 @@ export class Tiler {
 					placements.set(mesh, {place})
 		}
 
-		function spawnBlock(place: Vec2, layer: Elevation) {
+		function spawnBlock(place: Vec2, elevation: Elevation) {
 			const instance = trashbin.disposable(
-				assets.board.tile.block(layer, oddOrEven(place))
+				assets.board.tile.block(elevation, oddOrEven(place))
 			)
-			positionBlock(instance, place, layer)
+			positionBlock(instance, place, elevation)
 			saveBlockPlacement(instance, place)
 			return instance
 		}
 
-		function spawnStep(place: Vec2, layer: Elevation) {
+		function spawnStep(place: Vec2, elevation: Elevation) {
 			const instance = trashbin.disposable(
-				assets.board.tile.step(layer - 1 as Elevation, oddOrEven(place))
+				assets.board.tile.step(elevation, oddOrEven(place))
 			)
-			positionBlock(instance, place, layer)
+			positionBlock(instance, place, elevation + 1)
 			saveBlockPlacement(instance, place)
 			return instance
 		}
@@ -71,7 +73,7 @@ export class Tiler {
 
 			if (tile.step) {
 				spawnBlock(place, tile.elevation)
-				spawnStep(place, tile.elevation + 1 as Elevation)
+				spawnStep(place, tile.elevation)
 			}
 			else {
 				spawnBlock(place, tile.elevation)

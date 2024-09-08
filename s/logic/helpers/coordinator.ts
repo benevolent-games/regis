@@ -3,20 +3,28 @@ import {Pipe} from "@benev/slate"
 import {Vec2, vec2, Vec3} from "@benev/toolbox"
 
 import {TilesHelper} from "./tiles.js"
-import {BoardState} from "../state.js"
+import {BoardState, Tile} from "../state.js"
 import {constants} from "../../constants.js"
 
 export class CoordinatorHelper {
 	constructor(private board: BoardState) {}
 
-	toHeight(elevation: number) {
-		const {verticalOffset, height} = constants.block
-		return (elevation - 1 + verticalOffset) * height
+	/** get height at the top of this tile */
+	tileHeight(tile: Tile) {
+		const elevation = tile.elevation + (tile.step ? 0.5 : 0)
+		return this.elevationHeight(elevation)
 	}
 
+	/** get the height at the top of a block at this elevation */
+	elevationHeight(elevation: number) {
+		const {verticalOffset, height} = constants.block
+		return (elevation + verticalOffset) * height
+	}
+
+	/** get the position at the center of the top face of the tile at this place */
 	toPosition(place: Vec2) {
 		const tile = new TilesHelper(this.board).at(place)
-		const y = this.toHeight(tile.elevation + (tile.step ? 0.5 : 0) + 1)
+		const y = this.tileHeight(tile)
 		return Pipe.with(place)
 			.to(v => vec2.subtract(v, this.#halfGridOffset))
 			.to(v => vec2.add(v, [.5, .5]))
