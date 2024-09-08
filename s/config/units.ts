@@ -63,7 +63,7 @@ export const unitsConfig = deep.freeze(asUnitsConfig({
 			explained: {sentence: "Aggressive cavalry, strong against pawns and bishops."},
 			recruitable: {cost: 6, unlockable: {price: 4}},
 			mortal: {health: 3},
-			armed: {damage: 2, range: {steps: 1}, repeatable: {count: 2}},
+			armed: {damage: 2, range: {steps: 1}},
 			mobile: {range: {steps: 2, kind: "manhattan"}},
 			sighted: {range: {steps: 2}, verticality: {below: true}},
 			multitasker: {count: 2},
