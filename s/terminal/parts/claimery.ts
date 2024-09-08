@@ -24,10 +24,10 @@ const singleLayout: StickerLayout[] = [
 ]
 
 const quadLayout: StickerLayout[] = [
-	{scale: 0.6, coordinates: [0.33, 0.66]},
-	{scale: 0.6, coordinates: [0.66, 0.66]},
-	{scale: 0.6, coordinates: [0.33, 0.33]},
-	{scale: 0.6, coordinates: [0.66, 0.33]},
+	{scale: 0.6, coordinates: [0.33, 0.66]}, // top-left
+	{scale: 0.6, coordinates: [0.66, 0.33]}, // bottom-right
+	{scale: 0.6, coordinates: [0.33, 0.33]}, // bottom-left
+	{scale: 0.6, coordinates: [0.66, 0.66]}, // top-right
 ]
 
 export class Claimery {
