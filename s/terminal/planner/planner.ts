@@ -92,7 +92,7 @@ export class Planner {
 						actionable: () => indicate(indicators.liberty.attack(ourTeam)),
 						pattern: () => indicate(indicators.liberty.attack(null)),
 					}),
-					movement: indicatorResponses({
+					move: indicatorResponses({
 						actionable: () => indicate(indicators.liberty.move(ourTeam)),
 						pattern: () => indicate(indicators.liberty.move(null)),
 					}),
@@ -147,7 +147,7 @@ export class Planner {
 				doFirstValidThing([
 					() => consider("heal", a, b),
 					() => consider("attack", a, b),
-					() => consider("movement", a, b)
+					() => consider("move", a, b)
 				])
 			}
 		}

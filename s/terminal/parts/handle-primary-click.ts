@@ -32,7 +32,7 @@ export function handlePrimaryClick(options: {
 			attack: actuate(() => {}),
 			heal: actuate(() => {}),
 			recruit: actuate(() => {}),
-			movement: actuate(() => { selectacon.selection.value = target }),
+			move: actuate(() => { selectacon.selection.value = target }),
 		},
 	})
 }

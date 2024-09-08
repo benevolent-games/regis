@@ -6,7 +6,7 @@ import {Proposal, Judgement, Rebuke, SoftRebuke, activity} from "../types.js"
 import {canAfford, subtractResources} from "../../simulation/aspects/money.js"
 import {isValidStep, isWithinRange} from "../../simulation/aspects/navigation.js"
 
-export const movement = activity<Choice.Movement>()(({
+export const move = activity<Choice.Move>()(({
 		agent, unitTaskTracker, turnTracker,
 	}) => ({
 
@@ -28,7 +28,7 @@ export const movement = activity<Choice.Movement>()(({
 			return new Rebuke()
 
 		return new Proposal({
-			kind: "movement",
+			kind: "move",
 			source,
 			path: movement.path,
 		})

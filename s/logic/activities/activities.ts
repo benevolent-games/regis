@@ -6,10 +6,10 @@ import {Activity, ActivityOptions} from "./types.js"
 import {TurnTracker} from "../simulation/aspects/turn-tracker.js"
 import {UnitTaskTracker} from "../simulation/aspects/unit-task-tracker.js"
 
+import {move} from "./activity/move.js"
 import {heal} from "./activity/heal.js"
 import {attack} from "./activity/attack.js"
 import {recruit} from "./activity/recruit.js"
-import {movement} from "./activity/movement.js"
 
 export class Activities {
 	chalkboard = new Chalkboard()
@@ -41,7 +41,7 @@ export type ActivityGroup = ReturnType<typeof makeActivityGroup>
 
 export function makeActivityGroup(options: ActivityOptions) {
 	return {
-		movement: movement(options),
+		move: move(options),
 		attack: attack(options),
 		recruit: recruit(options),
 		heal: heal(options),

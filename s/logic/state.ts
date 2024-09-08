@@ -154,8 +154,8 @@ export namespace Choice {
 		place: Vec2
 	}
 
-	export type Movement = {
-		kind: "movement"
+	export type Move = {
+		kind: "move"
 		source: Vec2
 		path: Vec2[]
 	}
@@ -174,7 +174,7 @@ export namespace Choice {
 
 	export type Any = (
 		| Recruit
-		| Movement
+		| Move
 		| Attack
 		| Heal
 	)
