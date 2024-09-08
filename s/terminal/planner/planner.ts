@@ -25,6 +25,7 @@ export class Planner {
 	reset() {
 		this.choices = []
 		this.activities = new Activities(this.options)
+		this.options.agent.publishStateChange()
 	}
 
 	schedule = (judgement: Judgement) => {
