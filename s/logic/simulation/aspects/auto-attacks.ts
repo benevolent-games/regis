@@ -1,13 +1,13 @@
 
 import {Vec2} from "@benev/toolbox"
 
-import {Denial} from "./denials.js"
 import {Agent} from "../../agent.js"
+import {Rebuke} from "../../activities/types.js"
 import {Choice, Turn, Unit} from "../../state.js"
-import {Proposers} from "../proposer/make-proposers.js"
+import {Activities} from "../../activities/activities.js"
 import {isWithinRange, manhattanDistance} from "../aspects/navigation.js"
 
-export function autoAttacks(agent: Agent, proposers: Proposers, turn: Turn) {
+export function autoAttacks(agent: Agent, activities: Activities, turn: Turn) {
 	const myTeam = agent.activeTeamId
 	const myUnits = [...agent.units.list()]
 		.filter(unit => unit.team === myTeam)
@@ -24,8 +24,8 @@ export function autoAttacks(agent: Agent, proposers: Proposers, turn: Turn) {
 	for (const attacker of myUnits) {
 		const archetype = agent.archetype(attacker.kind)
 
-		if (archetype.attack && !alreadyAttacked.has(attacker.id)) {
-			const {range} = archetype.attack
+		if (archetype.armed && !alreadyAttacked.has(attacker.id)) {
+			const {range} = archetype.armed
 
 			const enemyUnits = findEnemyUnits(agent, myTeam)
 			const enemiesNearby = [...enemyUnits]
@@ -41,12 +41,12 @@ export function autoAttacks(agent: Agent, proposers: Proposers, turn: Turn) {
 				victimId: victim.id,
 			}
 
-			const proposal = proposers.attack(choice)
-			const valid = !(proposal instanceof Denial)
+			const judgement = activities.judge(choice)
+			const valid = !(judgement instanceof Rebuke)
 
 			if (valid) {
 				autoChoices.push(choice)
-				proposal()
+				judgement.commit()
 			}
 		}
 	}

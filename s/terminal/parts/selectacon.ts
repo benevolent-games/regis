@@ -4,11 +4,11 @@ import {ref, Trashbin} from "@benev/slate"
 
 import {Tiler} from "./tiler.js"
 import {World} from "./world.js"
-import {Assets} from "./assets.js"
 import {Pointing} from "./types.js"
 import {Rosters} from "./rosters.js"
 import {Agent} from "../../logic/agent.js"
-import {UnitKind} from "../../logic/state.js"
+import {Assets} from "../assets/assets.js"
+import {UnitKind} from "../../config/units.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 
 export type TileCell = {
@@ -57,7 +57,10 @@ export class Selectacon {
 		const cell = this.hover.value
 
 		if (cell) {
-			const instance = d(assets.indicators.hover(turnTracker.teamId))
+			const teamId = turnTracker.ourTurn
+				? turnTracker.teamId
+				: null
+			const instance = d(assets.indicators.hover(teamId))
 			instance.position.set(...cell.position)
 		}
 	}

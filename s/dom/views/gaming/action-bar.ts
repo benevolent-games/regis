@@ -22,7 +22,7 @@ export const ActionBarView = nexus.shadowView(use => (
 	const teamId = bridge.teamId.value
 	const actions = bridge.terminal.actions
 
-	const {income} = agent.claims.getTeamIncome(teamId)
+	const {income} = agent.claims.teamIncome(teamId)
 	const ourTurn = agent.activeTeamId === teamId
 	const turnCount = agent.state.context.turnCount
 	const myTeam = agent.state.teams.at(teamId)! as FullTeamInfo

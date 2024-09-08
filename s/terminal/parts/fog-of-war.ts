@@ -3,7 +3,7 @@ import {Trashbin} from "@benev/slate"
 import {Quaternion} from "@babylonjs/core"
 import {scalar, Vec2, vec2} from "@benev/toolbox"
 
-import {Assets} from "./assets.js"
+import {Assets} from "../assets/assets.js"
 import {Agent} from "../../logic/agent.js"
 import {cardinals} from "../../logic/simulation/aspects/navigation.js"
 import {limitedVision} from "../../logic/simulation/aspects/vision.js"

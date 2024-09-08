@@ -1,5 +1,6 @@
 
-import {getVerticalCapability, Tile, VerticalCapability, Verticality} from "../../state.js"
+import {Tile} from "../../state.js"
+import {Verticality} from "../../../config/units/traits.js"
 
 export type VerticalCompatibility = {
 	above: boolean
@@ -9,14 +10,22 @@ export type VerticalCompatibility = {
 	withinFullStep: boolean
 }
 
-export function isVerticallyCompatible(verticality: Verticality, a: Tile, b: Tile) {
-	const allow = getVerticalCapability(verticality)
+export function isVerticallyCompatible(
+		verticality: Verticality | undefined,
+		a: Tile,
+		b: Tile,
+	) {
+
 	const report = verticalCompatibilityReport(a, b)
-	return (
-		(report.withinHalfStep) ||
-		(allow.above && report.above) ||
-		(allow.below && report.below)
-	)
+
+	if (report.withinHalfStep)
+		return true
+
+	if (report.above)
+		return !!verticality?.above
+
+	if (report.below)
+		return !!verticality?.below
 }
 
 function verticalCompatibilityReport(a: Tile, b: Tile): VerticalCompatibility {

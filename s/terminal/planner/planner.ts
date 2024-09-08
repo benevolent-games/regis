@@ -1,82 +1,44 @@
 
-import {Vec2, vec3} from "@benev/toolbox"
 import {Trashbin} from "@benev/slate"
-import {TransformNode} from "@babylonjs/core"
+import {Prop, vec3} from "@benev/toolbox"
 
-import {Choice} from "../../logic/state.js"
+import {PlannerOptions} from "./types.js"
 import {constants} from "../../constants.js"
 import {Cell, TileCell} from "../parts/selectacon.js"
-import {ConsiderationResult, PlannerOptions} from "./types.js"
+import {Choice, ChoiceKind} from "../../logic/state.js"
 import {doFirstValidThing} from "../../tools/do-first-valid-thing.js"
-import {Chalkboard} from "../../logic/simulation/proposer/chalkboard.js"
 import {autoAttacks} from "../../logic/simulation/aspects/auto-attacks.js"
-import {UnitFreedom} from "../../logic/simulation/aspects/unit-freedom.js"
-import {Considerations, makeConsiderations} from "./make-considerations.js"
-import {makeProposers, Proposers} from "../../logic/simulation/proposer/make-proposers.js"
+import {Rebuke, SoftRebuke, Judgement} from "../../logic/activities/types.js"
+import {Activities, ActivityGroup} from "../../logic/activities/activities.js"
 
+/** ui for creating a tentative turn plan, which is a list of choices, which may be canceled or executed */
 export class Planner {
-	freedom = new UnitFreedom()
 	choices: Choice.Any[] = []
-	proposers: Proposers
-	considerations: Considerations
+	activities: Activities
 
 	#renderbin = new Trashbin()
 
 	constructor(private options: PlannerOptions) {
-		const {agent, turnTracker} = this.options
-
-		this.proposers = makeProposers({
-			agent,
-			turnTracker,
-			freedom: this.freedom,
-			chalkboard: new Chalkboard(),
-		})
-
-		this.considerations = makeConsiderations({
-			plannerOptions: options,
-			proposers: this.proposers,
-			commit: this.#commit,
-		})
-	}
-
-	#instanceIndicator(fn: () => TransformNode, place: Vec2) {
-		const {agent} = this.options
-		const instance = fn()
-		const position = vec3.add(
-			agent.coordinator.toPosition(place),
-			[0, constants.indicators.verticalOffsets.normalIndicators, 0],
-		)
-		instance.position.set(...position)
-		this.#renderbin.disposable(instance)
-		return instance
-	}
-
-	#commit = (choice: Choice.Any) => {
-		this.choices.push(choice)
-		this.options.agent.publishStateChange()
+		this.activities = new Activities(options)
 	}
 
 	reset() {
-		const {agent, turnTracker} = this.options
-		this.freedom.clear()
-		this.proposers = makeProposers({
-			agent,
-			turnTracker,
-			freedom: this.freedom,
-			chalkboard: new Chalkboard(),
-		})
 		this.choices = []
+		this.activities = new Activities(this.options)
+		this.options.agent.publishStateChange()
+	}
+
+	schedule = (judgement: Judgement) => {
+		this.choices.push(judgement.choice)
+		judgement.commit()
+		this.options.agent.publishStateChange()
 	}
 
 	executePlan() {
-		const {choices} = this
-		const autoChoices = autoAttacks(this.options.agent, this.proposers, {choices})
-		this.options.submitTurn({choices: [...choices, ...autoChoices]})
+		const {choices, activities, options} = this
+		const autoChoices = autoAttacks(options.agent, activities, {choices})
+		options.submitTurn({choices: [...choices, ...autoChoices]})
 		this.reset()
-	}
-
-	dispose() {
-		this.#renderbin.dispose()
 	}
 
 	render() {
@@ -87,34 +49,37 @@ export class Planner {
 		const {indicators} = assets
 		const selected = selectacon.selection.value
 
-		const selectedTeam = (
-			(selected?.kind === "tile")
-				? (agent.units.at(selected.place)?.team ?? null)
-				: selected?.teamId ?? null
-		)
-
 		for (const {place} of agent.tiles.list()) {
+			const ourTeam = turnTracker.teamId
 			const target: TileCell = {
 				place,
 				kind: "tile",
 				position: agent.coordinator.toPosition(place),
 			}
 
-			const libertyTeam = turnTracker.ourTurn
-				? selectedTeam
-				: turnTracker.teamId
+			const indicate = (instance: Prop) => {
+				const {agent} = this.options
+				const position = vec3.add(
+					agent.coordinator.toPosition(place),
+					[0, constants.indicators.verticalOffsets.normalIndicators, 0],
+				)
+				instance.position.set(...position)
+				this.#renderbin.disposable(instance)
+				return instance
+			}
 
 			this.navigateActionSpace({
 				target,
 				selected,
 				on: {
-					heal: considered => makeIndicator(considered, {
-						action: () => this.#instanceIndicator(indicators.heal.action, place),
-						pattern: () => this.#instanceIndicator(indicators.heal.pattern, place),
+					heal: indicatorResponses({
+						actionable: () => indicate(indicators.liberty.heal(ourTeam)),
+						pattern: () => indicate(indicators.liberty.heal(null)),
 					}),
-					spawn: considered => makeIndicator(considered, {
-						action: () => {
-							this.#instanceIndicator(indicators.liberty(libertyTeam).action, place)
+					recruit: indicatorResponses({
+						pattern: () => indicate(indicators.liberty.recruit(null)),
+						actionable: () => {
+							indicate(indicators.liberty.recruit(ourTeam))
 							if (selected?.kind === "roster")
 								spawnGhosts.setPossibleGhost({
 									place,
@@ -122,15 +87,14 @@ export class Planner {
 									unitKind: selected.unitKind,
 								})
 						},
-						pattern: () => this.#instanceIndicator(indicators.liberty(libertyTeam).pattern, place),
 					}),
-					attack: considered => makeIndicator(considered, {
-						action: () => this.#instanceIndicator(indicators.attack.action, place),
-						pattern: () => this.#instanceIndicator(indicators.attack.pattern, place),
+					attack: indicatorResponses({
+						actionable: () => indicate(indicators.liberty.attack(ourTeam)),
+						pattern: () => indicate(indicators.liberty.attack(null)),
 					}),
-					movement: considered => makeIndicator(considered, {
-						action: () => this.#instanceIndicator(indicators.liberty(libertyTeam).action, place),
-						pattern: () => this.#instanceIndicator(indicators.liberty(libertyTeam).pattern, place),
+					move: indicatorResponses({
+						actionable: () => indicate(indicators.liberty.move(ourTeam)),
+						pattern: () => indicate(indicators.liberty.move(null)),
 					}),
 				},
 			})
@@ -140,16 +104,30 @@ export class Planner {
 	navigateActionSpace({target, selected, on}: {
 			target: Cell | null
 			selected: Cell | null
-			on: {
-				heal: (r: ConsiderationResult) => boolean
-				spawn: (r: ConsiderationResult) => boolean
-				attack: (r: ConsiderationResult) => boolean
-				movement: (r: ConsiderationResult) => boolean
-			}
+			on: {[K in ChoiceKind]: (judgement: Rebuke | Judgement) => void}
 		}) {
 
 		const {agent} = this.options
-		const {considerations} = this
+		const {activities} = this
+
+		const consider = <K extends ChoiceKind>(
+				kind: K,
+				...args: Parameters<ActivityGroup[K]["propose"]>
+			) => {
+
+			const {propose, judge} = activities.get(kind)
+			const proposal = propose(...args)
+
+			if (proposal instanceof Rebuke) {
+				on[kind](proposal)
+				return false
+			}
+
+			const judgement = judge(proposal.choice)
+			on[kind](judgement)
+
+			return !(judgement instanceof Rebuke)
+		}
 
 		// focusing on a tile cell
 		if (target?.kind === "tile") {
@@ -159,29 +137,40 @@ export class Planner {
 				selected &&
 				selected.kind === "roster" &&
 				selected.teamId === agent.activeTeamId) {
-					on.spawn(considerations.spawn(target.place, selected.unitKind))
+					consider("recruit", target.place, selected.unitKind)
 			}
 
 			// a tile is already selected
 			else if (selected && selected.kind === "tile") {
+				const a = selected.place
+				const b = target.place
 				doFirstValidThing([
-					() => on.attack(considerations.attack(selected.place, target.place)),
-					() => on.heal(considerations.heal(selected.place, target.place)),
-					() => on.movement(considerations.movement(selected.place, target.place)),
+					() => consider("heal", a, b),
+					() => consider("attack", a, b),
+					() => consider("move", a, b)
 				])
 			}
 		}
 	}
+
+	dispose() {
+		this.#renderbin.dispose()
+	}
 }
 
-function makeIndicator({indicate}: ConsiderationResult, actors: {
+function indicatorResponses({pattern, actionable}: {
 		pattern: () => void
-		action: () => void
+		actionable: () => void
 	}) {
-	if (indicate) {
-		actors[indicate]()
-		return true
+
+	return (judgement: Rebuke | Judgement) => {
+		if (judgement instanceof SoftRebuke)
+			return pattern()
+
+		if (judgement instanceof Rebuke)
+			return undefined
+
+		return actionable()
 	}
-	return false
 }
 

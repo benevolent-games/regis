@@ -4,12 +4,12 @@ import {AbstractMesh, MeshBuilder, TransformNode} from "@babylonjs/core"
 import {assert_babylon_quaternion, Meshoid, vec3, Vec3} from "@benev/toolbox"
 
 import {World} from "./world.js"
-import {Assets} from "./assets.js"
 import {Agent} from "../../logic/agent.js"
+import {Assets} from "../assets/assets.js"
 import {constants} from "../../constants.js"
-import {UnitKind} from "../../logic/state.js"
+import {UnitKind} from "../../config/units.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
-import { getTopMeshes } from "./babylon-helpers.js"
+import { TeamId } from "../../logic/state.js"
 
 export type RosterPlacement = {
 	mesh: Meshoid
@@ -32,43 +32,32 @@ export class Rosters {
 	render() {
 		this.#trashbin.dispose()
 		this.placements.clear()
-
-		switch (this.options.turnTracker.teamId) {
-			case 0:
-				return this.#instanceRoster(0, "team1-roster")
-			case 1:
-				return this.#instanceRoster(1, "team2-roster")
-		}
+		return this.#instanceRoster(this.options.turnTracker.teamId)
 	}
 
-	#instanceRoster(teamId: number, propName: string) {
+	#instanceRoster(teamId: number) {
 		const {assets, world, agent} = this.options
 		const d = this.#trashbin.disposable
 
-		const rosterGuide = assets.board.instance(propName)
+		const rosterGuide = assets.board.roster(teamId)
 		rosterGuide.computeWorldMatrix(true)
 
-		const spawnableUnits = Object.entries(agent.state.initial.config.unitArchetypes)
-			.filter(([,archetype]) => archetype.cost !== null)
+		const recruitableUnits = Object.entries(agent.state.initial.config.archetypes)
+			.filter(([,archetype]) => !!archetype.recruitable)
 			.map(([kind]) => kind as UnitKind)
 
-		const unlockedUnits: UnitKind[] = [
-			"pawn",
-			...Object.entries(agent.claims.getTech(teamId))
-				.filter(([,enabled]) => !!enabled)
-				.map(([unitKind]) => unitKind as UnitKind)
-		]
+		const tech = agent.claims.teamTech(teamId)
 
-		const offset = (spawnableUnits.length / 2) - 0.5
+		const offset = (recruitableUnits.length / 2) - 0.5
 		const transform = new TransformNode("rosterRoot", world.scene)
 
-		const placers = spawnableUnits.map((unitKind, index) => {
-			const isUnlocked = unlockedUnits.includes(unitKind)
+		const placers = recruitableUnits.map((unitKind, index) => {
+			const isUnlocked = tech.has(unitKind)
 			if (!isUnlocked)
 				return () => {}
 
 			const {size} = constants.block
-			const instance = d(assets.units.unit[unitKind](teamId).normal())
+			const instance = d(assets.units.unit(unitKind, teamId, null))
 			const block = d(MeshBuilder.CreateBox("block", {size}, world.scene))
 
 			const x = (index - offset) * constants.block.size

@@ -4,6 +4,7 @@ import {Agent} from "../../agent.js"
 import {getNearby} from "./navigation.js"
 import {AgentState} from "../../state.js"
 import {isVerticallyCompatible} from "./verticality.js"
+import { Verticality } from "../../../config/units/traits.js"
 
 //
 // vision is related to fog-of-war
@@ -30,27 +31,29 @@ export function limitedVision(state: AgentState, teamId: number) {
 
 	for (const unit of agent.units.list()) {
 		const isFriendly = unit.team === teamId
-		const {vision} = agent.archetype(unit.kind)
+		const {sighted} = agent.archetype(unit.kind)
 
 		if (isFriendly) {
 			add(unit.place)
 
-			if (vision) {
+			if (sighted) {
 				const unitTile = agent.tiles.at(unit.place)
 
-				getNearby(agent, unit.place, vision.range)
-					.filter(({tile}) => isVerticallyCompatible(vision.verticality, unitTile, tile))
+				getNearby(agent, unit.place, sighted.range)
+					.filter(({tile}) => isVerticallyCompatible(sighted.verticality, unitTile, tile))
 					.forEach(({place}) => add(place))
 			}
 		}
 	}
 
-	for (const {place, claim: {watchtower}} of agent.claims.getStakedClaims(teamId)) {
+	for (const {place, tile} of agent.claims.teamStakes(teamId)) {
+		const watchtower = agent.claims.watchtower(tile.claims)
 		if (watchtower) {
-			const watchtowerTile = agent.tiles.at(place)
+			const verticality: Verticality = {above: true, below: true}
+
 			getNearby(agent, place, watchtower.range)
-				.filter(({tile}) => isVerticallyCompatible(watchtower.verticality, watchtowerTile, tile))
-				.forEach(({place}) => add(place))
+				.filter(target => isVerticallyCompatible(verticality, tile, target.tile))
+				.forEach(target => add(target.place))
 		}
 	}
 

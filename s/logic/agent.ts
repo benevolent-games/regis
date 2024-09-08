@@ -1,9 +1,9 @@
 
 import {pubsub} from "@benev/slate"
 
+import {AgentState} from "./state.js"
 import {TilesHelper} from "./helpers/tiles.js"
 import {UnitsHelper} from "./helpers/units.js"
-import {AgentState, UnitKind} from "./state.js"
 import {ClaimsHelper} from "./helpers/claims.js"
 import {BoundaryHelper} from "./helpers/boundary.js"
 import {CoordinatorHelper} from "./helpers/coordinator.js"
@@ -53,8 +53,11 @@ export class Agent<State extends AgentState = AgentState> {
 		return [...teams.keys()].filter(id => id !== teamId)
 	}
 
-	archetype(unitKind: UnitKind) {
-		return this.state.initial.config.unitArchetypes[unitKind]
+	archetype(unitKind: string) {
+		const arc = this.state.initial.config.archetypes[unitKind]
+		if (!arc)
+			throw new Error(`unknown archetype "${unitKind}"`)
+		return arc
 	}
 
 	get activeTeam() {

@@ -12,8 +12,6 @@ export const glyphs = {
 
 	claims: {
 		resource: "$",
-		resource2: "$$",
-		resource3: "$$$",
 		specialResource: "S",
 		watchtower: "*",
 		techKnight: "k",
@@ -36,6 +34,7 @@ export const glyphs = {
 			knight: "♘",
 			rook: "♖",
 			pawn: "♙",
+			elephant: "🐘",
 		},
 		blacks: {
 			king: "♚",
@@ -44,6 +43,7 @@ export const glyphs = {
 			knight: "♞",
 			rook: "♜",
 			pawn: "♟",
+			elephant: "🐘",
 		},
 	},
 }

@@ -3,11 +3,12 @@ import {Vec2} from "@benev/toolbox"
 
 import {glyphs} from "./glyphs.js"
 import {MapSpec} from "./types.js"
-import {defaultGameConfig} from "../data.js"
+import {UnitKind} from "../../config/units.js"
 import {TilesHelper} from "../helpers/tiles.js"
 import {UnitsHelper} from "../helpers/units.js"
 import {defaultClaims} from "./default-claims.js"
-import {GameInitial, makePlainBoardState, UnitKind} from "../state.js"
+import {standardGameConfig} from "../../config/game.js"
+import {GameInitial, makePlainBoardState} from "../state.js"
 
 export function asciiMap(map: MapSpec): GameInitial {
 	let id = 0
@@ -32,6 +33,15 @@ export function asciiMap(map: MapSpec): GameInitial {
 					fn()
 			}
 
+			function rezz(glyph: string, count: number, fn: () => void) {
+				let counted = 0
+				for (const char of part)
+					if (char === glyph)
+						counted += 1
+				if (counted === count)
+					fn()
+			}
+
 			//
 			// terrain
 			//
@@ -46,18 +56,19 @@ export function asciiMap(map: MapSpec): GameInitial {
 			// claims
 			//
 
-			zoop(glyphs.claims.resource, () => defaultClaims.resource(tile, 1))
-			zoop(glyphs.claims.resource2, () => defaultClaims.resource(tile, 2))
-			zoop(glyphs.claims.resource3, () => defaultClaims.resource(tile, 3))
-			zoop(glyphs.claims.specialResource, () => defaultClaims.specialResource(tile))
-			zoop(glyphs.claims.watchtower, () => defaultClaims.watchtower(tile))
-			zoop(glyphs.claims.techKnight, () => defaultClaims.techKnight(tile))
-			zoop(glyphs.claims.techRook, () => defaultClaims.techRook(tile))
-			zoop(glyphs.claims.techBishop, () => defaultClaims.techBishop(tile))
-			zoop(glyphs.claims.techQueen, () => defaultClaims.techQueen(tile))
-			zoop(glyphs.claims.techElephant, () => defaultClaims.techElephant(tile))
-			zoop(glyphs.claims.techBasic, () => defaultClaims.techBasic(tile))
-			zoop(glyphs.claims.techAdvanced, () => defaultClaims.techAdvanced(tile))
+			const zip = defaultClaims(tile)
+			rezz(glyphs.claims.resource, 1, () => zip.resource(1))
+			rezz(glyphs.claims.resource, 2, () => zip.resource(2))
+			rezz(glyphs.claims.resource, 3, () => zip.resource(3))
+			zoop(glyphs.claims.specialResource, () => zip.specialResource())
+			zoop(glyphs.claims.watchtower, () => zip.watchtower())
+			zoop(glyphs.claims.techKnight, () => zip.tech("knight"))
+			zoop(glyphs.claims.techRook, () => zip.tech("rook"))
+			zoop(glyphs.claims.techBishop, () => zip.tech("bishop"))
+			zoop(glyphs.claims.techQueen, () => zip.tech("queen"))
+			zoop(glyphs.claims.techElephant, () => zip.tech("elephant"))
+			zoop(glyphs.claims.techBasic, () => zip.tech("knight", "rook"))
+			zoop(glyphs.claims.techAdvanced, () => zip.tech("bishop", "queen"))
 
 			//
 			// units
@@ -81,6 +92,7 @@ export function asciiMap(map: MapSpec): GameInitial {
 			zoop(glyphs.units.whites.knight, makeUnit("knight", 0, place))
 			zoop(glyphs.units.whites.rook, makeUnit("rook", 0, place))
 			zoop(glyphs.units.whites.pawn, makeUnit("pawn", 0, place))
+			zoop(glyphs.units.whites.elephant, makeUnit("elephant", 0, place))
 
 			zoop(glyphs.units.blacks.king, makeUnit("king", 1, place))
 			zoop(glyphs.units.blacks.queen, makeUnit("queen", 1, place))
@@ -88,6 +100,7 @@ export function asciiMap(map: MapSpec): GameInitial {
 			zoop(glyphs.units.blacks.knight, makeUnit("knight", 1, place))
 			zoop(glyphs.units.blacks.rook, makeUnit("rook", 1, place))
 			zoop(glyphs.units.blacks.pawn, makeUnit("pawn", 1, place))
+			zoop(glyphs.units.blacks.elephant, makeUnit("elephant", 1, place))
 		})
 	})
 
@@ -95,7 +108,7 @@ export function asciiMap(map: MapSpec): GameInitial {
 		id,
 		board: board.state,
 		units: units.state,
-		config: defaultGameConfig(),
+		config: standardGameConfig(),
 		mapMeta: {
 			name: map.name,
 			author: map.author,

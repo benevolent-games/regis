@@ -1,84 +1,28 @@
 
-import {Claim, Tile} from "../state.js"
+import {Tile} from "../state.js"
+import {UnitKind} from "../../config/units.js"
+import {ResourceLevel} from "../../config/game/types.js"
 
-const basetech: Claim.Tech = {
-	knight: false,
-	rook: false,
-	bishop: false,
-	queen: false,
-	elephant: false,
-}
+export const defaultClaims = (tile: Tile) => ({
 
-export const defaultClaims = {
-	resource: (tile: Tile, level: 1 | 2 | 3) => {
-		tile.claim.resource = {
-			level,
-			stockpile: 32 * level,
-		}
-	},
+	resource: (level: ResourceLevel) => tile.claims.push({
+		kind: "resource",
+		level,
+		stockTaken: 0,
+	}),
 
-	specialResource: (tile: Tile) => {
-		tile.claim.specialResource = {
-			stockpile: 32,
-		}
-	},
+	specialResource: () => tile.claims.push({
+		kind: "specialResource",
+		stockTaken: 0,
+	}),
 
-	watchtower: (tile: Tile) => {
-		tile.claim.watchtower = {
-			range: 2,
-			verticality: "everywhere",
-		}
-	},
+	watchtower: () => tile.claims.push({
+		kind: "watchtower",
+		range: {steps: 2, kind: "chebyshev"},
+	}),
 
-	techKnight: (tile: Tile) => {
-		tile.claim.tech = {
-			...basetech,
-			knight: true,
-		}
-	},
-
-	techRook: (tile: Tile) => {
-		tile.claim.tech = {
-			...basetech,
-			rook: true,
-		}
-	},
-
-	techBishop: (tile: Tile) => {
-		tile.claim.tech = {
-			...basetech,
-			bishop: true,
-		}
-	},
-
-	techQueen: (tile: Tile) => {
-		tile.claim.tech = {
-			...basetech,
-			queen: true,
-		}
-	},
-
-	techElephant: (tile: Tile) => {
-		tile.claim.tech = {
-			...basetech,
-			elephant: true,
-		}
-	},
-
-	techBasic: (tile: Tile) => {
-		tile.claim.tech = {
-			...basetech,
-			knight: true,
-			rook: true,
-		}
-	},
-
-	techAdvanced: (tile: Tile) => {
-		tile.claim.tech = {
-			...basetech,
-			bishop: true,
-			queen: true,
-		}
-	},
-}
+	tech: (...unlocks: UnitKind[]) => unlocks.forEach(
+		unlock => tile.claims.push({kind: "tech", unlock})
+	),
+})
 

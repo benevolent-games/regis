@@ -1,6 +1,6 @@
 
 import {mapPool} from "../../map-pool.js"
-import {MapSpec} from "../ascii/types.js"
+import {MapSpec} from "../../logic/ascii/types.js"
 
 export function randomMap(): MapSpec {
 	return getMap("sven")

@@ -6,8 +6,8 @@ import {AgentState} from "../logic/state.js"
 import {Bridge} from "../dom/utils/bridge.js"
 import {printReport} from "./utils/print-report.js"
 import {asciiMap} from "../logic/ascii/ascii-map.js"
+import {randomMap} from "../config/game/map-access.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
-import {randomMap} from "../logic/routines/map-access.js"
 import {ChessTimer} from "../tools/chess-timer/chess-timer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 import {requestAnimationFrameLoop} from "../tools/request-animation-frame-loop.js"
@@ -17,7 +17,7 @@ export async function freeplayFlow() {
 	const [d, dr] = [trash.disposer, trash.disposable]
 
 	const initial = asciiMap(randomMap())
-	initial.config.time = null
+	initial.config.time = undefined
 
 	const arbiter = new Arbiter(initial)
 

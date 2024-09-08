@@ -1,8 +1,8 @@
 
 import {AgentState, FullTeamInfo, TeamInfo} from "../../state.js"
 
-export function canAfford(team: TeamInfo, cost: number | null): team is FullTeamInfo {
-	return "resources" in team && cost !== null
+export function canAfford(team: TeamInfo, cost: number | undefined): team is FullTeamInfo {
+	return "resources" in team && cost !== undefined
 		? team.resources >= cost
 		: false
 }

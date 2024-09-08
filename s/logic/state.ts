@@ -1,8 +1,9 @@
 
 import {loop2d, Vec2} from "@benev/toolbox"
 
-import {UnitArchetypes} from "./data.js"
-import {TimeRules} from "../tools/chess-timer/types.js"
+import {UnitKind} from "../config/units.js"
+import {GameConfig} from "../config/game/types.js"
+import {BoardRange} from "../config/units/traits.js"
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -53,24 +54,6 @@ export type MapMeta = {
 	author: string
 }
 
-export type GameConfig = {
-	time: TimeRules | null
-	startingResources: number
-	universalBasicIncome: number
-	resourceValue: number
-	specialResourceValue: number
-	unitArchetypes: UnitArchetypes
-	teams: InitialTeamInfo[]
-	costs: {
-		staking: {
-			resources: [number, number, number]
-			specialResource: number
-			watchtower: number
-			tech: Record<TechKind, number>
-		}
-	}
-}
-
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
@@ -110,15 +93,8 @@ export type Reminders = {
 	revelations: Vec2[]
 }
 
-export type ChoiceKind = Choice.Any["kind"]
-
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-
-export type InitialTeamInfo = {
-	name: string
-	roster: Roster
-}
 
 export type LimitedTeamInfo = {
 	name: string
@@ -135,46 +111,51 @@ export function isFullTeamInfo(team: TeamInfo): team is FullTeamInfo {
 	return "resources" in team
 }
 
-export type Roster = Record<UnitKind, number>
-
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
-export type TechKind = (
-	| "knight"
-	| "rook"
-	| "bishop"
-	| "queen"
-	| "elephant"
-)
+export type ClaimKind = Claim.Any["kind"]
 
 export namespace Claim {
 	export type SpecialResource = {
-		stockpile: number
+		kind: "specialResource"
+		stockTaken: number
 	}
 	export type Resource = {
-		stockpile: number
+		kind: "resource"
 		level: 1 | 2 | 3
+		stockTaken: number
 	}
 	export type Watchtower = {
-		range: number
-		verticality: Verticality
+		kind: "watchtower"
+		range: BoardRange
 	}
-	export type Tech = Record<TechKind, boolean>
+	export type Tech = {
+		kind: "tech"
+		unlock: UnitKind
+	}
+	export type Any = (
+		| SpecialResource
+		| Resource
+		| Watchtower
+		| Tech
+	)
 }
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
+export type ChoiceKind = Choice.Any["kind"]
+
 export namespace Choice {
-	export type Spawn = {
-		kind: "spawn"
+	export type Recruit = {
+		kind: "recruit"
 		unitKind: UnitKind
 		place: Vec2
 	}
 
-	export type Movement = {
-		kind: "movement"
+	export type Move = {
+		kind: "move"
 		source: Vec2
 		path: Vec2[]
 	}
@@ -192,8 +173,8 @@ export namespace Choice {
 	}
 
 	export type Any = (
-		| Spawn
-		| Movement
+		| Recruit
+		| Move
 		| Attack
 		| Heal
 	)
@@ -220,14 +201,7 @@ export type Elevation = 0 | 1 | 2 | 3
 export type Tile = {
 	elevation: Elevation
 	step: boolean
-	claim: TileClaim
-}
-
-export type TileClaim = {
-	resource: Claim.Resource | null
-	specialResource: Claim.SpecialResource | null
-	watchtower: Claim.Watchtower | null
-	tech: Claim.Tech | null
+	claims: Claim.Any[]
 }
 
 export type BoardState = {
@@ -240,12 +214,7 @@ export function makePlainBoardState(): BoardState {
 	const tiles = [...loop2d(extent)].map((): Tile => ({
 		step: false,
 		elevation: 1,
-		claim: {
-			watchtower: null,
-			resource: null,
-			specialResource: null,
-			tech: null,
-		}
+		claims: [],
 	}))
 	return {extent, tiles}
 }
@@ -253,72 +222,15 @@ export function makePlainBoardState(): BoardState {
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
+export type TeamId = number | null
+
 export type Unit = {
 	id: number
 	place: Vec2
 	kind: UnitKind
-	team: null | number
 	damage: number
+
+	// TODO rename to "teamId"
+	team: TeamId
 }
-
-export type VerticalCapability = {
-	above: boolean
-	below: boolean
-}
-
-export const verticality = {
-	flat: {above: false, below: false},
-	downwards: {above: false, below: true},
-	upwards: {above: true, below: false},
-	everywhere: {above: true, below: true},
-} satisfies Record<string, VerticalCapability>
-
-export type Verticality = keyof typeof verticality
-
-export function getVerticalCapability(v: Verticality) {
-	return verticality[v] as VerticalCapability
-}
-
-export type UnitArchetype = {
-	cost: null | number
-	health: null | number
-	stakeholder: boolean
-	actionCap: number
-	spawning: null | {
-		verticality: Verticality
-	}
-	vision: null | {
-		range: number
-		verticality: Verticality
-	}
-	move: null | {
-		cap: number
-		range: number
-		chebyshev: boolean
-		verticality: Verticality
-	}
-	attack: null | {
-		cap: number
-		damage: number
-		range: number
-		verticality: Verticality
-	}
-	heal: null | {
-		cap: number
-		range: number
-		amount: number
-		verticality: Verticality
-	}
-}
-
-export type UnitKind = (
-	| "obstacle"
-	| "king"
-	| "queen"
-	| "bishop"
-	| "knight"
-	| "rook"
-	| "pawn"
-	| "elephant"
-)
 

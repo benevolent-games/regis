@@ -2,8 +2,8 @@
 import {Trashbin} from "@benev/slate"
 import {vec2, Vec2, Vec3} from "@benev/toolbox"
 
-import {Assets} from "../../parts/assets.js"
-import {UnitKind} from "../../../logic/state.js"
+import {Assets} from "../../assets/assets.js"
+import {UnitKind} from "../../../config/units.js"
 import {Selectacon} from "../../parts/selectacon.js"
 
 type Ghost = {
@@ -31,7 +31,7 @@ export class SpawnGhostRenderer {
 
 	#instance(ghost: Ghost, position: Vec3) {
 		const {assets} = this.options
-		const instance = assets.units.unit[ghost.unitKind](ghost.teamId).faded()
+		const instance = assets.units.faded(ghost.unitKind, ghost.teamId, null)
 		this.bin.disposable(instance)
 		instance.position.set(...position)
 	}

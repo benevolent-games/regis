@@ -6,7 +6,7 @@ import {Turn} from "../../logic/state.js"
 import {Couple, Person} from "../types.js"
 import {Arbiter} from "../../logic/arbiter.js"
 import {asciiMap} from "../../logic/ascii/ascii-map.js"
-import {randomMap} from "../../logic/routines/map-access.js"
+import {randomMap} from "../../config/game/map-access.js"
 import {ChessTimer} from "../../tools/chess-timer/chess-timer.js"
 
 export class Game {

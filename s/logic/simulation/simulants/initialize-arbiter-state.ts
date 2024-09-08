@@ -14,9 +14,9 @@ export function initializeArbiterState(initial: GameInitial): ArbiterState {
 		},
 		teams: initial.config.teams.map((team, teamId): FullTeamInfo => ({
 			name: team.name,
-			resources: initial.config.startingResources + (
+			resources: initial.config.resources.startingResources + (
 				teamId > 0
-					? initial.config.universalBasicIncome
+					? initial.config.resources.universalBasicIncome
 					: 0
 			),
 		})),

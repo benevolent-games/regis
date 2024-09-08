@@ -8,7 +8,7 @@ export class ChessTimer {
 	#turnStart = this.#gameStart
 	#teams: TimeRecord[]
 
-	constructor(public rules: TimeRules | null, teamCount: number) {
+	constructor(public rules: TimeRules | undefined, teamCount: number) {
 		this.#teams = [...loop(teamCount)].map(() => ({
 			elapsed: 0,
 			benefits: 0,
@@ -16,7 +16,7 @@ export class ChessTimer {
 	}
 
 	static updateRecord(
-			rules: TimeRules | null,
+			rules: TimeRules | undefined,
 			stale: TimeRecord,
 			sinceTurnStart: number,
 		) {
@@ -38,7 +38,7 @@ export class ChessTimer {
 	}
 
 	static calculateTeamReport(
-			rules: TimeRules | null,
+			rules: TimeRules | undefined,
 			record: TimeRecord,
 		): TeamTimeReport {
 
@@ -84,7 +84,7 @@ export class ChessTimer {
 	}
 
 	static generateTeamwise(
-			rules: TimeRules | null,
+			rules: TimeRules | undefined,
 			teamRecords: TimeRecord[],
 			currentTeamId: number,
 			since: number,

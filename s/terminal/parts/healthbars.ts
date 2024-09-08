@@ -1,4 +1,3 @@
-import { loop } from "@benev/toolbox"
 
 export type Healthbar = {
 	fraction: number
