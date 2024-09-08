@@ -1,8 +1,9 @@
 
-import {Vec2} from "@benev/toolbox"
+import {loop, Vec2} from "@benev/toolbox"
 
-export const letters = [..."abcdefgh".toUpperCase()]
-export const numbers = [..."12345678"]
+export const letters = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
+
+export const numbers = [...loop(26)].map(i => i + 1)
 
 export function boardCoords([x, y]: Vec2) {
 	const alpha = letters[x]

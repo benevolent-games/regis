@@ -9,10 +9,16 @@ import {UnitsHelper} from "../helpers/units.js"
 import {defaultClaims} from "./default-claims.js"
 import {standardGameConfig} from "../../config/game.js"
 import {GameInitial, makePlainBoardState} from "../state.js"
+import {measureAsciiBoardExtent} from "./utils/measure-ascii-board-extent.js"
 
 export function asciiMap(map: MapSpec): GameInitial {
 	let id = 0
-	const board = new TilesHelper(makePlainBoardState())
+
+	const extent = measureAsciiBoardExtent(map.ascii)
+	console.log("EXTENT", extent)
+
+	const boardState = makePlainBoardState(extent)
+	const board = new TilesHelper(boardState)
 	const units = new UnitsHelper([])
 
 	const lines = map.ascii

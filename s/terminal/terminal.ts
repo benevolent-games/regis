@@ -43,7 +43,7 @@ export async function makeGameTerminal(
 	)
 
 	const {world, assets} = d(await makeBasicVisuals())
-	d(assets.board.border())
+	// d(assets.board.border())
 
 	const cameraRig = d(new CameraRig({world, teamId: turnTracker.teamId}))
 	const tiler = d(new Tiler({agent, world, assets}))

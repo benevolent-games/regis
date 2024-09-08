@@ -9,7 +9,6 @@ import {Assets} from "../assets/assets.js"
 import {constants} from "../../constants.js"
 import {UnitKind} from "../../config/units.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
-import { TeamId } from "../../logic/state.js"
 
 export type RosterPlacement = {
 	mesh: Meshoid
