@@ -48,22 +48,28 @@ new indicators scheme
 
 # code
 
-features
-
-- [x] queen healing ability
-- [ ] attack arcs
+priorities
+- [ ] fix multitasking systems
+- [ ] new inspector
+- [ ] menu with ability to surrender
 - [ ] undo one action
-- [x] spawn-ghosts
 - [ ] endgame state
   - game should be frozen, no further turns
   - lift the fog-of-war, revealing the whole board state to both teams
   - display a game over sign
   - add a ui button to leave the match
+- [ ] deploy
+- [ ] attack arcs
 - [ ] 10 second pregame
 - [ ] obstacle vision
 
+wontfix
 - [ ] multi-selection and multi-commands
 - [ ] control groups
+
+done
+- [x] queen healing ability
+- [x] spawn-ghosts
 
 - [x] reveal enemies on attack
 - [x] resource depletion
