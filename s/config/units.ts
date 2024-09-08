@@ -24,7 +24,7 @@ export const unitsConfig = deep.freeze(asUnitsConfig({
 			explained: {sentence: "Game ends when he dies, can see up cliffs, acts as recruitment point."},
 			mortal: {health: 5},
 			mobile: {range: {steps: 1}},
-			sighted: {range: {steps: 2}, verticality: {above: true, below: true}},
+			sighted: {range: {steps: 2}, verticality: {below: true}},
 			armed: {damage: 1, range: {steps: 1}},
 			recruiter: {range: {steps: 1}},
 			multitasker: {count: 2},
