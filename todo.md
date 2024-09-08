@@ -49,7 +49,7 @@ new indicators scheme
 # code
 
 priorities
-- [ ] fix multitasking systems
+- [x] fix multitasking systems
 - [ ] new inspector
 - [ ] menu with ability to surrender
 - [ ] undo one action
