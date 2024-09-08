@@ -50,6 +50,10 @@ export class Rosters {
 		const offset = (recruitableUnits.length / 2) - 0.5
 		const transform = new TransformNode("rosterRoot", world.scene)
 
+		const [extentX] = agent.state.initial.board.extent
+		const excess = Math.max(0, extentX - 8) * constants.block.size
+		const adjustmentX = (excess / 2) * (teamId === 0 ? 1 : -1)
+
 		const placers = recruitableUnits.map((unitKind, index) => {
 			const isUnlocked = tech.has(unitKind)
 			if (!isUnlocked)
@@ -77,6 +81,7 @@ export class Rosters {
 		})
 
 		transform.position = rosterGuide.position.clone()
+		transform.position.x += adjustmentX
 		transform.rotationQuaternion = assert_babylon_quaternion(rosterGuide)
 		rosterGuide.dispose()
 
