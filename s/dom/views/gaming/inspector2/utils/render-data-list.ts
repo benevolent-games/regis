@@ -1,7 +1,7 @@
 
-import {html, is} from "@benev/slate"
+import {html, is, RenderResult} from "@benev/slate"
 
-type DataValue = string | number | boolean | null | undefined
+type DataValue = RenderResult | string | number | boolean | null | undefined
 
 export function renderDataList(data: Record<string, DataValue>) {
 	return html`

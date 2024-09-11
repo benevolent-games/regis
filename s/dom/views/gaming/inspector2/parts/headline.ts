@@ -16,14 +16,15 @@ export function inspectorHeadline(bridge: Bridge) {
 			const archetype = agent.archetype(unit.kind)
 			return html`
 				<h1
-					data-team-number="${teamNumber(unit.team)}"
+					data-team="${teamNumber(unit.team)}"
 					?data-is-friendly="${unit.team === teamId}">
+
+					<span class=unitkind>
+						${capitalize(unit.kind)}
+					</span>
 
 					<span class=coords>
 						${boardCoords(selection.place)}
-					</span>
-					<span class=unitkind>
-						${capitalize(unit.kind)}
 					</span>
 				</h1>
 				${wherefor(archetype.explained, e => html`
@@ -34,8 +35,8 @@ export function inspectorHeadline(bridge: Bridge) {
 		else {
 			return html`
 				<h1>
-					<span class=coords>${boardCoords(selection.place)}</span>
 					<span class=tile>Tile</span>
+					<span class=coords>${boardCoords(selection.place)}</span>
 				</h1>
 			`
 		}
@@ -44,8 +45,8 @@ export function inspectorHeadline(bridge: Bridge) {
 	else if (selection?.kind === "roster") {
 		return html`
 			<h1 data-team-number="${teamNumber(selection.teamId)}">
-				<span class=roster>Roster</span>
 				<span class=unitkind>${capitalize(selection.unitKind)}</span>
+				<span class=roster>Roster</span>
 			</h1>
 		`
 	}

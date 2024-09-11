@@ -45,8 +45,6 @@ export const styles = css`
 	}
 
 	.hud {
-		font-size: 0.8em;
-
 		pointer-events: none;
 		z-index: 1;
 		position: relative;
@@ -69,11 +67,13 @@ export const styles = css`
 		}
 
 		> [view="inspector"] {
+			pointer-events: none;
 			z-index: 1;
 			position: absolute;
 			user-select: auto;
-			pointer-events: none;
+			padding: 1em;
 
+			width: 100%;
 			bottom: 0;
 			left: 0;
 			right: 0;

@@ -2,11 +2,9 @@
 import {css, html} from "@benev/slate"
 
 import {nexus} from "../../../nexus.js"
+import {unitPanel} from "./panels/unit.js"
+import {tilePanel} from "./panels/tile.js"
 import {Bridge} from "../../../utils/bridge.js"
-import {inspectorHeadline} from "./parts/headline.js"
-
-import {tileSection} from "./sections/tile.js"
-import {unitSections} from "./sections/sketch.js"
 
 export const InspectorView = nexus.shadowView(use => (
 		bridge: Bridge,
@@ -21,14 +19,8 @@ export const InspectorView = nexus.shadowView(use => (
 		return null
 
 	return html`
-		<hgroup>
-			${inspectorHeadline(bridge)}
-		</hgroup>
-
-		<div class=holder>
-			${unitSections(bridge)}
-			${tileSection(bridge)}
-		</div>
+		${tilePanel(bridge)}
+		${unitPanel(bridge)}
 	`
 })
 
@@ -37,41 +29,87 @@ export const styles = css`
 :host {
 	display: flex;
 	flex-direction: column;
+	gap: 2em;
+
+	text-shadow: .1em .2em .2em black;
+	--team1: cyan;
+	--team2: yellow;
+}
+
+h1 {
+	font-size: 1.5em;
+	--teamColor: #888;
+	&[data-team="1"] { --teamColor: var(--team1); }
+	&[data-team="2"] { --teamColor: var(--team2); }
+	&.unitkind {
+		text-shadow: 0 0 .5em color-mix(
+			in srgb,
+			transparent,
+			var(--teamColor) 75%
+		);
+	}
+}
+
+p {
+	opacity: 0.5;
+	font-size: 1.3em;
+	font-family: serif;
+	font-style: italic;
+	margin-bottom: 0.3em;
+}
+
+.group {
+	display: flex;
+	gap: 1em;
+
+	& h2 {
+		font-size: 1.1em;
+	}
+
+	& li {
+		> span:nth-child(1) {
+			opacity: 0.5;
+			font-weight: bold;
+		}
+	}
+}
+
+ul {
+	list-style: none;
+}
+
+`
+
+export const styles2 = css`
+
+:host {
+	display: flex;
+	flex-direction: column;
 	width: 100%;
 	text-shadow: .1em .2em .2em black;
 	gap: 1em;
 
-	outline: 1px solid red;
+	outline: 1px solid lime;
 
 	--team1: cyan;
 	--team2: yellow;
 }
+
+* {outline: 1px solid #f002}
 
 hgroup {
 	display: flex;
 	flex-direction: column;
 
 	h1 {
-		display: flex;
-		gap: 1rem;
-
 		--teamColor: #888;
-		&[data-team-number="1"] { --teamColor: var(--team1); }
-		&[data-team-number="2"] { --teamColor: var(--team2); }
+		&[data-team="1"] { --teamColor: var(--team1); }
+		&[data-team="2"] { --teamColor: var(--team2); }
 
 		:is(.coords, .roster) {
-			opacity: 0.3;
-		}
-
-		.coords {
+			opacity: 0.4;
 			font-family: monospace;
-			min-width: 3rem;
-			display: flex;
-			justify-content: end;
-			align-items: center;
 		}
-
-		.roster {}
 
 		.unitkind {
 			text-shadow: 0 0 .5em color-mix(
@@ -82,17 +120,17 @@ hgroup {
 		}
 	}
 
-	p {
-		padding-left: 4rem;
+	> p {
+		font-size: 1.4em;
+		font-family: serif;
+		font-style: italic;
 	}
 }
 
-.holder {
+.concept {
 	display: flex;
 	flex-wrap: wrap;
-	min-height: 8em;
-	padding: 1em;
-	gap: 1.5em;
+	gap: 1em;
 
 	pointer-events: all;
 
@@ -100,33 +138,13 @@ hgroup {
 		flex: 0 1 auto;
 		width: max-width;
 		max-width: min(24em, 100%);
-		gap: 1em;
 
-		> h2 {}
+		display: flex;
+		flex-direction: column;
 
-		& * {
-			outline: 1px solid #f003;
+		> h2 {
+			font-size: 1.1em;
 		}
-
-		.aspects {
-			display: flex;
-			flex-wrap: wrap;
-			flex: 0 1 auto;
-			width: max-width;
-			gap: .1em 1em;
-
-			.aspect {
-				flex: 0 1 auto;
-				width: max-width;
-
-				display: flex;
-				flex-direction: column;
-			}
-		}
-	}
-
-	> .archetype {
-		max-width: min(48em, 100%);
 	}
 }
 
@@ -136,10 +154,9 @@ ul {
 	> li {
 		> span:nth-child(1) {
 			font-weight: bold;
+			opacity: 0.4;
 		}
-		> span:nth-child(2) {
-			font-family: monospace;
-		}
+		> span:nth-child(2) {}
 	}
 }
 
