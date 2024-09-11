@@ -1,5 +1,5 @@
 
-import {html} from "@benev/slate"
+import {html, wherefor} from "@benev/slate"
 import {Bridge} from "../../../../utils/bridge.js"
 import {capitalize} from "../../../../../tools/capitalize.js"
 import {boardCoords} from "../../../../../tools/board-coords.js"
@@ -13,12 +13,12 @@ export function inspectorHeadline(bridge: Bridge) {
 		const unit = agent.units.at(selection.place)
 
 		if (unit) {
-			const isFriendly = unit.team === teamId
-			const teamNumber = unit.team === null
-				? null
-				: (unit.team + 1)
+			const archetype = agent.archetype(unit.kind)
 			return html`
-				<h1 data-team-number="${teamNumber}" ?data-is-friendly="${isFriendly}">
+				<h1
+					data-team-number="${teamNumber(unit.team)}"
+					?data-is-friendly="${unit.team === teamId}">
+
 					<span class=coords>
 						${boardCoords(selection.place)}
 					</span>
@@ -26,6 +26,9 @@ export function inspectorHeadline(bridge: Bridge) {
 						${capitalize(unit.kind)}
 					</span>
 				</h1>
+				${wherefor(archetype.explained, e => html`
+					<p>${e.sentence}</p>
+				`)}
 			`
 		}
 		else {
@@ -39,11 +42,8 @@ export function inspectorHeadline(bridge: Bridge) {
 	}
 
 	else if (selection?.kind === "roster") {
-		const teamNumber = selection.teamId === null
-			? null
-			: (selection.teamId + 1)
 		return html`
-			<h1 data-team-number="${teamNumber}">
+			<h1 data-team-number="${teamNumber(selection.teamId)}">
 				<span class=roster>Roster</span>
 				<span class=unitkind>${capitalize(selection.unitKind)}</span>
 			</h1>
@@ -53,5 +53,13 @@ export function inspectorHeadline(bridge: Bridge) {
 	else {
 		return null
 	}
+}
+
+////////////////////////////////////////////
+
+function teamNumber(teamId: number | null) {
+	return (teamId === null)
+		? null
+		: (teamId + 1)
 }
 
