@@ -1,33 +1,33 @@
 
 import {html} from "@benev/slate"
 import {Bridge} from "../../../../utils/bridge.js"
+import {renderPricetag} from "../utils/render-pricetag.js"
 import {capitalize} from "../../../../../tools/capitalize.js"
 import {archetypeDisplay} from "../utils/archetype-display.js"
 
-export function unitPanel(bridge: Bridge) {
+export function rosterPanel(bridge: Bridge) {
 	const agent = bridge.agent.value
+	const teamId = bridge.teamId.value
 	const selection = bridge.selectaconSelection.value
 
-	if (selection?.kind !== "tile")
+	if (selection?.kind !== "roster")
 		return null
 
-	const unit = agent.units.at(selection.place)
-	if (!unit)
-		return null
-
-	const archetype = agent.archetype(unit.kind)
+	const {unitKind} = selection
+	const archetype = agent.archetype(unitKind)
 	const arcdisplay = archetypeDisplay(archetype)
-
-	const team = (unit.team === null)
-		? "null"
-		: unit.team + 1
+	const recruitable = archetype.recruitable!
 
 	return html`
 		<section class=panel>
-			<h1 class="unitkind" data-team="${team}">
-				${capitalize(unit.kind)}
+			<h1>
+				<span>Recruitable</span>
+				<span>${capitalize(unitKind)}</span>
+				${renderPricetag(agent, teamId, recruitable.cost)}
 			</h1>
+
 			${arcdisplay.sentence}
+
 			<div class=group>
 				${arcdisplay.sections}
 			</div>
