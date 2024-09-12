@@ -52,11 +52,6 @@ h1 {
 
 	span.unitkind {
 		color: var(--teamColor);
-		xxx-text-shadow: 0 0 .5em color-mix(
-			in srgb,
-			transparent,
-			var(--teamColor) 75%
-		);
 	}
 
 	span.health {

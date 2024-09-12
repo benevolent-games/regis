@@ -19,6 +19,9 @@ export function rosterPanel(bridge: Bridge) {
 	const recruitable = archetype.recruitable!
 
 	const isUnlocked = agent.claims.teamTech(teamId).has(unitKind)
+	const priceTeam = isUnlocked
+		? teamId
+		: null
 
 	return html`
 		<section class=panel>
@@ -27,7 +30,7 @@ export function rosterPanel(bridge: Bridge) {
 					? html`<span>Recruitable</span>`
 					: html`<span class="meh">Locked</span>`}
 				<span>${capitalize(unitKind)}</span>
-				${renderPricetag(agent, teamId, recruitable.cost)}
+				${renderPricetag(agent, recruitable.cost, priceTeam)}
 			</h1>
 
 			${arcdisplay.sentence}

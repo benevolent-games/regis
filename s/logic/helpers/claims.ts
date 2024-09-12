@@ -157,17 +157,18 @@ export class ClaimsHelper {
 
 	teamTech(teamId: number) {
 		const tech = this.tech(this.teamStakedClaims(teamId))
-
 		for (const kind of this.#alwaysUnlocked)
 			tech.add(kind)
-
 		return tech
 	}
 
 	allPossibleTech() {
-		return this.tech(
+		const tech = this.tech(
 			[...this.tiles.list()].flatMap(({tile}) => tile.claims)
 		)
+		for (const kind of this.#alwaysUnlocked)
+			tech.add(kind)
+		return tech
 	}
 
 	teamIncome(teamId: number) {

@@ -44,11 +44,12 @@ export function tilePanel(bridge: Bridge) {
 										: html`<span class="angry">enemy ${stakeholder.kind}</span>`
 									)
 									: "vacant",
-								"staking cost": (stakingCost === 0
-									? "free"
-									: stakeholder
-										? stakingCost
-										: renderPricetag(agent, teamId, stakingCost)
+								"staking cost": (
+									stakingCost === 0
+										? "free"
+										: stakeholder
+											? renderPricetag(agent, stakingCost, null)
+											: renderPricetag(agent, stakingCost, teamId)
 								),
 							})}
 						</section>
