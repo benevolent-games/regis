@@ -164,6 +164,12 @@ export class ClaimsHelper {
 		return tech
 	}
 
+	allPossibleTech() {
+		return this.tech(
+			[...this.tiles.list()].flatMap(({tile}) => tile.claims)
+		)
+	}
+
 	teamIncome(teamId: number) {
 		const {config} = this.state.initial
 		const {universalBasicIncome} = config.resources

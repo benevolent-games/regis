@@ -1,9 +1,9 @@
 
 import {html} from "@benev/slate"
 import {Bridge} from "../../../../utils/bridge.js"
+import {healthDisplay} from "../utils/health-display.js"
 import {capitalize} from "../../../../../tools/capitalize.js"
 import {archetypeDisplay} from "../utils/archetype-display.js"
-import { healthDisplay } from "../utils/health-display.js"
 
 export function unitPanel(bridge: Bridge) {
 	const agent = bridge.agent.value

@@ -46,6 +46,7 @@ export class Rosters {
 			.filter(([,archetype]) => !!archetype.recruitable)
 			.map(([kind, archetype]) => ({unitKind: kind as UnitKind, archetype}))
 
+		const allPossibleTech = agent.claims.allPossibleTech()
 		const tech = agent.claims.teamTech(teamId)
 		const team = agent.state.teams.at(teamId)!
 
@@ -57,9 +58,12 @@ export class Rosters {
 		const adjustmentX = (excess / 2) * (teamId === 0 ? 1 : -1)
 
 		const placers = recruitableUnits.map(({unitKind, archetype}, index) => {
+			const isEvenPossible = allPossibleTech.has(unitKind)
+			if (!isEvenPossible)
+				return () => {}
+
 			const isUnlocked = tech.has(unitKind)
 			const isAffordable = canAfford(team, archetype.recruitable!.cost)
-			const {size} = constants.block
 
 			const instance = d(
 				isUnlocked
@@ -71,6 +75,7 @@ export class Rosters {
 					: assets.units.superFaded(unitKind, teamId, null)
 			)
 
+			const {size} = constants.block
 			const block = d(MeshBuilder.CreateBox("block", {size}, world.scene))
 
 			const x = (index - offset) * constants.block.size
