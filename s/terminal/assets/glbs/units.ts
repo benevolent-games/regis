@@ -9,7 +9,8 @@ import {UnitKind, unitsConfig} from "../../../config/units.js"
 import {HealthReport} from "../../../logic/utils/health-report.js"
 
 const teamIds = [0, 1]
-const fadedOpacity = 0.6
+const fadedOpacity = 0.5
+const superFadedOpacity = 0.05
 const obstacleHealthVariations = 12
 
 export class UnitsGlb extends Glb {
@@ -25,6 +26,7 @@ export class UnitsGlb extends Glb {
 		}
 
 		const fadedMap = new Map2<string, Instancer>()
+		const superFadedMap = new Map2<string, Instancer>()
 		const normalMap = new Map2<string, Instancer>()
 
 		for (const [kind, {rendering}] of Object.entries(unitsConfig)) {
@@ -42,6 +44,11 @@ export class UnitsGlb extends Glb {
 				const fadedProp = Glb.cloneProp(normalProp)
 				Glb.changeOpacity(fadedProp, fadedOpacity)
 				fadedMap.set(name, () => Glb.instantiate(fadedProp))
+
+				// instancer for 'superFaded' prop variants
+				const superFadedProp = Glb.cloneProp(normalProp)
+				Glb.changeOpacity(superFadedProp, superFadedOpacity)
+				superFadedMap.set(name, () => Glb.instantiate(superFadedProp))
 			}
 		}
 
@@ -71,6 +78,7 @@ export class UnitsGlb extends Glb {
 		return {
 			normal: prep(normalMap),
 			faded: prep(fadedMap),
+			superFaded: prep(superFadedMap),
 		}
 	})()
 
@@ -80,6 +88,10 @@ export class UnitsGlb extends Glb {
 
 	faded = (kind: UnitKind, teamId: TeamId, health: HealthReport | null) => {
 		return this.#unitSpawners.faded(kind, teamId, health)
+	}
+
+	superFaded = (kind: UnitKind, teamId: TeamId, health: HealthReport | null) => {
+		return this.#unitSpawners.superFaded(kind, teamId, health)
 	}
 }
 

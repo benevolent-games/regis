@@ -21,7 +21,7 @@ export const unitsConfig = deep.freeze(asUnitsConfig({
 	king: {
 		rendering: {algo: "normal"},
 		archetype: {
-			explained: {sentence: "Game ends when he dies, can see up cliffs, acts as recruitment point."},
+			explained: {sentence: "Game ends when he dies, acts as recruitment point."},
 			mortal: {health: 5},
 			mobile: {range: {steps: 1}},
 			sighted: {range: {steps: 2}, verticality: {below: true}},

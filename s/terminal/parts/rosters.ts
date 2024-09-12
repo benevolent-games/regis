@@ -8,6 +8,7 @@ import {Agent} from "../../logic/agent.js"
 import {Assets} from "../assets/assets.js"
 import {constants} from "../../constants.js"
 import {UnitKind} from "../../config/units.js"
+import {canAfford} from "../../logic/simulation/aspects/money.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 
 export type RosterPlacement = {
@@ -43,9 +44,11 @@ export class Rosters {
 
 		const recruitableUnits = Object.entries(agent.state.initial.config.archetypes)
 			.filter(([,archetype]) => !!archetype.recruitable)
-			.map(([kind]) => kind as UnitKind)
+			.map(([kind, archetype]) => ({unitKind: kind as UnitKind, archetype}))
 
+		const allPossibleTech = agent.claims.allPossibleTech()
 		const tech = agent.claims.teamTech(teamId)
+		const team = agent.state.teams.at(teamId)!
 
 		const offset = (recruitableUnits.length / 2) - 0.5
 		const transform = new TransformNode("rosterRoot", world.scene)
@@ -54,13 +57,25 @@ export class Rosters {
 		const excess = Math.max(0, extentX - 8) * constants.block.size
 		const adjustmentX = (excess / 2) * (teamId === 0 ? 1 : -1)
 
-		const placers = recruitableUnits.map((unitKind, index) => {
-			const isUnlocked = tech.has(unitKind)
-			if (!isUnlocked)
+		const placers = recruitableUnits.map(({unitKind, archetype}, index) => {
+			const isEvenPossible = allPossibleTech.has(unitKind)
+			if (!isEvenPossible)
 				return () => {}
 
+			const isUnlocked = tech.has(unitKind)
+			const isAffordable = canAfford(team, archetype.recruitable!.cost)
+
+			const instance = d(
+				isUnlocked
+					? (
+						isAffordable
+							? assets.units.unit(unitKind, teamId, null)
+							: assets.units.faded(unitKind, teamId, null)
+					)
+					: assets.units.superFaded(unitKind, teamId, null)
+			)
+
 			const {size} = constants.block
-			const instance = d(assets.units.unit(unitKind, teamId, null))
 			const block = d(MeshBuilder.CreateBox("block", {size}, world.scene))
 
 			const x = (index - offset) * constants.block.size

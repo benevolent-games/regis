@@ -134,6 +134,7 @@ export const styles = css`
 		justify-content: center;
 
 		font-family: monospace;
+		font-weight: bold;
 		height: 3em;
 		padding: 0 1em;
 

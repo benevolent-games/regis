@@ -9,9 +9,14 @@ import {constants} from "../../constants.js"
 export class CoordinatorHelper {
 	constructor(private board: BoardState) {}
 
+	/** count the step as an elevation half-step */
+	elevationWithStep(tile: Tile) {
+		return tile.elevation + (tile.step ? 0.5 : 0)
+	}
+
 	/** get height at the top of this tile */
 	tileHeight(tile: Tile) {
-		const elevation = tile.elevation + (tile.step ? 0.5 : 0)
+		const elevation = this.elevationWithStep(tile)
 		return this.elevationHeight(elevation)
 	}
 

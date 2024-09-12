@@ -2,8 +2,10 @@
 import {css, html} from "@benev/slate"
 
 import {nexus} from "../../../nexus.js"
+import {unitPanel} from "./panels/unit.js"
+import {tilePanel} from "./panels/tile.js"
+import {rosterPanel} from "./panels/roster.js"
 import {Bridge} from "../../../utils/bridge.js"
-import {inspectorPanels} from "./inspector-panels.js"
 
 export const InspectorView = nexus.shadowView(use => (
 		bridge: Bridge,
@@ -12,72 +14,91 @@ export const InspectorView = nexus.shadowView(use => (
 	use.name("inspector")
 	use.styles(styles)
 
-	const agent = bridge.agent.value
 	const selection = bridge.selectaconSelection.value
 
-	if (selection?.kind === "tile")
-		return html`
-			${inspectorPanels.unit(agent, bridge.teamId.value, selection, bridge.terminal.planner.activities.unitTaskTracker)}
-			${inspectorPanels.tile(agent, selection, bridge.teamId.value)}
-		`
-
-	if (selection?.kind === "roster")
-		return html`
-			${inspectorPanels.roster(agent, selection, bridge.teamId.value)}
-		`
-
-	else
+	if (selection === null)
 		return null
+
+	return html`
+		${unitPanel(bridge)}
+		${tilePanel(bridge)}
+		${rosterPanel(bridge)}
+	`
 })
 
 export const styles = css`
-	:host {
-		display: flex;
-		justify-content: space-between;
-		align-items: end;
-		width: 100%;
+
+:host {
+	display: flex;
+	flex-direction: column;
+	gap: 2em;
+
+	text-shadow: .1em .2em .2em black;
+	--team1: cyan;
+	--team2: yellow;
+}
+
+.panel {
+	display: flex;
+	flex-direction: column;
+}
+
+h1 {
+	font-size: 1.8em;
+
+	--teamColor: #888;
+	&[data-team="1"] { --teamColor: var(--team1); }
+	&[data-team="2"] { --teamColor: var(--team2); }
+
+	span.unitkind {
+		color: var(--teamColor);
 	}
 
-	.panel {
-		flex: 0 1 auto;
-		padding: 1em;
-		width: 24em;
-
-		text-shadow: 1px 2px 1px #0004;
-
-		&.unit { margin-right: auto; }
-		&.roster { margin-right: auto; }
-		&.tile { margin-left: auto; }
-
-		> * + * { margin-top: 0.4em; }
-	}
-
-	.price {
+	span.health {
 		font-family: monospace;
-		font-weight: normal;
-		color: white;
+		color: var(--teamColor);
 	}
 
-	h1 { font-size: 1.3em; }
-	h2 { font-size: 1.2em; }
-	h3 { font-size: 1.15em; }
-	.essay { margin-bottom: 1em; }
-	.angry { color: #d00; }
-	.happy { color: #0a0; }
-	.health-pattern { color: #fae; }
-	h2, h3 { color: #99ca; }
+	span[data-allegiance="friendly"] { display: none; }
+}
 
-	ul, ol {
-		display: flex;
-		flex-wrap: wrap;
-		list-style: none;
+p {
+	opacity: 0.5;
+	font-size: 1.4em;
+	font-family: serif;
+	font-style: italic;
+	margin-bottom: 0.3em;
+}
 
-		li {
-			display: flex;
-			gap: 0.2em;
-			margin-right: 0.4em;
-			> span { opacity: 0.7; }
+.group {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1em;
+
+	& h2 {
+		font-size: 1.1em;
+	}
+
+	& li {
+		> span:nth-child(1) {
+			opacity: 0.5;
+			font-weight: bold;
 		}
 	}
+}
+
+ul {
+	list-style: none;
+}
+
+.pricetag {
+	font-family: monospace;
+	font-weight: bold;
+}
+
+.meh { color: #555; }
+.happy { color: #0f0; }
+.angry { color: #f00; }
+
 `
 

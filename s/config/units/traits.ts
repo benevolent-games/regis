@@ -5,7 +5,7 @@ export type Verticality = {
 }
 
 export type Repeatability = {
-	count?: number
+	count: number
 	focusFire?: boolean
 }
 
