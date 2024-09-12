@@ -14,6 +14,8 @@ export const GameplayMenu = nexus.shadowView(use => (o: {
 	use.name("gameplay-menu")
 	use.styles(styles)
 
+	const agent = o.bridge.agent.value
+
 	use.once(async() => {
 		await nap()
 		const dialog = use.shadow.querySelector("dialog")!
@@ -55,11 +57,13 @@ export const GameplayMenu = nexus.shadowView(use => (o: {
 			</div>
 			<div>
 
-				<button
-					class=angry
-					@click="${closer(o.onSurrender)}">
-						surrender
-				</button>
+				${agent.conclusion ? null : html`
+					<button
+						class=angry
+						@click="${closer(o.onSurrender)}">
+							surrender
+					</button>
+				`}
 
 				<button
 					class=angry

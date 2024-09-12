@@ -114,6 +114,10 @@ export const styles = css`
 	user-select: none;
 }
 
+.chunk > * {
+	pointer-events: all;
+}
+
 .chunk {
 	display: flex;
 	gap: 0.5em;
