@@ -1,7 +1,7 @@
 
-![tinyforge](https://imgur.com/3uwGtEH.png)
+![regis.gg](https://i.imgur.com/gfKKL5D.png)
 
-# ⚒ tinyforge
+# 👑 regis
 
-*small game, big strategies*
+*chess-like game that plays like an rts.*
 

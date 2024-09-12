@@ -1,8 +1,8 @@
 {
-	"name": "@benev/tinyforge",
+	"name": "@benev/regis",
 	"private": true,
 	"version": "0.0.0-0",
-	"description": "a small rts game",
+	"description": "chess-inspired strategy game",
 	"license": "MIT",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"type": "module",
@@ -35,7 +35,7 @@
 		"es-module-shims": "^1.10.0",
 		"markdown-it": "^14.1.0",
 		"renraku": "^0.2.0-3",
-		"zx": "^8.1.5"
+		"zx": "^8.1.6"
 	},
 	"devDependencies": {
 		"@benev/batch": "^0.0.1",
@@ -46,7 +46,7 @@
 		"cynic": "^0.2.1",
 		"http-server": "^14.1.1",
 		"npm-run-all": "^4.1.5",
-		"typescript": "^5.5.4"
+		"typescript": "^5.6.2"
 	},
 	"keywords": [
 		"game",
@@ -54,10 +54,10 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/benevolent-games/tinyforge.git"
+		"url": "git+https://github.com/benevolent-games/regis.git"
 	},
 	"bugs": {
-		"url": "https://github.com/benevolent-games/tinyforge/issues"
+		"url": "https://github.com/benevolent-games/regis/issues"
 	},
-	"homepage": "https://github.com/benevolent-games/tinyforge#readme"
+	"homepage": "https://github.com/benevolent-games/regis#readme"
 }

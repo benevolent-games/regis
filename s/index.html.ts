@@ -17,7 +17,7 @@ export default template(async basic => {
 		path,
 		dark: true,
 		css: "index.css",
-		title: "tinyforge.benev.gg",
+		title: "regis.gg",
 		head: html`
 			<link rel="icon" href="/assets/benevolent.svg"/>
 			<link rel="stylesheet" href="${path.version.root("index.css")}"/>
