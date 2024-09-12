@@ -5,7 +5,7 @@ import {nexus} from "../../nexus.js"
 import {Bridge} from "../../utils/bridge.js"
 import {ActionBarView} from "../gaming/action-bar.js"
 import type {World} from "../../../terminal/parts/world.js"
-import {InspectorView} from "../gaming/inspector2/inspector.js"
+import {InspectorView} from "../gaming/inspector/inspector.js"
 
 export const GameplayView = nexus.shadowView(use => (
 		world: World,
