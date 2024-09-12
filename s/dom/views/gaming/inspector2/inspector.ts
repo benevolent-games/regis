@@ -46,16 +46,22 @@ export const styles = css`
 h1 {
 	font-size: 1.8em;
 
-	span.unitkind {
-		--teamColor: #888;
-		&[data-team="1"] { --teamColor: var(--team1); }
-		&[data-team="2"] { --teamColor: var(--team2); }
+	--teamColor: #888;
+	&[data-team="1"] { --teamColor: var(--team1); }
+	&[data-team="2"] { --teamColor: var(--team2); }
 
-		text-shadow: 0 0 .5em color-mix(
+	span.unitkind {
+		color: var(--teamColor);
+		xxx-text-shadow: 0 0 .5em color-mix(
 			in srgb,
 			transparent,
 			var(--teamColor) 75%
 		);
+	}
+
+	span.health {
+		font-family: monospace;
+		color: var(--teamColor);
 	}
 
 	span[data-allegiance="friendly"] { display: none; }
@@ -93,11 +99,6 @@ ul {
 .pricetag {
 	font-family: monospace;
 	font-weight: bold;
-}
-
-.health {
-	font-family: monospace;
-	color: #fcc;
 }
 
 .meh { color: #555; }

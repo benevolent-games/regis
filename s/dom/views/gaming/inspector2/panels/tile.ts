@@ -43,7 +43,7 @@ export function tilePanel(bridge: Bridge) {
 										? html`<span class="happy">${stakeholder.kind}</span>`
 										: html`<span class="angry">enemy ${stakeholder.kind}</span>`
 									)
-									: "up for grabs",
+									: "vacant",
 								"staking cost": (stakingCost === 0
 									? "free"
 									: stakeholder

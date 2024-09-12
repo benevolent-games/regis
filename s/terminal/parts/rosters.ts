@@ -8,8 +8,8 @@ import {Agent} from "../../logic/agent.js"
 import {Assets} from "../assets/assets.js"
 import {constants} from "../../constants.js"
 import {UnitKind} from "../../config/units.js"
+import {canAfford} from "../../logic/simulation/aspects/money.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
-import { canAfford } from "../../logic/simulation/aspects/money.js"
 
 export type RosterPlacement = {
 	mesh: Meshoid

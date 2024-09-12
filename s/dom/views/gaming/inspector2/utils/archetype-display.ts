@@ -94,14 +94,13 @@ function getAspectLists(archetype: Archetype): Record<keyof Aspects, RenderResul
 			renderDataList({
 				cost,
 				limit,
-				"unlockable cost": wherefor(unlockable, u => u.price),
+				"unlock cost": wherefor(unlockable, u => u.price),
 			})
 		),
 
-		stakeholder: wherefor(archetype.recruiter, ({range, verticality}) =>
+		stakeholder: wherefor(archetype.stakeholder, () =>
 			renderDataList({
-				range: renderRange(range),
-				verticality: wherefor(verticality, renderVerticality),
+				"can": "stake claims",
 			})
 		),
 	}

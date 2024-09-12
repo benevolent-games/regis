@@ -32,19 +32,19 @@ export function unitPanel(bridge: Bridge) {
 
 	const allegianceValence = (
 		allegiance === "friendly" ? "happy"
-		: allegiance === "enemy" ? "angry"
+		: allegiance === "enemy" ? "meh"
 		: "meh"
 	)
 
 	return html`
 		<section class=panel>
-			<h1>
+			<h1 data-team="${team}">
 				<span
 					class="allegiance ${allegianceValence}"
 					data-allegiance="${allegiance}">
 					${capitalize(allegiance)}
 				</span>
-				<span class="unitkind" data-team="${team}">
+				<span class="unitkind">
 					${capitalize(unit.kind)}
 				</span>
 				${healthDisplay(unit, archetype)}
