@@ -50,7 +50,7 @@ new indicators scheme
 
 priorities
 - [x] fix multitasking systems
-- [ ] new inspector
+- [x] new inspector
 - [ ] menu with ability to surrender
 - [ ] undo one action
 - [ ] endgame state
