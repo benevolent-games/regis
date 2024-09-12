@@ -1,26 +1,64 @@
 
-import {css, html} from "@benev/slate"
+import {css, ev, html} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
 import {Bridge} from "../../utils/bridge.js"
 import {ActionBarView} from "../gaming/action-bar.js"
+import {GameplayMenu} from "../gaming/gameplay-menu.js"
 import type {World} from "../../../terminal/parts/world.js"
 import {InspectorView} from "../gaming/inspector/inspector.js"
 
-export const GameplayView = nexus.shadowView(use => (
-		world: World,
-		bridge: Bridge,
-	) => {
+export const GameplayView = nexus.shadowView(use => ({
+		world,
+		bridge,
+		exit,
+	}: {
+		world: World
+		bridge: Bridge
+		exit: () => void,
+	}) => {
 
 	use.name("gameplay")
 	use.styles(styles)
+
+	const menu = use.signal(false)
+
+	// tab to toggle menu
+	use.mount(() => ev(document, {
+		keydown: (event: KeyboardEvent) => {
+			if (event.code === "Tab") {
+				menu.value = !menu.value
+				event.preventDefault()
+			}
+		},
+	}))
 
 	return html`
 		${world.canvas}
 
 		<div class="hud">
-			${ActionBarView([bridge])}
+			${ActionBarView([{
+				bridge,
+				openMenu: () => {
+					menu.value = true
+				},
+			}])}
+
 			${InspectorView([bridge])}
+
+			${menu.value ? GameplayMenu([{
+				bridge,
+				onQuit: () => {
+					menu.value = false
+					exit()
+				},
+				onResume: () => {
+					menu.value = false
+				},
+				onSurrender: () => {
+					menu.value = false
+				},
+			}]) : null}
 		</div>
 	`
 })

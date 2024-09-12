@@ -11,9 +11,13 @@ import {FullTeamInfo} from "../../../logic/state.js"
 import circleCheckSvg from "../../icons/tabler/circle-check.svg.js"
 import arrowCounterClockwiseSvg from "../../icons/akar/arrow-counter-clockwise.svg.js"
 
-export const ActionBarView = nexus.shadowView(use => (
+export const ActionBarView = nexus.shadowView(use => ({
+		bridge,
+		openMenu,
+	}: {
 		bridge: Bridge
-	) => {
+		openMenu: () => void
+	}) => {
 
 	use.name("actionbar")
 	use.styles(styles)
@@ -30,7 +34,7 @@ export const ActionBarView = nexus.shadowView(use => (
 	return html`
 		<div class="chunk stretchy left">
 			<div class="entry">
-				<div class="button">
+				<div class="button" @click="${openMenu}">
 					${menuSvg}
 					<em>tab</em>
 				</div>

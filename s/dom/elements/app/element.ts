@@ -57,25 +57,33 @@ export const GameApp = nexus.shadowComponent(use => {
 			freeplay: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
 				const {freeplayFlow} = await import("../../../flows/freeplay.js")
 				const {world, bridge, dispose} = await freeplayFlow()
+				const exit = () => goExhibit.mainMenu()
 				return {
 					dispose,
-					template: () => GameplayView([world, bridge]),
+					template: () => GameplayView([{
+						world,
+						bridge,
+						exit,
+					}]),
 				}
 			}),
 
 			versus: orchestrator.makeNavFn(loadscreens.logoSplash, async(data: StartMemo) => {
 				const {connectivity} = use.context
 				const {versusFlow} = await import("../../../flows/versus.js")
+				const exit = () => goExhibit.mainMenu()
 				const flow = await versusFlow({
 					data,
 					connectivity,
-					exit: () => goExhibit.mainMenu(),
+					exit,
 				})
-				if (flow)
+				if (flow) {
+					const {world, bridge} = flow
 					return {
 						dispose: flow.dispose,
-						template: () => GameplayView([flow.world, flow.bridge]),
+						template: () => GameplayView([{world, bridge, exit}]),
 					}
+				}
 				else
 					return {template: () => null, dispose: () => {}}
 			}),
