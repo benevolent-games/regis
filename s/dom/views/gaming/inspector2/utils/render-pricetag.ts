@@ -15,8 +15,12 @@ export function renderPricetag(agent: Agent, teamId: TeamId, cost: number) {
 			: "no"
 	})()
 
+	const classnames: string[] = ["pricetag"]
+	if (afford === "yes") classnames.push("happy")
+	if (afford === "no") classnames.push("angry")
+
 	return html`
-		<span class=pricetag data-afford="${afford}">
+		<span class="${classnames.join(" ")}" data-afford="${afford}">
 			${constants.icons.resource}${cost}
 		</span>
 	`

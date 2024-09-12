@@ -40,16 +40,20 @@ export const styles = css`
 
 h1 {
 	font-size: 1.5em;
-	--teamColor: #888;
-	&[data-team="1"] { --teamColor: var(--team1); }
-	&[data-team="2"] { --teamColor: var(--team2); }
-	&.unitkind {
+
+	span.unitkind {
+		--teamColor: #888;
+		&[data-team="1"] { --teamColor: var(--team1); }
+		&[data-team="2"] { --teamColor: var(--team2); }
+
 		text-shadow: 0 0 .5em color-mix(
 			in srgb,
 			transparent,
 			var(--teamColor) 75%
 		);
 	}
+
+	span[data-allegiance="friendly"] { display: none; }
 }
 
 p {
@@ -82,9 +86,12 @@ ul {
 
 .pricetag {
 	font-family: monospace;
-	&[data-afford="yes"] { color: lime; }
-	&[data-afford="no"] { color: red; }
+	font-weight: bold;
 }
+
+.meh { color: #555; }
+.happy { color: #0f0; }
+.angry { color: #f00; }
 
 `
 

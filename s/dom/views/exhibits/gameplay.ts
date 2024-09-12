@@ -68,17 +68,24 @@ export const styles = css`
 
 		> [view="inspector"] {
 			pointer-events: none;
+			overflow: hidden;
 			z-index: 1;
 			position: absolute;
 			user-select: auto;
 			padding: 1em;
 
-			width: 100%;
+			font-size: 0.8em;
+			width: max-content;
+			max-width: 100%;
 			bottom: 0;
 			left: 0;
 			right: 0;
 
-			overflow: hidden;
+			background: linear-gradient(
+				to right,
+				#0008,
+				#0000
+			);
 		}
 	}
 `

@@ -6,6 +6,7 @@ import {archetypeDisplay} from "../utils/archetype-display.js"
 
 export function unitPanel(bridge: Bridge) {
 	const agent = bridge.agent.value
+	const teamId = bridge.teamId.value
 	const selection = bridge.selectaconSelection.value
 
 	if (selection?.kind !== "tile")
@@ -22,12 +23,33 @@ export function unitPanel(bridge: Bridge) {
 		? "null"
 		: unit.team + 1
 
+	const allegiance = (
+		unit.team === null ? "neutral"
+		: unit.team === teamId ? "friendly"
+		: "enemy"
+	)
+
+	const allegianceValence = (
+		allegiance === "friendly" ? "happy"
+		: allegiance === "enemy" ? "angry"
+		: "meh"
+	)
+
 	return html`
 		<section class=panel>
-			<h1 class="unitkind" data-team="${team}">
-				${capitalize(unit.kind)}
+			<h1>
+				<span
+					class="allegiance ${allegianceValence}"
+					data-allegiance="${allegiance}">
+					${capitalize(allegiance)}
+				</span>
+				<span class="unitkind" data-team="${team}">
+					${capitalize(unit.kind)}
+				</span>
 			</h1>
+
 			${arcdisplay.sentence}
+
 			<div class=group>
 				${arcdisplay.sections}
 			</div>
