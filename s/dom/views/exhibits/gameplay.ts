@@ -48,15 +48,17 @@ export const GameplayView = nexus.shadowView(use => ({
 
 			${menu.value ? GameplayMenu([{
 				bridge,
-				onQuit: () => {
-					menu.value = false
-					exit()
-				},
 				onResume: () => {
 					menu.value = false
 				},
 				onSurrender: () => {
 					menu.value = false
+					bridge.actions.surrender()
+				},
+				onQuit: () => {
+					menu.value = false
+					bridge.actions.surrender()
+					exit()
 				},
 			}]) : null}
 		</div>

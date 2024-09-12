@@ -48,6 +48,13 @@ export async function freeplayFlow() {
 		terminal,
 		getTimeReport: () => timer.report(),
 		getTeamId: () => terminal.previewAgent.activeTeamId,
+		surrender: async() => {
+			arbiter.commit({
+				kind: "surrender",
+				gameTime: timer.report().gameTime,
+				eliminatedTeamId: turnTracker.teamId,
+			})
+		},
 	})
 	d(requestAnimationFrameLoop(bridge.updateTime))
 

@@ -87,6 +87,18 @@ export class Game {
 		this.#broadcastGameUpdate()
 	}
 
+	async surrender(teamId: number) {
+		if (!this.arbiter.conclusion) {
+			const {gameTime} = this.timer.report()
+			this.arbiter.commit({
+				kind: "surrender",
+				gameTime,
+				eliminatedTeamId: teamId,
+			})
+			this.#broadcastGameUpdate()
+		}
+	}
+
 	dispose() {
 		this.#trash.dispose()
 	}

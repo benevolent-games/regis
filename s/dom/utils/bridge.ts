@@ -14,8 +14,11 @@ export class Bridge {
 	teamId: Signal<number>
 	selectaconHover = signal<Cell | null>(null)
 	selectaconSelection = signal<Cell | null>(null)
-
 	timeReport: Signal<TimeReport>
+
+	actions: {
+		surrender: () => Promise<void>
+	}
 
 	#trash = new Trashbin()
 
@@ -23,6 +26,7 @@ export class Bridge {
 			terminal: Terminal
 			getTeamId: () => number
 			getTimeReport: () => TimeReport
+			surrender: () => Promise<void>
 		}) {
 
 		const agent = options.terminal.previewAgent
@@ -46,6 +50,10 @@ export class Bridge {
 		d(options.terminal.selectacon.selection.on(cell => {
 			this.selectaconSelection.value = cell
 		}))
+
+		this.actions = {
+			surrender: options.surrender,
+		}
 	}
 
 	updateTime = () => {

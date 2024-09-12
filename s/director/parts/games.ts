@@ -41,7 +41,9 @@ export class Games extends IdMappable2<number, Game> {
 		return undefined
 	}
 
-	async endGame(game: Game) {
+	async endGame(game: Game, surrenderTeamId?: number) {
+		if (surrenderTeamId !== undefined)
+			await game.surrender(surrenderTeamId)
 		game.dispose()
 		this.map.remove(game)
 		await Promise.all(

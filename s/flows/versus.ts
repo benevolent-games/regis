@@ -25,10 +25,8 @@ export async function versusFlow({
 	const [d, dr] = [trash.disposer, trash.disposable]
 
 	const teamId = startData.teamId
-
 	const agent = new Agent(startData.agentState)
 	const connection = connectivity.connection.payload
-
 	const turnTracker = new TurnTracker(agent, teamId)
 
 	const terminal = dr(await makeGameTerminal(
@@ -49,6 +47,9 @@ export async function versusFlow({
 		terminal,
 		getTeamId: () => teamId,
 		getTimeReport: () => timerObserver.report(agent.activeTeamId),
+		surrender: async() => {
+			await connectivity.connection.payload?.serverside.game.surrender()
+		},
 	}))
 	d(requestAnimationFrameLoop(bridge.updateTime))
 	printReport(agent, teamId)

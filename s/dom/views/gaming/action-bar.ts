@@ -31,21 +31,20 @@ export const ActionBarView = nexus.shadowView(use => ({
 	const turnCount = agent.state.context.turnCount
 	const myTeam = agent.state.teams.at(teamId)! as FullTeamInfo
 
-	return html`
-		<div class="chunk stretchy left">
-			<div class="entry">
-				<div class="button" @click="${openMenu}">
-					${menuSvg}
-					<em>tab</em>
-				</div>
+	function gameover() {
+		const conclusion = agent.conclusion!
+		const victory = conclusion.winnerTeamId === teamId
+		return html`
+			<div class=gameover>
+				${victory
+					? html`<h1>Victory</h1>`
+					: html`<h1>Defeat</h1>`}
 			</div>
+		`
+	}
 
-			<div class="cycles">
-				cycle ${Math.floor(turnCount / 2) + 1}
-			</div>
-
-			<div class="splitter"></div>
-
+	function gameplay() {
+		return html`
 			<div class="entry" ?data-disabled="${!ourTurn}" hidden>
 				<div class="button">
 					${arrowCounterClockwiseSvg}
@@ -59,22 +58,41 @@ export const ActionBarView = nexus.shadowView(use => ({
 					<em>ctrl-z</em>
 				</div>
 			</div>
-		</div>
 
-		<div class="chunk static">
 			${ClockView([bridge])}
-		</div>
 
-		<div class="chunk stretchy right">
 			<div class="entry" ?data-disabled="${!ourTurn}">
 				<div class="button juicy" @click="${actions.commitTurn}">
 					${circleCheckSvg}
 					<em>spacebar</em>
 				</div>
 			</div>
+		`
+	}
 
-			<div class="splitter"></div>
+	return html`
+		<div class="chunk static">
+			<div class="entry">
+				<div class="button" @click="${openMenu}">
+					${menuSvg}
+					<em>tab</em>
+				</div>
+			</div>
+		</div>
 
+		<div class="chunk stretch">
+			<div class="cycles">
+				cycle ${Math.floor(turnCount / 2) + 1}
+			</div>
+		</div>
+
+		<div class="chunk static">
+			${agent.conclusion ? gameover() : gameplay()}
+		</div>
+
+		<div class="chunk stretch"></div>
+
+		<div class="chunk static">
 			<div class="resources">
 				<span class=value>
 					${constants.icons.resource}${myTeam.resources}
@@ -88,126 +106,109 @@ export const ActionBarView = nexus.shadowView(use => ({
 })
 
 export const styles = css`
-	:host {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5em;
-		user-select: none;
+
+:host {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+	user-select: none;
+}
+
+.chunk {
+	display: flex;
+	gap: 0.5em;
+
+	&.static { flex: 0 0 auto; }
+	&.stretch { flex: 1 1 auto; }
+}
+
+.cycles {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: monospace;
+	opacity: 0.5;
+	height: 3em;
+}
+
+.resources {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	font-family: monospace;
+	font-weight: bold;
+	height: 3em;
+	padding: 0 1em;
+
+	> .value { font-size: 2em; }
+	> .income { font-size: 1.25em; opacity: 0.5; }
+}
+
+.entry {
+	display: flex;
+	flex-direction: column;
+
+	> * { flex: 1 0 auto; }
+
+	&[hidden] { display: none; }
+
+	transition: opacity 150ms linear;
+	opacity: 1;
+	&[data-disabled] {
+		opacity: 0;
+		pointer-event: none;
 	}
 
-	.chunk > * {
-		pointer-events: all;
-	}
-
-	.chunk {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5em;
-
-		align-items: stretch;
-		&.left { justify-content: end; }
-		&.right { justify-content: start; }
-
-		&.static { flex: 0 0 auto; }
-		&.stretchy { flex: 1 1 0; }
-
-		&.corner {
-			flex: 0 1 auto;
-			min-width: 8em;
-			&:last-child { justify-content: end; }
-		}
-
-		> .splitter { width: 0; }
-		&.left > .splitter { margin-right: auto; }
-		&.right > .splitter { margin-left: auto; }
-	}
-
-	.cycles {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-family: monospace;
-		opacity: 0.5;
+	> .button {
+		position: relative;
+		flex: 0 0 auto;
+		width: max-content;
 		height: 3em;
-	}
 
-	.resources {
 		display: flex;
-		flex-direction: column;
-		align-items: center;
 		justify-content: center;
+		align-items: center;
+		gap: 0.5em;
+		padding: 0.2em 1em;
 
-		font-family: monospace;
+		border: none;
+		outline: 0;
+		border-radius: 0.3em;
+		cursor: pointer;
+
+		text-transform: uppercase;
 		font-weight: bold;
-		height: 3em;
-		padding: 0 1em;
 
-		> .value { font-size: 2em; }
-		> .income { font-size: 1.25em; opacity: 0.5; }
-	}
+		background: #4448;
+		backdrop-filter: blur(10px);
+		&.juicy { background: #2a0a; }
 
-	.entry {
-		display: flex;
-		flex-direction: column;
+		filter: brightness(100%);
+		&:is(:hover) { filter: brightness(120%); }
+		&:is(:active) { filter: brightness(140%); }
 
-		> * { flex: 1 0 auto; }
-
-		&[hidden] { display: none; }
-
-		transition: opacity 150ms linear;
-		opacity: 1;
-		&[data-disabled] {
-			opacity: 0;
-			pointer-event: none;
-		}
-
-		> .button {
-			position: relative;
+		> svg {
 			flex: 0 0 auto;
-			width: max-content;
-			height: 3em;
+			width: 2em;
+			height: 2em;
+		}
 
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			gap: 0.5em;
-			padding: 0.2em 1em;
-
-			border: none;
-			outline: 0;
-			border-radius: 0.3em;
-			cursor: pointer;
-
-			text-transform: uppercase;
-			font-weight: bold;
-
-			background: #4448;
-			backdrop-filter: blur(10px);
-			&.juicy { background: #2a0a; }
-
-			filter: brightness(100%);
-			&:is(:hover) { filter: brightness(120%); }
-			&:is(:active) { filter: brightness(140%); }
-
-			> svg {
-				flex: 0 0 auto;
-				width: 2em;
-				height: 2em;
-			}
-
-			> em {
-				pointer-events: none;
-				position: absolute;
-				margin: auto;
-				inset: 0;
-				top: 105%;
-				flex: 0 0 auto;
-				opacity: 0.3;
-				text-align: center;
-				font-size: 0.7em;
-				font-style: normal;
-			}
+		> em {
+			pointer-events: none;
+			position: absolute;
+			margin: auto;
+			inset: 0;
+			top: 105%;
+			flex: 0 0 auto;
+			opacity: 0.3;
+			text-align: center;
+			font-size: 0.7em;
+			font-style: normal;
 		}
 	}
+}
+
 `
 

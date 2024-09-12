@@ -12,7 +12,7 @@ export type Serverside = {
 	}
 	game: {
 		submitTurn(turn: Turn): Promise<void>
-		abandon(): Promise<void>
+		surrender(): Promise<void>
 	}
 }
 
@@ -46,9 +46,9 @@ export function makeServerside(director: Director, person: Person) {
 				game.submitTurn(turn, teamId)
 			},
 
-			async abandon() {
-				const {game} = requireSession()
-				await games.endGame(game)
+			async surrender() {
+				const {game, teamId} = requireSession()
+				await games.endGame(game, teamId)
 			},
 		},
 	})
