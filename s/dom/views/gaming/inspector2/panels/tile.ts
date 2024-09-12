@@ -1,6 +1,7 @@
 
-import {html} from "@benev/slate"
+import {html, wherefor} from "@benev/slate"
 import {Bridge} from "../../../../utils/bridge.js"
+import {renderRange} from "../utils/render-traits.js"
 import {renderPricetag} from "../utils/render-pricetag.js"
 import {renderDataList} from "../utils/render-data-list.js"
 import {boardCoords} from "../../../../../tools/board-coords.js"
@@ -37,18 +38,18 @@ export function tilePanel(bridge: Bridge) {
 						<section>
 							<h2>Claims</h2>
 							${renderDataList({
+								stakeholder: stakeholder
+									? (stakeholder.team === teamId
+										? html`<span class="happy">${stakeholder.kind}</span>`
+										: html`<span class="angry">enemy ${stakeholder.kind}</span>`
+									)
+									: "up for grabs",
 								"staking cost": (stakingCost === 0
 									? "free"
 									: stakeholder
 										? stakingCost
 										: renderPricetag(agent, teamId, stakingCost)
 								),
-								stakeholder: stakeholder
-									? (stakeholder.team === teamId
-										? html`<span class="happy">friendly ${stakeholder.kind}</span>`
-										: html`<span class="angry">angry ${stakeholder.kind}</span>`
-									)
-									: "up for grabs",
 							})}
 						</section>
 					`
@@ -64,11 +65,32 @@ export function tilePanel(bridge: Bridge) {
 								income,
 								stock: stock === 0
 									? html`<span class=angry>depleted</span>`
-									: `${stock} remains for income`,
+									: `${stock} remaining`,
 							})}
 						</section>
 					`
 				})() : null}
+
+				${agent.claims.isTechnological(tile.claims) ? (() => {
+					const tech = agent.claims.tech(tile.claims)
+					return html`
+						<section>
+							<h2>Technology</h2>
+							${renderDataList({
+								unlocks: [...tech].join(", ")
+							})}
+						</section>
+					`
+				})() : null}
+
+				${wherefor(agent.claims.watchtower(tile.claims), watchtower => html`
+					<section>
+						<h2>Watchtower</h2>
+						${renderDataList({
+							range: renderRange(watchtower.range),
+						})}
+					</section>
+				`)}
 			</div>
 		</section>
 	`

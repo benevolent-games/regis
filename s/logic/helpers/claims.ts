@@ -78,6 +78,10 @@ export class ClaimsHelper {
 		)
 	}
 
+	isTechnological(claims: Claim.Any[]) {
+		return claims.some(c => c.kind === "tech")
+	}
+
 	watchtower(claims: Claim.Any[]) {
 		return claims.find(c => c.kind === "watchtower")
 	}

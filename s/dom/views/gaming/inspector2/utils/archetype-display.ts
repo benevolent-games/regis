@@ -49,8 +49,8 @@ function getAspectLists(archetype: Archetype): Record<keyof Aspects, RenderResul
 			renderDataList({
 				damage,
 				range: renderRange(range),
+				verticality: wherefor(verticality, renderVerticality),
 				repeatable: wherefor(repeatable, renderRepeatable),
-				vertical: wherefor(verticality, renderVerticality),
 			})
 		),
 
@@ -58,8 +58,8 @@ function getAspectLists(archetype: Archetype): Record<keyof Aspects, RenderResul
 			renderDataList({
 				healing,
 				range: renderRange(range),
-				repeatable: wherefor(repeatable, renderRepeatable),
 				verticality: wherefor(verticality, renderVerticality),
+				repeatable: wherefor(repeatable, renderRepeatable),
 			})
 		),
 

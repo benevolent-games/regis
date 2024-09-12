@@ -20,8 +20,8 @@ export const InspectorView = nexus.shadowView(use => (
 		return null
 
 	return html`
-		${tilePanel(bridge)}
 		${unitPanel(bridge)}
+		${tilePanel(bridge)}
 		${rosterPanel(bridge)}
 	`
 })
@@ -38,8 +38,13 @@ export const styles = css`
 	--team2: yellow;
 }
 
+.panel {
+	display: flex;
+	flex-direction: column;
+}
+
 h1 {
-	font-size: 1.5em;
+	font-size: 1.8em;
 
 	span.unitkind {
 		--teamColor: #888;
@@ -58,7 +63,7 @@ h1 {
 
 p {
 	opacity: 0.5;
-	font-size: 1.3em;
+	font-size: 1.4em;
 	font-family: serif;
 	font-style: italic;
 	margin-bottom: 0.3em;
@@ -66,6 +71,7 @@ p {
 
 .group {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 1em;
 
 	& h2 {
@@ -87,6 +93,11 @@ ul {
 .pricetag {
 	font-family: monospace;
 	font-weight: bold;
+}
+
+.health {
+	font-family: monospace;
+	color: #fcc;
 }
 
 .meh { color: #555; }

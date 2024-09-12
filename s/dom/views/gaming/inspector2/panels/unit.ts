@@ -3,6 +3,7 @@ import {html} from "@benev/slate"
 import {Bridge} from "../../../../utils/bridge.js"
 import {capitalize} from "../../../../../tools/capitalize.js"
 import {archetypeDisplay} from "../utils/archetype-display.js"
+import { healthDisplay } from "../utils/health-display.js"
 
 export function unitPanel(bridge: Bridge) {
 	const agent = bridge.agent.value
@@ -46,6 +47,7 @@ export function unitPanel(bridge: Bridge) {
 				<span class="unitkind" data-team="${team}">
 					${capitalize(unit.kind)}
 				</span>
+				${healthDisplay(unit, archetype)}
 			</h1>
 
 			${arcdisplay.sentence}
