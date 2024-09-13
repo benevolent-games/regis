@@ -13,7 +13,6 @@ export type InitialMemo = {
 }
 
 export type StartMemo = {
-	agentState: AgentState
 	timeReport: TimeReport
 }
 

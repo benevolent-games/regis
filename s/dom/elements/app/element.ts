@@ -4,13 +4,13 @@ import {Orchestrator, orchestratorStyles, OrchestratorView} from "@benev/toolbox
 
 import styles from "./styles.js"
 import {nexus} from "../../nexus.js"
+import {GameSession} from "../../../net/game-session.js"
 import {GameplayView} from "../../views/exhibits/gameplay.js"
 import {detectInputMethod} from "../../utils/input-method.js"
 import {MainMenuView} from "../../views/exhibits/main-menu.js"
 import {IntroPageView} from "../../views/exhibits/intro-page.js"
 import {InitialMemo} from "../../../director/apis/clientside.js"
 import {LogoSplashView} from "../../views/loading-screens/logo-splash.js"
-import { PregameTimer } from "../../../net/pregame-timer.js"
 
 export const GameApp = nexus.shadowComponent(use => {
 	use.styles(styles)
@@ -49,7 +49,7 @@ export const GameApp = nexus.shadowComponent(use => {
 					template: () => MainMenuView([{
 						goIntro: () => goExhibit.intro(),
 						goFreeplay: () => goExhibit.freeplay(),
-						goVersus: (initialMemo: InitialMemo) => goExhibit.versus(initialMemo),
+						goVersus: (memo: InitialMemo) => goExhibit.versus(memo),
 					}]),
 				}
 			}),
@@ -68,17 +68,22 @@ export const GameApp = nexus.shadowComponent(use => {
 				}
 			}),
 
-			versus: orchestrator.makeNavFn(loadscreens.logoSplash, async(initialMemo: InitialMemo) => {
-				const pregameTimer = new PregameTimer(initialMemo.pregameDelay)
+			versus: orchestrator.makeNavFn(loadscreens.logoSplash, async(memo: InitialMemo) => {
 				const {connectivity} = use.context
+
+				const gameSession = new GameSession(connectivity.machinery, memo)
+				const exit = () => {
+					gameSession.dispose()
+					goExhibit.mainMenu()
+				}
+
 				const {versusFlow} = await import("../../../flows/versus.js")
-				const exit = () => goExhibit.mainMenu()
 				const flow = await versusFlow({
-					initialMemo,
+					gameSession,
 					connectivity,
-					pregameTimer,
 					exit,
 				})
+
 				if (flow) {
 					const {world, bridge} = flow
 					return {

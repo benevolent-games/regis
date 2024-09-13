@@ -1,34 +1,29 @@
 
 import {Trashbin} from "@benev/slate"
 
-import {Agent} from "../logic/agent.js"
 import {Bridge} from "../dom/utils/bridge.js"
+import {GameSession} from "../net/game-session.js"
 import {printReport} from "./utils/print-report.js"
 import {Connectivity} from "../net/connectivity.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
-import {InitialMemo} from "../director/apis/clientside.js"
-import {TimerObserver} from "../tools/chess-timer/timer-observer.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
 import {requestAnimationFrameLoop} from "../tools/request-animation-frame-loop.js"
-import { PregameTimer } from "../net/pregame-timer.js"
 
 export async function versusFlow({
-		initialMemo,
+		gameSession,
 		connectivity,
-		pregameTimer,
 		exit,
 	}: {
-		initialMemo: InitialMemo
+		gameSession: GameSession
 		connectivity: Connectivity
-		pregameTimer: PregameTimer
 		exit: () => void
 	}) {
 
 	const trash = new Trashbin()
 	const [d, dr] = [trash.disposer, trash.disposable]
 
-	const teamId = initialMemo.teamId
-	const agent = new Agent(initialMemo.agentState)
+	const teamId = gameSession.memo.teamId
+	const agent = gameSession.agent
 	const connection = connectivity.connection.payload
 	const turnTracker = new TurnTracker(agent, teamId)
 
@@ -40,16 +35,14 @@ export async function versusFlow({
 			.game.submitTurn(turn),
 	))
 
-	let timerObserver: TimerObserver | null = null
-
 	// data that gets sent to the ui
 	const bridge = dr(new Bridge({
 		terminal,
 		getTeamId: () => teamId,
 		getTimeReport: () => {
-			return timerObserver
-				? timerObserver.report(agent.activeTeamId)
-				: pregameTimer.report()
+			return gameSession.timerObserver
+				? gameSession.timerObserver.report(agent.activeTeamId)
+				: gameSession.pregameTimer.report()
 		},
 		surrender: async() => {
 			await connectivity.connection.payload?.serverside.game.surrender()
@@ -64,27 +57,7 @@ export async function versusFlow({
 	}
 
 	d(connectivity.onDisconnected(() => {
-		console.log("versus received disconnect")
-		exit()
-	}))
-
-	d(connectivity.machinery.onGameStart(memo => {
-		console.log("ON GAME START", memo)
-		timerObserver = new TimerObserver(
-			agent.state.initial.config.time,
-			memo.timeReport,
-		)
-	}))
-
-	d(connectivity.machinery.onGameUpdate(memo => {
-		agent.state = memo.agentState
-		if (timerObserver)
-			timerObserver.update(memo.timeReport)
-		printReport(agent, teamId)
-	}))
-
-	d(connectivity.machinery.onGameEnd(() => {
-		console.log("versus got onGameEnd")
+		console.log("connection failed while in-game :(")
 		exit()
 	}))
 

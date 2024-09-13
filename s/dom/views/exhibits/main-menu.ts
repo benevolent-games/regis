@@ -21,8 +21,8 @@ export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 		return [matchmaking, () => matchmaking.dispose()]
 	})
 
-	use.mount(() => connectivity.machinery.onGameInitialize(data => o.goVersus(data)))
 	use.mount(() => () => matchmaking.bail())
+	use.mount(() => connectivity.machinery.onGameInitialize(memo => o.goVersus(memo)))
 
 	return html`
 		<h1>regis</h1>

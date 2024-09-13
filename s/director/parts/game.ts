@@ -57,9 +57,8 @@ export class Game {
 				this.timer.reset()
 
 				await this.#broadcast(
-					async({clientside}, teamId) => await clientside.game.start({
+					async({clientside}) => await clientside.game.start({
 						timeReport: this.timer.report(),
-						agentState: this.arbiter.teamAgent(teamId).state,
 					})
 				).catch(noop)
 			})
