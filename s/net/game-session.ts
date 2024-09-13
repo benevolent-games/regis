@@ -6,10 +6,14 @@ import {InitialMemo} from "../director/apis/clientside.js"
 import {ClientMachinery} from "../director/plumbing/machinery.js"
 import {TimerObserver} from "../tools/chess-timer/timer-observer.js"
 
+export type GameStatus = "pregame" | "gameplay" | "gameover"
+
 export class GameSession {
 	agent: Agent
 	pregameTimer: PregameTimer
 	timerObserver: TimerObserver | null = null
+
+	status: GameStatus = "pregame"
 
 	#bin = new Trashbin()
 
@@ -23,12 +27,17 @@ export class GameSession {
 				this.agent.state.initial.config.time,
 				memo.timeReport,
 			)
+			this.status = "gameplay"
 		}))
 
 		d(machinery.onGameUpdate(memo => {
 			this.agent.state = memo.agentState
+
 			if (this.timerObserver)
 				this.timerObserver.update(memo.timeReport)
+
+			if (this.agent.conclusion)
+				this.status = "gameover"
 		}))
 	}
 

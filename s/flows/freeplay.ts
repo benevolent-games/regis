@@ -41,6 +41,7 @@ export async function freeplayFlow() {
 			turn,
 			gameTime: timer.report().gameTime,
 		}),
+		() => "gameplay",
 	))
 
 	// data that gets sent to the ui

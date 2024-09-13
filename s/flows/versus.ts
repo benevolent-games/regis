@@ -33,6 +33,7 @@ export async function versusFlow({
 		turn => connectivity
 			.connection.payload?.serverside
 			.game.submitTurn(turn),
+		() => gameSession.status,
 	))
 
 	// data that gets sent to the ui
