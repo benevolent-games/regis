@@ -3,7 +3,7 @@ import {Trashbin} from "@benev/slate"
 
 import {Bridge} from "../dom/utils/bridge.js"
 import {GameSession} from "../net/game-session.js"
-import {printReport} from "./utils/print-report.js"
+// import {printReport} from "./utils/print-report.js"
 import {Connectivity} from "../net/connectivity.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
@@ -26,6 +26,8 @@ export async function versusFlow({
 	const agent = gameSession.agent
 	const connection = connectivity.connection.payload
 	const turnTracker = new TurnTracker(agent, teamId)
+
+	console.log("new game", gameSession.memo.gameId, agent.state.initial.mapMeta.name, agent.state.initial.board.extent, agent.boundary.board.extent)
 
 	const terminal = dr(await makeGameTerminal(
 		agent,
@@ -51,17 +53,19 @@ export async function versusFlow({
 		},
 	}))
 	d(requestAnimationFrameLoop(bridge.updateTime))
-	printReport(agent, teamId)
+	// printReport(agent, teamId)
 
-	if (!connection) {
+	function kill() {
+		trash.dispose()
 		exit()
-		return null
 	}
 
-	d(connectivity.onDisconnected(() => {
-		console.log("connection failed while in-game :(")
-		exit()
-	}))
+	d(connectivity.onDisconnected(kill))
+
+	if (!connection) {
+		kill()
+		return null
+	}
 
 	return {
 		bridge,

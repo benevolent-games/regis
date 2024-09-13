@@ -15,7 +15,6 @@ export function asciiMap(map: MapSpec): GameInitial {
 	let id = 0
 
 	const extent = measureAsciiBoardExtent(map.ascii)
-	console.log("EXTENT", extent)
 
 	const boardState = makePlainBoardState(extent)
 	const board = new TilesHelper(boardState)

@@ -72,6 +72,7 @@ export const GameApp = nexus.shadowComponent(use => {
 				const {connectivity} = use.context
 
 				const gameSession = new GameSession(connectivity.machinery, memo)
+
 				const exit = () => {
 					gameSession.dispose()
 					goExhibit.mainMenu()

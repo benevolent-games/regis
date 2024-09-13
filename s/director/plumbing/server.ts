@@ -34,16 +34,16 @@ const server = new WebSocketServer({
 				onError: (error, id, method) => {
 					logger.error(remoteErrstring(error, id, method))
 				},
-				onInvocation: request => {
-					logger.log([
-						`🔔`,
-						`[${person.id}]`,
-						"id" in request
-							? `#${request.id}`
-							: null,
-						`${request.method}()`
-					].filter(part => !!part).join(" "))
-				},
+				// onInvocation: request => {
+				// 	logger.log([
+				// 		`🔔`,
+				// 		`[${person.id}]`,
+				// 		"id" in request
+				// 			? `#${request.id}`
+				// 			: null,
+				// 		`${request.method}()`
+				// 	].filter(part => !!part).join(" "))
+				// },
 			}),
 
 			closed: () => {

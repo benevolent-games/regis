@@ -72,15 +72,15 @@ export async function freeplayFlow() {
 		turnTracker.teamId = teamId
 		timer.team = teamId
 
-		// print report to console
-		printReport(dynamicAgent, teamId)
+		// // print report to console
+		// printReport(dynamicAgent, teamId)
 
 		// render 3d stuff
 		terminal.render()
 	})
 
-	// print initial report
-	printReport(dynamicAgent, dynamicAgent.activeTeamId)
+	// // print initial report
+	// printReport(dynamicAgent, dynamicAgent.activeTeamId)
 
 	return {
 		bridge,

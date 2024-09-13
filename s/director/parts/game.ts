@@ -9,6 +9,7 @@ import {Arbiter} from "../../logic/arbiter.js"
 import {asciiMap} from "../../logic/ascii/ascii-map.js"
 import {randomMap} from "../../config/game/map-access.js"
 import {ChessTimer} from "../../tools/chess-timer/chess-timer.js"
+import {logErr} from "../../tools/log-err.js"
 
 export class Game {
 	#trash = new Trashbin()
@@ -31,6 +32,15 @@ export class Game {
 			? couple.toReversed() as Couple
 			: couple
 
+		console.log(
+			"new game",
+			id,
+			this.arbiter.state.initial.mapMeta.name,
+			this.couple.map(c => c.id),
+			this.arbiter.state.initial.board.extent,
+			this.arbiter.boundary.board.extent,
+		)
+
 		// tell the timer whenever the turn changes
 		this.#trash.disposer(
 			this.arbiter.onStateChange(() => {
@@ -46,7 +56,7 @@ export class Game {
 				pregameDelay: this.pregameDelay,
 				agentState: this.arbiter.teamAgent(teamId).state,
 			})
-		).catch(noop)
+		).catch(logErr)
 
 		// send game start after pregame delay
 		nap(this.pregameDelay)
@@ -63,7 +73,7 @@ export class Game {
 					async({clientside}) => await clientside.game.start({
 						timeReport: this.timer.report(),
 					})
-				).catch(noop)
+				).catch(logErr)
 			})
 
 		// check the timer and end the game when time expires
@@ -99,7 +109,7 @@ export class Game {
 			const timeReport = this.timer.report()
 			const agentState = this.arbiter.teamAgent(teamId).state
 			return await clientside.game.update({timeReport, agentState})
-		}).catch(noop)
+		}).catch(logErr)
 	}
 
 	getTeamId(person: Person) {
