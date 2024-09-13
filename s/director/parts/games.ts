@@ -1,4 +1,6 @@
 
+import {ExposedError} from "renraku"
+
 import {Game} from "./game.js"
 import {People} from "./people.js"
 import {GamesStats} from "./games-stats.js"
@@ -16,11 +18,20 @@ export class Games extends IdMappable2<number, Game> {
 
 	stillConnected = (person: Person) => this.people.got(person)
 
-	newGame(couple: Couple) {
+	async newGame(couple: Couple) {
+		this.#enforceThatPeopleAreNotAlreadyInGame(couple)
 		const id = this.#ids.next()
-		const game = new Game(id, couple, this.stillConnected)
+		const game = new Game({
+			id,
+			couple,
+			stillConnected: this.stillConnected,
+			removeThisGame: () => {
+				this.map.delete(id)
+			},
+		})
 		this.map.add(game)
 		this.stats.countNewGame()
+		await game.initialize()
 		return game
 	}
 
@@ -43,10 +54,12 @@ export class Games extends IdMappable2<number, Game> {
 		return undefined
 	}
 
-	async endGame(game: Game, surrenderTeamId: number) {
-		game.dispose()
-		this.map.remove(game)
-		await game.surrender(surrenderTeamId)
+	#enforceThatPeopleAreNotAlreadyInGame(people: Person[]) {
+		for (const game of this.values()) {
+			const person = game.couple.find(p => people.includes(p))
+			if (person)
+				throw new ExposedError(`cannot create game, because person [${person.id}] is already in another game`)
+		}
 	}
 }
 

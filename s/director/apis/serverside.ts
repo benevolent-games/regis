@@ -2,6 +2,7 @@
 import {fns} from "renraku"
 import {Director} from "../director.js"
 import {Turn} from "../../logic/state.js"
+import {logErr} from "../../tools/log-err.js"
 import {Person, RegularReport} from "../types.js"
 
 export type Serverside = {
@@ -12,7 +13,7 @@ export type Serverside = {
 	}
 	game: {
 		submitTurn(turn: Turn): Promise<void>
-		surrender(): Promise<void>
+		submitSurrender(): Promise<void>
 	}
 }
 
@@ -32,7 +33,7 @@ export function makeServerside(director: Director, person: Person) {
 			async joinQueue() {
 				matchmaker.queue.add(person)
 				for (const couple of matchmaker.extractCouples())
-					games.newGame(couple)
+					games.newGame(couple).catch(logErr)
 			},
 
 			async leaveQueue() {
@@ -43,13 +44,12 @@ export function makeServerside(director: Director, person: Person) {
 		game: {
 			async submitTurn(turn) {
 				const {game, teamId} = requireSession()
-				if (game.status === "gameplay")
-					game.submitTurn(turn, teamId)
+				await game.submitTurn(turn, teamId)
 			},
 
-			async surrender() {
+			async submitSurrender() {
 				const {game, teamId} = requireSession()
-				await games.endGame(game, teamId)
+				await game.submitSurrender(teamId)
 			},
 		},
 	})

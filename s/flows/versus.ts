@@ -3,7 +3,6 @@ import {Trashbin} from "@benev/slate"
 
 import {Bridge} from "../dom/utils/bridge.js"
 import {GameSession} from "../net/game-session.js"
-// import {printReport} from "./utils/print-report.js"
 import {Connectivity} from "../net/connectivity.js"
 import {makeGameTerminal} from "../terminal/terminal.js"
 import {TurnTracker} from "../logic/simulation/aspects/turn-tracker.js"
@@ -27,14 +26,10 @@ export async function versusFlow({
 	const connection = connectivity.connection.payload
 	const turnTracker = new TurnTracker(agent, teamId)
 
-	console.log("new game", gameSession.memo.gameId, agent.state.initial.mapMeta.name, agent.state.initial.board.extent, agent.boundary.board.extent)
-
 	const terminal = dr(await makeGameTerminal(
 		agent,
 		turnTracker,
-		turn => connectivity
-			.connection.payload?.serverside
-			.game.submitTurn(turn),
+		turn => connection?.serverside.game.submitTurn(turn),
 		() => gameSession.status,
 	))
 
@@ -49,7 +44,7 @@ export async function versusFlow({
 		},
 		surrender: async() => {
 			if (!agent.conclusion && connection)
-				await connection.serverside.game.surrender()
+				await connection.serverside.game.submitSurrender()
 		},
 	}))
 	d(requestAnimationFrameLoop(bridge.updateTime))

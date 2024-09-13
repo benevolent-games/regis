@@ -11,7 +11,7 @@ import {Claimery} from "./parts/claimery.js"
 import {CameraRig} from "./parts/camera-rig.js"
 import {Selectacon} from "./parts/selectacon.js"
 import {UserInputs} from "./parts/user-inputs.js"
-import {GameStatus} from "../net/game-session.js"
+import {GamePhase} from "../net/game-session.js"
 import {makeBasicVisuals} from "./parts/basics.js"
 import {UnitVisuals} from "./parts/unit-visuals.js"
 import {FogFenceRenderer} from "./parts/fog-of-war.js"
@@ -33,7 +33,7 @@ export async function makeGameTerminal(
 		// submit the player's turn to the arbiter
 		submitTurn: (turn: Turn) => void,
 
-		getGameStatus: () => GameStatus,
+		getGamePhase: () => GamePhase,
 	) {
 
 	const trashbin = new Trashbin()
@@ -57,7 +57,7 @@ export async function makeGameTerminal(
 	const fogFence = d(new FogFenceRenderer({agent: baseAgent, assets, turnTracker}))
 
 	const spawnGhosts = new SpawnGhostRenderer({assets, selectacon})
-	const planner = d(new Planner({agent, assets, selectacon, turnTracker, spawnGhosts, submitTurn, getGameStatus}))
+	const planner = d(new Planner({agent, assets, selectacon, turnTracker, spawnGhosts, submitTurn, getGamePhase: getGamePhase}))
 	d(new Hovering({world, selectacon}))
 
 	const actions: TerminalActions = {

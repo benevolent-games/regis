@@ -36,7 +36,7 @@ export class Planner {
 
 	executePlan() {
 		const {choices, activities, options} = this
-		if (options.getGameStatus() === "gameplay") {
+		if (options.getGamePhase() === "gameplay") {
 			const autoChoices = autoAttacks(options.agent, activities, {choices})
 			options.submitTurn({choices: [...choices, ...autoChoices]})
 			this.reset()

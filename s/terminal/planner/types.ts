@@ -3,7 +3,7 @@ import {Turn} from "../../logic/state.js"
 import {Agent} from "../../logic/agent.js"
 import {Assets} from "../assets/assets.js"
 import {Selectacon} from "../parts/selectacon.js"
-import {GameStatus} from "../../net/game-session.js"
+import {GamePhase} from "../../net/game-session.js"
 import {SpawnGhostRenderer} from "./parts/spawn-ghost-renderer.js"
 import {TurnTracker} from "../../logic/simulation/aspects/turn-tracker.js"
 
@@ -14,7 +14,7 @@ export type PlannerOptions = {
 	turnTracker: TurnTracker
 	spawnGhosts: SpawnGhostRenderer
 	submitTurn: (turn: Turn) => void
-	getGameStatus: () => GameStatus
+	getGamePhase: () => GamePhase
 }
 
 export type Indicate = undefined | "pattern" | "action"

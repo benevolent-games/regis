@@ -1,12 +1,12 @@
 
 import {Remote} from "renraku"
-import {Person, PersonStatus, WorldStats} from "./types.js"
 import {Games} from "./parts/games.js"
 import {People} from "./parts/people.js"
 import {Clientside} from "./apis/clientside.js"
 import {IdCounter} from "../tools/id-counter.js"
 import {Matchmaker} from "./parts/matchmaker.js"
 import {makeServerside} from "./apis/serverside.js"
+import {Person, PersonStatus, WorldStats} from "./types.js"
 
 export class Director {
 	people = new People()
@@ -49,7 +49,7 @@ export class Director {
 		const game = this.games.findGameWithPerson(person)
 
 		if (game)
-			await this.games.endGame(game, game.getTeamId(person))
+			await game.submitSurrender(game.getTeamId(person))
 	}
 }
 
