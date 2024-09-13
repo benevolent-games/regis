@@ -4,34 +4,32 @@ import {ExposedError} from "renraku"
 import {Game} from "./game.js"
 import {People} from "./people.js"
 import {GamesStats} from "./games-stats.js"
-import {IdMappable2} from "../../tools/map2.js"
-import {IdCounter} from "../../tools/id-counter.js"
 import {Couple, GamerSession, Person} from "../types.js"
+import { logger } from "../plumbing/logger.js"
 
-export class Games extends IdMappable2<number, Game> {
+export class Games extends Set<Game> {
 	stats = new GamesStats()
-	#ids = new IdCounter()
 
 	constructor(public people: People) {
 		super()
 	}
 
-	stillConnected = (person: Person) => this.people.got(person)
+	stillConnected = (person: Person) => this.people.has(person)
 
 	async newGame(couple: Couple) {
-		this.#enforceThatPeopleAreNotAlreadyInGame(couple)
-		const id = this.#ids.next()
+		this.#enforceNotAlreadyInGame(couple)
 		const game = new Game({
-			id,
 			couple,
 			stillConnected: this.stillConnected,
 			removeThisGame: () => {
-				this.map.delete(id)
+				this.delete(game)
+				logger.log(`——→ ❌ delete game for ${couple.map(p => p.label).join(" and ")}`)
 			},
 		})
-		this.map.add(game)
+		this.add(game)
 		this.stats.countNewGame()
 		await game.initialize()
+		logger.log(`——→ ✅ new game for ${couple.map(p => p.label).join(" and ")}`)
 		return game
 	}
 
@@ -43,7 +41,7 @@ export class Games extends IdMappable2<number, Game> {
 					return {person, game, teamId: info.teamId}
 			}
 		}
-		throw new Error(`session not found for person id ${person.id}`)
+		throw new Error(`session not found for person`)
 	}
 
 	findGameWithPerson(person: Person) {
@@ -54,11 +52,11 @@ export class Games extends IdMappable2<number, Game> {
 		return undefined
 	}
 
-	#enforceThatPeopleAreNotAlreadyInGame(people: Person[]) {
+	#enforceNotAlreadyInGame(persons: Person[]) {
 		for (const game of this.values()) {
-			const person = game.couple.find(p => people.includes(p))
+			const person = game.couple.find(p => persons.includes(p))
 			if (person)
-				throw new ExposedError(`cannot create game, because person [${person.id}] is already in another game`)
+				throw new ExposedError(`cannot create game, because a participant is already in another game`)
 		}
 	}
 }

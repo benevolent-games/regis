@@ -1,6 +1,5 @@
 
-import {IdMap2} from "../../tools/map2.js"
-import {Person, PersonId} from "../types.js"
+import {Person} from "../types.js"
 
-export class People extends IdMap2<PersonId, Person> {}
+export class People extends Set<Person> {}
 

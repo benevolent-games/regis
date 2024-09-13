@@ -3,9 +3,9 @@ import {Remote} from "renraku"
 import {Games} from "./parts/games.js"
 import {People} from "./parts/people.js"
 import {Clientside} from "./apis/clientside.js"
-import {IdCounter} from "../tools/id-counter.js"
 import {Matchmaker} from "./parts/matchmaker.js"
 import {makeServerside} from "./apis/serverside.js"
+import {PeopleLabels} from "./parts/people-labels.js"
 import {Person, PersonStatus, WorldStats} from "./types.js"
 
 export class Director {
@@ -13,11 +13,12 @@ export class Director {
 	games = new Games(this.people)
 	matchmaker = new Matchmaker()
 
-	#ids = new IdCounter()
+	labels = new PeopleLabels()
 
 	newPerson(clientside: Remote<Clientside>, closeConnection: () => void) {
-		const id = this.#ids.next()
-		const person = this.people.add({id, clientside, closeConnection})
+		const label = this.labels.next()
+		const person: Person = {label, clientside, closeConnection}
+		this.people.add(person)
 		const serverside = makeServerside(this, person)
 		const disconnected = async() => await this.#personDisconnected(person)
 		return {person, serverside, disconnected}
@@ -42,7 +43,7 @@ export class Director {
 	}
 
 	#personDisconnected = async(person: Person) => {
-		this.people.delete(person.id)
+		this.people.delete(person)
 		this.matchmaker.queue.delete(person)
 
 		// end any game they're associated with

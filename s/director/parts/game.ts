@@ -11,7 +11,6 @@ import {randomMap} from "../../config/game/map-access.js"
 import {ChessTimer} from "../../tools/chess-timer/chess-timer.js"
 
 export type GameOptions = {
-	id: number
 	couple: Couple
 	removeThisGame: () => void
 	stillConnected: (person: Person) => boolean
@@ -20,7 +19,6 @@ export type GameOptions = {
 export class Game {
 	#trash = new Trashbin()
 
-	id: number
 	couple: Couple
 	pregameDelay = seconds(10)
 	arbiter = new Arbiter(asciiMap(randomMap()))
@@ -33,7 +31,6 @@ export class Game {
 	)
 
 	constructor(private options: GameOptions) {
-		this.id = options.id
 		const d = this.#trash.disposer
 
 		// randomize teams
@@ -71,7 +68,6 @@ export class Game {
 		await this.#broadcast(
 			async({clientside}, teamId) => await clientside.game.initialize({
 				teamId,
-				gameId: this.id,
 				pregameDelay: this.pregameDelay,
 				agentState: this.arbiter.teamAgent(teamId).state,
 			})

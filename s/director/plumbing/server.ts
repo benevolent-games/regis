@@ -1,8 +1,9 @@
 
 import "@benev/slate/x/node.js"
+import {expose, remote, errstring, remoteErrstring} from "renraku"
 import {deathWithDignity, WebSocketServer} from "renraku/x/node.js"
-import {expose, PrettyLogger, remote, errstring, remoteErrstring} from "renraku"
 
+import {logger} from "./logger.js"
 import {Director} from "../director.js"
 import {constants} from "../../constants.js"
 import {Clientside} from "../apis/clientside.js"
@@ -10,7 +11,6 @@ import {Clientside} from "../apis/clientside.js"
 const host = "0.0.0.0"
 const port = 8000
 
-const logger = new PrettyLogger()
 deathWithDignity({logger})
 
 const director = new Director()
@@ -27,7 +27,7 @@ const server = new WebSocketServer({
 			director.newPerson(clientside, connection.close)
 		)
 
-		logger.log(`🧔 [${person.id}] connected`)
+		logger.log(`${person.label} connected`)
 
 		return {
 			localEndpoint: expose(() => serverside, {
@@ -49,11 +49,11 @@ const server = new WebSocketServer({
 			closed: () => {
 				clearInterval(pingingInterval)
 				disconnected().catch((e) => logger.error(e))
-				logger.log(`💀 [${person.id}] disconnected`)
+				logger.log(`${person.label}→🔪→💀 disconnected`)
 			},
 		}
 	},
 })
 
-server.listen(port, host, () => console.log(`🤖 director server on port ${port}..\n`))
+server.listen(port, host, () => console.log(`📡 director running on port ${port}..\n`))
 

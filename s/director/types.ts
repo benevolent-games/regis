@@ -20,10 +20,8 @@ export type RegularReport = {
 	personStatus: PersonStatus
 }
 
-export type PersonId = number
-
 export type Person = {
-	id: PersonId
+	label: string
 	clientside: Remote<Clientside>
 	closeConnection: () => void
 }

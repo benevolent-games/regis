@@ -6,7 +6,6 @@ import {ClientMachinery} from "../plumbing/machinery.js"
 import {TimeReport} from "../../tools/chess-timer/types.js"
 
 export type InitialMemo = {
-	gameId: number
 	teamId: number
 	pregameDelay: number
 	agentState: AgentState
