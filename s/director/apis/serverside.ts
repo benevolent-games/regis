@@ -43,7 +43,8 @@ export function makeServerside(director: Director, person: Person) {
 		game: {
 			async submitTurn(turn) {
 				const {game, teamId} = requireSession()
-				game.submitTurn(turn, teamId)
+				if (game.status === "gameplay")
+					game.submitTurn(turn, teamId)
 			},
 
 			async surrender() {

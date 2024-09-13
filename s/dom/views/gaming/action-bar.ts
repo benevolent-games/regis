@@ -6,8 +6,10 @@ import {ClockView} from "./clock.js"
 import {Bridge} from "../../utils/bridge.js"
 import xSvg from "../../icons/tabler/x.svg.js"
 import {constants} from "../../../constants.js"
+import {formatTime} from "./utils/format-time.js"
 import menuSvg from "../../icons/tabler/menu.svg.js"
 import {FullTeamInfo} from "../../../logic/state.js"
+import {PregameTimeReport} from "../../../net/pregame-timer.js"
 import circleCheckSvg from "../../icons/tabler/circle-check.svg.js"
 import arrowCounterClockwiseSvg from "../../icons/akar/arrow-counter-clockwise.svg.js"
 
@@ -25,20 +27,17 @@ export const ActionBarView = nexus.shadowView(use => ({
 	const agent = bridge.agent.value
 	const teamId = bridge.teamId.value
 	const actions = bridge.terminal.actions
+	const timeReport = bridge.timeReport.value
 
 	const {income} = agent.claims.teamIncome(teamId)
 	const ourTurn = agent.activeTeamId === teamId
 	const turnCount = agent.state.context.turnCount
 	const myTeam = agent.state.teams.at(teamId)! as FullTeamInfo
 
-	function gameover() {
-		const conclusion = agent.conclusion!
-		const victory = conclusion.winnerTeamId === teamId
+	function pregame(timeReport: PregameTimeReport) {
 		return html`
-			<div class=gameover ?data-victory="${victory}">
-				${victory
-					? html`<h1>Victory</h1>`
-					: html`<h1>Defeat</h1>`}
+			<div>
+				${formatTime(timeReport.pregameTimeRemaining)}
 			</div>
 		`
 	}
@@ -70,6 +69,19 @@ export const ActionBarView = nexus.shadowView(use => ({
 		`
 	}
 
+	function gameover() {
+		const conclusion = agent.conclusion!
+		const victory = conclusion.winnerTeamId === teamId
+		return html`
+			<div class=gameover ?data-victory="${victory}">
+				${victory
+					? html`<h1>Victory</h1>`
+					: html`<h1>Defeat</h1>`}
+			</div>
+		`
+	}
+
+
 	return html`
 		<div class="chunk static">
 			<div class="entry">
@@ -87,7 +99,11 @@ export const ActionBarView = nexus.shadowView(use => ({
 		</div>
 
 		<div class="chunk static">
-			${agent.conclusion ? gameover() : gameplay()}
+			${agent.conclusion
+				? gameover()
+				: ("pregameTimeRemaining" in timeReport)
+					? pregame(timeReport)
+					: gameplay()}
 		</div>
 
 		<div class="chunk stretch"></div>

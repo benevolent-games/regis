@@ -17,6 +17,8 @@ export class Game {
 	pregameDelay = seconds(10)
 	arbiter = new Arbiter(asciiMap(randomMap()))
 
+	status: "pregame" | "gameplay" = "pregame"
+
 	timer = new ChessTimer(
 		this.arbiter.state.initial.config.time,
 		this.arbiter.state.teams.length,
@@ -55,6 +57,7 @@ export class Game {
 					return null
 
 				this.timer.reset()
+				this.status = "gameplay"
 
 				await this.#broadcast(
 					async({clientside}) => await clientside.game.start({

@@ -3,6 +3,7 @@ import {css, html} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
 import {Bridge} from "../../utils/bridge.js"
+import {formatTime} from "./utils/format-time.js"
 import {TeamTimeReport} from "../../../tools/chess-timer/types.js"
 
 export const ClockView = nexus.shadowView(use => (
@@ -22,16 +23,8 @@ export const ClockView = nexus.shadowView(use => (
 	if (!timeReport)
 		return null
 
-	function formatTime(ms: number) {
-		const [big, small] = (ms / 1000).toFixed(2).split(".")
-		return html`
-			<span class=big>${big}</span><span class=small>.${small}</span>
-		`
-	}
-
-	if ("pregameTimeRemaining" in timeReport) {
-		return formatTime(timeReport.pregameTimeRemaining)
-	}
+	if ("pregameTimeRemaining" in timeReport)
+		return null
 
 	const ourTimeReport = timeReport.teamwise.at(ourTeamId)!
 	const opponentTimeReports = [...timeReport.teamwise.entries()]
