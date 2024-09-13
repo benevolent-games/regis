@@ -20,8 +20,8 @@ export const InspectorView = nexus.shadowView(use => (
 		return null
 
 	return html`
-		${unitPanel(bridge)}
 		${tilePanel(bridge)}
+		${unitPanel(bridge)}
 		${rosterPanel(bridge)}
 	`
 })
@@ -30,8 +30,9 @@ export const styles = css`
 
 :host {
 	display: flex;
-	flex-direction: column;
-	gap: 2em;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 4em;
 
 	text-shadow: .1em .2em .2em black;
 	--team1: cyan;

@@ -4,11 +4,13 @@ import {Bridge} from "../../../../utils/bridge.js"
 import {healthDisplay} from "../utils/health-display.js"
 import {capitalize} from "../../../../../tools/capitalize.js"
 import {archetypeDisplay} from "../utils/archetype-display.js"
+import { renderDataList } from "../utils/render-data-list.js"
 
 export function unitPanel(bridge: Bridge) {
 	const agent = bridge.agent.value
 	const teamId = bridge.teamId.value
 	const selection = bridge.selectaconSelection.value
+	const {unitTaskTracker} = bridge.terminal.planner.activities
 
 	if (selection?.kind !== "tile")
 		return null
@@ -36,6 +38,12 @@ export function unitPanel(bridge: Bridge) {
 		: "meh"
 	)
 
+	const possibilities = unitTaskTracker.possibilities(
+		unit.id,
+		archetype,
+		undefined,
+	)
+
 	return html`
 		<section class=panel>
 			<h1 data-team="${team}">
@@ -53,6 +61,18 @@ export function unitPanel(bridge: Bridge) {
 			${arcdisplay.sentence}
 
 			<div class=group>
+				<section>
+					<h2>Tasking</h2>
+					${renderDataList({
+						spawning: possibilities.spawning
+							? "yes"
+							: null,
+						exhausted: (possibilities.exhausted && !possibilities.spawning)
+							? "yes"
+							: null,
+					})}
+					${renderDataList(possibilities.available)}
+				</section>
 				${arcdisplay.sections}
 			</div>
 		</section>

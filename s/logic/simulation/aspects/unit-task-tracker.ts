@@ -30,6 +30,22 @@ export namespace Task {
 	export type Any = Spawned | Move | Attack | Heal
 }
 
+export type Possibilities = {
+	spawning: boolean
+	exhausted: boolean
+	available: {
+		attack: number
+		heal: number
+		move: number
+	}
+}
+
+export type QueryPossibilitiesFn = (
+	id: number,
+	archetype: Archetype,
+	targetId: number | undefined,
+) => Possibilities
+
 export class UnitTaskTracker {
 	#memory = new Map2<number, Task.Any[]>()
 
@@ -45,7 +61,7 @@ export class UnitTaskTracker {
 			id: number,
 			archetype: Archetype,
 			targetId: number | undefined,
-		) {
+		): Possibilities {
 
 		const {multitasker, armed, healer} = archetype
 		const tasks = this.#obtain(id)

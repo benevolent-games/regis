@@ -126,6 +126,8 @@ export const styles = css`
 				#0008,
 				#0000
 			);
+
+			border-top-left-radius: 0.5em;
 		}
 	}
 `
