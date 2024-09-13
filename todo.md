@@ -51,21 +51,21 @@ new indicators scheme
 priorities
 - [x] fix multitasking systems
 - [x] new inspector
-- [ ] menu with ability to surrender
+- [x] menu with ability to surrender
 - [ ] undo one action
-- [ ] endgame state
+- [x] endgame state
   - game should be frozen, no further turns
   - lift the fog-of-war, revealing the whole board state to both teams
   - display a game over sign
   - add a ui button to leave the match
 - [ ] deploy
 - [ ] attack arcs
-- [ ] 10 second pregame
+- [x] 10 second pregame
 - [ ] obstacle vision
 
 wontfix
-- [ ] multi-selection and multi-commands
-- [ ] control groups
+- multi-selection and multi-commands
+- control groups
 
 done
 - [x] queen healing ability
