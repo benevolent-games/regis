@@ -114,26 +114,25 @@ function countAvailability(
 		targetId: number | undefined,
 	) {
 
-	// check if multitasking is exceeded for this task kind
+	// check if multitasking is exhausted
 	const multiLimit = multitasker?.count ?? 1
 	const kinds = getUniqueKinds(tasks)
 	kinds.add(kind)
-	const multiExhausted = kinds.size > multiLimit
-	if (multiExhausted)
+	if (kinds.size > multiLimit)
 		return 0
 
-	// check if repeatability is exhausted
-	const repeatLimit = repeatable?.count ?? 1
-	const occurances = filterKind(tasks, kind).length
-	if (!repeatable?.focusFire && targetId !== undefined) {
-		const targetIds = getUniqueTargetIds(tasks)
-		const alreadyTargeted = targetIds.has(targetId)
-		return alreadyTargeted
-			? 0
-			: 1
-	}
-	else {
-		return Math.max(0, repeatLimit - occurances)
-	}
+	// calculate how much repeating we can do
+	const occurrenceLimit = repeatable?.count ?? 1
+	const occurrences = filterKind(tasks, kind).length
+	const forbiddenFocusFire = (
+		!repeatable?.focusFire &&
+		targetId !== undefined &&
+		getUniqueTargetIds(tasks).has(targetId)
+	)
+	const remainingRepeats = forbiddenFocusFire
+		? 0
+		: Math.max(0, occurrenceLimit - occurrences)
+
+	return remainingRepeats
 }
 
