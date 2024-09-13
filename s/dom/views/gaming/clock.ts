@@ -22,16 +22,20 @@ export const ClockView = nexus.shadowView(use => (
 	if (!timeReport)
 		return null
 
-	const ourTimeReport = timeReport.teamwise.at(ourTeamId)!
-	const opponentTimeReports = [...timeReport.teamwise.entries()]
-		.filter(([id]) => id !== ourTeamId)
-
 	function formatTime(ms: number) {
 		const [big, small] = (ms / 1000).toFixed(2).split(".")
 		return html`
 			<span class=big>${big}</span><span class=small>.${small}</span>
 		`
 	}
+
+	if ("pregameTimeRemaining" in timeReport) {
+		return formatTime(timeReport.pregameTimeRemaining)
+	}
+
+	const ourTimeReport = timeReport.teamwise.at(ourTeamId)!
+	const opponentTimeReports = [...timeReport.teamwise.entries()]
+		.filter(([id]) => id !== ourTeamId)
 
 	function renderTeamTime(
 			teamId: number,

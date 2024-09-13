@@ -1,9 +1,10 @@
 
-import {interval, Trashbin} from "@benev/slate"
+import {interval, nap, Trashbin} from "@benev/slate"
 
 import {noop} from "../../tools/noop.js"
 import {Turn} from "../../logic/state.js"
 import {Couple, Person} from "../types.js"
+import {seconds} from "../../tools/timely.js"
 import {Arbiter} from "../../logic/arbiter.js"
 import {asciiMap} from "../../logic/ascii/ascii-map.js"
 import {randomMap} from "../../config/game/map-access.js"
@@ -13,6 +14,7 @@ export class Game {
 	#trash = new Trashbin()
 
 	couple: Couple
+	pregameDelay = seconds(10)
 	arbiter = new Arbiter(asciiMap(randomMap()))
 
 	timer = new ChessTimer(
@@ -34,15 +36,33 @@ export class Game {
 			})
 		)
 
-		// send game start to people
+		// initialize the game
 		this.#broadcast(
-			async({clientside}, teamId) => await clientside.game.start({
-				gameId: id,
+			async({clientside}, teamId) => await clientside.game.initialize({
 				teamId,
-				timeReport: this.timer.report(),
+				gameId: id,
+				pregameDelay: this.pregameDelay,
 				agentState: this.arbiter.teamAgent(teamId).state,
 			})
 		).catch(noop)
+
+		// send game start after pregame delay
+		nap(this.pregameDelay)
+			.then(async() => {
+
+				// cancel if somebody surrendered during pregame
+				if (this.arbiter.conclusion)
+					return null
+
+				this.timer.reset()
+
+				await this.#broadcast(
+					async({clientside}, teamId) => await clientside.game.start({
+						timeReport: this.timer.report(),
+						agentState: this.arbiter.teamAgent(teamId).state,
+					})
+				).catch(noop)
+			})
 
 		// check the timer and end the game when time expires
 		this.#trash.disposer(interval(100, () => {

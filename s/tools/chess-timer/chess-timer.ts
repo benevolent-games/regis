@@ -55,6 +55,12 @@ export class ChessTimer {
 		return {elapsed, benefits, remaining, expired}
 	}
 
+	reset() {
+		const now = Date.now()
+		this.#gameStart = now
+		this.#turnStart = now
+	}
+
 	get gameTime() {
 		return Date.now() - this.#gameStart
 	}

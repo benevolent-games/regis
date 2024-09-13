@@ -5,6 +5,7 @@ import {Agent} from "../../logic/agent.js"
 import {Terminal} from "../../terminal/terminal.js"
 import {Cell} from "../../terminal/parts/selectacon.js"
 import {TimeReport} from "../../tools/chess-timer/types.js"
+import {PregameTimeReport} from "../../net/pregame-timer.js"
 
 /** data from the game world packaged up for the ui to access */
 export class Bridge {
@@ -14,7 +15,7 @@ export class Bridge {
 	teamId: Signal<number>
 	selectaconHover = signal<Cell | null>(null)
 	selectaconSelection = signal<Cell | null>(null)
-	timeReport: Signal<TimeReport>
+	timeReport: Signal<PregameTimeReport | TimeReport>
 
 	actions: {
 		surrender: () => Promise<void>
@@ -25,7 +26,7 @@ export class Bridge {
 	constructor(private options: {
 			terminal: Terminal
 			getTeamId: () => number
-			getTimeReport: () => TimeReport
+			getTimeReport: () => PregameTimeReport | TimeReport
 			surrender: () => Promise<void>
 		}) {
 

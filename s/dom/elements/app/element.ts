@@ -8,8 +8,9 @@ import {GameplayView} from "../../views/exhibits/gameplay.js"
 import {detectInputMethod} from "../../utils/input-method.js"
 import {MainMenuView} from "../../views/exhibits/main-menu.js"
 import {IntroPageView} from "../../views/exhibits/intro-page.js"
-import {StartMemo} from "../../../director/apis/clientside.js"
+import {InitialMemo} from "../../../director/apis/clientside.js"
 import {LogoSplashView} from "../../views/loading-screens/logo-splash.js"
+import { PregameTimer } from "../../../net/pregame-timer.js"
 
 export const GameApp = nexus.shadowComponent(use => {
 	use.styles(styles)
@@ -43,13 +44,12 @@ export const GameApp = nexus.shadowComponent(use => {
 			}),
 
 			mainMenu: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
-				console.log("nav to main menu")
 				return {
 					dispose: () => {},
 					template: () => MainMenuView([{
 						goIntro: () => goExhibit.intro(),
 						goFreeplay: () => goExhibit.freeplay(),
-						goVersus: (data: StartMemo) => goExhibit.versus(data),
+						goVersus: (initialMemo: InitialMemo) => goExhibit.versus(initialMemo),
 					}]),
 				}
 			}),
@@ -68,13 +68,15 @@ export const GameApp = nexus.shadowComponent(use => {
 				}
 			}),
 
-			versus: orchestrator.makeNavFn(loadscreens.logoSplash, async(data: StartMemo) => {
+			versus: orchestrator.makeNavFn(loadscreens.logoSplash, async(initialMemo: InitialMemo) => {
+				const pregameTimer = new PregameTimer(initialMemo.pregameDelay)
 				const {connectivity} = use.context
 				const {versusFlow} = await import("../../../flows/versus.js")
 				const exit = () => goExhibit.mainMenu()
 				const flow = await versusFlow({
-					data,
+					initialMemo,
 					connectivity,
+					pregameTimer,
 					exit,
 				})
 				if (flow) {

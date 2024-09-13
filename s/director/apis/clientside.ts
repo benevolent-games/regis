@@ -5,9 +5,14 @@ import {AgentState} from "../../logic/state.js"
 import {ClientMachinery} from "../plumbing/machinery.js"
 import {TimeReport} from "../../tools/chess-timer/types.js"
 
-export type StartMemo = {
+export type InitialMemo = {
 	gameId: number
 	teamId: number
+	pregameDelay: number
+	agentState: AgentState
+}
+
+export type StartMemo = {
 	agentState: AgentState
 	timeReport: TimeReport
 }
@@ -19,6 +24,7 @@ export type UpdateMemo = {
 
 export type Clientside = {
 	game: {
+		initialize(memo: InitialMemo): Promise<void>
 		start(memo: StartMemo): Promise<void>
 		update(memo: UpdateMemo): Promise<void>
 		end(): Promise<void>
@@ -32,6 +38,9 @@ export function makeClientside(
 
 	return fns<Clientside>({
 		game: {
+			async initialize(memo) {
+				machinery.onGameInitialize.publish(memo)
+			},
 			async start(memo) {
 				machinery.onGameStart.publish(memo)
 			},

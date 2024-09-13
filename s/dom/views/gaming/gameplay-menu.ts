@@ -47,16 +47,16 @@ export const GameplayMenu = nexus.shadowView(use => (o: {
 
 	return html`
 		<dialog @cancel="${o.onResume}" @click="${backdropClickClose}">
-			<div>
 
+			<div>
 				<button
 					class=happy
 					@click="${closer(o.onResume)}">
 						resume
 				</button>
 			</div>
-			<div>
 
+			<div>
 				${agent.conclusion ? null : html`
 					<button
 						class=angry
@@ -64,13 +64,13 @@ export const GameplayMenu = nexus.shadowView(use => (o: {
 							surrender
 					</button>
 				`}
-
 				<button
 					class=angry
 					@click="${closer(o.onQuit)}">
 						quit
 				</button>
 			</div>
+
 		</dialog>
 	`
 })

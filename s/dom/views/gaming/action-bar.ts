@@ -35,7 +35,7 @@ export const ActionBarView = nexus.shadowView(use => ({
 		const conclusion = agent.conclusion!
 		const victory = conclusion.winnerTeamId === teamId
 		return html`
-			<div class=gameover>
+			<div class=gameover ?data-victory="${victory}">
 				${victory
 					? html`<h1>Victory</h1>`
 					: html`<h1>Defeat</h1>`}

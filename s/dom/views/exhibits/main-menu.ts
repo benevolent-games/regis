@@ -2,13 +2,13 @@
 import {css, html, loading, wherefor} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
-import {StartMemo} from "../../../director/apis/clientside.js"
+import {InitialMemo} from "../../../director/apis/clientside.js"
 import {MatchmakingLiaison} from "../../../net/matchmaking-liaison.js"
 
 type Options = {
 	goIntro: () => void
 	goFreeplay: () => void
-	goVersus: (data: StartMemo) => void
+	goVersus: (memo: InitialMemo) => void
 }
 
 export const MainMenuView = nexus.shadowView(use => (o: Options) => {
@@ -21,7 +21,7 @@ export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 		return [matchmaking, () => matchmaking.dispose()]
 	})
 
-	use.mount(() => connectivity.machinery.onGameStart(data => o.goVersus(data)))
+	use.mount(() => connectivity.machinery.onGameInitialize(data => o.goVersus(data)))
 	use.mount(() => () => matchmaking.bail())
 
 	return html`
