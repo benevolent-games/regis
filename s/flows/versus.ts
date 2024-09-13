@@ -45,7 +45,8 @@ export async function versusFlow({
 				: gameSession.pregameTimer.report()
 		},
 		surrender: async() => {
-			await connectivity.connection.payload?.serverside.game.surrender()
+			if (!agent.conclusion && connection)
+				await connection.serverside.game.surrender()
 		},
 	}))
 	d(requestAnimationFrameLoop(bridge.updateTime))

@@ -30,8 +30,6 @@ export class GameSession {
 			if (this.timerObserver)
 				this.timerObserver.update(memo.timeReport)
 		}))
-
-		d(machinery.onGameEnd(() => {}))
 	}
 
 	dispose() {

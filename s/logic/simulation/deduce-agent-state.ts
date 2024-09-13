@@ -11,7 +11,7 @@ export function deduceAgentState(
 
 	const {chronicle} = history
 
-	const vision = chronicle.length === 0
+	const vision = (chronicle.length === 0 || state.context.conclusion)
 		? universalVision(state)
 		: [...limitedVision(state, teamId), ...state.reminders.revelations]
 

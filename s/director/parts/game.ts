@@ -22,7 +22,7 @@ export class Game {
 		this.arbiter.state.teams.length,
 	)
 
-	constructor(public id: number, couple: Couple) {
+	constructor(public id: number, couple: Couple, public stillConnected: (person: Person) => boolean) {
 
 		// randomize teams
 		this.couple = (Math.random() > 0.5)
@@ -83,9 +83,12 @@ export class Game {
 	}
 
 	async #broadcast(fn: (person: Person, teamId: number) => Promise<void>) {
-		let promises: Promise<void>[] = []
-		this.couple.forEach((person, teamId) => promises.push(fn(person, teamId)))
-		return await Promise.all(promises)
+		return await Promise.all(
+			this.couple.map(async(person, teamId) => {
+				if (this.stillConnected(person))
+					await fn(person, teamId)
+			})
+		)
 	}
 
 	async #broadcastGameUpdate() {
@@ -94,6 +97,12 @@ export class Game {
 			const agentState = this.arbiter.teamAgent(teamId).state
 			return await clientside.game.update({timeReport, agentState})
 		}).catch(noop)
+	}
+
+	getTeamId(person: Person) {
+		const teamId = this.couple.indexOf(person)
+		if (teamId === -1) throw new Error("person not in game")
+		return teamId
 	}
 
 	submitTurn(turn: Turn, teamId: number) {

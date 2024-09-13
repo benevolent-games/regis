@@ -26,7 +26,6 @@ export type Clientside = {
 		initialize(memo: InitialMemo): Promise<void>
 		start(memo: StartMemo): Promise<void>
 		update(memo: UpdateMemo): Promise<void>
-		end(): Promise<void>
 	}
 }
 
@@ -45,9 +44,6 @@ export function makeClientside(
 			},
 			async update(memo) {
 				machinery.onGameUpdate.publish(memo)
-			},
-			async end() {
-				machinery.onGameEnd.publish()
 			},
 		},
 	})

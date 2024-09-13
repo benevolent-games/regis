@@ -47,8 +47,9 @@ export class Director {
 
 		// end any game they're associated with
 		const game = this.games.findGameWithPerson(person)
+
 		if (game)
-			await this.games.endGame(game)
+			await this.games.endGame(game, game.getTeamId(person))
 	}
 }
 

@@ -14,9 +14,11 @@ export class Games extends IdMappable2<number, Game> {
 		super()
 	}
 
+	stillConnected = (person: Person) => this.people.got(person)
+
 	newGame(couple: Couple) {
 		const id = this.#ids.next()
-		const game = new Game(id, couple)
+		const game = new Game(id, couple, this.stillConnected)
 		this.map.add(game)
 		this.stats.countNewGame()
 		return game
@@ -41,16 +43,10 @@ export class Games extends IdMappable2<number, Game> {
 		return undefined
 	}
 
-	async endGame(game: Game, surrenderTeamId?: number) {
-		if (surrenderTeamId !== undefined)
-			await game.surrender(surrenderTeamId)
+	async endGame(game: Game, surrenderTeamId: number) {
 		game.dispose()
 		this.map.remove(game)
-		await Promise.all(
-			game.couple
-				.filter(person => this.people.got(person))
-				.map(person => person.clientside.game.end())
-		)
+		await game.surrender(surrenderTeamId)
 	}
 }
 
