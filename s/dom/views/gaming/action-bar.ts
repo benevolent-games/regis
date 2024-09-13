@@ -92,7 +92,7 @@ export const ActionBarView = nexus.shadowView(use => ({
 			</div>
 		</div>
 
-		<div class="chunk stretch">
+		<div class="chunk stretch center">
 			<div class="cycles">
 				cycle ${Math.floor(turnCount / 2) + 1}
 			</div>
@@ -140,6 +140,7 @@ export const styles = css`
 
 	&.static { flex: 0 0 auto; }
 	&.stretch { flex: 1 1 auto; }
+	&.center { justify-content: center; }
 }
 
 .cycles {
