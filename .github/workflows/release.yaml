@@ -36,7 +36,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         S3_ENDPOINT_URL: "https://sfo2.digitaloceanspaces.com"
       run: |
-        s5cmd cp "s3://benev-storage/regis/assets/x/*" x/assets/
+        s5cmd cp "s3://benev-storage/regis/x/*" x/assets/
 
     - run: npm ci
     - run: npm run build
