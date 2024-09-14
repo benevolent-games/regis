@@ -1,8 +1,7 @@
 
-import {SmartCache} from "./tools/smart-cache.js"
-
 void async function main() {
-	const {url} = new SmartCache()
-	await import(url("./starter.js"))
+
+	// rollup chunking should automatically checksum this for cache-busting
+	await import("./starter.js")
 }()
 
