@@ -24,13 +24,13 @@ export default <Suite>{
 		const client1 = situation.newClient()
 		const client2 = situation.newClient()
 
-		let started = false
+		let initialized = false
 
-		client1.clientside.game.start = (() => {
-			const {start} = client1.clientside.game
-			return async inputs => {
-				started = true
-				return await start(inputs)
+		client1.clientside.game.initialize = (() => {
+			const {initialize} = client1.clientside.game
+			return async memo => {
+				initialized = true
+				return await initialize(memo)
 			}
 		})()
 
@@ -38,7 +38,7 @@ export default <Suite>{
 		expect((await client1.serverside.report()).personStatus).equals("queued")
 
 		await client2.serverside.matchmaking.joinQueue(),
-		expect(started).ok()
+		expect(initialized).ok()
 
 		const {worldStats, personStatus} = await client1.serverside.report()
 		expect(worldStats.games).equals(1)
