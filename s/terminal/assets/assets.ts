@@ -3,6 +3,7 @@ import {World} from "../parts/world.js"
 import {BoardGlb} from "./glbs/board.js"
 import {UnitsGlb} from "./glbs/units.js"
 import {IndicatorsGlb} from "./glbs/indicators.js"
+import {SmartCache} from "../../tools/smart-cache.js"
 
 export type AssetUrls = {
 	board: string
@@ -12,10 +13,12 @@ export type AssetUrls = {
 
 export class Assets {
 	static async load(world: World, urls: AssetUrls) {
+		const {url} = new SmartCache()
+
 		const [boardContainer, unitsContainer, indicatorsContainer] = await Promise.all([
-			world.loadContainer(urls.board),
-			world.loadContainer(urls.units),
-			world.loadContainer(urls.indicators),
+			world.loadContainer(url(urls.board)),
+			world.loadContainer(url(urls.units)),
+			world.loadContainer(url(urls.indicators)),
 		])
 		const indicatorsGlb = new IndicatorsGlb(indicatorsContainer)
 		const boardGlb = new BoardGlb(boardContainer)

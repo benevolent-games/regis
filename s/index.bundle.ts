@@ -1,7 +1,8 @@
 
-void async function main() {
+import {SmartCache} from "./tools/smart-cache.js"
 
-	// TODO add turtle meta git commit hash cache-busting
-	await import("./starter.js")
+void async function main() {
+	const {url} = new SmartCache()
+	await import(url("./starter.js"))
 }()
 

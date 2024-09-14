@@ -51,7 +51,7 @@ new indicators scheme
 priorities
 - [x] fix games don't end on time expiry
 - [ ] optimize so it's less laggy
-- [ ] cache-busting starter script
+- [x] cache-busting starter script
 - [x] fix multitasking systems
 - [x] new inspector
 - [x] menu with ability to surrender
