@@ -55,6 +55,7 @@ export class Game {
 						gameTime,
 						eliminatedTeamId: teamId,
 					})
+					this.#end()
 					this.#broadcastGameUpdate().catch(logErr)
 					break
 				}

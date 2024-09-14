@@ -1,11 +1,9 @@
 
-import {ExposedError} from "renraku"
-
 import {Game} from "./game.js"
 import {People} from "./people.js"
 import {GamesStats} from "./games-stats.js"
+import {logger} from "../plumbing/logger.js"
 import {Couple, GamerSession, Person} from "../types.js"
-import { logger } from "../plumbing/logger.js"
 
 export class Games extends Set<Game> {
 	stats = new GamesStats()
@@ -17,7 +15,9 @@ export class Games extends Set<Game> {
 	stillConnected = (person: Person) => this.people.has(person)
 
 	async newGame(couple: Couple) {
-		this.#enforceNotAlreadyInGame(couple)
+		for (const person of couple)
+			this.#dropPersonOutOfAnyActiveGames(person)
+
 		const game = new Game({
 			couple,
 			stillConnected: this.stillConnected,
@@ -26,6 +26,7 @@ export class Games extends Set<Game> {
 				logger.log(`——→ ❌ delete game for ${couple.map(p => p.label).join(" and ")}`)
 			},
 		})
+
 		this.add(game)
 		this.stats.countNewGame()
 		await game.initialize()
@@ -52,11 +53,10 @@ export class Games extends Set<Game> {
 		return undefined
 	}
 
-	#enforceNotAlreadyInGame(persons: Person[]) {
+	async #dropPersonOutOfAnyActiveGames(person: Person) {
 		for (const game of this.values()) {
-			const person = game.couple.find(p => persons.includes(p))
-			if (person)
-				throw new ExposedError(`cannot create game, because a participant is already in another game`)
+			if (game.couple.includes(person))
+				await game.submitSurrender(game.getTeamId(person))
 		}
 	}
 }
