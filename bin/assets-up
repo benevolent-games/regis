@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "upload processed assets back to storage"
+rsync -vham --progress --delete assets/x/ mount/benev-storage/regis/x
+

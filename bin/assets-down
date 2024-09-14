@@ -1,0 +1,64 @@
+#!/bin/bash
+
+banner() {
+	echo "";
+	echo "### $1";
+}
+
+banner "initialize the assets area";
+mkdir -p assets/s && \
+	rm -rf assets/x && \
+	mkdir assets/x;
+
+banner "download all asset sources";
+rsync -vham --delete --progress \
+	mount/benev-storage/regis/s/ \
+	assets/s;
+
+###
+### glbs
+###
+
+banner "glbs";
+npx @benev/batch 3d glb \
+	--verbose \
+	--tier "mid" \
+	--ignores="**/_*/**" \
+	--in "assets/s" \
+	--out "assets/x";
+
+###
+### audio effects
+###
+
+banner "audio";
+npx @benev/batch audio m4a \
+	--verbose \
+	--kbps "64" \
+	--in "assets/s" \
+	--out "assets/x";
+
+###
+### images
+###
+
+banner "images";
+npx @benev/batch images webp \
+	--verbose \
+	--quality "90" \
+	--size "1024" \
+	--in "assets/s" \
+	--out "assets/x";
+
+###
+### copy other files
+###
+
+banner "copy: other files";
+npx @benev/batch copy \
+	--verbose \
+	--find "svg,json,env" \
+	--ignores "graphics/**" \
+	--in "assets/s" \
+	--out "assets/x";
+
