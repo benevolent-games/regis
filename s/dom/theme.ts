@@ -42,6 +42,13 @@ button.naked {
 	font-family: inherit;
 }
 
+button.flashy {
+	&:not([disabled]) {
+		&:hover { filter: brightness(120%); }
+		&:active { filter: brightness(90%); }
+	}
+}
+
 button.based {
 	cursor: pointer;
 

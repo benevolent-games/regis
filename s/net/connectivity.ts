@@ -1,5 +1,5 @@
 
-import {opSignal, pubsub} from "@benev/slate"
+import {nap, opSignal, pubsub} from "@benev/slate"
 
 import {constants} from "../constants.js"
 import {randomize} from "../tools/randomize.js"

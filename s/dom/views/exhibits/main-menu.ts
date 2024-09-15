@@ -70,10 +70,6 @@ const styles = css`
 	> * {
 		width: 2em;
 		height: 2em;
-		background: #fff4;
-		box-shadow: 0.1em 0.2em 0.3em #0002;
-		border-radius: 0.2em;
-		cursor: pointer;
 	}
 }
 
