@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#
+# this script is meant to be run on the director's production server.
+# do not run this locally in your dev environment..
+#
+
+npm ci --production
+
+pm2 restart director || pm2 start "npm run director --silent" --name director
+

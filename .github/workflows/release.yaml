@@ -30,7 +30,7 @@ jobs:
       with:
         version: v2.2.2
 
-    - run: npm ci
+    - run: npm ci --production
     - run: npm run build
     - run: npm test
 
@@ -45,6 +45,7 @@ jobs:
     - name: deploy the director
       run: |
         rsync -vhamz --delete --exclude ".git" --exclude "node_modules" -e "ssh -o StrictHostKeyChecking=no" ./ deployer@director.regis.gg:/home/deployer/app/
+        ssh -o StrictHostKeyChecking=no deployer@director.regis.gg "cd app && bin/serverside/redeploy"
 
     - name: 🌎 download assets
       env:
