@@ -1,14 +1,6 @@
 
 import "@benev/slate/x/node.js"
-// import markdownIt from "markdown-it"
-import {template, html, easypage, startup_scripts_with_dev_mode, git_commit_hash, unsanitized} from "@benev/turtle"
-
-// const md = markdownIt()
-//
-// async function getArticle() {
-// 	const {default: articleMd} = await import(`./article.md.js?nocache=${Date.now()}`)
-// 	return md.render(articleMd)
-// }
+import {template, html, easypage, startup_scripts_with_dev_mode, git_commit_hash} from "@benev/turtle"
 
 export default template(async basic => {
 	const path = basic.path(import.meta.url)
@@ -40,7 +32,7 @@ export default template(async basic => {
 			<game-app>
 				<header class=logo>
 					<h1><span>Regis</span><span>.gg</span></h1>
-					<h2>A Game of War and Wit</h2>
+					<h2>A New Kind of 1v1 Strategy Game</h2>
 					<small class="glow-blue">Alpha</small>
 				</header>
 			</game-app>

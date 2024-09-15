@@ -76,7 +76,7 @@ game-app {
 	}
 
 	> h2 {
-		font-size: 2.4em;
+		font-size: 2em;
 		font-variant: small-caps;
 		margin-top: -1em;
 		opacity: 0.8;
