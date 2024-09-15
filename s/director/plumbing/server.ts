@@ -1,5 +1,6 @@
 
 import "@benev/slate/x/node.js"
+import {cli, command, param, number} from "@benev/argv"
 import {expose, remote, errstring, remoteErrstring} from "renraku"
 import {deathWithDignity, WebSocketServer} from "renraku/x/node.js"
 
@@ -8,10 +9,21 @@ import {Director} from "../director.js"
 import {constants} from "../../constants.js"
 import {Clientside} from "../apis/clientside.js"
 
-const host = "0.0.0.0"
-const port = 8000
 
 deathWithDignity({logger})
+
+const {params} = cli(process.argv, {
+	name: "director",
+	commands: command({
+		args: [],
+		params: {
+			port: param.default(number, "8000"),
+		},
+	}),
+}).tree
+
+const host = "0.0.0.0"
+const {port} = params
 
 const director = new Director()
 

@@ -16,20 +16,16 @@
 		"unmount": "bin/unmount",
 		"assets-down": "bin/assets-down",
 		"assets-up": "bin/assets-up",
-
 		"build": "rm -rf x && turtle build --out=x -v && turtle ssg --in=s,x --out=x --exclude=bin -v && run-s links",
 		"links": "mkdir -p assets/x && ln -s \"$(realpath assets/x)\" x/assets && ln -s \"$(realpath s)\" x/s",
-
 		"http": "http-server x",
 		"watch": "turtle watch --in=s,x --out=x --exclude=bin -v",
 		"start": "run-p http watch",
 		"director": "node x/director/plumbing/server.js",
-
 		"devlinks": "run-s devlinks-toolbox devlinks-slate devlinks-renraku",
 		"devlinks-toolbox": "rm -rf node_modules/@benev/toolbox && ln -s \"$(realpath ../toolbox)\" node_modules/@benev/toolbox",
 		"devlinks-slate": "rm -rf node_modules/@benev/slate && ln -s \"$(realpath ../slate)\" node_modules/@benev/slate",
 		"devlinks-renraku": "rm -rf node_modules/renraku && ln -s \"$(realpath ../../renraku)\" node_modules/renraku",
-
 		"test": "cynic node x/tests.test.js",
 		"test-watch": "chokidar \"x/**/*.js\" -c \"clear && npm test\"",
 		"count": "find s -path '*/_archive' -prune -o -name '*.ts' -exec wc -l {} +"
@@ -37,6 +33,7 @@
 	"dependencies": {
 		"@babylonjs/core": "^7.25.1",
 		"@babylonjs/loaders": "^7.25.1",
+		"@benev/argv": "^0.3.7",
 		"@benev/slate": "^0.2.2",
 		"@benev/toolbox": "^0.6.2",
 		"es-module-shims": "^1.10.0",

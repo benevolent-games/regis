@@ -12,5 +12,5 @@ export NVM_DIR="$HOME/.nvm"
 
 npm ci --production
 
-pm2 restart director || pm2 start "npm run director --silent" --name director
+pm2 restart director || pm2 start "npm run director --silent -- --port 80" --name director
 

@@ -8,7 +8,15 @@ import {Serverside} from "../director/apis/serverside.js"
 import {ClientMachinery} from "../director/plumbing/machinery.js"
 import {makeDirectorClient} from "../director/plumbing/client.js"
 
-const url = `//${window.location.hostname}:8000/`
+const isLocalDev = (
+	location.host.startsWith("localhost") ||
+	location.host.startsWith("192.168") ||
+	location.host.startsWith("10.0.0")
+)
+
+const directorUrl = isLocalDev
+	? `//${window.location.hostname}:8000/`
+	: `//director.regis.gg/`
 
 export type Connection = {
 	socket: WebSocket
@@ -44,7 +52,7 @@ export class Connectivity {
 		console.log("attempt connect")
 		const connection = await this.connection.load(async() => {
 			try {
-				const client = await makeDirectorClient(url, this.machinery)
+				const client = await makeDirectorClient(directorUrl, this.machinery)
 				const info = await queryReport(client.serverside)
 				const lost = () => {
 					console.log("connection lost")
