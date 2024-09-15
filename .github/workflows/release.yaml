@@ -24,55 +24,51 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: '22'
-
-    - name: set-up s5cmd
+    - uses: actions/configure-pages@v3
+    - name: set-up s5cmd, for downloading assets
       uses: peak/action-setup-s5cmd@main
       with:
         version: v2.2.2
 
-    - run: npm ci
-    - run: npm run build
-    - run: npm test
+    - run: |
+      npm ci
+      npm run build
+      npm test
 
-    - name: 🗑️ delete temp assets symlink
+    - name: 🗑️ delete dev symlinks
       run: |
-        rm -rf x/assets
+        rm x/assets
+        rm x/node_modules
+        rm x/s
 
-    - uses: webfactory/ssh-agent@v0.9.0
-      with:
-        ssh-private-key: ${{ secrets.REGIS_DIRECTOR_DEPLOYER_SSH_PRIVATE_KEY }}
-
-    - name: deploy the director
-      run: |
-        rsync -vhamz --delete --exclude ".git" --exclude "node_modules" -e "ssh -o StrictHostKeyChecking=no" ./ deployer@director.regis.gg:/home/deployer/app/
-        ssh -o StrictHostKeyChecking=no deployer@director.regis.gg "cd /home/deployer/app && bin/serverside/redeploy"
-
-    - name: 🌎 download assets
+    - name: 🌎 download assets sources
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         S3_ENDPOINT_URL: "https://sfo2.digitaloceanspaces.com"
       run: |
-        s5cmd cp "s3://benev-storage/regis/x/*" x/assets/
+        s5cmd cp "s3://benev-storage/regis/s/*" assets/s/
 
-    - name: 🚚 tracking ignored stuff
+    - name: 🎠 converting assets
+      run: bin/assets-convert
+
+    - uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.REGIS_DIRECTOR_DEPLOYER_SSH_PRIVATE_KEY }}
+
+    - name: 🎬 deploy the director
       run: |
-        sed -i.bak -e '/^\/node_modules$/d' .gitignore
-        sed -i.bak -e '/^\/x$/d' .gitignore
+        rsync --delete -vhamz --exclude ".git" --exclude "node_modules" -e "ssh -o StrictHostKeyChecking=no" ./ deployer@director.regis.gg:/home/deployer/app/
+        ssh -o StrictHostKeyChecking=no deployer@director.regis.gg "cd /home/deployer/app && bin/serverside/redeploy"
 
     - name: 🗃️ reconstitute node_modules for production
-      run: |
-        rm -rf node_modules
-        npm ci --omit=dev
+      run: npm ci --omit=dev
 
-    - name: 🗃️ copy files
+    - name: 🍞 moving files into x
       run: |
-        rm -rf x/node_modules x/s
-        cp -r node_modules/ x/
-        cp -r s/ x/
-
-    - name: 📝 configure pages
-      uses: actions/configure-pages@v3
+        mv node_modules x/node_modules
+        mv s x/s
+        mv assets/x x/assets
 
     - name: 📤 upload pages artifact
       uses: actions/upload-pages-artifact@v2
