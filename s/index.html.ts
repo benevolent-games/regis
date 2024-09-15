@@ -40,7 +40,7 @@ export default template(async basic => {
 			<game-app>
 				<header class=logo>
 					<h1><span>Regis</span><span>.gg</span></h1>
-					<h2>“The Final Argument of Kings”</h2>
+					<h2>A Game of War and Wit</h2>
 					<small class="glow-blue">Alpha</small>
 				</header>
 			</game-app>
