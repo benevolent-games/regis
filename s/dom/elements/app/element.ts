@@ -8,7 +8,6 @@ import {GameSession} from "../../../net/game-session.js"
 import {GameplayView} from "../../views/exhibits/gameplay.js"
 import {detectInputMethod} from "../../utils/input-method.js"
 import {MainMenuView} from "../../views/exhibits/main-menu.js"
-import {IntroPageView} from "../../views/exhibits/intro-page.js"
 import {InitialMemo} from "../../../director/apis/clientside.js"
 import {LogoSplashView} from "../../views/loading-screens/logo-splash.js"
 
@@ -20,16 +19,17 @@ export const GameApp = nexus.shadowComponent(use => {
 	)
 
 	const orchestrator = use.once(() => {
-		const intro = Orchestrator.makeExhibit({
-			dispose: () => {},
-			template: () => IntroPageView({
-				goMainMenu: () => goExhibit.mainMenu()
-			}),
-		})
+		const mainMenu = Orchestrator.makeExhibit({
+				dispose: () => {},
+				template: () => MainMenuView([{
+					goFreeplay: () => goExhibit.freeplay(),
+					goVersus: (memo: InitialMemo) => goExhibit.versus(memo),
+				}], {content: html`<slot></slot>`}),
+			})
 
 		const orchestrator = new Orchestrator({
 			animTime: 250,
-			startingExhibit: intro,
+			startingExhibit: mainMenu,
 		})
 
 		const loadscreens = {
@@ -39,20 +39,7 @@ export const GameApp = nexus.shadowComponent(use => {
 		}
 
 		const goExhibit = {
-			intro: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
-				return intro
-			}),
-
-			mainMenu: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
-				return {
-					dispose: () => {},
-					template: () => MainMenuView([{
-						goIntro: () => goExhibit.intro(),
-						goFreeplay: () => goExhibit.freeplay(),
-						goVersus: (memo: InitialMemo) => goExhibit.versus(memo),
-					}]),
-				}
-			}),
+			mainMenu: orchestrator.makeNavFn(loadscreens.logoSplash, async() => mainMenu),
 
 			freeplay: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
 				const {freeplayFlow} = await import("../../../flows/freeplay.js")

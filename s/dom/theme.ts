@@ -34,6 +34,14 @@ a {
 	}
 }
 
+button.naked {
+	color: inherit;
+	background: none;
+	border: none;
+	outline: 0;
+	font-family: inherit;
+}
+
 button.based {
 	cursor: pointer;
 
