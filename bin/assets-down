@@ -6,67 +6,10 @@ banner() {
 }
 
 banner "initialize the assets area";
-mkdir -p assets/s && \
-	rm -rf assets/x && \
-	mkdir assets/x;
+mkdir -p assets/s;
 
 banner "download all asset sources";
-rsync -vham --delete --progress \
+rsync --delete -vham --progress \
 	mount/benev-storage/regis/s/ \
 	assets/s;
-
-###
-### glbs
-###
-
-banner "glbs";
-npx @benev/batch 3d glb \
-	--verbose \
-	--tier "mid" \
-	--ignores="**/_*/**" \
-	--in "assets/s" \
-	--out "assets/x";
-
-###
-### audio effects
-###
-
-banner "audio";
-npx @benev/batch audio m4a \
-	--verbose \
-	--kbps "64" \
-	--in "assets/s" \
-	--out "assets/x";
-
-###
-### images
-###
-
-banner "images";
-npx @benev/batch images webp \
-	--verbose \
-	--quality "90" \
-	--ignores "graphics/**" \
-	--size "1024" \
-	--in "assets/s" \
-	--out "assets/x";
-
-banner "graphics";
-npx @benev/batch copy \
-	--verbose \
-	--find "*" \
-	--in "assets/s/graphics" \
-	--out "assets/x/graphics";
-
-###
-### copy other files
-###
-
-banner "copy: other files";
-npx @benev/batch copy \
-	--verbose \
-	--find "svg,json,env" \
-	--ignores "graphics/**" \
-	--in "assets/s" \
-	--out "assets/x";
 

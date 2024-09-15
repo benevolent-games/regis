@@ -12,10 +12,6 @@
 		"s"
 	],
 	"scripts": {
-		"mount": "bin/mount",
-		"unmount": "bin/unmount",
-		"assets-down": "bin/assets-down",
-		"assets-up": "bin/assets-up",
 		"build": "rm -rf x && turtle build --out=x -v && turtle ssg --in=s,x --out=x --exclude=bin -v && run-s links",
 		"links": "mkdir -p assets/x && ln -s \"$(realpath assets/x)\" x/assets && ln -s \"$(realpath s)\" x/s",
 		"http": "http-server x",
