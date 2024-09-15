@@ -2,6 +2,7 @@
 import {css, html} from "@benev/slate"
 
 import {nexus} from "../../nexus.js"
+import {StatusBuddyView} from "../gaming/status-buddy.js"
 import {InitialMemo} from "../../../director/apis/clientside.js"
 import {renderMatchmakingButton} from "../gaming/matchmaking-button.js"
 import {MatchmakingLiaison} from "../../../net/matchmaking-liaison.js"
@@ -26,6 +27,11 @@ export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 
 	return html`
 		<slot></slot>
+
+		<div class=quickbar>
+			${StatusBuddyView([use.context.connectivity])}
+		</div>
+
 		<nav>
 			${renderMatchmakingButton(matchmaking)}
 			<button class=naked @click=${o.goFreeplay}>
@@ -35,32 +41,10 @@ export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 	`
 })
 
-		// <div class=page>
-		// 	<button @click=${o.goFreeplay}>freeplay</button>
-		//
-		// 	${MatchmakingButtonView(matchmaking)}
-		//
-		// 	${loading.braille(use.context.connectivity.connection, connection =>
-		// 		wherefor(connection, ({report, ping}) => html`
-		// 			<ul class=connected>
-		// 				<li>status: ${report.personStatus}</li>
-		// 				<li>players: ${report.worldStats.players}</li>
-		// 				<li>games: ${report.worldStats.games}</li>
-		// 				<li>games/hour: ${report.worldStats.gamesInLastHour}</li>
-		// 				<li>ping: ${ping} ms</li>
-		// 			</ul>
-		// 		`)
-		// 		?? html`
-		// 			<p class=disconnected>disconnected</p>
-		// 		`
-		// 	)}
-		// </div>
-
-/////////////////////////////////////////
-
 const styles = css`
 
 :host {
+	position: relative;
 	width: 100%;
 	height: 100%;
 	overflow: auto;
@@ -69,6 +53,28 @@ const styles = css`
 	flex-direction: column;
 
 	font-family: Spectre, serif;
+}
+
+.quickbar {
+	position: absolute;
+
+	top: 0;
+	left: 0;
+	right: 0;
+
+	display: flex;
+	justify-content: end;
+	padding: 1em;
+	gap: 0.5em;
+
+	> * {
+		width: 2em;
+		height: 2em;
+		background: #fff4;
+		box-shadow: 0.1em 0.2em 0.3em #0002;
+		border-radius: 0.2em;
+		cursor: pointer;
+	}
 }
 
 nav {
@@ -90,9 +96,9 @@ nav {
 		transition: text-shadow var(--anim-duration) linear;
 
 		&::after {
+			pointer-events: none;
 			opacity: 0;
 			transition: opacity var(--anim-duration) linear;
-			pointer-events: none;
 			display: block;
 			content: "";
 			position: absolute;
@@ -109,12 +115,12 @@ nav {
 		}
 
 		.errortag {
+			pointer-events: none;
 			position: absolute;
 			bottom: 90%;
 			right: -20%;
 			font-size: 0.4em;
 			font-family: sans-serif;
-			color: red;
 			padding: 0 0.5em;
 		}
 
