@@ -16,7 +16,7 @@ const isLocalDev = (
 
 const directorUrl = isLocalDev
 	? `//${window.location.hostname}:8000/`
-	: `//director.regis.gg/`
+	: `wss://director.regis.gg/`
 
 export type Connection = {
 	socket: WebSocket
