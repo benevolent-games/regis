@@ -57,7 +57,7 @@ jobs:
 
     - name: 🎬 deploy the director
       run: |
-        rsync --delete -vhamz --exclude "assets" --exclude ".git" --exclude "node_modules" -e "ssh -o StrictHostKeyChecking=no" ./ deployer@director.regis.gg:/home/deployer/app/
+        rsync --delete -hamz --exclude "assets" --exclude ".git" --exclude "node_modules" -e "ssh -o StrictHostKeyChecking=no" ./ deployer@director.regis.gg:/home/deployer/app/
         ssh -o StrictHostKeyChecking=no deployer@director.regis.gg "cd /home/deployer/app && bin/serverside/redeploy"
 
     - name: 🗃️ reconstitute node_modules for production
