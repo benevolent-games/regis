@@ -5,6 +5,11 @@
 # do not run this locally in your dev environment..
 #
 
+# prepare the environment
+source "$HOME/.profile"
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
 npm ci --production
 
 pm2 restart director || pm2 start "npm run director --silent" --name director
