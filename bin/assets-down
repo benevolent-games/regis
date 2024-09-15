@@ -46,9 +46,17 @@ banner "images";
 npx @benev/batch images webp \
 	--verbose \
 	--quality "90" \
+	--ignores "graphics/**" \
 	--size "1024" \
 	--in "assets/s" \
 	--out "assets/x";
+
+banner "graphics";
+npx @benev/batch copy \
+	--verbose \
+	--find "*" \
+	--in "assets/s/graphics" \
+	--out "assets/x/graphics";
 
 ###
 ### copy other files
