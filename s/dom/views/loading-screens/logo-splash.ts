@@ -22,7 +22,14 @@ const styles = css`
 
 		width: 100%;
 		height: 100%;
-		background: #334;
+
+		background: #000;
+		color: #333;
+	}
+
+	h1 {
+		font-family: Spectral, serif;
+		font-style: italic;
 	}
 `
 

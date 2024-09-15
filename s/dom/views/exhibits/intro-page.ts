@@ -6,11 +6,10 @@ export const IntroPageView = nexus.lightView(use => (o: Options) => {
 	use.name("intro-page")
 
 	return html`
-		<slot name=lead></slot>
+		<slot></slot>
 		<div class=buttonbox>
 			<button @click=${o.goMainMenu}>play</button>
 		</div>
-		<slot></slot>
 	`
 })
 

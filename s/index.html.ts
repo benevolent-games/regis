@@ -1,14 +1,14 @@
 
 import "@benev/slate/x/node.js"
-import markdownIt from "markdown-it"
+// import markdownIt from "markdown-it"
 import {template, html, easypage, startup_scripts_with_dev_mode, git_commit_hash, unsanitized} from "@benev/turtle"
 
-const md = markdownIt()
-
-async function getArticle() {
-	const {default: articleMd} = await import(`./article.md.js?nocache=${Date.now()}`)
-	return md.render(articleMd)
-}
+// const md = markdownIt()
+//
+// async function getArticle() {
+// 	const {default: articleMd} = await import(`./article.md.js?nocache=${Date.now()}`)
+// 	return md.render(articleMd)
+// }
 
 export default template(async basic => {
 	const path = basic.path(import.meta.url)
@@ -19,7 +19,12 @@ export default template(async basic => {
 		css: "index.css",
 		title: "regis.gg",
 		head: html`
-			<link rel="icon" href="/assets/benevolent.svg"/>
+			<link rel="icon" href="/assets/graphics/knight-icon.webp"/>
+
+			<link rel="preconnect" href="https://fonts.googleapis.com">
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+			<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
 			<link rel="stylesheet" href="${path.version.root("index.css")}"/>
 			<meta data-commit-hash="${await git_commit_hash()}"/>
 			${startup_scripts_with_dev_mode({
@@ -33,13 +38,11 @@ export default template(async basic => {
 		`,
 		body: html`
 			<game-app>
-				<header slot=lead>
-					<h1>regis</h1>
-					<p>a new game inspired by chess and modern rts games.</p>
+				<header class=logo>
+					<h1><span>Regis</span><span>.gg</span></h1>
+					<h2>“The Final Argument of Kings”</h2>
+					<small class="glow-blue">Alpha</small>
 				</header>
-				<article>
-					${unsanitized(await getArticle())}
-				</article>
 			</game-app>
 		`,
 	})
