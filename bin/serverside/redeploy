@@ -10,7 +10,7 @@ source "$HOME/.profile"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-npm ci --production
+npm ci --omit=dev
 
 pm2 restart director || pm2 start "npm run director --silent -- --port 80" --name director
 

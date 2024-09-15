@@ -63,7 +63,7 @@ jobs:
     - name: 🗃️ reconstitute node_modules for production
       run: |
         rm -rf node_modules
-        npm ci --production
+        npm ci --omit=dev
 
     - name: 🗃️ copy files
       run: |
