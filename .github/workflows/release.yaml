@@ -1,5 +1,5 @@
 
-name: 🚀 release to github pages
+name: 🚀 full release deployment
 on:
   push:
     branches: ["release"]
@@ -37,6 +37,15 @@ jobs:
     - name: 🗑️ delete temp assets symlink
       run: |
         rm -rf x/assets
+
+    - uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.REGIS_DIRECTOR_DEPLOYER_SSH_PRIVATE_KEY }}
+
+    - name: deploy the director
+      run: |
+        rsync -vhamz --delete --exclude ".git" --exclude "node_modules" -e "ssh -o StrictHostKeyChecking=no" ./ deployer@director.regis.gg:/home/deployer/app/
+        ssh -o StrictHostKeyChecking=no deployer@director.regis.gg "cd /home/deployer/app && bin/serverside/redeploy"
 
     - name: 🌎 download assets
       env:

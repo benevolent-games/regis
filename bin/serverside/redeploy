@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#
+# this script is meant to be run on the director's production server.
+# do not run this locally in your dev environment..
+#
+
+# prepare the environment
+source "$HOME/.profile"
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+npm ci --omit=dev
+
+pm2 restart director || pm2 start "npm run director --silent" --name director
+
