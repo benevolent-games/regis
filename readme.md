@@ -1,5 +1,5 @@
 
-![regis.gg](https://i.imgur.com/gfKKL5D.png)
+![regis.gg](https://i.imgur.com/xTMTsu6.jpeg)
 
 # 👑 regis
 
