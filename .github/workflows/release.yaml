@@ -1,5 +1,5 @@
 
-name: 🚀 release to github pages
+name: 🚀 full release deployment
 on:
   push:
     branches: ["release"]
