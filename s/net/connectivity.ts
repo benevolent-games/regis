@@ -49,25 +49,21 @@ export class Connectivity {
 	}
 
 	async connect() {
-		console.log("attempt connect")
 		const connection = await this.connection.load(async() => {
 			try {
 				const client = await makeDirectorClient(directorUrl, this.machinery)
 				const info = await queryReport(client.serverside)
 				const lost = () => {
-					console.log("connection lost")
 					this.#scheduleReconnect()
 					this.connection.setReady(null)
 					this.onDisconnected.publish()
 				}
 				client.socket.addEventListener("close", lost)
 				client.socket.addEventListener("error", lost)
-				console.log("connection established")
 				return {...client, ...info}
 			}
 			catch (error) {
-				this.#scheduleReconnect()
-				console.log("connection failed")
+				// this.#scheduleReconnect()
 				return null
 			}
 		})
