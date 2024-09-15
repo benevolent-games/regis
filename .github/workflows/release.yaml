@@ -30,7 +30,7 @@ jobs:
       with:
         version: v2.2.2
 
-    - run: npm ci --production
+    - run: npm ci
     - run: npm run build
     - run: npm test
 
@@ -63,7 +63,7 @@ jobs:
     - name: 🗃️ reconstitute node_modules for production
       run: |
         rm -rf node_modules
-        npm ci --omit=dev
+        npm ci --production
 
     - name: 🗃️ copy files
       run: |
