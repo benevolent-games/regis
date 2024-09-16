@@ -10,7 +10,7 @@ export function renderMatchmakingButton(matchmaking: MatchmakingLiaison) {
 				<button
 					disabled
 					class="naked matchmaking disconnected">
-						start matchmaking
+						Start Matchmaking
 						<span class="errortag">
 							not connected
 						</span>
@@ -21,7 +21,7 @@ export function renderMatchmakingButton(matchmaking: MatchmakingLiaison) {
 				<button
 					class="naked matchmaking start"
 					@click="${situation.startMatchmaking}">
-						start matchmaking
+						Start Matchmaking
 				</button>
 			`
 
@@ -29,7 +29,7 @@ export function renderMatchmakingButton(matchmaking: MatchmakingLiaison) {
 				<button
 					class="naked matchmaking cancel"
 					@click="${situation.cancelMatchmaking}">
-						cancel matchmaking
+						Cancel Matchmaking
 				</button>
 			`
 		}

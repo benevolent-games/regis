@@ -34,9 +34,14 @@ export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 
 		<nav>
 			${renderMatchmakingButton(matchmaking)}
+
 			<button class=naked @click=${o.goFreeplay}>
-				freeplay
+				Freeplay
 			</button>
+
+			<a target="_blank" href="https://github.com/benevolent-games/regis/wiki/Regis.gg">
+				Learn More
+			</a>
 		</nav>
 	`
 })
@@ -83,11 +88,12 @@ nav {
 
 	--anim-duration: 100ms;
 
-	> button {
+	> :is(a, button) {
 		font-size: 2em;
 		position: relative;
 		cursor: pointer;
 
+		text-decoration: none;
 		text-shadow: 0 0 0.4em #000a;
 		transition: text-shadow var(--anim-duration) linear;
 
