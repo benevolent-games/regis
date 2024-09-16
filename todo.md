@@ -30,10 +30,11 @@ new indicators scheme
     - `claim-resource2`
     - `claim-resource3`
 - danger and attacks
-  - `damage` -- *unit on this tile has been hurt last turn*
+  - `damage` -- *unit on this tile was hurt last turn*
   - `threat` -- *identifies when your own unit is in danger*
   - `attack-arc` -- *trajectory of an attack, through the air*
   - `dead` -- *a unit died here*
+  - `healed` -- *unit on this tile was healed last turn*
 - fog of war
   - `aura`
 - selection and hover
