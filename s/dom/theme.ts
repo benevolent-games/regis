@@ -54,12 +54,15 @@ button.based {
 
 	border: none;
 	border-radius: .3em;
-	box-shadow: .2em .5em .5em #0004;
+	box-shadow: .1em .2em .2em #0004;
 
 	background: #8888;
 	color: #fffc;
 	font: inherit;
 	text-shadow: .1em .2em .1em #0004;
+
+	font-variant: small-caps;
+	font-weight: bold;
 
 	display: block;
 	max-width: 100%;

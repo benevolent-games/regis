@@ -93,7 +93,7 @@ nav {
 		position: relative;
 		cursor: pointer;
 
-		text-decoration: none;
+		text-decoration: none !important;
 		text-shadow: 0 0 0.4em #000a;
 		transition: text-shadow var(--anim-duration) linear;
 
