@@ -109,34 +109,3 @@ game-app {
 	text-shadow: 0 0 0.3em #ff7800;
 }
 
-/* game-app :is(header, article) { */
-/* 	padding: 2em; */
-/* 	max-width: 42em; */
-/* 	margin: 0 auto; */
-/**/
-/* 	& > * + * { */
-/* 		margin-top: 0.66em; */
-/**/
-/* 		&:is(h1, h2, h3, h4, h5, h6) { */
-/* 			margin-top: 1.5em; */
-/* 		} */
-/* 	} */
-/**/
-/* 	& :is(ol, ul) { */
-/* 		padding-left: 1.5em; */
-/* 	} */
-/**/
-/* 	& > :is(ol, ul) > li + li { */
-/* 		margin-top: 0.4em; */
-/* 	} */
-/**/
-/* 	& h1 { */
-/* 		font-size: 2em; */
-/* 	} */
-/* } */
-/**/
-/* code { */
-/* 	color: lime; */
-/* 	tab-size: 2; */
-/* } */
-

@@ -1,5 +1,5 @@
 
-import {html} from "@benev/slate"
+import {html, nap} from "@benev/slate"
 import {Orchestrator, orchestratorStyles, OrchestratorView} from "@benev/toolbox"
 
 import styles from "./styles.js"
@@ -39,7 +39,9 @@ export const GameApp = nexus.shadowComponent(use => {
 		}
 
 		const goExhibit = {
-			mainMenu: orchestrator.makeNavFn(loadscreens.logoSplash, async() => mainMenu),
+			mainMenu: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
+				return mainMenu
+			}),
 
 			freeplay: orchestrator.makeNavFn(loadscreens.logoSplash, async() => {
 				const {freeplayFlow} = await import("../../../flows/freeplay.js")
