@@ -7,6 +7,11 @@ export default css`
 	display: block;
 }
 
+.orchestrator {
+	position: relative;
+	& .orchestrator-loading { z-index: 2; }
+}
+
 [view="intro-page"] {
 	.buttonbox {
 		display: flex;

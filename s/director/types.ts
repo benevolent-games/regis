@@ -10,7 +10,7 @@ export type WorldStats = {
 }
 
 export type PersonStatus = (
-	| "chilling"
+	| "relaxing"
 	| "queued"
 	| "gaming"
 )

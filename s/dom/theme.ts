@@ -34,17 +34,35 @@ a {
 	}
 }
 
+button.naked {
+	color: inherit;
+	background: none;
+	border: none;
+	outline: 0;
+	font-family: inherit;
+}
+
+button.flashy {
+	&:not([disabled]) {
+		&:hover { filter: brightness(120%); }
+		&:active { filter: brightness(90%); }
+	}
+}
+
 button.based {
 	cursor: pointer;
 
 	border: none;
 	border-radius: .3em;
-	box-shadow: .2em .5em .5em #0004;
+	box-shadow: .1em .2em .2em #0004;
 
 	background: #8888;
 	color: #fffc;
 	font: inherit;
 	text-shadow: .1em .2em .1em #0004;
+
+	font-variant: small-caps;
+	font-weight: bold;
 
 	display: block;
 	max-width: 100%;
@@ -62,6 +80,16 @@ button.based {
 		font-weight: bold;
 		text-transform: uppercase;
 	}
+}
+
+.spin {
+	display: block;
+	animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
 }
 
 `

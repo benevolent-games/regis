@@ -38,7 +38,7 @@ export class Director {
 				? "gaming"
 				: (this.matchmaker.queue.has(person))
 					? "queued"
-					: "chilling"
+					: "relaxing"
 		)
 	}
 
