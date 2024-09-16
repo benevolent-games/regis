@@ -9,8 +9,8 @@ import antennaBars5Svg from "../../icons/tabler/antenna-bars-5.svg.js"
 import antennaBars4Svg from "../../icons/tabler/antenna-bars-4.svg.js"
 import antennaBars3Svg from "../../icons/tabler/antenna-bars-3.svg.js"
 import antennaBars2Svg from "../../icons/tabler/antenna-bars-2.svg.js"
-import antennaBars1Svg from "../../icons/tabler/antenna-bars-1.svg.js"
 import antennaBarsOffSvg from "../../icons/tabler/antenna-bars-off.svg.js"
+import rotateClockwiseSvg from "../../icons/tabler/rotate-clockwise.svg.js"
 
 export const StatusBuddyView = nexus.shadowView(use => (connectivity: Connectivity) => {
 	use.name("status-buddy")
@@ -35,8 +35,9 @@ export const StatusBuddyView = nexus.shadowView(use => (connectivity: Connectivi
 	return html`
 		<button class="mainbutton naked flashy" @click="${toggle}" ?data-opened="${opened}">
 			${loading.braille(connectivity.connection, connection =>
-				wherefor(connection, ({ping}) => (
-					(ping < 50) ? html`<span class=icon>${antennaBars5Svg}</span>`
+				wherefor(connection, ({report, ping}) => (
+					report.personStatus === "queued" ? html`<span class="icon spin">${rotateClockwiseSvg}</span>`
+					: (ping < 50) ? html`<span class=icon>${antennaBars5Svg}</span>`
 					: (ping < 150) ? html`<span class=icon>${antennaBars4Svg}</span>`
 					: (ping < 400) ? html`<span class=icon>${antennaBars3Svg}</span>`
 					: html`<span class=icon>${antennaBars2Svg}</span>`
@@ -80,7 +81,11 @@ button.mainbutton {
 		box-shadow: 0.1em 0.2em 0.3em #0002;
 	}
 
-	& .icon {
+	> .icon {
+		display: block;
+		width: 100%;
+		height: 100%;
+
 		&.angry { color: red; }
 
 		& svg {

@@ -53,17 +53,17 @@ export const ConnectionTray = nexus.shadowView(use => (connectivity: Connectivit
 	}
 
 	function renderSituationally(personStatus: PersonStatus) {
-		switch (personStatus) {
-			case "chilling": return html`
-				
-			`
-			case "gaming": return html``
-			case "queued": return html``
-		}
+		if (personStatus === "queued") return html`
+			<div class=queued>
+				<h1>You are in the matchmaking queue.</h1>
+				<p>As soon as another player joins the queue, a 1v1 match will begin.</p>
+			</div>
+		`
 	}
 	
 	return loading.braille(connectivity.connection, connection =>
 		wherefor(connection, connection => html`
+			${renderSituationally(connection.report.personStatus)}
 			${renderBasicStats(connection)}
 		`)
 		?? renderDisconnected()
@@ -73,7 +73,9 @@ export const ConnectionTray = nexus.shadowView(use => (connectivity: Connectivit
 const styles = css`
 
 :host {
-	display: block;
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
 }
 
 ul {
@@ -81,8 +83,12 @@ ul {
 }
 
 li {
-	& > span:nth-child(1) { font-weight: bold; }
 	& > span:nth-child(2) { font-family: monospace; }
+}
+
+.queued {
+	h1 { font-size: 1.1em; }
+	> * + * { margin-top: 1em; }
 }
 
 .disconnected {
