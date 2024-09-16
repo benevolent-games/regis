@@ -3,6 +3,7 @@ import {AssetUrls} from "./terminal/assets/assets.js"
 
 export const constants = {
 	urls: {
+		benevLogo: "/assets/graphics/benevolent2.svg",
 		envmap: "/assets/studiolights.env",
 		assets: {
 			board: "/assets/glbs/board-dark5.glb",
@@ -29,6 +30,9 @@ export const constants = {
 	icons: {
 		resource: "🍞",
 		// resource: "💎",
+	},
+	ui: {
+		loadAnimTime: 400,
 	},
 }
 

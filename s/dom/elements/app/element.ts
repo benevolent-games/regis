@@ -4,9 +4,11 @@ import {Orchestrator, orchestratorStyles, OrchestratorView} from "@benev/toolbox
 
 import styles from "./styles.js"
 import {nexus} from "../../nexus.js"
+import {constants} from "../../../constants.js"
 import {GameSession} from "../../../net/game-session.js"
 import {GameplayView} from "../../views/exhibits/gameplay.js"
 import {detectInputMethod} from "../../utils/input-method.js"
+import {loadImage} from "../../../tools/loading/load-image.js"
 import {MainMenuView} from "../../views/exhibits/main-menu.js"
 import {InitialMemo} from "../../../director/apis/clientside.js"
 import {LogoSplashView} from "../../views/loading-screens/logo-splash.js"
@@ -18,6 +20,12 @@ export const GameApp = nexus.shadowComponent(use => {
 		detectInputMethod(document, use.context.inputMethod)
 	)
 
+	// preload the benev logo
+	use.load(async() => await loadImage(
+		constants.urls.benevLogo,
+		"benevolent.games",
+	))
+
 	const orchestrator = use.once(() => {
 		const mainMenu = Orchestrator.makeExhibit({
 				dispose: () => {},
@@ -28,13 +36,13 @@ export const GameApp = nexus.shadowComponent(use => {
 			})
 
 		const orchestrator = new Orchestrator({
-			animTime: 250,
+			animTime: constants.ui.loadAnimTime,
 			startingExhibit: mainMenu,
 		})
 
 		const loadscreens = {
 			logoSplash: Orchestrator.makeLoadingScreen({
-				render: ({}) => LogoSplashView([]),
+				render: ({active}) => LogoSplashView([active]),
 			}),
 		}
 
