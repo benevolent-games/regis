@@ -39,7 +39,7 @@ export const MainMenuView = nexus.shadowView(use => (o: Options) => {
 				Freeplay
 			</button>
 
-			<a target="_blank" href="https://github.com/benevolent-games/regis/wiki/Regis.gg">
+			<a target="_blank" href="https://github.com/benevolent-games/regis/wiki">
 				Learn More
 			</a>
 		</nav>
