@@ -73,8 +73,8 @@ const styles = css`
 	gap: 0.5em;
 
 	> * {
-		width: 2em;
-		height: 2em;
+		width: 3em;
+		height: 3em;
 	}
 }
 

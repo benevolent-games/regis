@@ -41,11 +41,11 @@ export const ConnectionTray = nexus.shadowView(use => (connectivity: Connectivit
 					<span>${report.worldStats.players}</span>
 				</li>
 				<li>
-					<span>Matchmade games being played:</span>
+					<span>Ongoing 1v1s:</span>
 					<span>${report.worldStats.games}</span>
 				</li>
 				<li>
-					<span>Matches made in last hour:</span>
+					<span>Matches made in last 60 minutes:</span>
 					<span>${report.worldStats.gamesInLastHour}</span>
 				</li>
 			</ul>
@@ -56,7 +56,7 @@ export const ConnectionTray = nexus.shadowView(use => (connectivity: Connectivit
 		if (personStatus === "queued") return html`
 			<div class=queued>
 				<h1>You are in the matchmaking queue.</h1>
-				<p>As soon as another player joins the queue, a 1v1 match will begin.</p>
+				<p>A 1v1 match will start when another player joins the queue.</p>
 			</div>
 		`
 	}
@@ -80,10 +80,19 @@ const styles = css`
 
 ul {
 	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5em;
 }
 
 li {
-	& > span:nth-child(2) { font-family: monospace; }
+	display: flex;
+	gap: 1em;
+
+	& > span:nth-child(2) {
+		font-family: monospace;
+		margin-left: auto;
+	}
 }
 
 .queued {

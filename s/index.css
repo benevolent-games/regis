@@ -54,9 +54,9 @@ game-app {
 
 	width: max-content;
 	margin: auto;
-	margin-bottom: 10vh;
 
-	padding-top: 10vh;
+	padding-top: 5vh;
+	margin-bottom: 5vh;
 
 	font-family: Spectral, serif;
 	user-select: none;
