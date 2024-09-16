@@ -9,7 +9,5 @@ banner "initialize the assets area";
 mkdir -p assets/s;
 
 banner "download all asset sources";
-rsync --delete -vham --progress \
-	mount/benev-storage/regis/s/ \
-	assets/s;
+rsync --delete -vham --progress mount/benev-storage/regis/assets/ assets/s;
 
