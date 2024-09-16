@@ -1,5 +1,5 @@
 
-import {html, nap} from "@benev/slate"
+import {html} from "@benev/slate"
 import {Orchestrator, orchestratorStyles, OrchestratorView} from "@benev/toolbox"
 
 import styles from "./styles.js"
