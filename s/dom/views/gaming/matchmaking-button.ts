@@ -10,9 +10,9 @@ export function renderMatchmakingButton(matchmaking: MatchmakingLiaison) {
 			disabled
 			class="naked matchmaking disconnected">
 				Start Matchmaking
-				<span class="errortag">
-					not connected
-				</span>
+				${situation
+					? html`<span class="errortag">not connected</span>`
+					: null}
 		</button>
 	`
 
