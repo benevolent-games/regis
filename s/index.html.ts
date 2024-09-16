@@ -9,7 +9,7 @@ export default template(async basic => {
 		path,
 		dark: true,
 		css: "index.css",
-		title: "regis.gg",
+		title: "Regis.gg",
 		head: html`
 			<link rel="icon" href="/assets/graphics/knight-icon.webp"/>
 
