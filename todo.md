@@ -121,22 +121,22 @@ new indicators scheme
 # code
 
 priorities
-- [x] fix games don't end on time expiry
 - [ ] optimize so it's less laggy
+- [ ] undo one action
+- [ ] all new indicators and attack arcs
+- [ ] obstacle vision
+- [x] fix games don't end on time expiry
 - [x] cache-busting starter script
 - [x] fix multitasking systems
 - [x] new inspector
 - [x] menu with ability to surrender
-- [ ] undo one action
 - [x] endgame state
   - game should be frozen, no further turns
   - lift the fog-of-war, revealing the whole board state to both teams
   - display a game over sign
   - add a ui button to leave the match
-- [ ] deploy
-- [ ] attack arcs
 - [x] 10 second pregame
-- [ ] obstacle vision
+- [x] deploy
 
 wontfix
 - multi-selection and multi-commands
