@@ -1,7 +1,7 @@
 
 import {GameHistory} from "../state.js"
-import {simulateTurn} from "./simulants/simulate-turn.js"
 import {applyWinByElimination} from "./aspects/turns.js"
+import {simulateTurn} from "./simulants/simulate-turn.js"
 import {initializeArbiterState} from "./simulants/initialize-arbiter-state.js"
 
 /**
