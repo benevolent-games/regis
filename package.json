@@ -30,21 +30,21 @@
 		"count": "find s -path '*/_archive' -prune -o -name '*.ts' -exec wc -l {} +"
 	},
 	"dependencies": {
-		"@babylonjs/core": "^7.25.1",
-		"@babylonjs/loaders": "^7.25.1",
-		"@benev/argv": "^0.3.7",
-		"@benev/slate": "^0.2.3",
-		"@benev/toolbox": "^0.6.3",
+		"@babylonjs/core": "^7.26.3",
+		"@babylonjs/loaders": "^7.26.3",
+		"@benev/argv": "^0.3.8",
+		"@benev/slate": "^0.2.5",
+		"@benev/toolbox": "^0.7.2",
 		"es-module-shims": "^1.10.0",
 		"markdown-it": "^14.1.0",
-		"renraku": "^0.2.0-3",
-		"zx": "^8.1.6"
+		"renraku": "^0.2.0",
+		"zx": "^8.1.8"
 	},
 	"devDependencies": {
 		"@benev/batch": "^0.0.1",
-		"@benev/turtle": "^0.6.0-8",
+		"@benev/turtle": "^0.6.2",
 		"@types/markdown-it": "^14.1.2",
-		"chokidar": "^4.0.0",
+		"chokidar": "^4.0.1",
 		"chokidar-cli": "^3.0.0",
 		"cynic": "^0.2.1",
 		"http-server": "^14.1.1",
