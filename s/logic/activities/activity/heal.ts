@@ -45,13 +45,13 @@ export const heal = activity<Choice.Heal>()(({
 		if (patient.team !== doctor.team)
 			return new Rebuke()
 
-		const doctorTile = agent.tiles.at(doctor.place)
-		const patientTile = agent.tiles.at(patient.place)
+		const doctorTile = agent.tiles.at(Vec2.from(doctor.place))
+		const patientTile = agent.tiles.at(Vec2.from(patient.place))
 
 		if (!isVerticallyCompatible(healer.verticality, doctorTile, patientTile))
 			return new Rebuke()
 
-		if (!isWithinRange(healer.range, doctor.place, patient.place))
+		if (!isWithinRange(healer.range, Vec2.from(doctor.place), Vec2.from(patient.place)))
 			return new Rebuke()
 
 		const newDamageValue = Math.max(0, patient.damage - healer.healing)

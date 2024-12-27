@@ -16,7 +16,7 @@ export function asciiMap(map: MapSpec): GameInitial {
 
 	const extent = measureAsciiBoardExtent(map.ascii)
 
-	const boardState = makePlainBoardState(extent)
+	const boardState = makePlainBoardState(extent.array())
 	const board = new TilesHelper(boardState)
 	const units = new UnitsHelper([])
 
@@ -84,8 +84,8 @@ export function asciiMap(map: MapSpec): GameInitial {
 					id: id++,
 					kind,
 					team,
-					place,
 					damage: 0,
+					place: place.array(),
 				})
 			}
 

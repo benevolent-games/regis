@@ -53,7 +53,7 @@ export class Rosters {
 		const offset = (recruitableUnits.length / 2) - 0.5
 		const transform = new TransformNode("rosterRoot", world.scene)
 
-		const {x: extentX} = agent.state.initial.board.extent
+		const [extentX] = agent.state.initial.board.extent
 		const excess = Math.max(0, extentX - 8) * constants.block.size
 		const adjustmentX = (excess / 2) * (teamId === 0 ? 1 : -1)
 

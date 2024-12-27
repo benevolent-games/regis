@@ -82,7 +82,7 @@ export class Claimery {
 				.array()
 		)
 
-		const {y: extentY} = agent.state.initial.board.extent
+		const [,extentY] = agent.state.initial.board.extent
 		const onBlackSideOfBoard = place.y > (extentY / 2)
 		const flip = Degrees.toRadians(180)
 		root.rotationQuaternion = onBlackSideOfBoard

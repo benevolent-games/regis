@@ -53,7 +53,7 @@ export class CoordinatorHelper {
 	/////////////////////////////
 
 	get #halfGridOffset() {
-		return this.board.extent.clone().half()
+		return Vec2.from(this.board.extent).clone().half()
 	}
 }
 

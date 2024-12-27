@@ -21,6 +21,7 @@ export function simulateTurn(state: ArbiterState, turn: Turn) {
 	}
 
 	state.reminders.revelations = activityManager.chalkboard.revelations
+		.map(v => v.array())
 
 	applyWinByConquest(state)
 

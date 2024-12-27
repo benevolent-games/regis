@@ -29,9 +29,9 @@ export function autoAttacks(agent: Agent, activities: Activities, turn: Turn) {
 
 			const enemyUnits = findEnemyUnits(agent, myTeam)
 			const enemiesNearby = [...enemyUnits]
-				.filter(enemy => isWithinRange(range, attacker.place, enemy.place))
+				.filter(enemy => isWithinRange(range, Vec2.from(attacker.place), Vec2.from(enemy.place)))
 
-			const victim = nearest(attacker.place, enemiesNearby)
+			const victim = nearest(Vec2.from(attacker.place), enemiesNearby)
 			if (!victim)
 				continue
 
@@ -69,7 +69,7 @@ function nearest(place: Vec2, units: Unit[]) {
 	let best: {unit: Unit, distance: number} | null = null
 
 	for (const unit of units) {
-		const distance = manhattanDistance(place, unit.place)
+		const distance = manhattanDistance(place, Vec2.from(unit.place))
 		if (best) {
 			if (distance < best.distance)
 				best = {unit, distance}

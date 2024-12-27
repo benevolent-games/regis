@@ -1,6 +1,6 @@
 
-import {loop} from "@benev/toolbox"
 import {Trashbin} from "@benev/slate"
+import {loop, Vec2} from "@benev/toolbox"
 
 import {Agent} from "../../logic/agent.js"
 import {Assets} from "../assets/assets.js"
@@ -25,7 +25,7 @@ export class UnitVisuals {
 				unit.team,
 				healthReport(unit, agent.archetype(unit.kind)),
 			))
-			instance.position.set(...agent.coordinator.toPosition(unit.place).array())
+			instance.position.set(...agent.coordinator.toPosition(Vec2.from(unit.place)).array())
 		}
 
 		// instantiate unit health bars
@@ -34,7 +34,7 @@ export class UnitVisuals {
 			const health = healthReport(unit, archetype)
 
 			if (health) {
-				const position = agent.coordinator.toPosition(unit.place)
+				const position = agent.coordinator.toPosition(Vec2.from(unit.place))
 
 				const ring = d(assets.units.ring())
 				ring.position.set(...position.array())

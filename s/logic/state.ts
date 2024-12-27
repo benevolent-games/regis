@@ -1,5 +1,5 @@
 
-import {loop2d, Vec2} from "@benev/toolbox"
+import {loop2d, Vec2Array} from "@benev/toolbox"
 
 import {UnitKind} from "../config/units.js"
 import {GameConfig} from "../config/game/types.js"
@@ -90,7 +90,7 @@ export type GameContext = {
 
 /** what happened in the previous turn (may be censored for fog-of-war) */
 export type Reminders = {
-	revelations: Vec2[]
+	revelations: Vec2Array[]
 }
 
 /////////////////////////////////////////////////
@@ -151,13 +151,13 @@ export namespace Choice {
 	export type Recruit = {
 		kind: "recruit"
 		unitKind: UnitKind
-		place: Vec2
+		place: Vec2Array
 	}
 
 	export type Move = {
 		kind: "move"
-		source: Vec2
-		path: Vec2[]
+		source: Vec2Array
+		path: Vec2Array[]
 	}
 
 	export type Attack = {
@@ -205,12 +205,12 @@ export type Tile = {
 }
 
 export type BoardState = {
-	extent: Vec2
+	extent: Vec2Array
 	tiles: Tile[]
 }
 
-export function makePlainBoardState(extent: Vec2): BoardState {
-	const tiles = [...loop2d(extent.array())].map((): Tile => ({
+export function makePlainBoardState(extent: Vec2Array): BoardState {
+	const tiles = [...loop2d(extent)].map((): Tile => ({
 		step: false,
 		elevation: 1,
 		claims: [],
@@ -225,7 +225,7 @@ export type TeamId = number | null
 
 export type Unit = {
 	id: number
-	place: Vec2
+	place: Vec2Array
 	kind: UnitKind
 	damage: number
 

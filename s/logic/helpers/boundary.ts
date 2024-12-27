@@ -13,7 +13,7 @@ export class BoundaryHelper {
 
 		this.place = {
 			min: Vec2.zero(),
-			max: board.extent.subtract_(1, 1),
+			max: Vec2.from(board.extent).clone().subtract_(1, 1),
 		}
 
 		this.position = {

@@ -12,7 +12,7 @@ export class UnitsHelper {
 	}
 
 	at(place: Vec2) {
-		return this.state.find(unit => unit.place.equals(place))
+		return this.state.find(unit => Vec2.from(unit.place).equals(place))
 	}
 
 	requireGet(id: number) {
@@ -36,7 +36,7 @@ export class UnitsHelper {
 	}
 
 	add(unit: Unit) {
-		if (this.at(unit.place))
+		if (this.at(Vec2.from(unit.place)))
 			throw new Error("cannot insert unit, place already occupied")
 		this.state.push(unit)
 	}

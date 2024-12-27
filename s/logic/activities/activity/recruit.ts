@@ -14,7 +14,7 @@ export const recruit = activity<Choice.Recruit>()(({
 	propose: (place: Vec2, unitKind: UnitKind) => {
 		return new Proposal({
 			kind: "recruit",
-			place,
+			place: place.array(),
 			unitKind,
 		})
 	},
@@ -24,8 +24,9 @@ export const recruit = activity<Choice.Recruit>()(({
 		const {config} = agent.state.initial
 		const {recruitable, stakeholder} = config.archetypes[unitKind]
 
+		const place = Vec2.from(choice.place)
 		const teamId = agent.activeTeamId
-		const tile = agent.tiles.at(choice.place)
+		const tile = agent.tiles.at(place)
 
 		const stakingCost = stakeholder
 			? agent.claims.stakingCost(tile.claims)
@@ -33,7 +34,7 @@ export const recruit = activity<Choice.Recruit>()(({
 
 		const tech = agent.claims.teamTech(teamId)
 
-		const validPlace = isValidRecruitmentPlace(agent, teamId, choice.place)
+		const validPlace = isValidRecruitmentPlace(agent, teamId, place)
 		const howManyAlready = [...agent.units.list()]
 			.filter(unit => unit.team === teamId)
 			.filter(unit => unit.kind === choice.unitKind)

@@ -32,14 +32,15 @@ export function limitedVision(state: AgentState, teamId: number) {
 	for (const unit of agent.units.list()) {
 		const isFriendly = unit.team === teamId
 		const {sighted} = agent.archetype(unit.kind)
+		const place = Vec2.from(unit.place)
 
 		if (isFriendly) {
-			add(unit.place)
+			add(place)
 
 			if (sighted) {
-				const unitTile = agent.tiles.at(unit.place)
+				const unitTile = agent.tiles.at(place)
 
-				getNearby(agent, unit.place, sighted.range)
+				getNearby(agent, place, sighted.range)
 					.filter(({tile}) => isVerticallyCompatible(sighted.verticality, unitTile, tile))
 					.forEach(({place}) => add(place))
 			}

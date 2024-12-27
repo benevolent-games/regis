@@ -122,16 +122,15 @@ export class UserInputs {
 			const {movementX, movementY} = pointing
 			const {agent, cameraRig: {orbitcam}} = this.options
 			const panningSensitivity = 2 / 100
-			const movement = {x: movementX, y: movementY} as Vec2
 
-			const alpha = movement
-				.clone()
+			const movement = new Vec2(movementX, movementY)
 				.rotate(orbitcam.camera.alpha + Degrees.toRadians(90))
 				.multiplyBy(panningSensitivity)
 
 			const bravo = agent.boundary.clampPosition(
-				new Vec3(alpha.x, 0, alpha.y)
-					.add(orbitcam.pivot)
+				orbitcam.pivot
+					.clone()
+					.add_(movement.x, 0, movement.y)
 			)
 
 			const {x, z} = bravo
@@ -139,7 +138,7 @@ export class UserInputs {
 				agent.coordinator.toPlace(bravo)
 			)
 
-			return new Vec3(x, y, z)
+			orbitcam.pivot.set_(x, y, z)
 		},
 	}
 
