@@ -1,4 +1,6 @@
 
+import "./babylon-side-effects.js"
+
 import {Trashbin} from "@benev/slate"
 
 import {Turn} from "../logic/state.js"
