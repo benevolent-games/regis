@@ -1,5 +1,5 @@
 
-import {vec2, Vec2} from "@benev/toolbox"
+import {Vec2} from "@benev/toolbox"
 
 import {Unit} from "../state.js"
 import {boardCoords} from "../../tools/board-coords.js"
@@ -12,7 +12,7 @@ export class UnitsHelper {
 	}
 
 	at(place: Vec2) {
-		return this.state.find(unit => vec2.equal(unit.place, place))
+		return this.state.find(unit => unit.place.equals(place))
 	}
 
 	requireGet(id: number) {

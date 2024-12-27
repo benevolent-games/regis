@@ -1,23 +1,23 @@
 
 import {BoardState, Tile} from "../state.js"
-import {loop2d, scalar, Vec2} from "@benev/toolbox"
+import {loop2d, Scalar, Vec2} from "@benev/toolbox"
 
 export class TilesHelper {
 	constructor(public state: BoardState) {}
 
-	index([file, rank]: Vec2) {
-		return (rank * this.state.extent[0]) + file
+	index({x: file, y: rank}: Vec2) {
+		return (rank * this.state.extent.x) + file
 	}
 
-	valid([file, rank]: Vec2) {
+	valid({x: file, y: rank}: Vec2) {
 		return (
-			scalar.within(file, 0, this.state.extent[0] - 1) &&
-			scalar.within(rank, 0, this.state.extent[1] - 1)
+			Scalar.isBetween(file, 0, this.state.extent.x - 1) &&
+			Scalar.isBetween(rank, 0, this.state.extent.y - 1)
 		)
 	}
 
 	at(place: Vec2) {
-		const [file, rank] = place
+		const {x: file, y: rank} = place
 
 		if (!this.valid(place))
 			throw new Error(`place ${rank}x${file} is not on the grid`)
@@ -39,7 +39,8 @@ export class TilesHelper {
 	}
 
 	;*list() {
-		for (const place of loop2d(this.state.extent)) {
+		for (const [x, y] of loop2d(this.state.extent.array())) {
+			const place = new Vec2(x, y)
 			yield {place, tile: this.at(place)}
 		}
 	}

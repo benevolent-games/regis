@@ -25,7 +25,7 @@ export class UnitVisuals {
 				unit.team,
 				healthReport(unit, agent.archetype(unit.kind)),
 			))
-			instance.position.set(...agent.coordinator.toPosition(unit.place))
+			instance.position.set(...agent.coordinator.toPosition(unit.place).array())
 		}
 
 		// instantiate unit health bars
@@ -37,7 +37,7 @@ export class UnitVisuals {
 				const position = agent.coordinator.toPosition(unit.place)
 
 				const ring = d(assets.units.ring())
-				ring.position.set(...position)
+				ring.position.set(...position.array())
 
 				const healthbar = getBestHealthbar(health.fraction)
 				const ringChildren = getChildProps(ring)

@@ -210,7 +210,7 @@ export type BoardState = {
 }
 
 export function makePlainBoardState(extent: Vec2): BoardState {
-	const tiles = [...loop2d(extent)].map((): Tile => ({
+	const tiles = [...loop2d(extent.array())].map((): Tile => ({
 		step: false,
 		elevation: 1,
 		claims: [],

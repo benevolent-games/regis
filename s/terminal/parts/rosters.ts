@@ -1,7 +1,7 @@
 
 import {Trashbin} from "@benev/slate"
+import {assert_babylon_quaternion, Meshoid, Vec3} from "@benev/toolbox"
 import {AbstractMesh, MeshBuilder, TransformNode} from "@babylonjs/core"
-import {assert_babylon_quaternion, Meshoid, vec3, Vec3} from "@benev/toolbox"
 
 import {World} from "./world.js"
 import {Agent} from "../../logic/agent.js"
@@ -53,7 +53,7 @@ export class Rosters {
 		const offset = (recruitableUnits.length / 2) - 0.5
 		const transform = new TransformNode("rosterRoot", world.scene)
 
-		const [extentX] = agent.state.initial.board.extent
+		const {x: extentX} = agent.state.initial.board.extent
 		const excess = Math.max(0, extentX - 8) * constants.block.size
 		const adjustmentX = (excess / 2) * (teamId === 0 ? 1 : -1)
 
@@ -79,9 +79,9 @@ export class Rosters {
 			const block = d(MeshBuilder.CreateBox("block", {size}, world.scene))
 
 			const x = (index - offset) * constants.block.size
-			const position: Vec3 = [x, 0, 0]
+			const position = new Vec3(x, 0, 0)
 			block.position.set(x, -(size / 2), 0)
-			instance.position.set(...position)
+			instance.position.set(...position.array())
 
 			block.setParent(transform)
 			instance.setParent(transform)
@@ -90,7 +90,7 @@ export class Rosters {
 
 			return () => {
 				instance.computeWorldMatrix(true)
-				const position = vec3.from.xyz(instance.getAbsolutePosition())
+				const position = Vec3.from(instance.getAbsolutePosition())
 				this.placements.set(block, {mesh: block, unitKind, teamId, position})
 			}
 		})

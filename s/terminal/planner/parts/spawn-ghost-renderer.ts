@@ -1,6 +1,6 @@
 
 import {Trashbin} from "@benev/slate"
-import {vec2, Vec2, Vec3} from "@benev/toolbox"
+import {Vec2, Vec3} from "@benev/toolbox"
 
 import {Assets} from "../../assets/assets.js"
 import {UnitKind} from "../../../config/units.js"
@@ -33,7 +33,7 @@ export class SpawnGhostRenderer {
 		const {assets} = this.options
 		const instance = assets.units.faded(ghost.unitKind, ghost.teamId, null)
 		this.bin.disposable(instance)
-		instance.position.set(...position)
+		instance.position.set(...position.array())
 	}
 
 	render() {
@@ -44,7 +44,7 @@ export class SpawnGhostRenderer {
 
 		if (hover?.kind === "tile") {
 			for (const ghost of this.possibleGhosts) {
-				if (vec2.equal(ghost.place, hover.place))
+				if (ghost.place.equals(hover.place))
 					this.#instance(ghost, hover.position)
 			}
 		}

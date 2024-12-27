@@ -1,6 +1,6 @@
 
-import {ev, Pipe, Trashbin} from "@benev/slate"
-import {scalar, vec2, Vec2, vec3, Vec3} from "@benev/toolbox"
+import {ev, Trashbin} from "@benev/slate"
+import {Degrees, Vec2, Vec3} from "@benev/toolbox"
 
 import {World} from "./world.js"
 import {Pointing} from "./types.js"
@@ -122,25 +122,24 @@ export class UserInputs {
 			const {movementX, movementY} = pointing
 			const {agent, cameraRig: {orbitcam}} = this.options
 			const panningSensitivity = 2 / 100
-			const movement = [movementX, movementY] as Vec2
-			orbitcam.pivot = (
-				Pipe.with(movement)
-					.to(v => vec2.rotate(
-						v,
-						orbitcam.camera.alpha + scalar.radians.from.degrees(90)
-					))
-					.to(v => vec2.multiplyBy(v, panningSensitivity))
-					.to(([x, z]) => [x, 0, z] as Vec3)
-					.to(v => vec3.add(orbitcam.pivot, v))
-					.to(v => agent.boundary.clampPosition(v))
-					.to(v => {
-						const place = agent.coordinator.toPlace(v)
-						const [,y] = agent.coordinator.toPosition(place)
-						const [x,,z] = v
-						return [x, y, z] as Vec3
-					})
-					.done()
+			const movement = {x: movementX, y: movementY} as Vec2
+
+			const alpha = movement
+				.clone()
+				.rotate(orbitcam.camera.alpha + Degrees.toRadians(90))
+				.multiplyBy(panningSensitivity)
+
+			const bravo = agent.boundary.clampPosition(
+				new Vec3(alpha.x, 0, alpha.y)
+					.add(orbitcam.pivot)
 			)
+
+			const {x, z} = bravo
+			const {y} = agent.coordinator.toPosition(
+				agent.coordinator.toPlace(bravo)
+			)
+
+			return new Vec3(x, y, z)
 		},
 	}
 

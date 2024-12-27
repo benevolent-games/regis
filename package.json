@@ -33,11 +33,11 @@
 		"@babylonjs/core": "^7.42.0",
 		"@babylonjs/loaders": "^7.42.0",
 		"@benev/argv": "^0.3.8",
-		"@benev/slate": "^0.2.3",
-		"@benev/toolbox": "^0.6.3",
+		"@benev/slate": "^0.3.0-2",
+		"@benev/toolbox": "^0.8.0-5",
 		"es-module-shims": "^1.10.1",
 		"markdown-it": "^14.1.0",
-		"renraku": "^0.4.2",
+		"renraku": "^0.4.3",
 		"zx": "^8.3.0"
 	},
 	"devDependencies": {

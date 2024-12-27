@@ -1,5 +1,5 @@
 
-import {vec2, Vec2} from "@benev/toolbox"
+import {Vec2} from "@benev/toolbox"
 import {Choice} from "../../state.js"
 import {calculateMovement} from "../../simulation/aspects/moving.js"
 import {Proposal, Judgement, Rebuke, SoftRebuke, activity} from "../types.js"
@@ -82,8 +82,8 @@ export const move = activity<Choice.Move>()(({
 		let cost = 0
 
 		if (archetype.stakeholder) {
-			const hasMoved = !vec2.equal(lastStep, choice.source)
-			const interrupted = !vec2.equal(lastStep, destination)
+			const hasMoved = !lastStep.equals(choice.source)
+			const interrupted = !lastStep.equals(destination)
 			if (hasMoved && interrupted) {
 				const lastStepStakingCost = agent.claims.stakingCost(
 					agent.tiles.at(lastStep).claims

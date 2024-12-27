@@ -1,10 +1,10 @@
 
-import {vec2, Vec2} from "@benev/toolbox"
+import {Vec2} from "@benev/toolbox"
 import {Agent} from "../../agent.js"
 import {getNearby} from "./navigation.js"
 import {AgentState} from "../../state.js"
 import {isVerticallyCompatible} from "./verticality.js"
-import { Verticality } from "../../../config/units/traits.js"
+import {Verticality} from "../../../config/units/traits.js"
 
 //
 // vision is related to fog-of-war
@@ -21,7 +21,7 @@ export function limitedVision(state: AgentState, teamId: number) {
 	const visionArray: Vec2[] = []
 
 	function exists(place: Vec2) {
-		return visionArray.some(p => vec2.equal(p, place))
+		return visionArray.some(p => p.equals(place))
 	}
 
 	function add(place: Vec2) {

@@ -1,12 +1,12 @@
 
+import {Vec2} from "@benev/toolbox"
 import {Agent} from "../../agent.js"
-import {vec2, Vec2} from "@benev/toolbox"
 import {isVerticallyCompatible} from "./verticality.js"
 import {BoardRange, Verticality} from "../../../config/units/traits.js"
 
 export function getCardinalNeighbors(agent: Agent, place: Vec2) {
 	return cardinals
-		.map(v => vec2.add(place, v))
+		.map(v => v.clone().add(place))
 		.filter(v => agent.tiles.valid(v))
 }
 
@@ -16,32 +16,28 @@ export function getNearby(agent: Agent, sourcePlace: Vec2, range: BoardRange) {
 }
 
 export const cardinals: Vec2[] = [
-	[0, 1],
-	[1, 0],
-	[0, -1],
-	[-1, 0],
+	Vec2.new(0, 1),
+	Vec2.new(1, 0),
+	Vec2.new(0, -1),
+	Vec2.new(-1, 0),
 ]
 
 export const ordinals: Vec2[] = [
-	[1, 1],
-	[-1, -1],
-	[1, -1],
-	[-1, 1],
+	Vec2.new(1, 1),
+	Vec2.new(-1, -1),
+	Vec2.new(1, -1),
+	Vec2.new(-1, 1),
 ]
 
 export function manhattanDistance(a: Vec2, b: Vec2) {
-	const [aX, aY] = a
-	const [bX, bY] = b
-	const distanceX = Math.abs(bX - aX)
-	const distanceY = Math.abs(bY - aY)
+	const distanceX = Math.abs(b.x - a.x)
+	const distanceY = Math.abs(b.y - a.y)
 	return distanceX + distanceY
 }
 
 export function chebyshevDistance(a: Vec2, b: Vec2) {
-	const [aX, aY] = a
-	const [bX, bY] = b
-	const distanceX = Math.abs(bX - aX)
-	const distanceY = Math.abs(bY - aY)
+	const distanceX = Math.abs(b.x - a.x)
+	const distanceY = Math.abs(b.y - a.y)
 	return Math.max(distanceX, distanceY)
 }
 
@@ -63,7 +59,7 @@ export function isValidStep(
 	const tileB = agent.tiles.at(placeB)
 	const isVacant = !agent.units.at(placeB)
 	const isCardinalNeighbor = getCardinalNeighbors(agent, placeA)
-		.some(neighbor => vec2.equal(neighbor, placeB))
+		.some(neighbor => neighbor.equals(placeB))
 
 	return (
 		isVacant &&

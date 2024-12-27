@@ -30,7 +30,7 @@ export function asciiMap(map: MapSpec): GameInitial {
 		const parts = line.split(/\s+/)
 
 		parts.forEach((part, file) => {
-			const place = [file, rank] as Vec2
+			const place = new Vec2(file, rank)
 			const tile = board.at(place)
 
 			function zoop(glyph: string, fn: () => void) {
