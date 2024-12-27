@@ -1,6 +1,6 @@
 
 import {Suite, expect} from "cynic"
-import {expose, remote} from "renraku"
+import {endpoint, remote} from "renraku"
 
 import {Director} from "./director.js"
 import {makeClientside} from "./apis/clientside.js"
@@ -11,7 +11,7 @@ export function testSituation() {
 	return {
 		newClient() {
 			const clientside = makeClientside(new ClientMachinery(), () => serverside)
-			const remoteClientside = remote<typeof clientside>(expose(() => clientside))
+			const remoteClientside = remote<typeof clientside>(endpoint(clientside))
 			const {serverside} = director.newPerson(remoteClientside, () => {})
 			return {clientside, serverside}
 		},
