@@ -1,5 +1,5 @@
 
-import {vec2, Vec2} from "@benev/toolbox"
+import {Vec2} from "@benev/toolbox"
 import {Choice} from "../../state.js"
 import {calculateMovement} from "../../simulation/aspects/moving.js"
 import {Proposal, Judgement, Rebuke, SoftRebuke, activity} from "../types.js"
@@ -11,6 +11,7 @@ export const move = activity<Choice.Move>()(({
 	}) => ({
 
 	propose: (source: Vec2, target: Vec2) => {
+
 		const unit = agent.units.at(source)
 		if (!unit)
 			return new Rebuke()
@@ -23,19 +24,24 @@ export const move = activity<Choice.Move>()(({
 		if (!isWithinRange(archetype.mobile.range, source, target))
 			return new Rebuke()
 
-		const movement = calculateMovement({agent, source, target})
+		const movement = calculateMovement({
+			agent,
+			source: source,
+			target: target,
+		})
+
 		if (!movement)
 			return new Rebuke()
 
 		return new Proposal({
 			kind: "move",
-			source,
-			path: movement.path,
+			source: source.array(),
+			path: movement.path.map(v => v.array()),
 		})
 	},
 
 	judge: choice => {
-		const unit = agent.units.at(choice.source)
+		const unit = agent.units.at(Vec2.from(choice.source))
 		if (!unit)
 			return new Rebuke()
 
@@ -58,7 +64,7 @@ export const move = activity<Choice.Move>()(({
 
 		const destination = [...choice.path].pop()!
 		const destinationStakingCost = agent.claims.stakingCost(
-			agent.tiles.at(destination).claims
+			agent.tiles.at(Vec2.from(destination)).claims
 		)
 
 		if (!turnTracker.ourTurn || turnTracker.teamId !== unit.team)
@@ -67,13 +73,13 @@ export const move = activity<Choice.Move>()(({
 		if (agent.conclusion)
 			return new SoftRebuke()
 
-		let lastStep = choice.source
+		let lastStep = Vec2.from(choice.source)
 
 		for (const step of choice.path) {
 			const placeA = lastStep
-			const placeB = step
+			const placeB = Vec2.from(step)
 			const {verticality} = archetype.mobile
-			if (isValidStep(agent, verticality, placeA, placeB))
+			if (isValidStep(agent, verticality, Vec2.from(placeA), Vec2.from(placeB)))
 				lastStep = placeB
 			else
 				break
@@ -82,8 +88,8 @@ export const move = activity<Choice.Move>()(({
 		let cost = 0
 
 		if (archetype.stakeholder) {
-			const hasMoved = !vec2.equal(lastStep, choice.source)
-			const interrupted = !vec2.equal(lastStep, destination)
+			const hasMoved = !lastStep.equals_(...choice.source)
+			const interrupted = !lastStep.equals_(...destination)
 			if (hasMoved && interrupted) {
 				const lastStepStakingCost = agent.claims.stakingCost(
 					agent.tiles.at(lastStep).claims
@@ -102,7 +108,7 @@ export const move = activity<Choice.Move>()(({
 		return new Judgement(choice, () => {
 			unitTaskTracker.recordTask(unit.id, {kind: "move"})
 			subtractResources(agent.state, agent.activeTeamId, cost)
-			unit.place = lastStep
+			unit.place = lastStep.array()
 		})
 	},
 }))

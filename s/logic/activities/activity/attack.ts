@@ -50,7 +50,7 @@ export const attack = activity<Choice.Attack>()(({
 				agent.deleteUnit(victim.id)
 
 			if (victim.team !== null)
-				chalkboard.reveal(attacker.place)
+				chalkboard.reveal(Vec2.from(attacker.place))
 		})
 	},
 }))

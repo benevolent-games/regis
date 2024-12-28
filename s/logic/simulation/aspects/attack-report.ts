@@ -1,4 +1,5 @@
 
+import {Vec2} from "@benev/toolbox"
 import {Agent} from "../../agent.js"
 import {Choice, Unit} from "../../state.js"
 import {isWithinRange} from "./navigation.js"
@@ -25,13 +26,13 @@ export function attackReport(
 	if (!armed)
 		return null
 
-	if (!isWithinRange(armed.range, attacker.place, victim.place))
+	if (!isWithinRange(armed.range, Vec2.from(attacker.place), Vec2.from(victim.place)))
 		return null
 
 	if (!isVerticallyCompatible(
 			armed.verticality,
-			agent.tiles.at(attacker.place),
-			agent.tiles.at(victim.place),
+			agent.tiles.at(Vec2.from(attacker.place)),
+			agent.tiles.at(Vec2.from(victim.place)),
 		))
 		return null
 

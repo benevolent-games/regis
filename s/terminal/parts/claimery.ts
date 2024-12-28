@@ -1,7 +1,7 @@
 
 import {Pipe, Trashbin} from "@benev/slate"
 import {Quaternion, TransformNode} from "@babylonjs/core"
-import {scalar, vec2, Vec2, Vec3, vec3} from "@benev/toolbox"
+import {Degrees, Vec2, Vec3} from "@benev/toolbox"
 
 import {World} from "./world.js"
 import {Agent} from "../../logic/agent.js"
@@ -20,14 +20,14 @@ type StickerLayout = {
 }
 
 const singleLayout: StickerLayout[] = [
-	{scale: 1, coordinates: [0.5, 0.5]},
+	{scale: 1, coordinates: new Vec2(0.5, 0.5)},
 ]
 
 const quadLayout: StickerLayout[] = [
-	{scale: 0.6, coordinates: [0.33, 0.66]}, // top-left
-	{scale: 0.6, coordinates: [0.66, 0.33]}, // bottom-right
-	{scale: 0.6, coordinates: [0.33, 0.33]}, // bottom-left
-	{scale: 0.6, coordinates: [0.66, 0.66]}, // top-right
+	{scale: 0.6, coordinates: new Vec2(0.33, 0.66)}, // top-left
+	{scale: 0.6, coordinates: new Vec2(0.66, 0.33)}, // bottom-right
+	{scale: 0.6, coordinates: new Vec2(0.33, 0.33)}, // bottom-left
+	{scale: 0.6, coordinates: new Vec2(0.66, 0.66)}, // top-right
 ]
 
 export class Claimery {
@@ -63,25 +63,28 @@ export class Claimery {
 
 			const {scale, coordinates} = arrangement
 			const sticker = d(this.#instanceSticker(claim))
+			const {x, y} = coordinates
+				.clone()
+				.add_(-0.5, -0.5)
+				.multiplyBy(constants.block.size)
 
 			sticker.scaling.setAll(scale)
-			sticker.position.set(
-				...Pipe.with(coordinates)
-					.to(v => vec2.add(v, [-0.5, -0.5]))
-					.to(v => vec2.multiplyBy(v, constants.block.size))
-					.to(([x, y]) => [x, 0, -y] as Vec3)
-					.done()
-			)
+			sticker.position.set(x, 0, -y)
 			sticker.setParent(root)
 		})
 
 		const offset = 0.01
 		const position = agent.coordinator.toPosition(place)
-		root.position.set(...vec3.add(position, [0, offset, 0]))
+		root.position.set(
+			...position
+				.clone()
+				.add_(0, offset, 0)
+				.array()
+		)
 
 		const [,extentY] = agent.state.initial.board.extent
-		const onBlackSideOfBoard = place[1] > (extentY / 2)
-		const flip = scalar.radians.from.degrees(180)
+		const onBlackSideOfBoard = place.y > (extentY / 2)
+		const flip = Degrees.toRadians(180)
 		root.rotationQuaternion = onBlackSideOfBoard
 			? Quaternion.RotationYawPitchRoll(flip, 0, 0)
 			: Quaternion.RotationYawPitchRoll(0, 0, 0)

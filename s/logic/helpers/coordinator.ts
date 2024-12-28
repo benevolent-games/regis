@@ -1,6 +1,5 @@
 
-import {Pipe} from "@benev/slate"
-import {Vec2, vec2, Vec3} from "@benev/toolbox"
+import {Vec2, Vec3} from "@benev/toolbox"
 
 import {TilesHelper} from "./tiles.js"
 import {BoardState, Tile} from "../state.js"
@@ -30,34 +29,31 @@ export class CoordinatorHelper {
 	toPosition(place: Vec2) {
 		const tile = new TilesHelper(this.board).at(place)
 		const y = this.tileHeight(tile)
-		return Pipe.with(place)
-			.to(v => vec2.subtract(v, this.#halfGridOffset))
-			.to(v => vec2.add(v, [.5, .5]))
-			.to(v => vec2.multiplyBy(v, constants.block.size))
-			.to(([x, z]) => [x, y, -z] as Vec3)
-			.done()
+		const {x, y: z} = place.clone()
+			.subtract(this.#halfGridOffset)
+			.add_(.5, .5)
+			.multiplyBy(constants.block.size)
+		return new Vec3(x, y, -z)
 	}
 
 	toBlockPosition(place: Vec2) {
-		let [x, y, z] = this.toPosition(place)
+		let {x, y, z} = this.toPosition(place)
 		y -= constants.block.height
-		return [x, y, z] as Vec3
+		return new Vec3(x, y, z)
 	}
 
-	toPlace(position: Vec3) {
-		return Pipe.with(position)
-			.to(([x,,z]) => [x, -z] as Vec2)
-			.to(v => vec2.divideBy(v, constants.block.size))
-			.to(v => vec2.subtract(v, [.5, .5]))
-			.to(v => vec2.add(v, this.#halfGridOffset))
-			.to(v => vec2.applyBy(v, x => Math.round(x)))
-			.done()
+	toPlace({x, z}: Vec3) {
+		return new Vec2(x, -z)
+			.divideBy(constants.block.size)
+			.subtract_(.5, .5)
+			.add(this.#halfGridOffset)
+			.round()
 	}
 
 	/////////////////////////////
 
 	get #halfGridOffset() {
-		return vec2.divideBy(this.board.extent, 2)
+		return Vec2.from(this.board.extent).clone().half()
 	}
 }
 

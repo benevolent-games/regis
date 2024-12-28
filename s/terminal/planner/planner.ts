@@ -1,6 +1,6 @@
 
 import {Trashbin} from "@benev/slate"
-import {Prop, vec3} from "@benev/toolbox"
+import {Prop} from "@benev/toolbox"
 
 import {PlannerOptions} from "./types.js"
 import {constants} from "../../constants.js"
@@ -61,11 +61,10 @@ export class Planner {
 
 			const indicate = (instance: Prop) => {
 				const {agent} = this.options
-				const position = vec3.add(
-					agent.coordinator.toPosition(place),
-					[0, constants.indicators.verticalOffsets.normalIndicators, 0],
-				)
-				instance.position.set(...position)
+				const position = agent.coordinator
+					.toPosition(place)
+					.add_(0, constants.indicators.verticalOffsets.normalIndicators, 0)
+				instance.position.set(...position.array())
 				this.#renderbin.disposable(instance)
 				return instance
 			}

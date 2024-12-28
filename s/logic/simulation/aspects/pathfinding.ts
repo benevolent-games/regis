@@ -1,5 +1,5 @@
 
-import {vec2, Vec2} from "@benev/toolbox"
+import {Vec2} from "@benev/toolbox"
 
 import {Agent} from "../../agent.js"
 import {Verticality} from "../../../config/units/traits.js"
@@ -42,14 +42,14 @@ export function pathfind({
 		closedNodes.push(current)
 
 		// done
-		if (vec2.equal(current.place, target))
+		if (current.place.equals(target))
 			return consolidatePath(current)
 
 		for (const nextPlace of getNextValidSteps(agent, verticality, current.place)) {
-			if (closedNodes.some(node => vec2.equal(node.place, nextPlace)))
+			if (closedNodes.some(node => node.place.equals(nextPlace)))
 				continue
 			const cost = current.cost + 1
-			const existingNode = openNodes.find(node => vec2.equal(node.place, nextPlace))
+			const existingNode = openNodes.find(node => node.place.equals(nextPlace))
 			if (existingNode) {
 				if (cost < existingNode.cost) {
 					existingNode.cost = cost
@@ -70,8 +70,8 @@ export function pathfind({
 	return null
 }
 
-function manhattanDistance([aX, aY]: Vec2, [bX, bY]: Vec2) {
-	return Math.abs(aX - bX) + Math.abs(aY - bY)
+function manhattanDistance(a: Vec2, b: Vec2) {
+	return Math.abs(a.x - b.x) + Math.abs(a.y - b.y)
 }
 
 function consolidatePath(node: Pathnode) {

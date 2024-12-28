@@ -61,7 +61,7 @@ export class Selectacon {
 				? turnTracker.teamId
 				: null
 			const instance = d(assets.indicators.hover(teamId))
-			instance.position.set(...cell.position)
+			instance.position.set(...cell.position.array())
 		}
 	}
 
@@ -72,7 +72,7 @@ export class Selectacon {
 
 		if (cell) {
 			const instance = d(assets.indicators.selection())
-			instance.position.set(...cell.position)
+			instance.position.set(...cell.position.array())
 		}
 	}
 

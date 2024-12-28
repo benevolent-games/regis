@@ -1,5 +1,5 @@
 
-import {scalar, vec2, Vec2, Vec3} from "@benev/toolbox"
+import {Vec2, Vec3, Scalar} from "@benev/toolbox"
 
 import {BoardState} from "../state.js"
 import {CoordinatorHelper} from "./coordinator.js"
@@ -12,8 +12,8 @@ export class BoundaryHelper {
 		const coordinator = new CoordinatorHelper(board)
 
 		this.place = {
-			min: [0, 0],
-			max: vec2.addBy(board.extent, -1),
+			min: Vec2.zero(),
+			max: Vec2.from(board.extent).clone().subtract_(1, 1),
 		}
 
 		this.position = {
@@ -22,21 +22,21 @@ export class BoundaryHelper {
 		}
 	}
 
-	clampPlace([x, y]: Vec2) {
-		const {min: [minX, minY], max: [maxX, maxY]} = this.place
-		return [
-			scalar.clamp(x, minX, maxX),
-			scalar.clamp(y, minY, maxY),
-		] as Vec2
+	clampPlace({x, y}: Vec2) {
+		const {min: {x: minX, y: minY}, max: {x: maxX, y: maxY}} = this.place
+		return new Vec2(
+			Scalar.clamp(x, minX, maxX),
+			Scalar.clamp(y, minY, maxY),
+		)
 	}
 
-	clampPosition([x, y, z]: Vec3) {
-		const {min: [minX,,minZ], max: [maxX,,maxZ]} = this.position
-		return [
-			scalar.clamp(x, minX, maxX),
+	clampPosition({x, y, z}: Vec3) {
+		const {min: {x: minX, z: minZ}, max: {x: maxX, z: maxZ}} = this.position
+		return new Vec3(
+			Scalar.clamp(x, minX, maxX),
 			y,
-			scalar.clamp(z, minZ, maxZ),
-		] as Vec3
+			Scalar.clamp(z, minZ, maxZ),
+		)
 	}
 }
 

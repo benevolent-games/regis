@@ -16,7 +16,7 @@ export function asciiMap(map: MapSpec): GameInitial {
 
 	const extent = measureAsciiBoardExtent(map.ascii)
 
-	const boardState = makePlainBoardState(extent)
+	const boardState = makePlainBoardState(extent.array())
 	const board = new TilesHelper(boardState)
 	const units = new UnitsHelper([])
 
@@ -30,7 +30,7 @@ export function asciiMap(map: MapSpec): GameInitial {
 		const parts = line.split(/\s+/)
 
 		parts.forEach((part, file) => {
-			const place = [file, rank] as Vec2
+			const place = new Vec2(file, rank)
 			const tile = board.at(place)
 
 			function zoop(glyph: string, fn: () => void) {
@@ -84,8 +84,8 @@ export function asciiMap(map: MapSpec): GameInitial {
 					id: id++,
 					kind,
 					team,
-					place,
 					damage: 0,
+					place: place.array(),
 				})
 			}
 

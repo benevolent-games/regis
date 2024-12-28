@@ -13,6 +13,6 @@ export function measureAsciiBoardExtent(ascii: string): Vec2 {
 		.filter(s => s.length > 0)
 		.length
 
-	return [x, y]
+	return new Vec2(x, y)
 }
 

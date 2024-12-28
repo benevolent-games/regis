@@ -14,11 +14,11 @@ export function isValidRecruitmentPlace(agent: Agent, teamId: number, place: Vec
 
 	for (const unit of agent.units.list()) {
 		const {recruiter} = agent.archetype(unit.kind)
-		const unitTile = agent.tiles.at(unit.place)
+		const unitTile = agent.tiles.at(Vec2.from(unit.place))
 		const valid = (
 			unit.team === teamId &&
 			recruiter &&
-			isWithinRange(recruiter.range, unit.place, place) &&
+			isWithinRange(recruiter.range, Vec2.from(unit.place), place) &&
 			isVerticallyCompatible(recruiter.verticality, unitTile, tile)
 		)
 		if (valid)

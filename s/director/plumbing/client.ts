@@ -1,5 +1,5 @@
 
-import {expose, Remote, webSocketRemote} from "renraku"
+import {endpoint, Remote, webSocketRemote} from "renraku"
 
 import {constants} from "../../constants.js"
 import {ClientMachinery} from "./machinery.js"
@@ -16,14 +16,13 @@ export async function makeDirectorClient(
 	const r = await webSocketRemote<Serverside>({
 		url,
 		timeout: constants.net.timeout,
-		getLocalEndpoint: remote => expose(
-			() => makeClientside(machinery, () => remote)
-		),
+		getLocalEndpoint: remote => endpoint(makeClientside(machinery, () => remote)),
+		onClose: () => {},
 	})
 
 	return {
 		socket: r.socket,
-		serverside: r.fns as Remote<Serverside>,
+		serverside: r.remote as Remote<Serverside>,
 	}
 }
 

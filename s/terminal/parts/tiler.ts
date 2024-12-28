@@ -29,7 +29,7 @@ export class Tiler {
 
 		this.dispose()
 
-		function oddOrEven([x, y]: Vec2) {
+		function oddOrEven({x, y}: Vec2) {
 			return ((x + y) % 2) === 0
 				? "odd"
 				: "even"
@@ -39,7 +39,7 @@ export class Tiler {
 			// subtracting one because blocks are rooted at their bottom,
 			// whereas the elevation height tells us the world height of the top
 			const y = agent.coordinator.elevationHeight(elevation - 1)
-			const [x,,z] = agent.coordinator.toBlockPosition(place)
+			const {x, z} = agent.coordinator.toBlockPosition(place)
 			instance.position.set(x, y, z)
 		}
 
